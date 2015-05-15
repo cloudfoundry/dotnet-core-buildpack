@@ -1,0 +1,28 @@
+---
+language: aspnet5
+
+url_to_dependency_map:
+  - match: mono-(.*)-(\d+\.\d+\.\d+)
+    name: mono
+    version: $2
+
+dependencies:
+  - name: mono
+    version: 3.12.1
+    cf_stacks:
+      - lucid64
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.1/mono-lucid64-3.12.1.tar.gz
+    md5: 386e88cadea67669e7731d4238cefb53
+  - name: mono
+    version: 3.12.1
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.1/mono-cflinuxfs2-3.12.1.tar.gz
+    md5: 7f992e9d13c608487937988b465be19a
+
+exclude_files:
+  - .git/
+  - .gitignore
+  - .gitmodules
+  - spec/
+  - aspnet5_buildpack-*v*.zip
