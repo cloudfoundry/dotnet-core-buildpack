@@ -7,11 +7,22 @@ A Cloud Foundry buildpack for ASP.NET 5 apps. For more information about ASP.NET
 
 ## Usage
 
-This buildpack will be used if there is a `NuGet.Config` file in the root directory of your project.
-
 ```bash
 cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.git
 ```
+
+This buildpack will be used if there is a `NuGet.Config` file in the root directory of your project.
+
+The application structure would then be:
+- NuGet.Config
+- src
+  - project directory
+    - Startup.cs
+    - project.json
+    - wwwroot
+    - Models/Views/Controllers or other directories
+
+For a basic example see this [Hello World sample][].
 
 ## Disconnected environments
 Disconnected environments are not fully supported. The .NET Version Manager, .NET Execution Environment and NuGet packages required by the application are always downloaded during staging. The Mono binaries, however, can be cached or uncached.
@@ -55,3 +66,5 @@ Find our guidelines [here](./CONTRIBUTING.md).
 
 Open an issue on this project.
 
+
+[Hello World sample]: https://github.com/opiethehokie/asp.net5-helloworld
