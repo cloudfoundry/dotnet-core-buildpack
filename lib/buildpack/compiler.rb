@@ -20,6 +20,7 @@ require_relative 'compile/kre_installer.rb'
 require_relative 'compile/kvm_installer.rb'
 require_relative 'compile/kpm.rb'
 require_relative 'compile/release_yml_writer.rb'
+require_relative "version.rb"
 
 require 'json'
 require 'pathname'
@@ -43,6 +44,8 @@ module AspNet5Buildpack
     end
 
     def compile
+      puts "ASP.NET 5 buildpack version: #{BuildpackVersion.new.version}\n"
+      puts "ASP.NET 5 buildpack starting compile\n"
       out.warn(WARNING_MESSAGE) unless WARNING_MESSAGE.nil?
       step("Restoring files from buildpack cache" , method(:restore_cache))
       step("Extracting mono", method(:extract_mono))
@@ -54,6 +57,7 @@ module AspNet5Buildpack
       step("Moving files in to place", method(:move_to_app_dir))
       step("Saving to buildpack cache", method(:save_cache))
       step("Writing Release YML", method(:write_release_yml))
+      puts "ASP.NET 5 buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
       out.fail(e.message)

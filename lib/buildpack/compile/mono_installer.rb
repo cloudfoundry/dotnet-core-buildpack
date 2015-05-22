@@ -39,7 +39,7 @@ module AspNet5Buildpack
     private
 
     def run_common_cmd(cmd, out)
-      shell.exec("bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common; #{cmd}'", out)
+      shell.exec("bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'", out)
     end
 
     def buildpack_root
