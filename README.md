@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: ASP.NET 5
 
-A Cloud Foundry buildpack for ASP.NET 5 apps. For more information about ASP.NET 5 see:
+A Cloud Foundry buildpack for ASP.NET 5 ([beta3][]) apps. For more information about ASP.NET 5 see:
 
 * https://github.com/aspnet/home
 * http://docs.asp.net/en/latest/conceptual-overview/aspnet.html
@@ -68,3 +68,4 @@ Open an issue on this project.
 
 
 [Hello World sample]: https://github.com/opiethehokie/asp.net5-helloworld
+[beta3]: https://github.com/aspnet/Home/releases/tag/v1.0.0-beta3
