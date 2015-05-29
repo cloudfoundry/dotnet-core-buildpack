@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "fileutils"
+require 'fileutils'
+require 'json'
 
 module AspNet5Buildpack
   class ReleaseYmlWriter
@@ -42,12 +43,12 @@ module AspNet5Buildpack
     end
 
     def add_cfweb_command(project_json)
-      json = JSON.parse(IO.read(project_json))
+      json = JSON.parse(IO.read(project_json, :encoding => 'bom|utf-8'))
       json["dependencies"] ||= {}
       json["dependencies"]["Nowin.vNext"] = "1.0.0-*" unless json["dependencies"]["Nowin.vNext"]
       json["commands"] ||= {}
       json["commands"]["cf-web"] = "Microsoft.AspNet.Hosting --server Nowin.vNext"
-      IO.write(project_json, json.to_json)
+      IO.write(project_json, JSON.pretty_generate(json))
     end
 
     def write_startup_script(path)
@@ -55,7 +56,9 @@ module AspNet5Buildpack
       File.open(path, 'w') do |f|
         f.write "export PATH=/app/mono/bin:$PATH;"
         f.write "export HOME=/app;"
-        f.write "source /app/.k/kvm/kvm.sh; kvm use 1.0.0-beta3;"
+        f.write "source /app/.dnx/dnvm/dnvm.sh;"
+        f.write "dnvm use default -r mono -a x64;"
+        f.write "dnu restore;"
       end
     end
 
@@ -64,7 +67,7 @@ module AspNet5Buildpack
         f.write <<EOT
 ---
 default_process_types:
-  web: cd #{web_dir}; sleep 999999 | k #{cmd}
+  web: cd #{web_dir}; sleep 999999 | dnx . #{cmd}
 EOT
       end
     end
@@ -105,7 +108,7 @@ EOT
       end
 
       def commands(dir)
-        JSON.load(IO.read(project_json(dir))).fetch("commands", {})
+        JSON.load(IO.read(project_json(dir), :encoding => 'bom|utf-8')).fetch("commands", {})
       end
 
       def project_json(dir)

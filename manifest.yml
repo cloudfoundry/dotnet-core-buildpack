@@ -8,17 +8,17 @@ url_to_dependency_map:
 
 dependencies:
   - name: mono
-    version: 3.12.1
+    version: 4.0.1
     cf_stacks:
       - lucid64
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.1/mono-lucid64-3.12.1.tar.gz
-    md5: 386e88cadea67669e7731d4238cefb53
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.2/mono-lucid64-4.0.1.tar.gz 
+    md5: 3d020ca4a4bc2afd6e803eeb18ff5551
   - name: mono
-    version: 3.12.1
+    version: 4.0.1
     cf_stacks:
       - cflinuxfs2
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.1/mono-cflinuxfs2-3.12.1.tar.gz
-    md5: 7f992e9d13c608487937988b465be19a
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.2/mono-cflinuxfs2-4.0.1.tar.gz
+    md5: 98de7244bd6a91ea4d0acc9104b82a59
 
 exclude_files:
   - .git/

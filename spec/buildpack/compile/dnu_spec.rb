@@ -17,7 +17,7 @@
 require "rspec"
 require_relative "../../../lib/buildpack.rb"
 
-describe AspNet5Buildpack::KvmInstaller do
+describe AspNet5Buildpack::DNU do
   let(:shell) do
     double(:shell, :env => {})
   end
@@ -26,19 +26,32 @@ describe AspNet5Buildpack::KvmInstaller do
     double(:out)
   end
 
-  subject(:installer) do
-    AspNet5Buildpack::KvmInstaller.new(shell)
+  subject(:dnu) do
+    AspNet5Buildpack::DNU.new(shell)
   end
 
-  it "runs the kvm web installer" do
-    expect(shell).to receive(:exec).with("curl -s https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.sh | sh", out)
-    installer.install("passed-directory", out)
-  end
-
-  it "sets KRE_USER_HOME based on passed directory" do
+  it "sets HOME env variable to build dir so that packages are stored in /app/.dnx" do
     allow(shell).to receive(:exec)
-    installer.install("passed-directory", out)
+    dnu.restore("app-dir", out)
 
-    expect(shell.env).to include("KRE_USER_HOME" => File.join("passed-directory",".k"))
+    expect(shell.env).to include("HOME" => "app-dir")
+  end
+
+  it "adds dnu to the PATH" do
+    allow(shell).to receive(:exec)
+    expect(shell).to receive(:exec).with(match("dnvm use default"), out)
+    dnu.restore("app-dir", out)
+  end
+
+  it "sources dnvm.sh script" do
+    allow(shell).to receive(:exec)
+    expect(shell).to receive(:exec).with(match("source app-dir/.dnx/dnvm/dnvm.sh"), out)
+    dnu.restore("app-dir", out)
+  end
+
+  it "restores dependencies with dnu" do
+    allow(shell).to receive(:exec)
+    expect(shell).to receive(:exec).with(match("dnu restore"), out)
+    dnu.restore("app-dir", out)
   end
 end

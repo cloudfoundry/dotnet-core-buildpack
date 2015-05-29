@@ -35,10 +35,10 @@ module AspNet5Buildpack
       cache_dir,
       MonoInstaller.new(build_dir, shell),
       File.expand_path("../../resources/Nowin.vNext", __FILE__),
-      KvmInstaller.new(shell),
+      DnvmInstaller.new(shell),
       Mozroots.new(shell),
-      KreInstaller.new(shell),
-      KPM.new(shell),
+      DnxInstaller.new(shell),
+      DNU.new(shell),
       ReleaseYmlWriter.new,
       Copier.new,
       out)

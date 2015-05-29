@@ -16,6 +16,7 @@
 
 require 'rspec'
 require 'tmpdir'
+require_relative "../../lib/buildpack.rb"
 
 describe AspNet5Buildpack::Copier do
   let(:src) do

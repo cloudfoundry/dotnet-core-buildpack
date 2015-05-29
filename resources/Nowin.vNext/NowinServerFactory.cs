@@ -18,15 +18,17 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.FeatureModel;
 using Microsoft.AspNet.Hosting.Server;
 using Microsoft.AspNet.Owin;
 using Microsoft.Framework.ConfigurationModel;
+using Nowin;
  
 namespace Nowin.vNext
 {
     public class NowinServerFactory : IServerFactory
     {
-        private Func<object, Task> _callback;
+        private Func<IFeatureCollection, Task> _callback;
 
         private Task HandleRequest(IDictionary<string, object> env)
         {
@@ -44,7 +46,7 @@ namespace Nowin.vNext
             return new NowinServerInformation(builder);
         }
 
-        public IDisposable Start(IServerInformation serverInformation, Func<object, Task> application)
+        public IDisposable Start(IServerInformation serverInformation, Func<IFeatureCollection, Task> application)
         {
             var information = (NowinServerInformation)serverInformation;
             _callback = application;

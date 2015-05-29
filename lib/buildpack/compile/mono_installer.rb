@@ -17,7 +17,8 @@
 module AspNet5Buildpack
   class MonoInstaller
 
-    DEFAULT_VERSION = '3.12.1'
+    # really 4.0.1.44 fix release - needed for mozroots error
+    DEFAULT_VERSION = '4.0.1'
 
     def initialize(app_dir, shell)
       @app_dir = app_dir
@@ -25,6 +26,7 @@ module AspNet5Buildpack
     end
 
     def extract(dest_dir, out)
+      out.print("Mono version: #{version}")
       run_common_cmd("mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null", out)
     end
 
@@ -39,7 +41,8 @@ module AspNet5Buildpack
     private
 
     def run_common_cmd(cmd, out)
-      shell.exec("bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'", out)
+      commoncmd = "bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'"
+      shell.exec(commoncmd, out)
     end
 
     def buildpack_root

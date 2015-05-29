@@ -41,7 +41,7 @@ describe AspNet5Buildpack::MonoInstaller do
   describe "mono version" do
     context "when no version is specified" do
       it "uses default version" do
-        expect(subject.version).to eq('3.12.1')
+        expect(subject.version).to eq('4.0.1')
       end
     end
 
@@ -99,6 +99,7 @@ describe AspNet5Buildpack::MonoInstaller do
         expect(cmd).to match(/translate_dependency_url/)
         expect(cmd).to match(/tar/)
       end
+      expect(out).to receive(:print).with(/Mono version/)
       subject.extract(dir, out)    
     end
   end

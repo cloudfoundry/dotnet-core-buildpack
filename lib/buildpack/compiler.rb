@@ -16,9 +16,9 @@
 
 require_relative 'compile/mozroots.rb'
 require_relative 'compile/mono_installer.rb'
-require_relative 'compile/kre_installer.rb'
-require_relative 'compile/kvm_installer.rb'
-require_relative 'compile/kpm.rb'
+require_relative 'compile/dnvm_installer.rb'
+require_relative 'compile/dnx_installer.rb'
+require_relative 'compile/dnu.rb'
 require_relative 'compile/release_yml_writer.rb'
 require_relative "version.rb"
 
@@ -27,17 +27,17 @@ require 'pathname'
 
 module AspNet5Buildpack
   class Compiler
-    WARNING_MESSAGE = "This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack."
+    WARNING_MESSAGE = "This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.".freeze
 
-    def initialize(build_dir, cache_dir, mono_binary, nowin_dir, kvm_installer, mozroots, kre_installer, kpm, release_yml_writer, copier, out)
+    def initialize(build_dir, cache_dir, mono_binary, nowin_dir, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
       @mono_binary = mono_binary
       @nowin_dir = nowin_dir
-      @kvm_installer = kvm_installer
-      @kre_installer = kre_installer
+      @dnvm_installer = dnvm_installer
+      @dnx_installer = dnx_installer
       @mozroots = mozroots
-      @kpm = kpm
+      @dnu = dnu
       @release_yml_writer = release_yml_writer
       @copier = copier
       @out = out
@@ -51,9 +51,9 @@ module AspNet5Buildpack
       step("Extracting mono", method(:extract_mono))
       step("Adding Nowin.vNext", method(:copy_nowin))
       step("Importing Mozilla Root Certificates", method(:install_mozroot_certs))
-      step("Installing KVM", method(:install_kvm))
-      step("Installing KRE with KVM", method(:install_kre))
-      step("Restoring dependencies with KPM", method(:restore_dependencies))
+      step("Installing DNVM", method(:install_dnvm))
+      step("Installing DNX with DNVM", method(:install_dnx))
+      step("Restoring dependencies with DNU", method(:restore_dependencies))
       step("Moving files in to place", method(:move_to_app_dir))
       step("Saving to buildpack cache", method(:save_cache))
       step("Writing Release YML", method(:write_release_yml))
@@ -83,20 +83,20 @@ module AspNet5Buildpack
     end
 
     def restore_cache(out)
-      copier.cp(File.join(cache_dir, ".k"), build_dir, out) if File.exist? File.join(cache_dir, ".k")
+      copier.cp(File.join(cache_dir, ".dnx"), build_dir, out) if File.exist? File.join(cache_dir, ".dnx")
       copier.cp(File.join(cache_dir, "mono"), File.join("/", "app"), out) if File.exist? File.join(cache_dir, "mono")
     end
 
-    def install_kvm(out)
-      kvm_installer.install(build_dir, out)
+    def install_dnvm(out)
+      dnvm_installer.install(build_dir, out)
     end
 
-    def install_kre(out)
-      kre_installer.install(build_dir, out)
+    def install_dnx(out)
+      dnx_installer.install(build_dir, out)
     end
 
     def restore_dependencies(out)
-      kpm.restore(build_dir, out)
+      dnu.restore(build_dir, out)
     end
 
     def move_to_app_dir(out)
@@ -104,7 +104,7 @@ module AspNet5Buildpack
     end
 
     def save_cache(out)
-      copier.cp(File.join(build_dir, ".k"), cache_dir, out)
+      copier.cp(File.join(build_dir, ".dnx"), cache_dir, out)
       copier.cp(File.join("/app", "mono"), cache_dir, out) unless File.exists? File.join(cache_dir, "mono")
     end
 
@@ -128,10 +128,10 @@ module AspNet5Buildpack
     attr_reader :cache_dir
     attr_reader :mono_binary
     attr_reader :nowin_dir
-    attr_reader :kvm_installer
-    attr_reader :kre_installer
+    attr_reader :dnvm_installer
+    attr_reader :dnx_installer
     attr_reader :mozroots
-    attr_reader :kpm
+    attr_reader :dnu
     attr_reader :release_yml_writer
     attr_reader :copier
     attr_reader :out
