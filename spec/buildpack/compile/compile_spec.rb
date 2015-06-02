@@ -24,6 +24,10 @@ describe AspNet5Buildpack::Compiler do
     AspNet5Buildpack::Compiler.new(buildDir, cacheDir, mono_binary, nowinDir, kvm_installer, mozroots, kre_installer, kpm, release_yml_writer, copier, out)
   end
 
+  before do
+    allow($stdout).to receive(:write)
+  end
+
   let(:mono_binary) do
     double(:mono_binary, :extract => nil)
   end

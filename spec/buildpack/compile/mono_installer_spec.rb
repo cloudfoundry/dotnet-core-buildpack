@@ -22,10 +22,6 @@ require_relative "../../../lib/buildpack/shell.rb"
 
 describe AspNet5Buildpack::MonoInstaller do
 
-  before do
-    allow($stdout).to receive(:write)    
-  end
-
   let(:dir) do
     Dir.mktmpdir
   end
@@ -66,7 +62,6 @@ describe AspNet5Buildpack::MonoInstaller do
         begin
           dependencies = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'dependencies'))
           FileUtils.mkdir_p dependencies
-          expect(out).to receive(:print).with(/-------> Buildpack version/)
           expect(out).to receive(:print).with(/file:\/\/\//)
           subject.mono_tar_gz(out)
         ensure
@@ -77,7 +72,6 @@ describe AspNet5Buildpack::MonoInstaller do
 
     context "when not present in dependencies dir" do
       it "downloads and extracts the binary" do
-        expect(out).to receive(:print).with(/-------> Buildpack version/)
         expect(out).to receive(:print).with(/https:\/\//)
         subject.mono_tar_gz(out)
       end
@@ -90,7 +84,6 @@ describe AspNet5Buildpack::MonoInstaller do
       end
 
       it "returns an error" do
-        expect(out).to receive(:print).with(/-------> Buildpack version/)
         expect(out).to receive(:print).with(/DEPENDENCY_MISSING_IN_MANIFEST/)
         expect { subject.mono_tar_gz(out) }.to raise_error
       end
