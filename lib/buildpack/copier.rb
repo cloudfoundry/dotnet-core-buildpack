@@ -20,6 +20,7 @@ module AspNet5Buildpack
   class Copier
     def cp(from, to, out)
       before = files_in_dest(to)
+      FileUtils.mkdir_p(to)
       FileUtils.cp_r(from, to)
       after = files_in_dest(to)
 

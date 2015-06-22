@@ -21,7 +21,7 @@ require_relative "../../../lib/buildpack.rb"
 
 describe AspNet5Buildpack::Compiler do
   subject(:compiler) do
-    AspNet5Buildpack::Compiler.new(buildDir, cacheDir, mono_binary, nowinDir, kvm_installer, mozroots, kre_installer, kpm, release_yml_writer, copier, out)
+    AspNet5Buildpack::Compiler.new(buildDir, cacheDir, mono_binary, nowinDir, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
   end
 
   before do
@@ -36,16 +36,16 @@ describe AspNet5Buildpack::Compiler do
     double(:copier, :cp => nil)
   end
 
-  let(:kvm_installer) do
-    double(:kvm_installer, :install => nil)
+  let(:dnvm_installer) do
+    double(:dnvm_installer, :install => nil)
   end
 
-  let(:kre_installer) do
-    double(:kre_installer, :install => nil)
+  let(:dnx_installer) do
+    double(:dnx_installer, :install => nil)
   end
 
-  let(:kpm) do
-    double(:kpm, :restore => nil)
+  let(:dnu) do
+    double(:dnu, :restore => nil)
   end
 
   let(:mozroots) do
@@ -132,7 +132,7 @@ describe AspNet5Buildpack::Compiler do
       end
 
       context "when mono is already extracted because it was cached" do
-        it "copies only .k to cache dir" do
+        it "copies only .dnx to cache dir" do
           allow(File).to receive(:exist?).and_return(true)
           expect(mono_binary).not_to receive(:extract).with("/app", anything)
           compiler.compile
@@ -150,7 +150,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe "Importing Certificates" do
-      it_behaves_like "A Step", "Importing Mozilla Root Certificates", :install_mozroot_certs, :install_kvm
+      it_behaves_like "A Step", "Importing Mozilla Root Certificates", :install_mozroot_certs, :install_dnvm
 
       it "imports the certificates" do
         expect(mozroots).to receive(:import)
@@ -158,17 +158,17 @@ describe AspNet5Buildpack::Compiler do
       end
     end
 
-    describe "Installing KVM" do
-      it_behaves_like "A Step", "Installing KVM", :install_kvm, :install_kre
+    describe "Installing DNVM" do
+      it_behaves_like "A Step", "Installing DNVM", :install_dnvm, :install_dnx
 
-      it "installs kvm" do
-        expect(kvm_installer).to receive(:install).with(buildDir, anything)
+      it "installs dnvm" do
+        expect(dnvm_installer).to receive(:install).with(buildDir, anything)
         compiler.compile
       end
     end
 
     describe "Restoring Cache" do
-      it_behaves_like "A Step", "Restoring files from buildpack cache", :restore_cache, :install_kvm
+      it_behaves_like "A Step", "Restoring files from buildpack cache", :restore_cache, :install_dnvm
 
       context "when the cache does not exist" do
         it "does not try copying" do
@@ -179,23 +179,23 @@ describe AspNet5Buildpack::Compiler do
 
       context "when the cache exists" do
         before(:each) do
-          Dir.mkdir(File.join(cacheDir, ".k"))
+          Dir.mkdir(File.join(cacheDir, ".dnx"))
           Dir.mkdir(File.join(cacheDir, "mono"))
         end
 
         it "restores all files from the cache to build dir" do
-          expect(copier).to receive(:cp).with(File.join(cacheDir, ".k"), buildDir, anything)
+          expect(copier).to receive(:cp).with(File.join(cacheDir, ".dnx"), buildDir, anything)
           expect(copier).to receive(:cp).with(File.join(cacheDir, "mono"), "/app", anything)
           compiler.compile
         end
       end
     end
 
-    describe "Installing KRE with KVM" do
-      it_behaves_like "A Step", "Installing KRE with KVM", :install_kre, :restore_dependencies
+    describe "Installing DNX with DNVM" do
+      it_behaves_like "A Step", "Installing DNX with DNVM", :install_dnx, :restore_dependencies
 
-      it "installs kre" do
-        expect(kre_installer).to receive(:install).with(buildDir, anything)
+      it "installs dnx" do
+        expect(dnx_installer).to receive(:install).with(buildDir, anything)
         compiler.compile
       end
     end
@@ -212,8 +212,8 @@ describe AspNet5Buildpack::Compiler do
     describe "Saving to buildpack cache" do
       it_behaves_like "A Step", "Saving to buildpack cache", :save_cache, :write_release_yml
 
-      it "copies .k and mono to cache dir" do
-        expect(copier).to receive(:cp).with("#{buildDir}/.k", cacheDir, anything)
+      it "copies .dnx and mono to cache dir" do
+        expect(copier).to receive(:cp).with("#{buildDir}/.dnx", cacheDir, anything)
         expect(copier).to receive(:cp).with("/app/mono", cacheDir, anything)
         compiler.compile
       end
@@ -222,8 +222,8 @@ describe AspNet5Buildpack::Compiler do
         before(:each) do
           Dir.mkdir(File.join(cacheDir, "mono"))
         end
-        it "copies only .k to cache dir" do
-          expect(copier).to receive(:cp).with("#{buildDir}/.k", cacheDir, anything)
+        it "copies only .dnx to cache dir" do
+          expect(copier).to receive(:cp).with("#{buildDir}/.dnx", cacheDir, anything)
           compiler.compile
         end
       end

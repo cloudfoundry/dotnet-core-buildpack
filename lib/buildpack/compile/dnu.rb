@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# Copyright 2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
 # limitations under the License.
 
 module AspNet5Buildpack
-  class KvmInstaller
+  class DNU
     def initialize(shell)
       @shell = shell
     end
 
-    def install(dir, out)
-      @shell.env["KRE_USER_HOME"] = File.join(dir, ".k")
-      @shell.exec("curl -s https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.sh | sh", out)
+    def restore(dir, out)
+      @shell.env['HOME'] = dir
+      @shell.exec("bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; cd #{dir}; dnu restore'", out)
     end
   end
 end

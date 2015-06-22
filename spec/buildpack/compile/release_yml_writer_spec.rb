@@ -49,16 +49,24 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         File.join(buildDir, "foo").tap { |f| Dir.mkdir(f) }
       end
 
-      it "should add /app/mono/bin to the path" do
+      it "should add /app/mono/bin to the PATH" do
         expect(profile_d_script).to include("export PATH=/app/mono/bin:$PATH;")
       end
 
-      it "should set HOME to /app (so that dependencies are picked up from /app/.kre etc" do
+      it "should set HOME to /app (so that dependencies are picked up from /app/.dnx)" do
         expect(profile_d_script).to include("export HOME=/app")
       end
 
-      it "should source kvm script" do
-        expect(profile_d_script).to include("source /app/.k/kvm/kvm.sh")
+      it "should source dnvm script" do
+        expect(profile_d_script).to include("source /app/.dnx/dnvm/dnvm.sh")
+      end
+
+      it "should add the runtime to the PATH" do
+        expect(profile_d_script).to include("dnvm use default")
+      end
+
+      it "should re-run package restore" do
+        expect(profile_d_script).to include("dnu restore")
       end
     end
 
@@ -72,6 +80,28 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
           expect(out).not_to receive(:fail)
           subject.write_release_yml(buildDir, out)
           expect(File).to exist(yml_path)
+        end
+      end
+
+      context "when there is a directory with a project.json file containing a BOM" do
+        let(:web_dir) do
+          File.join(buildDir, "foo").tap { |f| Dir.mkdir(f) }
+        end
+
+        let(:project_json) do
+          "{}"
+        end
+
+        before do
+          File.open(File.join(web_dir, "project.json"), 'w') do |f|
+            f.write "\uFEFF"
+            f.write project_json
+          end
+        end
+
+        it "writes a release yml" do
+          subject.write_release_yml(buildDir, out)
+          expect(File).to exist(File.join(buildDir, "aspnet5-buildpack-release.yml"))
         end
       end
 
@@ -114,8 +144,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             expect(web_process).to match("cd foo;")
           end
 
-          it "runs 'k cf-web'" do
-            expect(web_process).to match("k cf-web")
+          it "runs 'dnx . cf-web'" do
+            expect(web_process).to match("dnx . cf-web")
           end
 
           context "and if the cf-web command is empty" do
@@ -192,8 +222,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             expect(web_process).to match("cd foo-cfweb;")
           end
 
-          it "runs 'k cf-web'" do
-            expect(web_process).to match("k cf-web")
+          it "runs 'dnx . cf-web'" do
+            expect(web_process).to match("dnx . cf-web")
           end
         end
 
@@ -212,8 +242,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             expect(web_process).to match("cd foo-cfweb;")
           end
 
-          it "runs 'k cf-web'" do
-            expect(web_process).to match("k cf-web")
+          it "runs 'dnx . cf-web'" do
+            expect(web_process).to match("dnx . cf-web")
           end
         end
 
@@ -236,8 +266,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             expect(web_process).to match("cd foo-cfweb;")
           end
 
-          it "runs 'k cf-web'" do
-            expect(web_process).to match("k cf-web")
+          it "runs 'dnx . cf-web'" do
+            expect(web_process).to match("dnx . cf-web")
           end
         end
       end
