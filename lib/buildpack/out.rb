@@ -16,7 +16,7 @@
 
 module AspNet5Buildpack
   class Out
-    def initialize(description=nil)
+    def initialize(description = nil)
       puts "-----> #{description}\n" unless description.nil?
     end
 
@@ -45,10 +45,10 @@ module AspNet5Buildpack
     def to_warning(message)
       buff = "\n"
       buff += "  #{'*' * 72}\n"
-      prefix = "WARNING:"
+      prefix = 'WARNING:'
       message.scan(/.{1,58}/).each do |line|
-        buff += "  * #{prefix} #{line}#{' '*(60 - line.length)}*\n"
-        prefix = "        " if prefix == "WARNING:"
+        buff += "  * #{prefix} #{line}#{' ' * (60 - line.length)}*\n"
+        prefix = '        ' if prefix == 'WARNING:'
       end
       buff += "  #{'*' * 72}\n.\n"
     end

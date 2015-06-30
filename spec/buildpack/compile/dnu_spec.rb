@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rspec"
-require_relative "../../../lib/buildpack.rb"
+require 'rspec'
+require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DNU do
   let(:shell) do
-    double(:shell, :env => {})
+    double(:shell, env: {})
   end
 
   let(:out) do
@@ -30,28 +30,28 @@ describe AspNet5Buildpack::DNU do
     AspNet5Buildpack::DNU.new(shell)
   end
 
-  it "sets HOME env variable to build dir so that packages are stored in /app/.dnx" do
+  it 'sets HOME env variable to build dir so that packages are stored in /app/.dnx' do
     allow(shell).to receive(:exec)
-    dnu.restore("app-dir", out)
+    dnu.restore('app-dir', out)
 
-    expect(shell.env).to include("HOME" => "app-dir")
+    expect(shell.env).to include('HOME' => 'app-dir')
   end
 
-  it "adds dnu to the PATH" do
+  it 'adds dnu to the PATH' do
     allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match("dnvm use default"), out)
-    dnu.restore("app-dir", out)
+    expect(shell).to receive(:exec).with(match('dnvm use default'), out)
+    dnu.restore('app-dir', out)
   end
 
-  it "sources dnvm.sh script" do
+  it 'sources dnvm.sh script' do
     allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match("source app-dir/.dnx/dnvm/dnvm.sh"), out)
-    dnu.restore("app-dir", out)
+    expect(shell).to receive(:exec).with(match('source app-dir/.dnx/dnvm/dnvm.sh'), out)
+    dnu.restore('app-dir', out)
   end
 
-  it "restores dependencies with dnu" do
+  it 'restores dependencies with dnu' do
     allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match("dnu restore"), out)
-    dnu.restore("app-dir", out)
+    expect(shell).to receive(:exec).with(match('dnu restore'), out)
+    dnu.restore('app-dir', out)
   end
 end

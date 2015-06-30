@@ -19,7 +19,7 @@ require 'open3'
 module AspNet5Buildpack
   class Shell
     def exec(cmd, out)
-      Open3.popen2e(expand(cmd)) do |i,oe,t|
+      Open3.popen2e(expand(cmd)) do |i, oe, t|
         oe.each do |line|
           out.print line.chomp
         end
@@ -37,8 +37,9 @@ module AspNet5Buildpack
     end
 
     private
+
     def expand(cmd)
-      (exports + [cmd]).join(";")
+      (exports + [cmd]).join(';')
     end
 
     def exports

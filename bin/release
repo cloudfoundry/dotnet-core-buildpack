@@ -23,6 +23,6 @@ require 'buildpack'
 
 build_dir = ARGV[0]
 
-File.open(File.join(build_dir, "aspnet5-buildpack-release.yml")) do |f|
+File.open(File.join(build_dir, 'aspnet5-buildpack-release.yml')) do |f|
   puts f.read
 end

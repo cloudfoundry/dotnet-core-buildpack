@@ -28,8 +28,9 @@ module AspNet5Buildpack
     end
 
     private
+
     def files_in_dest(dest)
-      Dir.glob( "#{dest}/**/*", File::FNM_DOTMATCH ).select do |f|
+      Dir.glob("#{dest}/**/*", File::FNM_DOTMATCH).select do |f|
         File.basename(f).gsub('.', '') != ''
       end
     end

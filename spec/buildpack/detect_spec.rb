@@ -14,28 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rspec"
-require "tmpdir"
-require_relative "../../lib/buildpack.rb"
+require 'rspec'
+require 'tmpdir'
+require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Detecter do
   let(:dir) do
     Dir.mktmpdir
   end
 
-  describe "detect" do
-    context "when there is no NuGet.Config in the root directory" do
-      it "returns false" do
+  describe 'detect' do
+    context 'when there is no NuGet.Config in the root directory' do
+      it 'returns false' do
         expect(subject.detect(dir)).to be_falsey
       end
     end
 
-    context "when there is a NuGet.Config in the root directory" do
+    context 'when there is a NuGet.Config in the root directory' do
       before do
-        File.open(File.join(dir, "NuGet.Config"), 'w') { |f| f.write("a") }
+        File.open(File.join(dir, 'NuGet.Config'), 'w') { |f| f.write('a') }
       end
 
-      it "returns true" do
+      it 'returns true' do
         expect(subject.detect(dir)).to be_truthy
       end
     end

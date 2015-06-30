@@ -22,7 +22,8 @@ module AspNet5Buildpack
 
     def install(dir, out)
       @shell.env['HOME'] = dir
-      @shell.exec('touch ~/.bashrc; curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh; rm -rf ~/.bashrc', out)
+      cmd = 'touch ~/.bashrc; curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh; rm -rf ~/.bashrc'
+      @shell.exec(cmd, out)
     end
   end
 end

@@ -15,10 +15,10 @@
 # limitations under the License.
 
 require 'rspec'
-require_relative "../../lib/buildpack.rb"
+require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::BuildpackVersion do
-  it "can read the buildpack version from the VERSION file" do
+  it 'can read the buildpack version from the VERSION file' do
     expect(subject.version).not_to be_nil
   end
 end

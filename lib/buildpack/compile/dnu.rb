@@ -22,7 +22,8 @@ module AspNet5Buildpack
 
     def restore(dir, out)
       @shell.env['HOME'] = dir
-      @shell.exec("bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; cd #{dir}; dnu restore'", out)
+      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; cd #{dir}; dnu restore'"
+      @shell.exec(cmd, out)
     end
   end
 end

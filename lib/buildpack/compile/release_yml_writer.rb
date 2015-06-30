@@ -29,36 +29,36 @@ module AspNet5Buildpack
 
     def write_yml(dirs)
       unless dirs.with_existing_cfweb.empty?
-        write_yml_for(dirs.release_yml_path, dirs.with_existing_cfweb.first, "cf-web")
+        write_yml_for(dirs.release_yml_path, dirs.with_existing_cfweb.first, 'cf-web')
         return
       end
 
       unless dirs.with_project_json.empty?
         add_cfweb_command(dirs.project_json(dirs.with_project_json.first))
-        write_yml_for(dirs.release_yml_path, dirs.with_project_json.first, "cf-web")
+        write_yml_for(dirs.release_yml_path, dirs.with_project_json.first, 'cf-web')
         return
       end
 
-      write_yml_for(dirs.release_yml_path, ".", "cf-web")
+      write_yml_for(dirs.release_yml_path, '.', 'cf-web')
     end
 
     def add_cfweb_command(project_json)
-      json = JSON.parse(IO.read(project_json, :encoding => 'bom|utf-8'))
-      json["dependencies"] ||= {}
-      json["dependencies"]["Nowin.vNext"] = "1.0.0-*" unless json["dependencies"]["Nowin.vNext"]
-      json["commands"] ||= {}
-      json["commands"]["cf-web"] = "Microsoft.AspNet.Hosting --server Nowin.vNext"
+      json = JSON.parse(IO.read(project_json, encoding: 'bom|utf-8'))
+      json['dependencies'] ||= {}
+      json['dependencies']['Nowin.vNext'] = '1.0.0-*' unless json['dependencies']['Nowin.vNext']
+      json['commands'] ||= {}
+      json['commands']['cf-web'] = 'Microsoft.AspNet.Hosting --server Nowin.vNext'
       IO.write(project_json, JSON.pretty_generate(json))
     end
 
     def write_startup_script(path)
       FileUtils.mkdir_p(File.dirname(path))
       File.open(path, 'w') do |f|
-        f.write "export PATH=/app/mono/bin:$PATH;"
-        f.write "export HOME=/app;"
-        f.write "source /app/.dnx/dnvm/dnvm.sh;"
-        f.write "dnvm use default -r mono -a x64;"
-        f.write "dnu restore;"
+        f.write 'export PATH=/app/mono/bin:$PATH;'
+        f.write 'export HOME=/app;'
+        f.write 'source /app/.dnx/dnvm/dnvm.sh;'
+        f.write 'dnvm use default -r mono -a x64;'
+        f.write 'dnu restore;'
       end
     end
 
@@ -78,41 +78,41 @@ EOT
       end
 
       def release_yml_path
-        File.join(@dir, "aspnet5-buildpack-release.yml")
+        File.join(@dir, 'aspnet5-buildpack-release.yml')
       end
 
       def startup_script_path
-        File.join(@dir, ".profile.d", "startup.sh")
+        File.join(@dir, '.profile.d', 'startup.sh')
       end
 
       def with_web_commands
-        with_command("web")
+        with_command('web')
       end
 
       def with_existing_cfweb
-        with_command("cf-web")
+        with_command('cf-web')
       end
 
       def with_command(cmd)
-        with_project_json.select { |d| commands(d)[cmd] != nil && commands(d)[cmd] != "" }
+        with_project_json.select { |d| commands(d)[cmd] != nil && commands(d)[cmd] != '' }
       end
 
       def with_project_json
-        Dir.glob(File.join(@dir, "**", "project.json")).map do |d|
+        Dir.glob(File.join(@dir, '**', 'project.json')).map do |d|
           relative_path_to(File.dirname(d))
         end.reject do |d|
-          d.fnmatch?("src/Nowin.vNext")
+          d.fnmatch?('src/Nowin.vNext')
         end.sort do |d|
-          commands(d)["web"] ? 0 : 1
+          commands(d)['web'] ? 0 : 1
         end
       end
 
       def commands(dir)
-        JSON.load(IO.read(project_json(dir), :encoding => 'bom|utf-8')).fetch("commands", {})
+        JSON.load(IO.read(project_json(dir), encoding: 'bom|utf-8')).fetch('commands', {})
       end
 
       def project_json(dir)
-        File.join(@dir, dir, "project.json")
+        File.join(@dir, dir, 'project.json')
       end
 
       def relative_path_to(d)

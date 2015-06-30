@@ -21,8 +21,8 @@ module AspNet5Buildpack
     end
 
     def import(out)
-      @shell.path << "/app/mono/bin"
-      @shell.exec("mozroots --import --sync --quiet", out)
+      @shell.path << '/app/mono/bin'
+      @shell.exec('mozroots --import --sync --quiet', out)
     end
   end
 end

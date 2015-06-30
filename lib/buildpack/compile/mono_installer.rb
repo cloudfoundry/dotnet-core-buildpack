@@ -27,7 +27,8 @@ module AspNet5Buildpack
 
     def extract(dest_dir, out)
       out.print("Mono version: #{version}")
-      run_common_cmd("mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null", out)
+      cmd = "mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null"
+      run_common_cmd(cmd, out)
     end
 
     def version
@@ -59,7 +60,7 @@ module AspNet5Buildpack
     end
 
     def mono_version_file
-      File.join(app_dir, ".mono-version")
+      File.join(app_dir, '.mono-version')
     end
 
     private

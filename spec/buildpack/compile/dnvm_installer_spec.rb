@@ -19,7 +19,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnvmInstaller do
   let(:shell) do
-    double(:shell, :env => {})
+    double(:shell, env: {})
   end
 
   let(:out) do
@@ -36,7 +36,8 @@ describe AspNet5Buildpack::DnvmInstaller do
   end
 
   it 'runs the dnvm web installer' do
-    expect(shell).to receive(:exec).with(match('curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh'), out)
+    cmd = 'curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh'
+    expect(shell).to receive(:exec).with(match(cmd), out)
     installer.install('passed-directory', out)
   end
 

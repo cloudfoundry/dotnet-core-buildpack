@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rspec"
-require_relative "../../../lib/buildpack.rb"
+require 'rspec'
+require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Mozroots do
   let(:shell) do
-    double(:shell, :path => [])
+    double(:shell, path: [])
   end
 
   let(:out) do
@@ -30,15 +30,15 @@ describe AspNet5Buildpack::Mozroots do
     AspNet5Buildpack::Mozroots.new(shell)
   end
 
-  it "runs the mozroots import binary" do
-    expect(shell).to receive(:exec).with("mozroots --import --sync --quiet", out)
+  it 'runs the mozroots import binary' do
+    expect(shell).to receive(:exec).with('mozroots --import --sync --quiet', out)
     mozroots.import(out)
   end
 
-  it "adds /app/mono/bin to the path" do
+  it 'adds /app/mono/bin to the path' do
     allow(shell).to receive(:exec)
     mozroots.import(out)
 
-    expect(shell.path).to include("/app/mono/bin")
+    expect(shell.path).to include('/app/mono/bin')
   end
 end
