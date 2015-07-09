@@ -23,7 +23,7 @@ module AspNet5Buildpack
     private
 
     def can_handle?(dir)
-      File.exist? File.join(dir, "NuGet.Config")
+      File.exist? File.join(dir, 'NuGet.Config')
     end
   end
 end

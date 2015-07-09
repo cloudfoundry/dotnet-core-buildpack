@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative "./buildpack/compiler.rb"
-require_relative "./buildpack/detecter.rb"
-require_relative "./buildpack/shell.rb"
-require_relative "./buildpack/out.rb"
-require_relative "./buildpack/copier.rb"
+require_relative './buildpack/compiler.rb'
+require_relative './buildpack/detecter.rb'
+require_relative './buildpack/shell.rb'
+require_relative './buildpack/out.rb'
+require_relative './buildpack/copier.rb'
 
 module AspNet5Buildpack
   def self.detect(build_dir)
@@ -34,7 +34,7 @@ module AspNet5Buildpack
       build_dir,
       cache_dir,
       MonoInstaller.new(build_dir, shell),
-      File.expand_path("../../resources/Nowin.vNext", __FILE__),
+      File.expand_path('../../resources/Nowin.vNext', __FILE__),
       DnvmInstaller.new(shell),
       Mozroots.new(shell),
       DnxInstaller.new(shell),

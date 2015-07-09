@@ -20,14 +20,14 @@ require_relative 'compile/dnvm_installer.rb'
 require_relative 'compile/dnx_installer.rb'
 require_relative 'compile/dnu.rb'
 require_relative 'compile/release_yml_writer.rb'
-require_relative "version.rb"
+require_relative 'version.rb'
 
 require 'json'
 require 'pathname'
 
 module AspNet5Buildpack
   class Compiler
-    WARNING_MESSAGE = "This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.".freeze
+    WARNING_MESSAGE = 'This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.'.freeze
 
     def initialize(build_dir, cache_dir, mono_binary, nowin_dir, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
       @build_dir = build_dir
@@ -47,35 +47,35 @@ module AspNet5Buildpack
       puts "ASP.NET 5 buildpack version: #{BuildpackVersion.new.version}\n"
       puts "ASP.NET 5 buildpack starting compile\n"
       out.warn(WARNING_MESSAGE) unless WARNING_MESSAGE.nil?
-      step("Restoring files from buildpack cache" , method(:restore_cache))
-      step("Extracting mono", method(:extract_mono))
-      step("Adding Nowin.vNext", method(:copy_nowin))
-      step("Importing Mozilla Root Certificates", method(:install_mozroot_certs))
-      step("Installing DNVM", method(:install_dnvm))
-      step("Installing DNX with DNVM", method(:install_dnx))
-      step("Restoring dependencies with DNU", method(:restore_dependencies))
-      step("Moving files in to place", method(:move_to_app_dir))
-      step("Saving to buildpack cache", method(:save_cache))
-      step("Writing Release YML", method(:write_release_yml))
+      step('Restoring files from buildpack cache' , method(:restore_cache))
+      step('Extracting mono', method(:extract_mono))
+      step('Adding Nowin.vNext', method(:copy_nowin))
+      step('Importing Mozilla Root Certificates', method(:install_mozroot_certs))
+      step('Installing DNVM', method(:install_dnvm))
+      step('Installing DNX with DNVM', method(:install_dnx))
+      step('Restoring dependencies with DNU', method(:restore_dependencies))
+      step('Moving files in to place', method(:move_to_app_dir))
+      step('Saving to buildpack cache', method(:save_cache))
+      step('Writing Release YML', method(:write_release_yml))
       puts "ASP.NET 5 buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
       out.fail(e.message)
       puts ".\n"
       out.warn(WARNING_MESSAGE)
-      sleep 2 # otherwise the warning message gets lost and you have to do logs --recent to see it
+      sleep 2 # otherwise the warning message gets lost and you have to do logs --recent to see it
       return false
     end
 
     private
 
     def extract_mono(out)
-      mono_binary.extract(File.join("/", "app"), out) unless File.exist? File.join("/app", "mono")
+      mono_binary.extract(File.join('/', 'app'), out) unless File.exist? File.join('/app', 'mono')
     end
 
     def copy_nowin(out)
-      dest_dir = File.join(build_dir, "src")
-      copier.cp(nowin_dir, dest_dir, out) unless File.exist? File.join(dest_dir, "Nowin.vNext")
+      dest_dir = File.join(build_dir, 'src')
+      copier.cp(nowin_dir, dest_dir, out) unless File.exist? File.join(dest_dir, 'Nowin.vNext')
     end
 
     def install_mozroot_certs(out)
@@ -83,8 +83,8 @@ module AspNet5Buildpack
     end
 
     def restore_cache(out)
-      copier.cp(File.join(cache_dir, ".dnx"), build_dir, out) if File.exist? File.join(cache_dir, ".dnx")
-      copier.cp(File.join(cache_dir, "mono"), File.join("/", "app"), out) if File.exist? File.join(cache_dir, "mono")
+      copier.cp(File.join(cache_dir, '.dnx'), build_dir, out) if File.exist? File.join(cache_dir, '.dnx')
+      copier.cp(File.join(cache_dir, 'mono'), File.join('/', 'app'), out) if File.exist? File.join(cache_dir, 'mono')
     end
 
     def install_dnvm(out)
@@ -100,12 +100,12 @@ module AspNet5Buildpack
     end
 
     def move_to_app_dir(out)
-      copier.cp(File.join("/app", "mono"), build_dir, out)
+      copier.cp(File.join('/app', 'mono'), build_dir, out)
     end
 
     def save_cache(out)
-      copier.cp(File.join(build_dir, ".dnx"), cache_dir, out)
-      copier.cp(File.join("/app", "mono"), cache_dir, out) unless File.exists? File.join(cache_dir, "mono")
+      copier.cp(File.join(build_dir, '.dnx'), cache_dir, out)
+      copier.cp(File.join('/app', 'mono'), cache_dir, out) unless File.exists? File.join(cache_dir, 'mono')
     end
 
     def write_release_yml(out)

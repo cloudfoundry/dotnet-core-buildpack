@@ -39,12 +39,10 @@ module AspNet5Buildpack
       version_file = File.expand_path(File.join(dir, DNX_VERSION_FILE_NAME))
       if File.exists?(version_file)
         begin
-          global_props = JSON.parse(File.read(version_file, :encoding => 'bom|utf-8'))
+          global_props = JSON.parse(File.read(version_file, encoding: 'bom|utf-8'))
           if global_props.has_key?('sdk')
             sdk = global_props['sdk']
-            if sdk.has_key?('version')
-              dnx_version = sdk['version']
-            end
+            dnx_version = sdk['version'] if sdk.has_key?('version')
           end
         rescue
           out.warn("File #{version_file} is not valid JSON")

@@ -20,7 +20,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnxInstaller do
   let(:shell) do
-    double(:shell, :env => {})
+    double(:shell, env: {})
   end
 
   let(:out) do

@@ -14,47 +14,47 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "rspec"
-require_relative "../lib/buildpack.rb"
+require 'rspec'
+require_relative '../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Out do
-  describe "#step" do
-    it "prints step title with 6-character arrow" do
+  describe '#step' do
+    it 'prints step title with 6-character arrow' do
       expect($stdout).to receive(:puts).with("-----> foo\n")
-      subject.step("foo")
+      subject.step('foo')
     end
   end
 
-  describe "#warn" do
-    it "prints a big warning message surrounded by asterixes" do
-      expect($stdout).to receive(:puts).with("\n"+
+  describe '#warn' do
+    it 'prints a big warning message surrounded by asterixes' do
+      expect($stdout).to receive(:puts).with("\n" +
        "  ************************************************************************\n" +
        "  * WARNING: xyz abc 123 should wrap blah blah blah foo bar baz bing bo  *\n" +
        "  *          o. this is the first message of line 2.                     *\n" +
        "  ************************************************************************\n" +
        ".\n")
-      subject.warn("xyz abc 123 should wrap blah blah blah foo bar baz bing boo. this is the first message of line 2.")
+      subject.warn('xyz abc 123 should wrap blah blah blah foo bar baz bing boo. this is the first message of line 2.')
     end
   end
 
-  describe "#fail" do
+  describe '#fail' do
     it "prints failure message indented with the word 'FAILED'" do
       expect($stdout).to receive(:puts).with("       FAILED: foo\n")
-      subject.fail("foo")
+      subject.fail('foo')
     end
   end
 
-  describe "#succeed" do
-    it "prints OK indented" do
+  describe '#succeed' do
+    it 'prints OK indented' do
       expect($stdout).to receive(:puts).with("       OK\n")
       subject.succeed
     end
   end
 
-  describe "#print" do
-    it "prints message indented" do
+  describe '#print' do
+    it 'prints message indented' do
       expect($stdout).to receive(:puts).with("       foo\n")
-      subject.print("foo")
+      subject.print('foo')
     end
   end
 end
