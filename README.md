@@ -67,5 +67,5 @@ Find our guidelines [here](./CONTRIBUTING.md).
 Open an issue on this project.
 
 
-[Hello World sample]: https://github.com/opiethehokie/asp.net5-helloworld
+[Hello World sample]: https://github.com/IBM-Bluemix/asp.net5-helloworld
 [beta4]: https://github.com/aspnet/Home/releases/tag/v1.0.0-beta4
