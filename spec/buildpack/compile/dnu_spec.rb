@@ -19,7 +19,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DNU do
   let(:shell) do
-    double(:shell, env: {})
+    double(:shell, env: {}, path: [])
   end
 
   let(:out) do
@@ -35,6 +35,12 @@ describe AspNet5Buildpack::DNU do
     dnu.restore('app-dir', out)
 
     expect(shell.env).to include('HOME' => 'app-dir')
+  end
+
+  it 'adds /app/mono/bin to the path' do
+    allow(shell).to receive(:exec)
+    dnu.restore('app-dir', out)
+    expect(shell.path).to include('/app/mono/bin')
   end
 
   it 'adds dnu to the PATH' do
@@ -54,4 +60,5 @@ describe AspNet5Buildpack::DNU do
     expect(shell).to receive(:exec).with(match('dnu restore'), out)
     dnu.restore('app-dir', out)
   end
+
 end

@@ -20,7 +20,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnxInstaller do
   let(:shell) do
-    double(:shell, env: {})
+    double(:shell, env: {}, path: [])
   end
 
   let(:out) do
@@ -39,6 +39,12 @@ describe AspNet5Buildpack::DnxInstaller do
     allow(shell).to receive(:exec)
     installer.install(dir, out)
     expect(shell.env).to include('HOME' => dir)
+  end
+
+  it 'adds /app/mono/bin to the path' do
+    allow(shell).to receive(:exec)
+    installer.install(dir, out)
+    expect(shell.path).to include('/app/mono/bin')
   end
 
   it 'sources the dnvm script' do

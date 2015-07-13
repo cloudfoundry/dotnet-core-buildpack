@@ -28,6 +28,7 @@ module AspNet5Buildpack
 
     def install(dir, out)
       @shell.env['HOME'] = dir
+      @shell.path << '/app/mono/bin'
       version = dnx_version(dir, out)
       @shell.exec("bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm install #{version} -p -r mono'", out)
     end

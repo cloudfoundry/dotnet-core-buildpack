@@ -154,7 +154,16 @@ describe AspNet5Buildpack::Compiler do
 
       it 'imports the certificates' do
         expect(mozroots).to receive(:import)
+        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
         compiler.compile
+      end
+
+      context 'when the certificates are already downloaded' do
+        it 'does not re-download then' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(copier).not_to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), anything)
+          compiler.compile
+        end
       end
     end
 
@@ -181,11 +190,13 @@ describe AspNet5Buildpack::Compiler do
         before(:each) do
           Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'mono'))
+          FileUtils.mkdir_p(File.join(cache_dir, 'certs'))
         end
 
         it 'restores all files from the cache to build dir' do
           expect(copier).to receive(:cp).with(File.join(cache_dir, '.dnx'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'mono'), '/app', anything)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
           compiler.compile
         end
       end
@@ -215,12 +226,15 @@ describe AspNet5Buildpack::Compiler do
       it 'copies .dnx and mono to cache dir' do
         expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
         expect(copier).to receive(:cp).with('/app/mono', cache_dir, anything)
+        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, anything)
         compiler.compile
       end
 
-      context 'when mono is already cached' do
+      context 'when the cache already exists' do
         before(:each) do
+          Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'mono'))
+          FileUtils.mkdir_p(File.join(cache_dir, '.config', '.mono', 'certs'))
         end
         it 'copies only .dnx to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)

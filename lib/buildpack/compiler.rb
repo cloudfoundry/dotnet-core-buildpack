@@ -79,12 +79,17 @@ module AspNet5Buildpack
     end
 
     def install_mozroot_certs(out)
-      mozroots.import(out)
+      dest_dir = File.join(build_dir, '..')
+      unless File.exist? File.join(dest_dir, '.config', '.mono', 'certs')
+        mozroots.import(out)
+        copier.cp(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(dest_dir, '.config', '.mono'), out)
+      end
     end
 
     def restore_cache(out)
       copier.cp(File.join(cache_dir, '.dnx'), build_dir, out) if File.exist? File.join(cache_dir, '.dnx')
       copier.cp(File.join(cache_dir, 'mono'), File.join('/', 'app'), out) if File.exist? File.join(cache_dir, 'mono')
+      copier.cp(File.join(cache_dir, 'certs'), File.join(build_dir, '..', '.config', '.mono'), out) if File.exist? File.join(cache_dir, 'certs')
     end
 
     def install_dnvm(out)
@@ -106,6 +111,7 @@ module AspNet5Buildpack
     def save_cache(out)
       copier.cp(File.join(build_dir, '.dnx'), cache_dir, out)
       copier.cp(File.join('/app', 'mono'), cache_dir, out) unless File.exists? File.join(cache_dir, 'mono')
+      copier.cp(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, out) unless File.exists? File.join(cache_dir, 'certs')
     end
 
     def write_release_yml(out)
