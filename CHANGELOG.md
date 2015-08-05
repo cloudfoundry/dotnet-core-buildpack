@@ -1,3 +1,8 @@
+## v0.4.0 Aug 05, 2015
+
+- Add support for beta6 apps
+- Remove support for beta5 apps
+
 ## v0.3.0 Jul 20, 2015
 
 - Add support for beta5 apps
