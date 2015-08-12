@@ -1,3 +1,7 @@
+## v0.5.0 Aug 17, 2015
+
+- Removed Nowin server, replaced with use of Kestrel which allows the buildpack to run beta4 - beta6 apps.
+
 ## v0.4.0 Aug 05, 2015
 
 - Add support for beta6 apps

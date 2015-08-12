@@ -14,110 +14,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'fileutils'
-require 'json'
+require_relative 'app_dir'
 
 module AspNet5Buildpack
   class ReleaseYmlWriter
+    CFWEB_CMD = 'kestrel'.freeze
+
     def write_release_yml(build_dir, out)
-      dirs = Dirs.new(build_dir)
-      write_startup_script(dirs.startup_script_path)
-      write_yml(dirs)
+      dirs = AppDir.new(build_dir, out)
+      path = main_project_path(dirs)
+      fail 'No application found' unless path
+      fail "No #{CFWEB_CMD} command found in #{path}" unless dirs.commands(path)[CFWEB_CMD]
+      write_startup_script(dirs)
+      write_yml(dirs.release_yml_path, path)
     end
 
     private
 
-    def write_yml(dirs)
-      unless dirs.with_existing_cfweb.empty?
-        write_yml_for(dirs.release_yml_path, dirs.with_existing_cfweb.first, 'cf-web')
-        return
-      end
-
-      unless dirs.with_project_json.empty?
-        add_cfweb_command(dirs.project_json(dirs.with_project_json.first))
-        write_yml_for(dirs.release_yml_path, dirs.with_project_json.first, 'cf-web')
-        return
-      end
-
-      write_yml_for(dirs.release_yml_path, '.', 'cf-web')
-    end
-
-    def add_cfweb_command(project_json)
-      json = JSON.parse(IO.read(project_json, encoding: 'bom|utf-8'))
-      json['dependencies'] ||= {}
-      json['dependencies']['Nowin.vNext'] = '1.0.0-*' unless json['dependencies']['Nowin.vNext']
-      json['commands'] ||= {}
-      json['commands']['cf-web'] = 'Microsoft.AspNet.Hosting --server Nowin.vNext'
-      IO.write(project_json, JSON.pretty_generate(json))
-    end
-
-    def write_startup_script(path)
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(path, 'w') do |f|
-        f.write 'export PATH=/app/mono/bin:$PATH;'
+    def write_startup_script(dirs)
+      FileUtils.mkdir_p(File.dirname(dirs.startup_script_path))
+      File.open(dirs.startup_script_path, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'source /app/.dnx/dnvm/dnvm.sh;'
+        f.write 'export PATH=$HOME/mono/bin:$PATH;'
+        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib;'
+        f.write 'source $HOME/.dnx/dnvm/dnvm.sh;'
         f.write 'dnvm use default -r mono -a x64;'
-        f.write 'dnu restore;'
       end
     end
 
-    def write_yml_for(ymlPath, web_dir, cmd)
+    def write_yml(ymlPath, web_dir)
       File.open(ymlPath, 'w') do |f|
         f.write <<EOT
 ---
 default_process_types:
-  web: cd #{web_dir}; sleep 999999 | dnx . #{cmd}
+  web: cd #{web_dir}; sleep 999999 | dnx . #{CFWEB_CMD} --server.urls http://${VCAP_APP_HOST}:${PORT}
 EOT
       end
     end
 
-    class Dirs
-      def initialize(dir)
-        @dir = dir
-      end
-
-      def release_yml_path
-        File.join(@dir, 'aspnet5-buildpack-release.yml')
-      end
-
-      def startup_script_path
-        File.join(@dir, '.profile.d', 'startup.sh')
-      end
-
-      def with_web_commands
-        with_command('web')
-      end
-
-      def with_existing_cfweb
-        with_command('cf-web')
-      end
-
-      def with_command(cmd)
-        with_project_json.select { |d| commands(d)[cmd] != nil && commands(d)[cmd] != '' }
-      end
-
-      def with_project_json
-        Dir.glob(File.join(@dir, '**', 'project.json')).map do |d|
-          relative_path_to(File.dirname(d))
-        end.reject do |d|
-          d.fnmatch?('src/Nowin.vNext')
-        end.sort do |d|
-          commands(d)['web'] ? 0 : 1
-        end
-      end
-
-      def commands(dir)
-        JSON.load(IO.read(project_json(dir), encoding: 'bom|utf-8')).fetch('commands', {})
-      end
-
-      def project_json(dir)
-        File.join(@dir, dir, 'project.json')
-      end
-
-      def relative_path_to(d)
-        Pathname.new(d).relative_path_from(Pathname.new(@dir))
-      end
+    def main_project_path(dirs)
+      path = dirs.deployment_file_project
+      return path if path
+      dirs.with_project_json.sort { |p| dirs.commands(p)[CFWEB_CMD] ? 0 : 1 }.first
     end
   end
 end

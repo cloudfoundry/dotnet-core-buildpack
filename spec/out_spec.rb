@@ -27,11 +27,11 @@ describe AspNet5Buildpack::Out do
 
   describe '#warn' do
     it 'prints a big warning message surrounded by asterixes' do
-      expect($stdout).to receive(:puts).with("\n" +
-       "  ************************************************************************\n" +
-       "  * WARNING: xyz abc 123 should wrap blah blah blah foo bar baz bing bo  *\n" +
-       "  *          o. this is the first message of line 2.                     *\n" +
-       "  ************************************************************************\n" +
+      expect($stdout).to receive(:puts).with("\n" \
+       "  ************************************************************************\n" \
+       "  * WARNING: xyz abc 123 should wrap blah blah blah foo bar baz bing bo  *\n" \
+       "  *          o. this is the first message of line 2.                     *\n" \
+       "  ************************************************************************\n" \
        ".\n")
       subject.warn('xyz abc 123 should wrap blah blah blah foo bar baz bing boo. this is the first message of line 2.')
     end

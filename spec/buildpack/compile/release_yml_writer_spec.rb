@@ -29,14 +29,19 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
     double(:out)
   end
 
-  describe 'the release yml' do
-    let(:yml_path) do
-      File.join(build_dir, 'aspnet5-buildpack-release.yml')
+  describe 'the .profile.d script' do
+    let(:web_dir) do
+      File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
     end
 
-    let(:yml) do
-      subject.write_release_yml(build_dir, out)
-      YAML.load_file(yml_path)
+    let(:project_json) do
+      '{"commands": {"kestrel": "whatever"}}'
+    end
+
+    before do
+      File.open(File.join(web_dir, 'project.json'), 'w') do |f|
+        f.write project_json
+      end
     end
 
     let(:profile_d_script) do
@@ -44,232 +49,150 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
       IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
     end
 
-    describe 'the .profile.d script' do
+    it 'should add /app/mono/bin to the PATH' do
+      expect(profile_d_script).to include('export PATH=$HOME/mono/bin:$PATH;')
+    end
+
+    it 'should set HOME to /app (so that dependencies are picked up from /app/.dnx)' do
+      expect(profile_d_script).to include('export HOME=/app')
+    end
+
+    it 'make sure dlopen can access libuv.so.1' do
+      expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib')
+    end
+
+    it 'should source dnvm script' do
+      expect(profile_d_script).to include('source $HOME/.dnx/dnvm/dnvm.sh')
+    end
+
+    it 'should add the runtime to the PATH' do
+      expect(profile_d_script).to include('dnvm use default')
+    end
+  end
+
+  describe 'the release yml' do
+    context 'when there are no directories containing a project.json' do
+      it 'should raise an error because dnu/dnx will not work' do
+        expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No application found/)
+      end
+    end
+
+    context 'when there is a directory with a project.json file' do
       let(:web_dir) do
         File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
       end
 
-      it 'should add /app/mono/bin to the PATH' do
-        expect(profile_d_script).to include('export PATH=/app/mono/bin:$PATH;')
+      let(:project_json) do
+        '{"commands": {"kestrel": "whatever"}}'
       end
 
-      it 'should set HOME to /app (so that dependencies are picked up from /app/.dnx)' do
-        expect(profile_d_script).to include('export HOME=/app')
+      before do
+        File.open(File.join(web_dir, 'project.json'), 'w') do |f|
+          f.write project_json
+        end
       end
 
-      it 'should source dnvm script' do
-        expect(profile_d_script).to include('source /app/.dnx/dnvm/dnvm.sh')
+      it 'writes a release yml' do
+        subject.write_release_yml(build_dir, out)
+        expect(File).to exist(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
       end
 
-      it 'should add the runtime to the PATH' do
-        expect(profile_d_script).to include('dnvm use default')
+      it 'contains a web process type' do
+        subject.write_release_yml(build_dir, out)
+        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+        expect(yml).to have_key('default_process_types')
+        expect(yml.fetch('default_process_types')).to have_key('web')
       end
 
-      it 'should re-run package restore' do
-        expect(profile_d_script).to include('dnu restore')
+      it 'does not contain any exports (these should be done via .profile.d script)' do
+        subject.write_release_yml(build_dir, out)
+        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+        expect(yml['default_process_types']['web']).not_to include('export')
+      end
+
+      context 'and the project.json does not contain a kestrel command' do
+        let(:project_json) do
+          '{"commands": {"web": "whatever"}}'
+        end
+
+        it 'should raise an error because dnx will not work' do
+          expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No kestrel command found in foo/)
+        end
+      end
+
+      context 'and the project.json contains a kestrel command' do
+        let(:project_json) do
+          '{"commands": {"kestrel": "whatever"}}'
+        end
+
+        let(:web_process) do
+          subject.write_release_yml(build_dir, out)
+          yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+          yml.fetch('default_process_types').fetch('web')
+        end
+
+        it 'changes directory to that directory' do
+          expect(web_process).to match('cd foo;')
+        end
+
+        it "runs 'dnx . kestrel'" do
+          expect(web_process).to match('dnx . kestrel')
+        end
       end
     end
 
-    describe 'the web process type' do
+    context 'when there are multiple directories containing project.json files' do
+      let(:proj1) do
+        File.join(build_dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) }
+      end
+
+      let(:proj2) do
+        File.join(build_dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) }
+      end
+
+      before do
+        File.open(File.join(proj1, 'project.json'), 'w') do |f|
+          f.write '{"commands": {"migrate": "whatever"}}'
+        end
+        File.open(File.join(proj2, 'project.json'), 'w') do |f|
+          f.write '{"commands": {"kestrel": "whatever"}}'
+        end
+      end
+
       let(:web_process) do
+        subject.write_release_yml(build_dir, out)
+        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
         yml.fetch('default_process_types').fetch('web')
       end
 
-      context 'when there are no directories containing a project.json' do
-        it 'should work (the user might be using a custom start command)' do
-          expect(out).not_to receive(:fail)
-          subject.write_release_yml(build_dir, out)
-          expect(File).to exist(yml_path)
+      it 'changes directory to the correct directory' do
+        expect(web_process).to match('cd src/proj2;')
+      end
+
+      it "runs 'dnx . kestrel'" do
+        expect(web_process).to match('dnx . kestrel')
+      end
+    end
+
+    context 'when project.json is in the base app directory' do
+      before do
+        File.open(File.join(build_dir, 'project.json'), 'w') do |f|
+          f.write '{"commands": {"kestrel": "whatever"}}'
         end
       end
 
-      context 'when there is a directory with a project.json file containing a BOM' do
-        let(:web_dir) do
-          File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
-        end
-
-        let(:project_json) do
-          '{}'
-        end
-
-        before do
-          File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-            f.write "\uFEFF"
-            f.write project_json
-          end
-        end
-
-        it 'writes a release yml' do
-          subject.write_release_yml(build_dir, out)
-          expect(File).to exist(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        end
+      let(:web_process) do
+        subject.write_release_yml(build_dir, out)
+        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+        yml.fetch('default_process_types').fetch('web')
       end
 
-      context 'when there is a directory with a project.json file' do
-        let(:web_dir) do
-          File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
-        end
-
-        let(:project_json) do
-          '{}'
-        end
-
-        before do
-          File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-            f.write project_json
-          end
-        end
-
-        it 'writes a release yml' do
-          subject.write_release_yml(build_dir, out)
-          expect(File).to exist(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        end
-
-        it 'contains a web process type' do
-          expect(yml).to have_key('default_process_types')
-          expect(yml.fetch('default_process_types')).to have_key('web')
-        end
-
-        it 'does not contain any exports (these should be done via .profile.d script)' do
-          expect(yml).to have_key('default_process_types')
-          expect(yml['default_process_types']['web']).not_to include('export')
-        end
-
-        context 'and the project.json contains a cf-web command' do
-          let(:project_json) do
-            '{"commands": {"cf-web": "whatever"}}'
-          end
-
-          it 'changes directory to that directory' do
-            expect(web_process).to match('cd foo;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
-          end
-
-          context 'and if the cf-web command is empty' do
-            let(:project_json) do
-              '{"commands": {"cf-web": ""}}'
-            end
-
-            it 'sets it to serve NoWin.vNext' do
-              subject.write_release_yml(build_dir, out)
-
-              json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-              expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Nowin.vNext')
-            end
-          end
-        end
-
-        context 'and the project.json does not contain a cf-web command' do
-          it 'adds cf-web command to project.json' do
-            subject.write_release_yml(build_dir, out)
-
-            json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-            expect(json).to have_key('commands')
-            expect(json['commands']).to have_key('cf-web')
-            expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Nowin.vNext')
-          end
-
-          context 'when Nowin.vNext dependency exists' do
-            let(:project_json) do
-              '{ "dependencies" : { "Nowin.vNext" : "345" } }'
-            end
-
-            it 'leaves it alone' do
-              subject.write_release_yml(build_dir, out)
-
-              json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-              expect(json['dependencies']['Nowin.vNext']).to match('345')
-            end
-          end
-
-          context 'when Nowin.vNext dependency does not exist' do
-            it 'adds Nowin.vNext dependency to project.json' do
-              subject.write_release_yml(build_dir, out)
-
-              json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-              expect(json).to have_key('dependencies')
-              expect(json['dependencies']).to have_key('Nowin.vNext')
-              expect(json['dependencies']['Nowin.vNext']).to match('1.0.0-*')
-            end
-          end
-        end
+      it 'changes directory to the correct directory' do
+        expect(web_process).to match('cd .;')
       end
 
-      context 'when there are multiple directories with a project.json file' do
-        let(:web_dir) do
-          File.join(build_dir, 'foo-cfweb').tap { |f| Dir.mkdir(f) }
-        end
-
-        let(:other_dir) do
-          File.join(build_dir, 'bar').tap { |f| Dir.mkdir(f) }
-        end
-
-        context 'and one contains a cf-web command' do
-          before do
-            File.open(File.join(other_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "web": "whatever" } }'
-            end
-
-            File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "cf-web": "whatever" } }'
-            end
-          end
-
-          it 'changes directory to that directory' do
-            expect(web_process).to match('cd foo-cfweb;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
-          end
-        end
-
-        context 'and one contains a web command' do
-          before do
-            File.open(File.join(other_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "something": "whatever" } }'
-            end
-
-            File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "web": "whatever" } }'
-            end
-          end
-
-          it 'changes directory to that directory' do
-            expect(web_process).to match('cd foo-cfweb;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
-          end
-        end
-
-        context 'and one is Nowin.vNext' do
-          let(:nowin_dir) do
-            File.join(build_dir, 'src', 'Nowin.vNext').tap { |f| FileUtils.mkdir_p(f) }
-          end
-
-          before do
-            File.open(File.join(nowin_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "web": "whatever" } }'
-            end
-
-            File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "whatever": "whatever" } }'
-            end
-          end
-
-          it 'changes directory to the other directory' do
-            expect(web_process).to match('cd foo-cfweb;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
-          end
-        end
+      it "runs 'dnx . kestrel'" do
+        expect(web_process).to match('dnx . kestrel')
       end
     end
   end
