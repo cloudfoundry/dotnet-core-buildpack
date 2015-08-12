@@ -14,17 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module AspNet5Buildpack
-  class DnxInstaller
-    def initialize(shell)
-      @shell = shell
-    end
+require 'json'
 
-    def install(dir, out)
-      @shell.env['HOME'] = dir
-      @shell.path << '/app/mono/bin'
-      version = DnxVersion.new.version(dir, out)
-      @shell.exec("bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm install #{version} -p -r mono'", out)
+module AspNet5Buildpack
+  class DnxVersion
+    DNX_VERSION_FILE_NAME = 'global.json'.freeze
+    DEFAULT_DNX_VERSION = 'latest'.freeze
+
+    def version(dir, out)
+      dnx_version = DEFAULT_DNX_VERSION
+      version_file = File.expand_path(File.join(dir, DNX_VERSION_FILE_NAME))
+      if File.exist?(version_file)
+        begin
+          global_props = JSON.parse(File.read(version_file, encoding: 'bom|utf-8'))
+          if global_props.key?('sdk')
+            sdk = global_props['sdk']
+            dnx_version = sdk['version'] if sdk.key?('version')
+          end
+        rescue
+          out.warn("File #{version_file} is not valid JSON")
+        end
+      end
+      dnx_version
     end
   end
 end

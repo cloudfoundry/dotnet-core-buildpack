@@ -34,7 +34,7 @@ module AspNet5Buildpack
       build_dir,
       cache_dir,
       MonoInstaller.new(build_dir, shell),
-      File.expand_path('../../resources/Nowin.vNext', __FILE__),
+      LibuvInstaller.new(build_dir, shell),
       DnvmInstaller.new(shell),
       Mozroots.new(shell),
       DnxInstaller.new(shell),
@@ -51,5 +51,4 @@ module AspNet5Buildpack
   def self.shell
     @shell ||= Shell.new
   end
-
 end

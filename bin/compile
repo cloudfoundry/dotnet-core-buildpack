@@ -29,4 +29,3 @@ if AspNet5Buildpack.compile(build_dir, cache_dir)
 else
   exit 1
 end
-

@@ -21,7 +21,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Compiler do
   subject(:compiler) do
-    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, mono_binary, nowin_dir, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
+    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, mono_binary, libuv_binary, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
   end
 
   before do
@@ -30,6 +30,10 @@ describe AspNet5Buildpack::Compiler do
 
   let(:mono_binary) do
     double(:mono_binary, extract: nil)
+  end
+
+  let(:libuv_binary) do
+    double(:libuv_binary, extract: nil)
   end
 
   let(:copier) do
@@ -45,7 +49,7 @@ describe AspNet5Buildpack::Compiler do
   end
 
   let(:dnu) do
-    double(:dnu, restore:  nil)
+    double(:dnu, restore: nil)
   end
 
   let(:mozroots) do
@@ -67,10 +71,6 @@ describe AspNet5Buildpack::Compiler do
   end
 
   let(:cache_dir) do
-    Dir.mktmpdir
-  end
-
-  let(:nowin_dir) do
     Dir.mktmpdir
   end
 
@@ -140,15 +140,6 @@ describe AspNet5Buildpack::Compiler do
       end
     end
 
-    describe 'Adding Nowin.vNext' do
-      it_behaves_like 'A Step', 'Adding Nowin.vNext', :copy_nowin, :install_mozroot_certs
-
-      it 'extracts to build dir' do
-        expect(copier).to receive(:cp).with(nowin_dir, "#{build_dir}/src", anything)
-        compiler.compile
-      end
-    end
-
     describe 'Importing Certificates' do
       it_behaves_like 'A Step', 'Importing Mozilla Root Certificates', :install_mozroot_certs, :install_dnvm
 
@@ -191,12 +182,14 @@ describe AspNet5Buildpack::Compiler do
           Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'mono'))
           FileUtils.mkdir_p(File.join(cache_dir, 'certs'))
+          Dir.mkdir(File.join(cache_dir, 'libuv'))
         end
 
         it 'restores all files from the cache to build dir' do
           expect(copier).to receive(:cp).with(File.join(cache_dir, '.dnx'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'mono'), '/app', anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, 'libuv'), build_dir, anything)
           compiler.compile
         end
       end
@@ -227,6 +220,7 @@ describe AspNet5Buildpack::Compiler do
         expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
         expect(copier).to receive(:cp).with('/app/mono', cache_dir, anything)
         expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, anything)
+        expect(copier).to receive(:cp).with("#{build_dir}/libuv", cache_dir, anything)
         compiler.compile
       end
 
@@ -235,6 +229,7 @@ describe AspNet5Buildpack::Compiler do
           Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'mono'))
           FileUtils.mkdir_p(File.join(cache_dir, '.config', '.mono', 'certs'))
+          Dir.mkdir(File.join(cache_dir, 'libuv'))
         end
         it 'copies only .dnx to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)

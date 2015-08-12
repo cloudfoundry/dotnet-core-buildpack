@@ -19,12 +19,12 @@ require 'open3'
 module AspNet5Buildpack
   class Shell
     def exec(cmd, out)
-      Open3.popen2e(expand(cmd)) do |i, oe, t|
+      Open3.popen2e(expand(cmd)) do |_, oe, t|
         oe.each do |line|
           out.print line.chomp
         end
 
-        raise "command failed, exit status #{t.value.exitstatus}" unless t.value.success?
+        fail "command failed, exit status #{t.value.exitstatus}" unless t.value.success?
       end
     end
 
@@ -43,7 +43,7 @@ module AspNet5Buildpack
     end
 
     def exports
-      env.map { |k, v| "export #{k}=#{v}" } + ["export PATH=$PATH:#{path.join(":")}"]
+      env.map { |k, v| "export #{k}=#{v}" } + ["export PATH=$PATH:#{path.join(':')}"]
     end
   end
 end
