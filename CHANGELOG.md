@@ -1,3 +1,9 @@
+## v0.3.0 Jul 20, 2015
+
+- Add support for beta5 apps
+- Remove support for beta4 apps
+- Fix Mono missing trusted root certificates
+
 ## v0.2.0 Jun 22, 2015
 
 - Add support for beta4 apps
