@@ -2,8 +2,9 @@
     "version": "1.0.0-*",
     "dependencies": {
         "Nowin": "0.17.1",
-        "Microsoft.AspNet.Owin": "1.0.0-beta5",
-        "Microsoft.AspNet.Hosting": "1.0.0-beta5"
+        "Microsoft.AspNet.Owin": "1.0.0-beta6",
+        "Microsoft.AspNet.Hosting": "1.0.0-beta6",
+        "Microsoft.AspNet.Http": "1.0.0-beta6"
     },
     "frameworks": {
         "dnx451": { }
