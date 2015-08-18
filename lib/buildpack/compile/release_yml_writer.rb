@@ -16,47 +16,51 @@
 
 require 'fileutils'
 require 'json'
+require_relative 'dnx_version'
 
 module AspNet5Buildpack
   class ReleaseYmlWriter
     def write_release_yml(build_dir, out)
-      dirs = Dirs.new(build_dir)
+      dirs = Dirs.new(build_dir, out)
       write_startup_script(dirs.startup_script_path)
-      write_yml(dirs)
+      write_yml(dirs, out)
     end
 
     private
 
-    def write_yml(dirs)
+    def write_yml(dirs, out)
       unless dirs.with_existing_cfweb.empty?
         write_yml_for(dirs.release_yml_path, dirs.with_existing_cfweb.first, 'cf-web')
         return
       end
 
-      unless dirs.with_project_json.empty?
-        add_cfweb_command(dirs.project_json(dirs.with_project_json.first))
-        write_yml_for(dirs.release_yml_path, dirs.with_project_json.first, 'cf-web')
+      path = dirs.main_project_path
+      if path
+        version = DnxVersion.new.version(dirs.root, out)
+        add_cfweb_command(dirs.project_json(path), version)
+        write_yml_for(dirs.release_yml_path, path, 'cf-web')
         return
       end
 
       write_yml_for(dirs.release_yml_path, '.', 'cf-web')
     end
 
-    def add_cfweb_command(project_json)
+    def add_cfweb_command(project_json, version)
       json = JSON.parse(IO.read(project_json, encoding: 'bom|utf-8'))
       json['dependencies'] ||= {}
-      json['dependencies']['Nowin.vNext'] = '1.0.0-*' unless json['dependencies']['Nowin.vNext']
+      json['dependencies']['Kestrel'] = version unless json['dependencies']['Kestrel']
       json['commands'] ||= {}
-      json['commands']['cf-web'] = 'Microsoft.AspNet.Hosting --server Nowin.vNext'
+      json['commands']['cf-web'] = 'Microsoft.AspNet.Hosting --server Kestrel'
       IO.write(project_json, JSON.pretty_generate(json))
     end
 
     def write_startup_script(path)
       FileUtils.mkdir_p(File.dirname(path))
       File.open(path, 'w') do |f|
-        f.write 'export PATH=/app/mono/bin:$PATH;'
         f.write 'export HOME=/app;'
-        f.write 'source /app/.dnx/dnvm/dnvm.sh;'
+        f.write 'export PATH=$HOME/mono/bin:$PATH;'
+        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib;'
+        f.write 'source $HOME/.dnx/dnvm/dnvm.sh;'
         f.write 'dnvm use default -r mono -a x64;'
         f.write 'dnu restore;'
       end
@@ -67,14 +71,21 @@ module AspNet5Buildpack
         f.write <<EOT
 ---
 default_process_types:
-  web: cd #{web_dir}; sleep 999999 | dnx . #{cmd}
+  web: cd #{web_dir}; sleep 999999 | dnx . #{cmd} --server.urls http://${VCAP_APP_HOST}:${PORT}
 EOT
       end
     end
 
     class Dirs
-      def initialize(dir)
+      DEPLOYMENT_FILE_NAME = '.deployment'.freeze
+
+      def initialize(dir, out)
         @dir = dir
+        @out = out
+      end
+
+      def root
+        @dir
       end
 
       def release_yml_path
@@ -85,25 +96,17 @@ EOT
         File.join(@dir, '.profile.d', 'startup.sh')
       end
 
-      def with_web_commands
-        with_command('web')
-      end
-
       def with_existing_cfweb
         with_command('cf-web')
       end
 
       def with_command(cmd)
-        with_project_json.select { |d| commands(d)[cmd] != nil && commands(d)[cmd] != '' }
+        with_project_json.select { |d| !commands(d)[cmd].nil? && commands(d)[cmd] != '' }
       end
 
       def with_project_json
         Dir.glob(File.join(@dir, '**', 'project.json')).map do |d|
           relative_path_to(File.dirname(d))
-        end.reject do |d|
-          d.fnmatch?('src/Nowin.vNext')
-        end.sort do |d|
-          commands(d)['web'] ? 0 : 1
         end
       end
 
@@ -117,6 +120,21 @@ EOT
 
       def relative_path_to(d)
         Pathname.new(d).relative_path_from(Pathname.new(@dir))
+      end
+
+      def main_project_path
+        paths = with_project_json
+        deployment_file = File.expand_path(File.join(@dir, DEPLOYMENT_FILE_NAME))
+        if File.exist?(deployment_file)
+          File.foreach(deployment_file) do |line|
+            m = /project = (.*)/.match(line)
+            if m
+              path = Pathname.new(m[1])
+              return path if paths.include?(path)
+            end
+          end
+        end
+        paths.first
       end
     end
   end

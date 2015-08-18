@@ -53,62 +53,9 @@ describe AspNet5Buildpack::DnxInstaller do
     installer.install(dir, out)
   end
 
-  describe 'dnvm installer' do
-    context 'global.json does not exist' do
-      it 'installs the latest version' do
-        allow(shell).to receive(:exec)
-        expect(shell).to receive(:exec).with(match('dnvm install latest -p -r mono'), out)
-        installer.install(dir, out)
-      end
-    end
-
-    context 'global.json exists' do
-      before do
-        json = '{ "sdk": { "version": "1.0.0-beta1" } }'
-        IO.write(File.join(dir, 'global.json'), json)
-      end
-      it 'installs the specified version' do
-        allow(shell).to receive(:exec)
-        expect(shell).to receive(:exec).with(match('dnvm install 1.0.0-beta1 -p -r mono'), out)
-        installer.install(dir, out)
-      end
-    end
-
-    context 'global.json exists with a BOM from Visual Studio in it' do
-      before do
-        json = "\uFEFF{ \"sdk\": { \"version\": \"1.0.0-beta1\" } }"
-        IO.write(File.join(dir, 'global.json'), json)
-      end
-      it 'installs the specified version' do
-        allow(shell).to receive(:exec)
-        expect(shell).to receive(:exec).with(match('dnvm install 1.0.0-beta1 -p -r mono'), out)
-        installer.install(dir, out)
-      end
-    end
-
-    context 'invalid global.json exists' do
-      before do
-        json = '"version": "1.0.0-beta1"'
-        IO.write(File.join(dir, 'global.json'), json)
-      end
-      it 'warns and installs the latest version' do
-        allow(shell).to receive(:exec)
-        expect(shell).to receive(:exec).with(match('dnvm install latest -p -r mono'), out)
-        expect(out).to receive(:warn).with("File #{dir}/global.json is not valid JSON")
-        installer.install(dir, out)
-      end
-    end
-
-    context 'global.json exists but does not include a version' do
-      before do
-        json = '{ "projects": [ "src", "test" ] }'
-        IO.write(File.join(dir, 'global.json'), json)
-      end
-      it 'installs the latest version' do
-        allow(shell).to receive(:exec)
-        expect(shell).to receive(:exec).with(match('dnvm install latest -p -r mono'), out)
-        installer.install(dir, out)
-      end
-    end
+  it 'installs DNX' do
+    allow(shell).to receive(:exec)
+    expect(shell).to receive(:exec).with(match('dnvm install latest -p -r mono'), out)
+    installer.install(dir, out)
   end
 end

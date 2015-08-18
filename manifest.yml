@@ -5,6 +5,9 @@ url_to_dependency_map:
   - match: mono-(.*)-(\d+\.\d+\.\d+)
     name: mono
     version: $2
+  - match: libuv-(.*)-(\d+\.\d+\.\d+)
+    name: libuv
+    version: $2
 
 dependencies:
   - name: mono
@@ -19,6 +22,18 @@ dependencies:
       - cflinuxfs2
     uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.2/mono-cflinuxfs2-4.0.1.tar.gz
     md5: 98de7244bd6a91ea4d0acc9104b82a59
+  - name: libuv
+    version: 1.4.2
+    cf_stacks:
+      - lucid64
+    uri: https://s3.amazonaws.com/aspnet5/libuv-lucid64-1.4.2.tar.gz
+    md5: bec8ea66006c89abb0c7314d62b82a57
+  - name: libuv
+    version: 1.4.2
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://s3.amazonaws.com/aspnet5/libuv-cflinuxfs2-1.4.2.tar.gz
+    md5: 72ad380dbab354bbc3d0f41825c22bd0
 
 exclude_files:
   - .git/

@@ -50,15 +50,19 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
       end
 
       it 'should add /app/mono/bin to the PATH' do
-        expect(profile_d_script).to include('export PATH=/app/mono/bin:$PATH;')
+        expect(profile_d_script).to include('export PATH=$HOME/mono/bin:$PATH;')
       end
 
       it 'should set HOME to /app (so that dependencies are picked up from /app/.dnx)' do
         expect(profile_d_script).to include('export HOME=/app')
       end
 
+      it 'make sure dlopen can access libuv.so.1' do
+        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib')
+      end
+
       it 'should source dnvm script' do
-        expect(profile_d_script).to include('source /app/.dnx/dnvm/dnvm.sh')
+        expect(profile_d_script).to include('source $HOME/.dnx/dnvm/dnvm.sh')
       end
 
       it 'should add the runtime to the PATH' do
@@ -153,11 +157,11 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
               '{"commands": {"cf-web": ""}}'
             end
 
-            it 'sets it to serve NoWin.vNext' do
+            it 'sets it to serve Kestrel' do
               subject.write_release_yml(build_dir, out)
 
               json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-              expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Nowin.vNext')
+              expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Kestrel')
             end
           end
         end
@@ -169,30 +173,34 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
             expect(json).to have_key('commands')
             expect(json['commands']).to have_key('cf-web')
-            expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Nowin.vNext')
+            expect(json['commands']['cf-web']).to match('Microsoft.AspNet.Hosting --server Kestrel')
           end
 
-          context 'when Nowin.vNext dependency exists' do
+          context 'when Kestrel dependency exists' do
             let(:project_json) do
-              '{ "dependencies" : { "Nowin.vNext" : "345" } }'
+              '{ "dependencies" : { "Kestrel" : "345" } }'
             end
 
             it 'leaves it alone' do
               subject.write_release_yml(build_dir, out)
 
               json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
-              expect(json['dependencies']['Nowin.vNext']).to match('345')
+              expect(json['dependencies']['Kestrel']).to match('345')
             end
           end
 
-          context 'when Nowin.vNext dependency does not exist' do
-            it 'adds Nowin.vNext dependency to project.json' do
+          context 'when Kestrel dependency does not exist' do
+            before do
+              json = '{ "sdk": { "version": "1.0.0-beta1" } }'
+              IO.write(File.join(build_dir, 'global.json'), json)
+            end
+            it 'adds Kestrel dependency to project.json' do
               subject.write_release_yml(build_dir, out)
 
               json = JSON.parse(IO.read(File.join(web_dir, 'project.json')))
               expect(json).to have_key('dependencies')
-              expect(json['dependencies']).to have_key('Nowin.vNext')
-              expect(json['dependencies']['Nowin.vNext']).to match('1.0.0-*')
+              expect(json['dependencies']).to have_key('Kestrel')
+              expect(json['dependencies']['Kestrel']).to match('1.0.0-beta1')
             end
           end
         end
@@ -222,15 +230,15 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             expect(web_process).to match('cd foo-cfweb;')
           end
 
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
+          it "runs 'dnx . cf-web at correct host and port'" do
+            expect(web_process).to match(%r{dnx . cf-web --server.urls http:\/\/\$\{VCAP_APP_HOST\}\:\$\{PORT\}})
           end
         end
 
-        context 'and one contains a web command' do
+        context 'and a .deployment file exists' do
           before do
             File.open(File.join(other_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "something": "whatever" } }'
+              f.write '{ "commands": { "web": "whatever" } }'
             end
 
             File.open(File.join(web_dir, 'project.json'), 'w') do |f|
@@ -238,36 +246,25 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
             end
           end
 
-          it 'changes directory to that directory' do
-            expect(web_process).to match('cd foo-cfweb;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
-          end
-        end
-
-        context 'and one is Nowin.vNext' do
-          let(:nowin_dir) do
-            File.join(build_dir, 'src', 'Nowin.vNext').tap { |f| FileUtils.mkdir_p(f) }
-          end
-
-          before do
-            File.open(File.join(nowin_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "web": "whatever" } }'
+          it 'changes directory to that directory when a project is specified' do
+            File.open(File.join(build_dir, '.deployment'), 'w') do |f|
+              f.write("project = bar\n")
             end
+            expect(web_process).to match('cd bar;')
+          end
 
-            File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-              f.write '{ "commands": { "whatever": "whatever" } }'
+          it 'changes directory to a valid directory when an invalid project is specified' do
+            File.open(File.join(build_dir, '.deployment'), 'w') do |f|
+              f.write("project = dne\n")
             end
+            expect(web_process).to match(/cd (foo-cfweb|bar);/)
           end
 
-          it 'changes directory to the other directory' do
-            expect(web_process).to match('cd foo-cfweb;')
-          end
-
-          it "runs 'dnx . cf-web'" do
-            expect(web_process).to match('dnx . cf-web')
+          it 'changes directory to a valid directory when no project is specified' do
+            File.open(File.join(build_dir, '.deployment'), 'w') do |f|
+              f.write("[config]\n")
+            end
+            expect(web_process).to match(/cd (foo-cfweb|bar);/)
           end
         end
       end

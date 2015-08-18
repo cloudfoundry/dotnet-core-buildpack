@@ -1,7 +1,7 @@
 ---
 AllCops:
-  Excludes:
-    - compile-extensions/**
+  Exclude:
+    - compile-extensions/**/*
 Documentation:
   Enabled: false
 LineLength:
@@ -10,3 +10,5 @@ MethodLength:
   Max: 25
 ParameterLists:
   Max: 12
+Metrics/AbcSize:
+  Max: 40

@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: ASP.NET 5
 
-A Cloud Foundry buildpack for ASP.NET 5 ([beta6][]) apps. For more information about ASP.NET 5 see:
+A Cloud Foundry buildpack for ASP.NET 5 applications (beta4 to latest stable beta release). For more information about ASP.NET 5 see:
 
 * https://github.com/aspnet/home
 * http://docs.asp.net/en/latest/conceptual-overview/aspnet.html
@@ -15,6 +15,7 @@ This buildpack will be used if there is a `NuGet.Config` file in the root direct
 
 The application structure would then be:
 - NuGet.Config
+- global.json
 - src
   - project directory
     - Startup.cs
@@ -25,7 +26,7 @@ The application structure would then be:
 For a basic example see this [Hello World sample][].
 
 ## Disconnected environments
-Disconnected environments are not fully supported. The .NET Version Manager, .NET Execution Environment and NuGet packages required by the application are always downloaded during staging. The Mono binaries, however, can be cached or uncached.
+Disconnected environments are not fully supported. The .NET Version Manager, .NET Execution Environment and NuGet packages required by the application are always downloaded during staging. The Mono and libuv binaries, however, can be cached or uncached.
 
 ## Building
 
@@ -43,7 +44,7 @@ Disconnected environments are not fully supported. The .NET Version Manager, .NE
 
 3. Build the buildpack
 
-    `uncached` means a TAR file containing Mono will be downloaded the first time an application is staged, and `cached` means it will be packaged in the buildpack ZIP.
+    `uncached` means a TAR files containing Mono and libuv will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
 
   ```shell
   BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ uncached | cached ]
@@ -68,6 +69,3 @@ Open an issue on this project.
 
 
 [Hello World sample]: https://github.com/IBM-Bluemix/asp.net5-helloworld
-[beta4]: https://github.com/aspnet/Home/releases/tag/v1.0.0-beta4
-[beta5]: https://github.com/aspnet/Home/releases/tag/v1.0.0-beta5
-[beta6]: https://github.com/aspnet/Home/releases/tag/v1.0.0-beta6
