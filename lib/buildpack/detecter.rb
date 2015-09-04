@@ -17,13 +17,17 @@
 module AspNet5Buildpack
   class Detecter
     def detect(dir)
-      can_handle?(dir)
+      nuget_config_exists?(dir) && project_json_exists?(dir)
     end
 
     private
 
-    def can_handle?(dir)
+    def nuget_config_exists?(dir)
       File.exist? File.join(dir, 'NuGet.Config')
+    end
+
+    def project_json_exists?(dir)
+      !Dir.glob(File.join(dir, '**', 'project.json')).empty?
     end
   end
 end

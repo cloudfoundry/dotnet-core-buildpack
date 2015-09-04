@@ -14,21 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'app_dir'
+require 'json'
 
 module AspNet5Buildpack
-  class DNU
-    def initialize(shell)
-      @shell = shell
-    end
+  class DnxVersion
+    DNX_VERSION_FILE_NAME = 'global.json'.freeze
+    DEFAULT_DNX_VERSION = 'latest'.freeze
 
-    def restore(dir, out)
-      @shell.env['HOME'] = dir
-      @shell.env['MONO_THREADS_PER_CPU'] = '2000'
-      @shell.path << '/app/mono/bin'
-      project_list = AppDir.new(dir, out).with_project_json.join(' ')
-      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; cd #{dir}; dnu restore #{project_list}'"
-      @shell.exec(cmd, out)
+    def version(dir, out)
+      dnx_version = DEFAULT_DNX_VERSION
+      version_file = File.expand_path(File.join(dir, DNX_VERSION_FILE_NAME))
+      if File.exist?(version_file)
+        begin
+          global_props = JSON.parse(File.read(version_file, encoding: 'bom|utf-8'))
+          if global_props.key?('sdk')
+            sdk = global_props['sdk']
+            dnx_version = sdk['version'] if sdk.key?('version')
+          end
+        rescue
+          out.warn("File #{version_file} is not valid JSON")
+        end
+      end
+      dnx_version
     end
   end
 end

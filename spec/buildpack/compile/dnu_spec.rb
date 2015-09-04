@@ -60,5 +60,4 @@ describe AspNet5Buildpack::DNU do
     expect(shell).to receive(:exec).with(match('dnu restore'), out)
     dnu.restore('app-dir', out)
   end
-
 end
