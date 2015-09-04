@@ -26,13 +26,13 @@ dependencies:
     version: 1.4.2
     cf_stacks:
       - lucid64
-    uri: https://s3.amazonaws.com/aspnet5/libuv-lucid64-1.4.2.tar.gz
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.5/libuv-lucid64-1.4.2.tar.gz
     md5: bec8ea66006c89abb0c7314d62b82a57
   - name: libuv
     version: 1.4.2
     cf_stacks:
       - cflinuxfs2
-    uri: https://s3.amazonaws.com/aspnet5/libuv-cflinuxfs2-1.4.2.tar.gz
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.5/libuv-cflinuxfs2-1.4.2.tar.gz
     md5: 72ad380dbab354bbc3d0f41825c22bd0
 
 exclude_files:
