@@ -131,12 +131,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
           yml.fetch('default_process_types').fetch('web')
         end
 
-        it 'changes directory to that directory' do
-          expect(web_process).to match('cd foo;')
-        end
-
-        it "runs 'dnx . kestrel'" do
-          expect(web_process).to match('dnx . kestrel')
+        it "runs 'dnx kestrel'" do
+          expect(web_process).to match('dnx --project foo kestrel')
         end
       end
     end
@@ -165,12 +161,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         yml.fetch('default_process_types').fetch('web')
       end
 
-      it 'changes directory to the correct directory' do
-        expect(web_process).to match('cd src/proj2;')
-      end
-
-      it "runs 'dnx . kestrel'" do
-        expect(web_process).to match('dnx . kestrel')
+      it "runs 'dnx kestrel'" do
+        expect(web_process).to match('dnx --project src/proj2 kestrel')
       end
     end
 
@@ -187,12 +179,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         yml.fetch('default_process_types').fetch('web')
       end
 
-      it 'changes directory to the correct directory' do
-        expect(web_process).to match('cd .;')
-      end
-
-      it "runs 'dnx . kestrel'" do
-        expect(web_process).to match('dnx . kestrel')
+      it "runs 'dnx kestrel'" do
+        expect(web_process).to match('dnx --project . kestrel')
       end
     end
   end

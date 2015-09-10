@@ -47,7 +47,7 @@ module AspNet5Buildpack
         f.write <<EOT
 ---
 default_process_types:
-  web: cd #{web_dir}; sleep 999999 | dnx . #{CFWEB_CMD} --server.urls http://${VCAP_APP_HOST}:${PORT}
+  web: sleep 999999 | dnx --project #{web_dir} #{CFWEB_CMD} --server.urls http://${VCAP_APP_HOST}:${PORT}
 EOT
       end
     end
