@@ -34,7 +34,11 @@ Disconnected environments are not fully supported. The .NET Version Manager, .NE
   BUNDLE_GEMFILE=cf.Gemfile bundle
   ```
 
-3. Build the buildpack
+3. Build the binary dependencies (optional)
+
+ If you need to rebuild these, to change a version for example, see the included Dockerfiles. They contain comments specifying the commands to run. Then update manifest.yml to point to your files.
+
+4. Build the buildpack
 
     `uncached` means a TAR files containing Mono and libuv will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
 
@@ -42,7 +46,7 @@ Disconnected environments are not fully supported. The .NET Version Manager, .NE
   BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ uncached | cached ]
   ```
 
-4. Use in Cloud Foundry
+5. Use in Cloud Foundry
 
     Upload the buildpack to your Cloud Foundry and optionally specify it by name
         

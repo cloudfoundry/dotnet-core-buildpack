@@ -1,0 +1,21 @@
+# To build libuv and extract the files from the Docker container:
+# export CF_STACK=cflinuxfs2
+# export LIBUV_VERSION=1.4.2
+# cat Dockerfile.libuv | envsubst | docker build -t libuv-${CF_STACK}-${LIBUV_VERSION} -
+# docker run -v /somehostdir:/built --rm libuv-${CF_STACK}-${LIBUV_VERSION} /bin/bash -c "cd /usr/local && tar czf /built/libuv-${CF_STACK}-${LIBUV_VERSION}.tar.gz ./include/uv* ./lib/libuv*"
+
+FROM cloudfoundry/$CF_STACK
+
+RUN apt-get -qq update && apt-get -qqy install curl \
+        autoconf \
+        automake \
+        build-essential \
+        libtool
+
+RUN curl -sSL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz | tar zxfv - -C /usr/local/src \
+        && cd /usr/local/src/libuv-$LIBUV_VERSION \
+        && sh autogen.sh \
+        && ./configure \
+        && make \
+        && make install \
+        && rm -rf /usr/local/src/libuv-$LIBUV_VERSION
