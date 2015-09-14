@@ -27,14 +27,6 @@ module AspNet5Buildpack
       @dir
     end
 
-    def release_yml_path
-      File.join(@dir, 'aspnet5-buildpack-release.yml')
-    end
-
-    def startup_script_path
-      File.join(@dir, '.profile.d', 'startup.sh')
-    end
-
     def with_command(cmd)
       with_project_json.select { |d| !commands(d)[cmd].nil? && commands(d)[cmd] != '' }
     end

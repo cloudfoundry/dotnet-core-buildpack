@@ -123,52 +123,8 @@ describe AspNet5Buildpack::Compiler do
   end
 
   describe 'Steps' do
-    describe 'Extracting Mono' do
-      it_behaves_like 'A Step', 'Extracting mono', :extract_mono, :install_mozroot_certs
-
-      it 'extracts to /app' do
-        expect(mono_binary).to receive(:extract).with('/app', anything)
-        compiler.compile
-      end
-
-      context 'when mono is already extracted because it was cached' do
-        it 'copies only .dnx to cache dir' do
-          allow(File).to receive(:exist?).and_return(true)
-          expect(mono_binary).not_to receive(:extract).with('/app', anything)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Importing Certificates' do
-      it_behaves_like 'A Step', 'Importing Mozilla Root Certificates', :install_mozroot_certs, :install_dnvm
-
-      it 'imports the certificates' do
-        expect(mozroots).to receive(:import)
-        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
-        compiler.compile
-      end
-
-      context 'when the certificates are already downloaded' do
-        it 'does not re-download then' do
-          allow(File).to receive(:exist?).and_return(true)
-          expect(copier).not_to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), anything)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Installing DNVM' do
-      it_behaves_like 'A Step', 'Installing DNVM', :install_dnvm, :install_dnx
-
-      it 'installs dnvm' do
-        expect(dnvm_installer).to receive(:install).with(build_dir, anything)
-        compiler.compile
-      end
-    end
-
     describe 'Restoring Cache' do
-      it_behaves_like 'A Step', 'Restoring files from buildpack cache', :restore_cache, :install_dnvm
+      it_behaves_like 'A Step', 'Restoring files from buildpack cache', :restore_cache
 
       context 'when the cache does not exist' do
         it 'does not try copying' do
@@ -195,17 +151,103 @@ describe AspNet5Buildpack::Compiler do
       end
     end
 
+    describe 'Extracting Mono' do
+      it_behaves_like 'A Step', 'Extracting mono', :extract_mono
+
+      it 'extracts to /app' do
+        expect(mono_binary).to receive(:extract).with('/app', anything)
+        compiler.compile
+      end
+
+      context 'when mono is already extracted because it was cached' do
+        it 'copies only .dnx to cache dir' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(mono_binary).not_to receive(:extract).with('/app', anything)
+          compiler.compile
+        end
+      end
+    end
+
+    describe 'Importing Certificates' do
+      it_behaves_like 'A Step', 'Importing Mozilla Root Certificates', :install_mozroot_certs
+
+      it 'imports the certificates' do
+        expect(mozroots).to receive(:import)
+        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
+        compiler.compile
+      end
+
+      context 'when the certificates are already downloaded' do
+        it 'does not re-download then' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(copier).not_to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), anything)
+          compiler.compile
+        end
+      end
+    end
+
+    describe 'Installing DNVM' do
+      it_behaves_like 'A Step', 'Installing DNVM', :install_dnvm
+
+      it 'installs dnvm' do
+        expect(dnvm_installer).to receive(:install).with(build_dir, anything)
+        compiler.compile
+      end
+
+      context 'when the app was published with DNX' do
+        before do
+          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'runtimes'))
+        end
+
+        it 'skips installing DNVM' do
+          expect(dnvm_installer).not_to receive(:install)
+          compiler.compile
+        end
+      end
+    end
+
     describe 'Installing DNX with DNVM' do
-      it_behaves_like 'A Step', 'Installing DNX with DNVM', :install_dnx, :restore_dependencies
+      it_behaves_like 'A Step', 'Installing DNX with DNVM', :install_dnx
 
       it 'installs dnx' do
         expect(dnx_installer).to receive(:install).with(build_dir, anything)
         compiler.compile
       end
+
+      context 'when the app was published with DNX' do
+        before do
+          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'runtimes'))
+        end
+
+        it 'skips installing DNX' do
+          expect(dnx_installer).not_to receive(:install)
+          compiler.compile
+        end
+      end
+    end
+
+    describe 'Restoring dependencies with DNU' do
+      it_behaves_like 'A Step', 'Restoring dependencies with DNU', :restore_dependencies
+
+      it 'runs dnu restore' do
+        expect(dnu).to receive(:restore).with(build_dir, anything)
+        compiler.compile
+      end
+
+      context 'when the app was published with NuGet packages' do
+        before do
+          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
+        end
+
+        it 'skips running dnu' do
+          expect(dnu).not_to receive(:restore)
+          compiler.compile
+        end
+      end
     end
 
     describe 'Moving files in to place' do
-      it_behaves_like 'A Step', 'Moving files in to place', :move_to_app_dir, :save_cache
+      it_behaves_like 'A Step', 'Moving files in to place', :move_to_app_dir
 
       it 'copies mono to build dir' do
         expect(copier).to receive(:cp).with('/app/mono', build_dir, anything)
@@ -214,10 +256,9 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Saving to buildpack cache' do
-      it_behaves_like 'A Step', 'Saving to buildpack cache', :save_cache, :write_release_yml
+      it_behaves_like 'A Step', 'Saving to buildpack cache', :save_cache
 
       it 'copies .dnx and mono to cache dir' do
-        expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
         expect(copier).to receive(:cp).with('/app/mono', cache_dir, anything)
         expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, anything)
         expect(copier).to receive(:cp).with("#{build_dir}/libuv", cache_dir, anything)
@@ -226,6 +267,7 @@ describe AspNet5Buildpack::Compiler do
 
       context 'when the cache already exists' do
         before(:each) do
+          Dir.mkdir(File.join(build_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'mono'))
           FileUtils.mkdir_p(File.join(cache_dir, '.config', '.mono', 'certs'))
@@ -239,7 +281,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Writing Release YML' do
-      it_behaves_like 'A Step', 'Writing Release YML', :write_release_yml, nil
+      it_behaves_like 'A Step', 'Writing Release YML', :write_release_yml
 
       it 'writes release yml' do
         expect(release_yml_writer).to receive(:write_release_yml)

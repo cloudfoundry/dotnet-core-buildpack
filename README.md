@@ -11,14 +11,18 @@ A Cloud Foundry buildpack for ASP.NET 5 applications (tested with [beta7][] appl
 cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.git
 ```
 
-This buildpack will be used if there is a `NuGet.Config` file in the root directory of your project and one or more 'project.json' files anywhere.
+This buildpack will be used if there are one or more `project.json` files in the pushed application. 
 
-Use a 'global.json' file to specify the desired DNX version if different than the latest stable beta release. Also make sure the application includes a 'kestrel' command and the corresponding dependency as that is what the buildpack will use to run the application.
+Also make sure the application includes a `kestrel` command and the corresponding dependency as that is what the buildpack will use to run the application.
+
+Use a `global.json` file to specify the desired DNX version if different than the latest stable beta release. Use a `NuGet.Config` file to specify non-default package sources.
 
 For a basic example see this [Hello World sample][].
 
 ## Disconnected environments
-Disconnected environments are not fully supported. The .NET Version Manager, .NET Execution Environment and NuGet packages required by the application are always downloaded during staging. The Mono and libuv binaries, however, can be cached or uncached.
+The Mono and libuv binaries can be cached with the buildpack. 
+
+Applications can be pushed with their other dependencies after "publishing" the application like `dnu publish` or `dnu publish --runtime ~/.dnx/runtimes/dnx-mono.1.0.0-beta7`. Then push from the `bin/output` director.
 
 ## Building
 
