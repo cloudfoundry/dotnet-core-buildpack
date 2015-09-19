@@ -92,15 +92,15 @@ module AspNet5Buildpack
     end
 
     def install_dnvm(out)
-      dnvm_installer.install(build_dir, out)
+      dnvm_installer.install(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'runtimes')
     end
 
     def install_dnx(out)
-      dnx_installer.install(build_dir, out)
+      dnx_installer.install(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'runtimes')
     end
 
     def restore_dependencies(out)
-      dnu.restore(build_dir, out)
+      dnu.restore(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'packages')
     end
 
     def move_to_app_dir(out)
@@ -108,7 +108,7 @@ module AspNet5Buildpack
     end
 
     def save_cache(out)
-      copier.cp(File.join(build_dir, '.dnx'), cache_dir, out)
+      copier.cp(File.join(build_dir, '.dnx'), cache_dir, out) if File.exist? File.join(build_dir, '.dnx')
       copier.cp(File.join('/app', 'mono'), cache_dir, out) unless File.exist? File.join(cache_dir, 'mono')
       copier.cp(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, out) unless File.exist? File.join(cache_dir, 'certs')
       copier.cp(File.join(build_dir, 'libuv'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libuv')

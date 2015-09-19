@@ -21,41 +21,49 @@ module AspNet5Buildpack
     CFWEB_CMD = 'kestrel'.freeze
 
     def write_release_yml(build_dir, out)
-      dirs = AppDir.new(build_dir, out)
-      path = main_project_path(dirs)
+      app = AppDir.new(build_dir, out)
+      path = main_project_path(app)
       fail 'No application found' unless path
-      fail "No #{CFWEB_CMD} command found in #{path}" unless dirs.commands(path)[CFWEB_CMD]
-      write_startup_script(dirs)
-      write_yml(dirs.release_yml_path, path)
+      fail "No #{CFWEB_CMD} command found in #{path}" unless app.commands(path)[CFWEB_CMD]
+      write_startup_script(startup_script_path(build_dir))
+      write_yml(release_yml_path(build_dir), build_dir, path)
     end
 
     private
 
-    def write_startup_script(dirs)
-      FileUtils.mkdir_p(File.dirname(dirs.startup_script_path))
-      File.open(dirs.startup_script_path, 'w') do |f|
+    def write_startup_script(startup_script)
+      FileUtils.mkdir_p(File.dirname(startup_script))
+      File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
         f.write 'export PATH=$HOME/mono/bin:$PATH;'
         f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib;'
-        f.write 'source $HOME/.dnx/dnvm/dnvm.sh;'
-        f.write 'dnvm use default -r mono -a x64;'
+        f.write '[ -f $HOME/.dnx/dnvm/dnvm.sh ] && { source $HOME/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; }'
       end
     end
 
-    def write_yml(ymlPath, web_dir)
+    def write_yml(ymlPath, base_dir, web_dir)
+      start_cmd = File.exist?(File.join(base_dir, CFWEB_CMD)) ? "./#{CFWEB_CMD}" : "dnx --project #{web_dir} #{CFWEB_CMD}"
       File.open(ymlPath, 'w') do |f|
         f.write <<EOT
 ---
 default_process_types:
-  web: sleep 999999 | dnx --project #{web_dir} #{CFWEB_CMD} --server.urls http://${VCAP_APP_HOST}:${PORT}
+  web: #{start_cmd} --server.urls http://0.0.0.0:${PORT}
 EOT
       end
     end
 
-    def main_project_path(dirs)
-      path = dirs.deployment_file_project
+    def main_project_path(app)
+      path = app.deployment_file_project
       return path if path
-      dirs.with_project_json.sort { |p| dirs.commands(p)[CFWEB_CMD] ? 0 : 1 }.first
+      app.with_project_json.sort { |p| app.commands(p)[CFWEB_CMD] ? 0 : 1 }.first
+    end
+
+    def release_yml_path(dir)
+      File.join(dir, 'aspnet5-buildpack-release.yml')
+    end
+
+    def startup_script_path(dir)
+      File.join(dir, '.profile.d', 'startup.sh')
     end
   end
 end

@@ -1,3 +1,7 @@
+## unreleased
+- Make NuGet.Config optional, detect only looks for project.json files
+- Support published apps for offline mode and faster staging
+
 ## v0.6.0 Sep 10, 2015
 - Add support for beta7 apps
 

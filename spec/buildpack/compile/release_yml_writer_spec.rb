@@ -71,6 +71,12 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
   end
 
   describe 'the release yml' do
+    let(:web_process) do
+      subject.write_release_yml(build_dir, out)
+      yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+      yml.fetch('default_process_types').fetch('web')
+    end
+
     context 'when there are no directories containing a project.json' do
       it 'should raise an error because dnu/dnx will not work' do
         expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No application found/)
@@ -92,22 +98,8 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         end
       end
 
-      it 'writes a release yml' do
-        subject.write_release_yml(build_dir, out)
-        expect(File).to exist(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-      end
-
-      it 'contains a web process type' do
-        subject.write_release_yml(build_dir, out)
-        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        expect(yml).to have_key('default_process_types')
-        expect(yml.fetch('default_process_types')).to have_key('web')
-      end
-
       it 'does not contain any exports (these should be done via .profile.d script)' do
-        subject.write_release_yml(build_dir, out)
-        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        expect(yml['default_process_types']['web']).not_to include('export')
+        expect(web_process).not_to include('export')
       end
 
       context 'and the project.json does not contain a kestrel command' do
@@ -123,12 +115,6 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
       context 'and the project.json contains a kestrel command' do
         let(:project_json) do
           '{"commands": {"kestrel": "whatever"}}'
-        end
-
-        let(:web_process) do
-          subject.write_release_yml(build_dir, out)
-          yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-          yml.fetch('default_process_types').fetch('web')
         end
 
         it "runs 'dnx kestrel'" do
@@ -155,12 +141,6 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         end
       end
 
-      let(:web_process) do
-        subject.write_release_yml(build_dir, out)
-        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        yml.fetch('default_process_types').fetch('web')
-      end
-
       it "runs 'dnx kestrel'" do
         expect(web_process).to match('dnx --project src/proj2 kestrel')
       end
@@ -173,14 +153,22 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         end
       end
 
-      let(:web_process) do
-        subject.write_release_yml(build_dir, out)
-        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-        yml.fetch('default_process_types').fetch('web')
-      end
-
       it "runs 'dnx kestrel'" do
         expect(web_process).to match('dnx --project . kestrel')
+      end
+    end
+
+    context 'when there is a packages directory' do
+      before do
+        FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
+        File.open(File.join(build_dir, 'kestrel'), 'w') { |f| f.write 'x' }
+        File.open(File.join(build_dir, 'approot', 'project.json'), 'w') do |f|
+          f.write '{"commands": {"kestrel": "whatever"}}'
+        end
+      end
+
+      it 'runs the kestrel script' do
+        expect(web_process).to match('./kestrel')
       end
     end
   end

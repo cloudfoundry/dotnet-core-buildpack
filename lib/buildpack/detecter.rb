@@ -17,16 +17,6 @@
 module AspNet5Buildpack
   class Detecter
     def detect(dir)
-      nuget_config_exists?(dir) && project_json_exists?(dir)
-    end
-
-    private
-
-    def nuget_config_exists?(dir)
-      File.exist? File.join(dir, 'NuGet.Config')
-    end
-
-    def project_json_exists?(dir)
       !Dir.glob(File.join(dir, '**', 'project.json')).empty?
     end
   end
