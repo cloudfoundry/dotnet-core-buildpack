@@ -37,10 +37,11 @@ describe AspNet5Buildpack::DNU do
     expect(shell.env).to include('HOME' => 'app-dir')
   end
 
-  it 'adds /app/mono/bin to the path' do
+  it 'sets LD_LIBRARY_PATH so dnu restore can use libunwind' do
     allow(shell).to receive(:exec)
     dnu.restore('app-dir', out)
-    expect(shell.path).to include('/app/mono/bin')
+
+    expect(shell.env).to include('LD_LIBRARY_PATH' => '$LD_LIBRARY_PATH:app-dir/libunwind/lib')
   end
 
   it 'adds dnu to the PATH' do

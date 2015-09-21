@@ -21,19 +21,19 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Compiler do
   subject(:compiler) do
-    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, mono_binary, libuv_binary, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
+    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, release_yml_writer, copier, out)
   end
 
   before do
     allow($stdout).to receive(:write)
   end
 
-  let(:mono_binary) do
-    double(:mono_binary, extract: nil)
-  end
-
   let(:libuv_binary) do
     double(:libuv_binary, extract: nil)
+  end
+
+  let(:libunwind_binary) do
+    double(:libunwind_binary, extract: nil)
   end
 
   let(:copier) do
@@ -50,10 +50,6 @@ describe AspNet5Buildpack::Compiler do
 
   let(:dnu) do
     double(:dnu, restore: nil)
-  end
-
-  let(:mozroots) do
-    double(:mozroots, import: nil)
   end
 
   let(:release_yml_writer) do
@@ -131,56 +127,33 @@ describe AspNet5Buildpack::Compiler do
           expect(copier).not_to receive(:cp).with(match(cache_dir), anything, anything)
           compiler.compile
         end
+
+        it 'does not prevent binaries from being extracted' do
+          expect(libuv_binary).to receive(:extract)
+          expect(libunwind_binary).to receive(:extract)
+          compiler.compile
+        end
       end
 
       context 'when the cache exists' do
         before(:each) do
           Dir.mkdir(File.join(cache_dir, '.dnx'))
-          Dir.mkdir(File.join(cache_dir, 'mono'))
-          FileUtils.mkdir_p(File.join(cache_dir, 'certs'))
           Dir.mkdir(File.join(cache_dir, 'libuv'))
+          Dir.mkdir(File.join(cache_dir, 'libunwind'))
+          Dir.mkdir(File.join(build_dir, 'libuv'))
+          Dir.mkdir(File.join(build_dir, 'libunwind'))
         end
 
         it 'restores all files from the cache to build dir' do
           expect(copier).to receive(:cp).with(File.join(cache_dir, '.dnx'), build_dir, anything)
-          expect(copier).to receive(:cp).with(File.join(cache_dir, 'mono'), '/app', anything)
-          expect(copier).to receive(:cp).with(File.join(cache_dir, 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libuv'), build_dir, anything)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
           compiler.compile
         end
-      end
-    end
 
-    describe 'Extracting Mono' do
-      it_behaves_like 'A Step', 'Extracting mono', :extract_mono
-
-      it 'extracts to /app' do
-        expect(mono_binary).to receive(:extract).with('/app', anything)
-        compiler.compile
-      end
-
-      context 'when mono is already extracted because it was cached' do
-        it 'copies only .dnx to cache dir' do
-          allow(File).to receive(:exist?).and_return(true)
-          expect(mono_binary).not_to receive(:extract).with('/app', anything)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Importing Certificates' do
-      it_behaves_like 'A Step', 'Importing Mozilla Root Certificates', :install_mozroot_certs
-
-      it 'imports the certificates' do
-        expect(mozroots).to receive(:import)
-        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(build_dir, '..', '.config', '.mono'), anything)
-        compiler.compile
-      end
-
-      context 'when the certificates are already downloaded' do
-        it 'does not re-download then' do
-          allow(File).to receive(:exist?).and_return(true)
-          expect(copier).not_to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), anything)
+        it 'binary files are not extracted' do
+          expect(libuv_binary).not_to receive(:extract)
+          expect(libunwind_binary).not_to receive(:extract)
           compiler.compile
         end
       end
@@ -246,22 +219,12 @@ describe AspNet5Buildpack::Compiler do
       end
     end
 
-    describe 'Moving files in to place' do
-      it_behaves_like 'A Step', 'Moving files in to place', :move_to_app_dir
-
-      it 'copies mono to build dir' do
-        expect(copier).to receive(:cp).with('/app/mono', build_dir, anything)
-        compiler.compile
-      end
-    end
-
     describe 'Saving to buildpack cache' do
       it_behaves_like 'A Step', 'Saving to buildpack cache', :save_cache
 
-      it 'copies .dnx and mono to cache dir' do
-        expect(copier).to receive(:cp).with('/app/mono', cache_dir, anything)
-        expect(copier).to receive(:cp).with(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, anything)
+      it 'copies files to cache dir' do
         expect(copier).to receive(:cp).with("#{build_dir}/libuv", cache_dir, anything)
+        expect(copier).to receive(:cp).with("#{build_dir}/libunwind", cache_dir, anything)
         compiler.compile
       end
 
@@ -269,9 +232,8 @@ describe AspNet5Buildpack::Compiler do
         before(:each) do
           Dir.mkdir(File.join(build_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, '.dnx'))
-          Dir.mkdir(File.join(cache_dir, 'mono'))
-          FileUtils.mkdir_p(File.join(cache_dir, '.config', '.mono', 'certs'))
           Dir.mkdir(File.join(cache_dir, 'libuv'))
+          Dir.mkdir(File.join(cache_dir, 'libunwind'))
         end
         it 'copies only .dnx to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
