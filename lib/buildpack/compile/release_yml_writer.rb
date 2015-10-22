@@ -35,14 +35,13 @@ module AspNet5Buildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'export PATH=$HOME/mono/bin:$PATH;'
-        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib;'
-        f.write '[ -f $HOME/.dnx/dnvm/dnvm.sh ] && { source $HOME/.dnx/dnvm/dnvm.sh; dnvm use default -r mono -a x64; }'
+        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib:$HOME/libunwind/lib;'
+        f.write '[ -f $HOME/.dnx/dnvm/dnvm.sh ] && { source $HOME/.dnx/dnvm/dnvm.sh; dnvm use default; }'
       end
     end
 
     def write_yml(ymlPath, base_dir, web_dir)
-      start_cmd = File.exist?(File.join(base_dir, CFWEB_CMD)) ? "./#{CFWEB_CMD}" : "dnx --project #{web_dir} #{CFWEB_CMD}"
+      start_cmd = File.exist?(File.join(base_dir, 'approot', CFWEB_CMD)) ? "approot/#{CFWEB_CMD}" : "dnx --project #{web_dir} #{CFWEB_CMD}"
       File.open(ymlPath, 'w') do |f|
         f.write <<EOT
 ---

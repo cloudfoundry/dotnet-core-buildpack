@@ -41,12 +41,6 @@ describe AspNet5Buildpack::DnxInstaller do
     expect(shell.env).to include('HOME' => dir)
   end
 
-  it 'adds /app/mono/bin to the path' do
-    allow(shell).to receive(:exec)
-    installer.install(dir, out)
-    expect(shell.path).to include('/app/mono/bin')
-  end
-
   it 'sources the dnvm script' do
     allow(shell).to receive(:exec)
     expect(shell).to receive(:exec).with(match("source #{dir}/.dnx/dnvm/dnvm.sh"), out)
@@ -55,7 +49,7 @@ describe AspNet5Buildpack::DnxInstaller do
 
   it 'installs DNX' do
     allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match('dnvm install latest -p -r mono'), out)
+    expect(shell).to receive(:exec).with(match('dnvm install latest -p -r coreclr'), out)
     installer.install(dir, out)
   end
 end

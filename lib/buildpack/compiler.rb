@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'compile/mozroots.rb'
-require_relative 'compile/mono_installer.rb'
 require_relative 'compile/libuv_installer.rb'
+require_relative 'compile/libunwind_installer.rb'
 require_relative 'compile/dnvm_installer.rb'
 require_relative 'compile/dnx_installer.rb'
 require_relative 'compile/dnu.rb'
@@ -30,14 +29,13 @@ module AspNet5Buildpack
   class Compiler
     WARNING_MESSAGE = 'This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.'.freeze
 
-    def initialize(build_dir, cache_dir, mono_binary, libuv_binary, dnvm_installer, mozroots, dnx_installer, dnu, release_yml_writer, copier, out)
+    def initialize(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, release_yml_writer, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
-      @mono_binary = mono_binary
       @libuv_binary = libuv_binary
+      @libunwind_binary = libunwind_binary
       @dnvm_installer = dnvm_installer
       @dnx_installer = dnx_installer
-      @mozroots = mozroots
       @dnu = dnu
       @release_yml_writer = release_yml_writer
       @copier = copier
@@ -49,13 +47,11 @@ module AspNet5Buildpack
       puts "ASP.NET 5 buildpack starting compile\n"
       out.warn(WARNING_MESSAGE) unless WARNING_MESSAGE.nil?
       step('Restoring files from buildpack cache', method(:restore_cache))
-      step('Extracting mono', method(:extract_mono))
       step('Extracting libuv', method(:extract_libuv))
-      step('Importing Mozilla Root Certificates', method(:install_mozroot_certs))
+      step('Extracting libunwind', method(:extract_libunwind))
       step('Installing DNVM', method(:install_dnvm))
       step('Installing DNX with DNVM', method(:install_dnx))
       step('Restoring dependencies with DNU', method(:restore_dependencies))
-      step('Moving files in to place', method(:move_to_app_dir))
       step('Saving to buildpack cache', method(:save_cache))
       step('Writing Release YML', method(:write_release_yml))
       puts "ASP.NET 5 buildpack is done creating the droplet\n"
@@ -70,25 +66,18 @@ module AspNet5Buildpack
 
     private
 
-    def extract_mono(out)
-      mono_binary.extract(File.join('/', 'app'), out) unless File.exist? File.join('/app', 'mono')
-    end
-
     def extract_libuv(out)
       libuv_binary.extract(File.join(build_dir, 'libuv'), out) unless File.exist? File.join(build_dir, 'libuv')
     end
 
-    def install_mozroot_certs(out)
-      dest_dir = File.join(build_dir, '..')
-      mozroots.import(out)
-      copier.cp(File.join(Dir.home, '.config', '.mono', 'certs'), File.join(dest_dir, '.config', '.mono'), out)
+    def extract_libunwind(out)
+      libunwind_binary.extract(File.join(build_dir, 'libunwind'), out) unless File.exist? File.join(build_dir, 'libunwind')
     end
 
     def restore_cache(out)
       copier.cp(File.join(cache_dir, '.dnx'), build_dir, out) if File.exist? File.join(cache_dir, '.dnx')
-      copier.cp(File.join(cache_dir, 'mono'), File.join('/', 'app'), out) if File.exist? File.join(cache_dir, 'mono')
-      copier.cp(File.join(cache_dir, 'certs'), File.join(build_dir, '..', '.config', '.mono'), out) if File.exist? File.join(cache_dir, 'certs')
       copier.cp(File.join(cache_dir, 'libuv'), build_dir, out) if File.exist? File.join(cache_dir, 'libuv')
+      copier.cp(File.join(cache_dir, 'libunwind'), build_dir, out) if File.exist? File.join(cache_dir, 'libunwind')
     end
 
     def install_dnvm(out)
@@ -103,15 +92,10 @@ module AspNet5Buildpack
       dnu.restore(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'packages')
     end
 
-    def move_to_app_dir(out)
-      copier.cp(File.join('/app', 'mono'), build_dir, out)
-    end
-
     def save_cache(out)
       copier.cp(File.join(build_dir, '.dnx'), cache_dir, out) if File.exist? File.join(build_dir, '.dnx')
-      copier.cp(File.join('/app', 'mono'), cache_dir, out) unless File.exist? File.join(cache_dir, 'mono')
-      copier.cp(File.join(Dir.home, '.config', '.mono', 'certs'), cache_dir, out) unless File.exist? File.join(cache_dir, 'certs')
       copier.cp(File.join(build_dir, 'libuv'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libuv')
+      copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
     end
 
     def write_release_yml(out)
@@ -132,8 +116,8 @@ module AspNet5Buildpack
 
     attr_reader :build_dir
     attr_reader :cache_dir
-    attr_reader :mono_binary
     attr_reader :libuv_binary
+    attr_reader :libunwind_binary
     attr_reader :dnvm_installer
     attr_reader :dnx_installer
     attr_reader :mozroots

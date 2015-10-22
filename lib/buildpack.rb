@@ -33,10 +33,9 @@ module AspNet5Buildpack
     Compiler.new(
       build_dir,
       cache_dir,
-      MonoInstaller.new(build_dir, shell),
       LibuvInstaller.new(build_dir, shell),
+      LibunwindInstaller.new(build_dir, shell),
       DnvmInstaller.new(shell),
-      Mozroots.new(shell),
       DnxInstaller.new(shell),
       DNU.new(shell),
       ReleaseYmlWriter.new,

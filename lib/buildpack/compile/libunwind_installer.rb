@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# Copyright 2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
 # limitations under the License.
 
 module AspNet5Buildpack
-  class MonoInstaller
-    # really 4.0.1.44 fix release - needed for mozroots error
-    DEFAULT_VERSION = '4.0.1'
+  class LibunwindInstaller
+    VERSION = '1.1'.freeze
 
     def initialize(app_dir, shell)
       @app_dir = app_dir
@@ -25,17 +24,17 @@ module AspNet5Buildpack
     end
 
     def extract(dest_dir, out)
-      out.print("Mono version: #{version}")
+      out.print("libunwind version: #{version}")
       cmd = "mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null"
       run_common_cmd(cmd, out)
     end
 
-    def version
-      desired_version_from_monoversion_file || DEFAULT_VERSION
+    def libunwind_tar_gz(out)
+      run_common_cmd("translate_dependency_url #{dependency_name}", out)
     end
 
-    def mono_tar_gz(out)
-      run_common_cmd("translate_dependency_url #{dependency_name}", out)
+    def version
+      VERSION
     end
 
     private
@@ -51,15 +50,7 @@ module AspNet5Buildpack
     end
 
     def dependency_name
-      "mono-x-#{version}.tar.gz"
-    end
-
-    def desired_version_from_monoversion_file
-      IO.read(mono_version_file) if File.exist?(mono_version_file)
-    end
-
-    def mono_version_file
-      File.join(app_dir, '.mono-version')
+      "libunwind-x-#{version}.tar.gz"
     end
 
     private

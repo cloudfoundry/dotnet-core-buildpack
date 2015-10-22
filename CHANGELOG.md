@@ -1,6 +1,8 @@
-## unreleased
+## v0.7.0 Sep 30, 2015
 - Make NuGet.Config optional, detect only looks for project.json files
 - Support published apps for offline mode and faster staging
+- Remove Mono
+- Switch to .NET Core
 
 ## v0.6.0 Sep 10, 2015
 - Add support for beta7 apps

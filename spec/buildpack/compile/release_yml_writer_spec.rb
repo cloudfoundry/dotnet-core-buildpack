@@ -49,10 +49,6 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
       IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
     end
 
-    it 'should add /app/mono/bin to the PATH' do
-      expect(profile_d_script).to include('export PATH=$HOME/mono/bin:$PATH;')
-    end
-
     it 'should set HOME to /app (so that dependencies are picked up from /app/.dnx)' do
       expect(profile_d_script).to include('export HOME=/app')
     end
@@ -161,14 +157,14 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
     context 'when there is a packages directory' do
       before do
         FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
-        File.open(File.join(build_dir, 'kestrel'), 'w') { |f| f.write 'x' }
+        File.open(File.join(build_dir, 'approot', 'kestrel'), 'w') { |f| f.write 'x' }
         File.open(File.join(build_dir, 'approot', 'project.json'), 'w') do |f|
           f.write '{"commands": {"kestrel": "whatever"}}'
         end
       end
 
       it 'runs the kestrel script' do
-        expect(web_process).to match('./kestrel')
+        expect(web_process).to match('approot/kestrel')
       end
     end
   end
