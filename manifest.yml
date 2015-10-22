@@ -28,14 +28,14 @@ dependencies:
     version: 1.1
     cf_stacks:
       - lucid64
-    uri: https://s3.amazonaws.com/aspnet5/libunwind-lucid64-1.1.tar.gz
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.7/libunwind-lucid64-1.1.tar.gz
     md5: c49405a4565f3ca8838983edca697df6
 
   - name: libunwind
     version: 1.1
     cf_stacks:
       - cflinuxfs2
-    uri: https://s3.amazonaws.com/aspnet5/libunwind-cflinuxfs2-1.1.tar.gz
+    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
     md5: b76452a8a2400f3cfdf189761e8be97e
 
 exclude_files:
