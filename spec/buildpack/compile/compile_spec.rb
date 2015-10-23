@@ -28,33 +28,15 @@ describe AspNet5Buildpack::Compiler do
     allow($stdout).to receive(:write)
   end
 
-  let(:libuv_binary) do
-    double(:libuv_binary, extract: nil)
-  end
-
-  let(:libunwind_binary) do
-    double(:libunwind_binary, extract: nil)
-  end
-
-  let(:copier) do
-    double(:copier, cp: nil)
-  end
-
-  let(:dnvm_installer) do
-    double(:dnvm_installer, install: nil)
-  end
-
-  let(:dnx_installer) do
-    double(:dnx_installer, install: nil)
-  end
-
-  let(:dnu) do
-    double(:dnu, restore: nil)
-  end
-
-  let(:release_yml_writer) do
-    double(:release_yml_writer, write_release_yml: nil)
-  end
+  let(:libuv_binary) { double(:libuv_binary, extract: nil) }
+  let(:libunwind_binary) { double(:libunwind_binary, extract: nil) }
+  let(:copier) { double(:copier, cp: nil) }
+  let(:dnvm_installer) { double(:dnvm_installer, install: nil) }
+  let(:dnx_installer) { double(:dnx_installer, install: nil) }
+  let(:dnu) { double(:dnu, restore: nil) }
+  let(:release_yml_writer) { double(:release_yml_writer, write_release_yml: nil) }
+  let(:build_dir) { Dir.mktmpdir }
+  let(:cache_dir) { Dir.mktmpdir }
 
   let(:out) do
     double(:out, step: double(:unknown_step, succeed: nil)).tap do |out|
@@ -62,80 +44,60 @@ describe AspNet5Buildpack::Compiler do
     end
   end
 
-  let(:build_dir) do
-    Dir.mktmpdir
-  end
-
-  let(:cache_dir) do
-    Dir.mktmpdir
-  end
-
-  it 'prints a big warning message' do
+  it 'prints experimental warning message' do
     expect(out).to receive(:warn).with(match('experimental'))
     compiler.compile
   end
 
-  shared_examples 'A Step' do |expected_message, step, next_step|
+  shared_examples 'step' do |expected_message, step|
     let(:step_out) do
       double(:step_out, succeed: nil).tap do |step_out|
         allow(out).to receive(:step).with(expected_message).and_return step_out
       end
     end
 
-    it 'outputs the step name' do
+    it 'outputs step name' do
       expect(out).to receive(:step).with(expected_message)
       compiler.compile
     end
 
-    context 'when it succeeds' do
-      it 'causes the step to succeed' do
-        expect(step_out).to receive(:succeed)
-        compiler.compile
-      end
+    it 'runs step' do
+      expect(step_out).to receive(:succeed)
+      compiler.compile
     end
 
-    context 'when it fails' do
-      before do
+    context 'step fails' do
+      it 'prints helpful error' do
         allow(subject).to receive(step).and_raise 'fishfinger in the warp core'
         allow(out).to receive(:fail)
         allow(step_out).to receive(:fail)
         allow(out).to receive(:warn)
-      end
-
-      it 'prints a helpful error' do
         expect(step_out).to receive(:fail).with(match(/fishfinger in the warp core/))
         expect(out).to receive(:fail).with(match(/#{expected_message} failed, fishfinger in the warp core/))
         expect(out).to receive(:warn).with(match('experimental'))
         expect { compiler.compile }.not_to raise_error
-      end
-
-      if next_step
-        it 'does not run further steps' do
-          expect(subject).not_to receive(next_step)
-          compiler.compile
-        end
       end
     end
   end
 
   describe 'Steps' do
     describe 'Restoring Cache' do
-      it_behaves_like 'A Step', 'Restoring files from buildpack cache', :restore_cache
+      it_behaves_like 'step', 'Restoring files from buildpack cache', :restore_cache
 
-      context 'when the cache does not exist' do
-        it 'does not try copying' do
+      context 'cache does not exist' do
+        it 'skips restore' do
           expect(copier).not_to receive(:cp).with(match(cache_dir), anything, anything)
           compiler.compile
         end
 
-        it 'does not prevent binaries from being extracted' do
+        it 'binary files extracted' do
           expect(libuv_binary).to receive(:extract)
           expect(libunwind_binary).to receive(:extract)
           compiler.compile
         end
       end
 
-      context 'when the cache exists' do
+      context 'cache exists' do
         before(:each) do
           Dir.mkdir(File.join(cache_dir, '.dnx'))
           Dir.mkdir(File.join(cache_dir, 'libuv'))
@@ -144,14 +106,14 @@ describe AspNet5Buildpack::Compiler do
           Dir.mkdir(File.join(build_dir, 'libunwind'))
         end
 
-        it 'restores all files from the cache to build dir' do
+        it 'copies files from cache to build dir' do
           expect(copier).to receive(:cp).with(File.join(cache_dir, '.dnx'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libuv'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
           compiler.compile
         end
 
-        it 'binary files are not extracted' do
+        it 'binary files not extracted' do
           expect(libuv_binary).not_to receive(:extract)
           expect(libunwind_binary).not_to receive(:extract)
           compiler.compile
@@ -160,7 +122,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Installing DNVM' do
-      it_behaves_like 'A Step', 'Installing DNVM', :install_dnvm
+      it_behaves_like 'step', 'Installing DNVM', :install_dnvm
 
       it 'installs dnvm' do
         expect(dnvm_installer).to receive(:install).with(build_dir, anything)
@@ -180,7 +142,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Installing DNX with DNVM' do
-      it_behaves_like 'A Step', 'Installing DNX with DNVM', :install_dnx
+      it_behaves_like 'step', 'Installing DNX with DNVM', :install_dnx
 
       it 'installs dnx' do
         expect(dnx_installer).to receive(:install).with(build_dir, anything)
@@ -200,7 +162,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Restoring dependencies with DNU' do
-      it_behaves_like 'A Step', 'Restoring dependencies with DNU', :restore_dependencies
+      it_behaves_like 'step', 'Restoring dependencies with DNU', :restore_dependencies
 
       it 'runs dnu restore' do
         expect(dnu).to receive(:restore).with(build_dir, anything)
@@ -212,7 +174,7 @@ describe AspNet5Buildpack::Compiler do
           FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
         end
 
-        it 'skips running dnu' do
+        it 'skips running dnu restore' do
           expect(dnu).not_to receive(:restore)
           compiler.compile
         end
@@ -220,7 +182,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Saving to buildpack cache' do
-      it_behaves_like 'A Step', 'Saving to buildpack cache', :save_cache
+      it_behaves_like 'step', 'Saving to buildpack cache', :save_cache
 
       it 'copies files to cache dir' do
         expect(copier).to receive(:cp).with("#{build_dir}/libuv", cache_dir, anything)
@@ -235,6 +197,7 @@ describe AspNet5Buildpack::Compiler do
           Dir.mkdir(File.join(cache_dir, 'libuv'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
         end
+
         it 'copies only .dnx to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
           compiler.compile
@@ -243,7 +206,7 @@ describe AspNet5Buildpack::Compiler do
     end
 
     describe 'Writing Release YML' do
-      it_behaves_like 'A Step', 'Writing Release YML', :write_release_yml
+      it_behaves_like 'step', 'Writing Release YML', :write_release_yml
 
       it 'writes release yml' do
         expect(release_yml_writer).to receive(:write_release_yml)

@@ -19,23 +19,14 @@ require 'tmpdir'
 require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Copier do
-  let(:src) do
-    Dir.mktmpdir
-  end
-
-  let(:dest) do
-    Dir.mktmpdir
-  end
+  let(:src) { Dir.mktmpdir }
+  let(:dest) { Dir.mktmpdir }
+  let(:out) { double(:out, print: nil) }
+  let!(:dir1) { File.join(src, 'dir1').tap { |d| Dir.mkdir(d) } }
 
   let!(:file1) do
     File.join(src, 'file1').tap do |f|
       File.open(f, 'w') { |w| w.write('something') }
-    end
-  end
-
-  let!(:dir1) do
-    File.join(src, 'dir1').tap do |d|
-      Dir.mkdir(d)
     end
   end
 
@@ -45,19 +36,17 @@ describe AspNet5Buildpack::Copier do
     end
   end
 
-  let(:out) do
-    double(:out, print: nil)
-  end
+  describe '#cp' do
+    it 'copies all files from source to dest' do
+      subject.cp(src, dest, out)
+      expect(Dir[File.join(dest, '**/*')]).to include(
+        File.join(dest, File.basename(src), File.basename(file1)),
+        File.join(dest, File.basename(src), 'dir1', File.basename(one_level_deep)))
+    end
 
-  it 'copies all files from source to destination' do
-    subject.cp(src, dest, out)
-    expect(Dir[File.join(dest, '**/*')]).to include(
-      File.join(dest, File.basename(src), File.basename(file1)),
-      File.join(dest, File.basename(src), 'dir1', File.basename(one_level_deep)))
-  end
-
-  it 'prints the number of files copied and the src/destination' do
-    expect(out).to receive(:print).with("Copied 4 files from #{src} to #{dest}")
-    subject.cp(src, dest, out)
+    it 'prints the number of files copied and the src/dest' do
+      expect(out).to receive(:print).with("Copied 4 files from #{src} to #{dest}")
+      subject.cp(src, dest, out)
+    end
   end
 end

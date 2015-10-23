@@ -18,47 +18,39 @@ require 'rspec'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DNU do
-  let(:shell) do
-    double(:shell, env: {}, path: [])
-  end
+  let(:shell) { double(:shell, env: {}, path: []) }
+  let(:out) { double(:out) }
+  subject(:dnu) { AspNet5Buildpack::DNU.new(shell) }
 
-  let(:out) do
-    double(:out)
-  end
+  describe '#restore' do
+    it 'sets HOME env variable' do
+      allow(shell).to receive(:exec)
+      dnu.restore('app-dir', out)
+      expect(shell.env).to include('HOME' => 'app-dir')
+    end
 
-  subject(:dnu) do
-    AspNet5Buildpack::DNU.new(shell)
-  end
+    it 'sets LD_LIBRARY_PATH' do
+      allow(shell).to receive(:exec)
+      dnu.restore('app-dir', out)
+      expect(shell.env).to include('LD_LIBRARY_PATH' => '$LD_LIBRARY_PATH:app-dir/libunwind/lib')
+    end
 
-  it 'sets HOME env variable to build dir so that packages are stored in /app/.dnx' do
-    allow(shell).to receive(:exec)
-    dnu.restore('app-dir', out)
+    it 'adds DNX to the PATH' do
+      allow(shell).to receive(:exec)
+      expect(shell).to receive(:exec).with(match('dnvm use default'), out)
+      dnu.restore('app-dir', out)
+    end
 
-    expect(shell.env).to include('HOME' => 'app-dir')
-  end
+    it 'sources dnvm.sh script' do
+      allow(shell).to receive(:exec)
+      expect(shell).to receive(:exec).with(match('source app-dir/.dnx/dnvm/dnvm.sh'), out)
+      dnu.restore('app-dir', out)
+    end
 
-  it 'sets LD_LIBRARY_PATH so dnu restore can use libunwind' do
-    allow(shell).to receive(:exec)
-    dnu.restore('app-dir', out)
-
-    expect(shell.env).to include('LD_LIBRARY_PATH' => '$LD_LIBRARY_PATH:app-dir/libunwind/lib')
-  end
-
-  it 'adds dnu to the PATH' do
-    allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match('dnvm use default'), out)
-    dnu.restore('app-dir', out)
-  end
-
-  it 'sources dnvm.sh script' do
-    allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match('source app-dir/.dnx/dnvm/dnvm.sh'), out)
-    dnu.restore('app-dir', out)
-  end
-
-  it 'restores dependencies with dnu' do
-    allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match('dnu restore'), out)
-    dnu.restore('app-dir', out)
+    it 'restores dependencies' do
+      allow(shell).to receive(:exec)
+      expect(shell).to receive(:exec).with(match('dnu restore'), out)
+      dnu.restore('app-dir', out)
+    end
   end
 end

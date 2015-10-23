@@ -15,18 +15,18 @@
 # limitations under the License.
 
 require 'rspec'
-require_relative '../lib/buildpack.rb'
+require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Out do
   describe '#step' do
-    it 'prints step title with 6-character arrow' do
+    it 'prints step title prefixed with arrow' do
       expect($stdout).to receive(:puts).with("-----> foo\n")
       subject.step('foo')
     end
   end
 
   describe '#warn' do
-    it 'prints a big warning message surrounded by asterixes' do
+    it 'prints warning message surrounded asterisks' do
       expect($stdout).to receive(:puts).with("\n" \
        "  ************************************************************************\n" \
        "  * WARNING: xyz abc 123 should wrap blah blah blah foo bar baz bing bo  *\n" \
@@ -38,21 +38,21 @@ describe AspNet5Buildpack::Out do
   end
 
   describe '#fail' do
-    it "prints failure message indented with the word 'FAILED'" do
+    it "prints indented failure message prefixed with 'FAILED'" do
       expect($stdout).to receive(:puts).with("       FAILED: foo\n")
       subject.fail('foo')
     end
   end
 
   describe '#succeed' do
-    it 'prints OK indented' do
+    it 'prints indednted OK' do
       expect($stdout).to receive(:puts).with("       OK\n")
       subject.succeed
     end
   end
 
   describe '#print' do
-    it 'prints message indented' do
+    it 'prints indented message' do
       expect($stdout).to receive(:puts).with("       foo\n")
       subject.print('foo')
     end

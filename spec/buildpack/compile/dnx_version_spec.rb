@@ -19,15 +19,10 @@ require 'tmpdir'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnxVersion do
-  let(:out) do
-    double(:out)
-  end
+  let(:out) { double(:out) }
+  let(:dir) { Dir.mktmpdir }
 
-  let(:dir) do
-    Dir.mktmpdir
-  end
-
-  describe 'DNX version' do
+  describe '#version' do
     context 'global.json does not exist' do
       it 'resolves to the latest version' do
         expect(subject.version(dir, out)).to eq('latest')
@@ -39,6 +34,7 @@ describe AspNet5Buildpack::DnxVersion do
         json = '{ "sdk": { "version": "1.0.0-beta1" } }'
         IO.write(File.join(dir, 'global.json'), json)
       end
+
       it 'resolves to the specified version' do
         expect(subject.version(dir, out)).to eq('1.0.0-beta1')
       end
@@ -49,6 +45,7 @@ describe AspNet5Buildpack::DnxVersion do
         json = "\uFEFF{ \"sdk\": { \"version\": \"1.0.0-beta1\" } }"
         IO.write(File.join(dir, 'global.json'), json)
       end
+
       it 'resolves to the specified version' do
         expect(subject.version(dir, out)).to eq('1.0.0-beta1')
       end
@@ -59,6 +56,7 @@ describe AspNet5Buildpack::DnxVersion do
         json = '"version": "1.0.0-beta1"'
         IO.write(File.join(dir, 'global.json'), json)
       end
+
       it 'warns and resolves to the latest version' do
         expect(out).to receive(:warn).with("File #{dir}/global.json is not valid JSON")
         expect(subject.version(dir, out)).to eq('latest')
@@ -70,6 +68,7 @@ describe AspNet5Buildpack::DnxVersion do
         json = '{ "projects": [ "src", "test" ] }'
         IO.write(File.join(dir, 'global.json'), json)
       end
+
       it 'resolves to the latest version' do
         expect(subject.version(dir, out)).to eq('latest')
       end

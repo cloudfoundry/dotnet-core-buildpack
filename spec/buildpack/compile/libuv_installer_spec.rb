@@ -21,31 +21,20 @@ require_relative '../../../lib/buildpack.rb'
 require_relative '../../../lib/buildpack/shell.rb'
 
 describe AspNet5Buildpack::LibuvInstaller do
-  let(:dir) do
-    Dir.mktmpdir
-  end
+  let(:dir) { Dir.mktmpdir }
+  let(:shell) { AspNet5Buildpack::Shell.new }
+  let(:out) { double(:out) }
+  subject(:libuv_installer) { described_class.new(dir, shell) }
 
-  let(:shell) do
-    AspNet5Buildpack::Shell.new
-  end
-
-  let(:out) do
-    double(:out)
-  end
-
-  subject(:libuv_installer) do
-    described_class.new(dir, shell)
-  end
-
-  describe 'libuv version' do
-    it 'uses default version' do
+  describe '#version' do
+    it 'has a default version' do
       expect(subject.version).to eq('1.4.2')
     end
   end
 
-  describe 'libuv file location' do
-    context 'when present in dependencies dir' do
-      it 'extracts the local binary' do
+  describe '#libuv_tar_gz' do
+    context 'when binary present in dependencies dir' do
+      it 'uses local binary' do
         begin
           dependencies = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'dependencies'))
           FileUtils.mkdir_p dependencies
@@ -57,16 +46,16 @@ describe AspNet5Buildpack::LibuvInstaller do
       end
     end
 
-    context 'when not present in dependencies dir' do
-      it 'downloads and extracts the binary' do
+    context 'when binary not present in dependencies dir' do
+      it 'uses remote binary' do
         expect(out).to receive(:print).with(%r{https://})
         subject.libuv_tar_gz(out)
       end
     end
   end
 
-  describe 'libuv extraction' do
-    it 'uses compile-extensions' do
+  describe '#extract' do
+    it 'uses downloads file with compile-extensions' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first

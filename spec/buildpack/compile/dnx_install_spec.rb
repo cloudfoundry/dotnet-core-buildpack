@@ -19,37 +19,28 @@ require 'tmpdir'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnxInstaller do
-  let(:shell) do
-    double(:shell, env: {}, path: [])
-  end
+  let(:shell) { double(:shell, env: {}, path: []) }
+  let(:out) { double(:out) }
+  let(:dir) { Dir.mktmpdir }
+  subject(:installer) { AspNet5Buildpack::DnxInstaller.new(shell) }
 
-  let(:out) do
-    double(:out)
-  end
+  describe '#install' do
+    it 'sets HOME env variable' do
+      allow(shell).to receive(:exec)
+      installer.install(dir, out)
+      expect(shell.env).to include('HOME' => dir)
+    end
 
-  let(:dir) do
-    Dir.mktmpdir
-  end
+    it 'sources the dnvm.sh script' do
+      allow(shell).to receive(:exec)
+      expect(shell).to receive(:exec).with(match("source #{dir}/.dnx/dnvm/dnvm.sh"), out)
+      installer.install(dir, out)
+    end
 
-  subject(:installer) do
-    AspNet5Buildpack::DnxInstaller.new(shell)
-  end
-
-  it 'sets HOME env variable to build dir so that runtimes are stored in /app/.dnx' do
-    allow(shell).to receive(:exec)
-    installer.install(dir, out)
-    expect(shell.env).to include('HOME' => dir)
-  end
-
-  it 'sources the dnvm script' do
-    allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match("source #{dir}/.dnx/dnvm/dnvm.sh"), out)
-    installer.install(dir, out)
-  end
-
-  it 'installs DNX' do
-    allow(shell).to receive(:exec)
-    expect(shell).to receive(:exec).with(match('dnvm install latest -p -r coreclr'), out)
-    installer.install(dir, out)
+    it 'installs DNX' do
+      allow(shell).to receive(:exec)
+      expect(shell).to receive(:exec).with(match('dnvm install latest -p -r coreclr'), out)
+      installer.install(dir, out)
+    end
   end
 end

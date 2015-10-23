@@ -18,36 +18,41 @@ require 'rspec'
 require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Shell do
-  let(:out) do
-    double(:out)
-  end
+  let(:out) { double(:out) }
 
-  it 'executes a command and returns the output' do
-    expect(out).to receive(:print).with('foo')
-    subject.exec('echo foo', out)
-  end
+  describe '#exec' do
+    context 'command succeeds' do
+      it 'prints stdout' do
+        expect(out).to receive(:print).with('foo')
+        subject.exec('echo foo', out)
+      end
 
-  it 'executes a command and returns the stderr output' do
-    expect(out).to receive(:print).with('foo')
-    subject.exec('echo foo 1>&2', out)
-  end
-
-  it 'raises an exception containing the exit code if the command fails' do
-    expect { subject.exec('exit 12', out) }.to raise_error(/12/)
-  end
-
-  context 'setting environment variables' do
-    it 'appends an environment variable to future calls' do
-      expect(out).to receive(:print).with('BAR')
-
-      subject.env['FOO'] = 'BAR'
-      subject.exec('echo $FOO', out)
+      it 'prints stderr' do
+        expect(out).to receive(:print).with('foo')
+        subject.exec('echo foo 1>&2', out)
+      end
     end
 
-    it 'adds to the process path' do
-      expect(out).to receive(:print).with(match(/mono/))
-      subject.path << 'mono'
-      subject.exec('echo $PATH', out)
+    context 'command fails' do
+      it 'raises an exception' do
+        expect { subject.exec('exit 12', out) }.to raise_error(/12/)
+      end
+    end
+
+    context 'environment variable set' do
+      it 'command uses environment variable' do
+        expect(out).to receive(:print).with('BAR')
+        subject.env['FOO'] = 'BAR'
+        subject.exec('echo $FOO', out)
+      end
+    end
+
+    context 'PATH set' do
+      it 'command uses PATH' do
+        expect(out).to receive(:print).with(match(/mono/))
+        subject.path << 'mono'
+        subject.exec('echo $PATH', out)
+      end
     end
   end
 end

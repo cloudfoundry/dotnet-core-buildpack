@@ -14,13 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'compile/libuv_installer.rb'
-require_relative 'compile/libunwind_installer.rb'
-require_relative 'compile/dnvm_installer.rb'
-require_relative 'compile/dnx_installer.rb'
-require_relative 'compile/dnu.rb'
-require_relative 'compile/release_yml_writer.rb'
-require_relative 'bp_version.rb'
+require_relative 'libuv_installer.rb'
+require_relative 'libunwind_installer.rb'
+require_relative 'dnvm_installer.rb'
+require_relative 'dnx_installer.rb'
+require_relative 'dnu.rb'
+require_relative 'release_yml_writer.rb'
+require_relative '../bp_version.rb'
 
 require 'json'
 require 'pathname'

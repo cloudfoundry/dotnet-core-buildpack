@@ -21,150 +21,104 @@ require 'fileutils'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::ReleaseYmlWriter do
-  let(:build_dir) do
-    Dir.mktmpdir
-  end
+  let(:build_dir) { Dir.mktmpdir }
+  let(:out) { double(:out) }
 
-  let(:out) do
-    double(:out)
-  end
-
-  describe 'the .profile.d script' do
-    let(:web_dir) do
-      File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
-    end
-
-    let(:project_json) do
-      '{"commands": {"kestrel": "whatever"}}'
-    end
-
-    before do
-      File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-        f.write project_json
-      end
-    end
-
-    let(:profile_d_script) do
-      subject.write_release_yml(build_dir, out)
-      IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
-    end
-
-    it 'should set HOME to /app (so that dependencies are picked up from /app/.dnx)' do
-      expect(profile_d_script).to include('export HOME=/app')
-    end
-
-    it 'make sure dlopen can access libuv.so.1' do
-      expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib')
-    end
-
-    it 'should source dnvm script' do
-      expect(profile_d_script).to include('source $HOME/.dnx/dnvm/dnvm.sh')
-    end
-
-    it 'should add the runtime to the PATH' do
-      expect(profile_d_script).to include('dnvm use default')
-    end
-  end
-
-  describe 'the release yml' do
-    let(:web_process) do
-      subject.write_release_yml(build_dir, out)
-      yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
-      yml.fetch('default_process_types').fetch('web')
-    end
-
-    context 'when there are no directories containing a project.json' do
-      it 'should raise an error because dnu/dnx will not work' do
+  describe '#write_release_yml' do
+    context 'project.json does not exist' do
+      it 'raises an error because dnu/dnx commands will not work' do
         expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No application found/)
       end
     end
 
-    context 'when there is a directory with a project.json file' do
-      let(:web_dir) do
-        File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) }
+    context 'project.json exists' do
+      let(:proj1) { File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) } }
+      let(:project_json) { '{"commands": {"kestrel": "whatever"}}' }
+
+      let(:profile_d_script) do
+        subject.write_release_yml(build_dir, out)
+        IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
       end
 
-      let(:project_json) do
-        '{"commands": {"kestrel": "whatever"}}'
-      end
-
-      before do
-        File.open(File.join(web_dir, 'project.json'), 'w') do |f|
-          f.write project_json
-        end
-      end
-
-      it 'does not contain any exports (these should be done via .profile.d script)' do
-        expect(web_process).not_to include('export')
-      end
-
-      context 'and the project.json does not contain a kestrel command' do
-        let(:project_json) do
-          '{"commands": {"web": "whatever"}}'
-        end
-
-        it 'should raise an error because dnx will not work' do
-          expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No kestrel command found in foo/)
-        end
-      end
-
-      context 'and the project.json contains a kestrel command' do
-        let(:project_json) do
-          '{"commands": {"kestrel": "whatever"}}'
-        end
-
-        it "runs 'dnx kestrel'" do
-          expect(web_process).to match('dnx --project foo kestrel')
-        end
-      end
-    end
-
-    context 'when there are multiple directories containing project.json files' do
-      let(:proj1) do
-        File.join(build_dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) }
-      end
-
-      let(:proj2) do
-        File.join(build_dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) }
+      let(:web_process) do
+        subject.write_release_yml(build_dir, out)
+        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+        yml.fetch('default_process_types').fetch('web')
       end
 
       before do
         File.open(File.join(proj1, 'project.json'), 'w') do |f|
-          f.write '{"commands": {"migrate": "whatever"}}'
-        end
-        File.open(File.join(proj2, 'project.json'), 'w') do |f|
-          f.write '{"commands": {"kestrel": "whatever"}}'
+          f.write project_json
         end
       end
 
-      it "runs 'dnx kestrel'" do
-        expect(web_process).to match('dnx --project src/proj2 kestrel')
+      it 'set HOME env variable in profile.d' do
+        expect(profile_d_script).to include('export HOME=/app')
       end
-    end
 
-    context 'when project.json is in the base app directory' do
-      before do
-        File.open(File.join(build_dir, 'project.json'), 'w') do |f|
-          f.write '{"commands": {"kestrel": "whatever"}}'
+      it 'set LD_LIBRARY_PATH in profile.d' do
+        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib')
+      end
+
+      it 'source dnvm.sh script in profile.d' do
+        expect(profile_d_script).to include('source $HOME/.dnx/dnvm/dnvm.sh')
+      end
+
+      it 'add DNX to the PATH in profile.d' do
+        expect(profile_d_script).to include('dnvm use default')
+      end
+
+      it 'start command does not contain any exports' do
+        expect(web_process).not_to include('export')
+      end
+
+      it "runs 'dnx kestrel' for project" do
+        expect(web_process).to match('dnx --project foo kestrel')
+      end
+
+      context 'project.json does not contain a kestrel command' do
+        let(:project_json) { '{"commands": {"web": "whatever"}}' }
+
+        it 'raises an error because start command will not work' do
+          expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No kestrel command found in foo/)
         end
       end
 
-      it "runs 'dnx kestrel'" do
-        expect(web_process).to match('dnx --project . kestrel')
-      end
-    end
-
-    context 'when there is a packages directory' do
-      before do
-        FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
-        File.open(File.join(build_dir, 'approot', 'kestrel'), 'w') { |f| f.write 'x' }
-        File.open(File.join(build_dir, 'approot', 'project.json'), 'w') do |f|
-          f.write '{"commands": {"kestrel": "whatever"}}'
+      context 'project.json contains a kestrel command' do
+        it "runs 'dnx kestrel' for project" do
+          expect(web_process).to match('dnx --project foo kestrel')
         end
       end
 
-      it 'runs the kestrel script' do
-        expect(web_process).to match('approot/kestrel')
+      context 'multiple directories contain project.json files' do
+        let(:proj2) { File.join(build_dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) } }
+
+        before do
+          File.open(File.join(proj1, 'project.json'), 'w') do |f|
+            f.write '{"commands": {"migrate": "whatever"}}'
+          end
+          File.open(File.join(proj2, 'project.json'), 'w') do |f|
+            f.write '{"commands": {"kestrel": "whatever"}}'
+          end
+        end
+
+        it "runs 'dnx kestrel' for project with kestrel command" do
+          expect(web_process).to match('dnx --project src/proj2 kestrel')
+        end
+      end
+
+      context 'project.json is in a published app' do
+        before do
+          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
+          File.open(File.join(build_dir, 'approot', 'kestrel'), 'w') { |f| f.write 'x' }
+          File.open(File.join(build_dir, 'approot', 'project.json'), 'w') do |f|
+            f.write '{"commands": {"kestrel": "whatever"}}'
+          end
+        end
+
+        it 'runs kestrel script' do
+          expect(web_process).to match('approot/kestrel')
+        end
       end
     end
   end
