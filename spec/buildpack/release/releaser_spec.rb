@@ -20,14 +20,13 @@ require 'tmpdir'
 require 'fileutils'
 require_relative '../../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::ReleaseYmlWriter do
+describe AspNet5Buildpack::Releaser do
   let(:build_dir) { Dir.mktmpdir }
-  let(:out) { double(:out) }
 
-  describe '#write_release_yml' do
+  describe '#release' do
     context 'project.json does not exist' do
       it 'raises an error because dnu/dnx commands will not work' do
-        expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No application found/)
+        expect { subject.release(build_dir) }.to raise_error(/No application found/)
       end
     end
 
@@ -36,13 +35,12 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
       let(:project_json) { '{"commands": {"kestrel": "whatever"}}' }
 
       let(:profile_d_script) do
-        subject.write_release_yml(build_dir, out)
+        subject.release(build_dir)
         IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
       end
 
       let(:web_process) do
-        subject.write_release_yml(build_dir, out)
-        yml = YAML.load_file(File.join(build_dir, 'aspnet5-buildpack-release.yml'))
+        yml = YAML.load(subject.release(build_dir))
         yml.fetch('default_process_types').fetch('web')
       end
 
@@ -80,7 +78,7 @@ describe AspNet5Buildpack::ReleaseYmlWriter do
         let(:project_json) { '{"commands": {"web": "whatever"}}' }
 
         it 'raises an error because start command will not work' do
-          expect { subject.write_release_yml(build_dir, out) }.to raise_error(/No kestrel command found in foo/)
+          expect { subject.release(build_dir) }.to raise_error(/No kestrel command found in foo/)
         end
       end
 

@@ -14,19 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'app_dir'
+require_relative '../app_dir'
 
 module AspNet5Buildpack
-  class ReleaseYmlWriter
+  class Releaser
     CFWEB_CMD = 'kestrel'.freeze
 
-    def write_release_yml(build_dir, out)
-      app = AppDir.new(build_dir, out)
+    def release(build_dir)
+      app = AppDir.new(build_dir)
       path = main_project_path(app)
       fail 'No application found' unless path
       fail "No #{CFWEB_CMD} command found in #{path}" unless app.commands(path)[CFWEB_CMD]
       write_startup_script(startup_script_path(build_dir))
-      write_yml(release_yml_path(build_dir), build_dir, path)
+      generate_yml(build_dir, path)
     end
 
     private
@@ -40,25 +40,20 @@ module AspNet5Buildpack
       end
     end
 
-    def write_yml(ymlPath, base_dir, web_dir)
+    def generate_yml(base_dir, web_dir)
       start_cmd = File.exist?(File.join(base_dir, 'approot', CFWEB_CMD)) ? "approot/#{CFWEB_CMD}" : "dnx --project #{web_dir} #{CFWEB_CMD}"
-      File.open(ymlPath, 'w') do |f|
-        f.write <<EOT
+      yml = <<-EOT
 ---
 default_process_types:
   web: #{start_cmd} --server.urls http://0.0.0.0:${PORT}
 EOT
-      end
+      yml
     end
 
     def main_project_path(app)
       path = app.deployment_file_project
       return path if path
       app.with_project_json.sort { |p| app.commands(p)[CFWEB_CMD] ? 0 : 1 }.first
-    end
-
-    def release_yml_path(dir)
-      File.join(dir, 'aspnet5-buildpack-release.yml')
     end
 
     def startup_script_path(dir)

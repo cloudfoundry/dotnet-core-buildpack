@@ -16,7 +16,7 @@
 
 require 'rspec'
 require 'tmpdir'
-require_relative '../../lib/buildpack.rb'
+require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Detecter do
   let(:dir) { Dir.mktmpdir }

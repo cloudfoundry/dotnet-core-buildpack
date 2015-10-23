@@ -21,7 +21,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Compiler do
   subject(:compiler) do
-    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, release_yml_writer, copier, out)
+    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, copier, out)
   end
 
   before do
@@ -34,7 +34,6 @@ describe AspNet5Buildpack::Compiler do
   let(:dnvm_installer) { double(:dnvm_installer, install: nil) }
   let(:dnx_installer) { double(:dnx_installer, install: nil) }
   let(:dnu) { double(:dnu, restore: nil) }
-  let(:release_yml_writer) { double(:release_yml_writer, write_release_yml: nil) }
   let(:build_dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
 
@@ -202,15 +201,6 @@ describe AspNet5Buildpack::Compiler do
           expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
           compiler.compile
         end
-      end
-    end
-
-    describe 'Writing Release YML' do
-      it_behaves_like 'step', 'Writing Release YML', :write_release_yml
-
-      it 'writes release yml' do
-        expect(release_yml_writer).to receive(:write_release_yml)
-        compiler.compile
       end
     end
   end

@@ -17,12 +17,11 @@
 require 'rspec'
 require 'tmpdir'
 require 'fileutils'
-require_relative '../../../lib/buildpack.rb'
+require_relative '../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::AppDir do
   let(:dir) { Dir.mktmpdir }
-  let(:out) { double(:out) }
-  subject(:appdir) { AspNet5Buildpack::AppDir.new(dir, out) }
+  subject(:appdir) { AspNet5Buildpack::AppDir.new(dir) }
 
   context 'with multiple projects' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
