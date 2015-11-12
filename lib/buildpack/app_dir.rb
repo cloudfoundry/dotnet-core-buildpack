@@ -18,9 +18,8 @@ module AspNet5Buildpack
   class AppDir
     DEPLOYMENT_FILE_NAME = '.deployment'.freeze
 
-    def initialize(dir, out)
+    def initialize(dir)
       @dir = dir
-      @out = out
     end
 
     def root

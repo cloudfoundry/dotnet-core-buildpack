@@ -21,8 +21,8 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'buildpack'
 
-app_dir = ARGV[0]
-if AspNet5Buildpack.detect(app_dir)
+build_dir = ARGV[0]
+if AspNet5Buildpack.detect(build_dir)
   puts 'ASP.NET 5'
   exit 0
 else

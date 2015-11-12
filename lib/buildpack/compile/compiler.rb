@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'compile/libuv_installer.rb'
-require_relative 'compile/libunwind_installer.rb'
-require_relative 'compile/dnvm_installer.rb'
-require_relative 'compile/dnx_installer.rb'
-require_relative 'compile/dnu.rb'
-require_relative 'compile/release_yml_writer.rb'
-require_relative 'bp_version.rb'
+require_relative 'libuv_installer.rb'
+require_relative 'libunwind_installer.rb'
+require_relative 'dnvm_installer.rb'
+require_relative 'dnx_installer.rb'
+require_relative 'dnu.rb'
+require_relative '../bp_version.rb'
 
 require 'json'
 require 'pathname'
@@ -29,7 +28,7 @@ module AspNet5Buildpack
   class Compiler
     WARNING_MESSAGE = 'This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.'.freeze
 
-    def initialize(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, release_yml_writer, copier, out)
+    def initialize(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
       @libuv_binary = libuv_binary
@@ -37,7 +36,6 @@ module AspNet5Buildpack
       @dnvm_installer = dnvm_installer
       @dnx_installer = dnx_installer
       @dnu = dnu
-      @release_yml_writer = release_yml_writer
       @copier = copier
       @out = out
     end
@@ -53,7 +51,6 @@ module AspNet5Buildpack
       step('Installing DNX with DNVM', method(:install_dnx))
       step('Restoring dependencies with DNU', method(:restore_dependencies))
       step('Saving to buildpack cache', method(:save_cache))
-      step('Writing Release YML', method(:write_release_yml))
       puts "ASP.NET 5 buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
@@ -98,10 +95,6 @@ module AspNet5Buildpack
       copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
     end
 
-    def write_release_yml(out)
-      release_yml_writer.write_release_yml(build_dir, out)
-    end
-
     def step(description, method)
       s = out.step(description)
       begin
@@ -122,7 +115,6 @@ module AspNet5Buildpack
     attr_reader :dnx_installer
     attr_reader :mozroots
     attr_reader :dnu
-    attr_reader :release_yml_writer
     attr_reader :copier
     attr_reader :out
   end

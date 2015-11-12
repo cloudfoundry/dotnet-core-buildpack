@@ -18,38 +18,31 @@ require 'rspec'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::DnvmInstaller do
-  let(:shell) do
-    double(:shell, env: {})
-  end
+  let(:shell) { double(:shell, env: {}) }
+  let(:out) { double(:out) }
+  subject(:installer) { AspNet5Buildpack::DnvmInstaller.new(shell) }
 
-  let(:out) do
-    double(:out)
-  end
+  describe '#install' do
+    it 'creates .bashrc so dnvminstall.sh does not complain' do
+      expect(shell).to receive(:exec).with(match('touch ~/.bashrc'), out)
+      installer.install('passed-directory', out)
+    end
 
-  subject(:installer) do
-    AspNet5Buildpack::DnvmInstaller.new(shell)
-  end
+    it 'installs DNVM' do
+      cmd = 'curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh'
+      expect(shell).to receive(:exec).with(match(cmd), out)
+      installer.install('passed-directory', out)
+    end
 
-  it 'creates .bashrc so dnvminstall.sh does not complain' do
-    expect(shell).to receive(:exec).with(match('touch ~/.bashrc'), out)
-    installer.install('passed-directory', out)
-  end
+    it 'deletes .bashrc because dnvminstall.sh updated it with temporary paths' do
+      expect(shell).to receive(:exec).with(match('rm -rf ~/.bashrc'), out)
+      installer.install('passed-directory', out)
+    end
 
-  it 'runs the dnvm web installer' do
-    cmd = 'curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh'
-    expect(shell).to receive(:exec).with(match(cmd), out)
-    installer.install('passed-directory', out)
-  end
-
-  it 'deletes .bashrc because dnvminstall.sh updated it with temporary paths' do
-    expect(shell).to receive(:exec).with(match('rm -rf ~/.bashrc'), out)
-    installer.install('passed-directory', out)
-  end
-
-  it 'sets HOME based on passed directory' do
-    allow(shell).to receive(:exec)
-    installer.install('passed-directory', out)
-
-    expect(shell.env).to include('HOME' => 'passed-directory')
+    it 'sets HOME env variable' do
+      allow(shell).to receive(:exec)
+      installer.install('passed-directory', out)
+      expect(shell.env).to include('HOME' => 'passed-directory')
+    end
   end
 end

@@ -16,21 +16,19 @@
 
 require 'rspec'
 require 'tmpdir'
-require_relative '../../lib/buildpack.rb'
+require_relative '../../../lib/buildpack.rb'
 
 describe AspNet5Buildpack::Detecter do
-  let(:dir) do
-    Dir.mktmpdir
-  end
+  let(:dir) { Dir.mktmpdir }
 
-  describe 'detect' do
-    context 'when there is no project.json' do
+  describe '#detect' do
+    context 'when no project.json' do
       it 'returns false' do
         expect(subject.detect(dir)).to be_falsey
       end
     end
 
-    context 'when project.json exists in the root directory' do
+    context 'when project.json exists in root directory' do
       before do
         File.open(File.join(dir, 'project.json'), 'w') { |f| f.write('a') }
       end
@@ -40,7 +38,7 @@ describe AspNet5Buildpack::Detecter do
       end
     end
 
-    context 'when project.json exists in a sub-directory' do
+    context 'when project.json exists in sub-directory' do
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'proj'))
         File.open(File.join(dir, 'src', 'proj', 'project.json'), 'w') { |f| f.write('a') }

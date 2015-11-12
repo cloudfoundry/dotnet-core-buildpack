@@ -14,8 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative './buildpack/compiler.rb'
-require_relative './buildpack/detecter.rb'
+require_relative './buildpack/compile/compiler.rb'
+require_relative './buildpack/detect/detecter.rb'
+require_relative './buildpack/release/releaser.rb'
 require_relative './buildpack/shell.rb'
 require_relative './buildpack/out.rb'
 require_relative './buildpack/copier.rb'
@@ -38,9 +39,12 @@ module AspNet5Buildpack
       DnvmInstaller.new(shell),
       DnxInstaller.new(shell),
       DNU.new(shell),
-      ReleaseYmlWriter.new,
       Copier.new,
       out)
+  end
+
+  def self.release(build_dir)
+    Releaser.new.release(build_dir)
   end
 
   def self.out
