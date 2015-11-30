@@ -26,8 +26,6 @@ require 'pathname'
 
 module AspNet5Buildpack
   class Compiler
-    WARNING_MESSAGE = 'This is an experimental buildpack. It is not supported.   Do not expect it to work reliably. Please, do not         contact support about issues with this buildpack.'.freeze
-
     def initialize(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
@@ -43,7 +41,6 @@ module AspNet5Buildpack
     def compile
       puts "ASP.NET 5 buildpack version: #{BuildpackVersion.new.version}\n"
       puts "ASP.NET 5 buildpack starting compile\n"
-      out.warn(WARNING_MESSAGE) unless WARNING_MESSAGE.nil?
       step('Restoring files from buildpack cache', method(:restore_cache))
       step('Extracting libuv', method(:extract_libuv))
       step('Extracting libunwind', method(:extract_libunwind))
@@ -55,9 +52,6 @@ module AspNet5Buildpack
       return true
     rescue StepFailedError => e
       out.fail(e.message)
-      puts ".\n"
-      out.warn(WARNING_MESSAGE)
-      sleep 2 # otherwise the warning message gets lost and you have to do logs --recent to see it
       return false
     end
 

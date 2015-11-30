@@ -26,7 +26,7 @@ module AspNet5Buildpack
       @shell.env['HOME'] = dir
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib"
       project_list = AppDir.new(dir).with_project_json.join(' ')
-      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default; cd #{dir}; dnu restore #{project_list}'"
+      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default; cd #{dir}; dnu restore --quiet #{project_list}'"
       @shell.exec(cmd, out)
     end
   end

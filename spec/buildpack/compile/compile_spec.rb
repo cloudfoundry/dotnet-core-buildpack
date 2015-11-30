@@ -43,11 +43,6 @@ describe AspNet5Buildpack::Compiler do
     end
   end
 
-  it 'prints experimental warning message' do
-    expect(out).to receive(:warn).with(match('experimental'))
-    compiler.compile
-  end
-
   shared_examples 'step' do |expected_message, step|
     let(:step_out) do
       double(:step_out, succeed: nil).tap do |step_out|
@@ -73,7 +68,6 @@ describe AspNet5Buildpack::Compiler do
         allow(out).to receive(:warn)
         expect(step_out).to receive(:fail).with(match(/fishfinger in the warp core/))
         expect(out).to receive(:fail).with(match(/#{expected_message} failed, fishfinger in the warp core/))
-        expect(out).to receive(:warn).with(match('experimental'))
         expect { compiler.compile }.not_to raise_error
       end
     end
