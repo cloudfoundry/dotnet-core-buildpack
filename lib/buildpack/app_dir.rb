@@ -47,7 +47,7 @@ module AspNet5Buildpack
     def deployment_file_project
       paths = with_project_json
       deployment_file = File.expand_path(File.join(@dir, DEPLOYMENT_FILE_NAME))
-      File.foreach(deployment_file) do |line|
+      File.foreach(deployment_file, encoding: 'utf-8') do |line|
         m = /project = (.*)/.match(line)
         if m
           path = Pathname.new(m[1])

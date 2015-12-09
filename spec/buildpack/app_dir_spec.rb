@@ -25,7 +25,7 @@ describe AspNet5Buildpack::AppDir do
 
   context 'with multiple projects' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
-    let(:proj2) { File.join(dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) } }
+    let(:proj2) { File.join(dir, 'src', 'föö').tap { |f| FileUtils.mkdir_p(f) } }
     let(:dnx) { File.join(dir, '.dnx', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
 
     before do
@@ -42,11 +42,11 @@ describe AspNet5Buildpack::AppDir do
     end
 
     it 'finds all project.json files from non-hidden directories' do
-      expect(appdir.with_project_json).to match_array([Pathname.new('src/proj1'), Pathname.new('src/proj2')])
+      expect(appdir.with_project_json).to match_array([Pathname.new('src/proj1'), Pathname.new('src/föö')])
     end
 
     it 'finds project paths where project.json files have specific commands' do
-      expect(appdir.with_command('web')).to match_array([Pathname.new('src/proj2')])
+      expect(appdir.with_command('web')).to match_array([Pathname.new('src/föö')])
     end
 
     it 'does not find project paths where no project.json files have specific command' do
@@ -58,18 +58,18 @@ describe AspNet5Buildpack::AppDir do
     end
 
     it 'reads commands from project.json files with byte-order marks' do
-      expect(appdir.commands('src/proj2')).to eq('web' => 'whatever')
+      expect(appdir.commands('src/föö')).to eq('web' => 'whatever')
     end
 
     context '.deployment file specifies an existing project' do
       before do
         File.open(File.join(dir, '.deployment'), 'w') do |f|
-          f.write("project = src/proj1\n")
+          f.write("project = src/föö\n")
         end
       end
 
       it 'finds specified project' do
-        expect(appdir.deployment_file_project).to eq(Pathname.new('src/proj1'))
+        expect(appdir.deployment_file_project).to eq(Pathname.new('src/föö'))
       end
     end
 
