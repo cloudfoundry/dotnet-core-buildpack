@@ -18,15 +18,16 @@ require_relative '../app_dir'
 
 module AspNet5Buildpack
   class Releaser
-    CFWEB_CMD = 'kestrel'.freeze
+    KESTREL_CMD = 'kestrel'.freeze
+    WEB_CMD = 'web'.freeze
 
     def release(build_dir)
       app = AppDir.new(build_dir)
       path = main_project_path(app)
       fail 'No application found' unless path
-      fail "No #{CFWEB_CMD} command found in #{path}" unless app.commands(path)[CFWEB_CMD]
+      cfweb_cmd = get_cfweb_cmd(app, path)
       write_startup_script(startup_script_path(build_dir))
-      generate_yml(build_dir, path)
+      generate_yml(cfweb_cmd, build_dir, path)
     end
 
     private
@@ -40,8 +41,8 @@ module AspNet5Buildpack
       end
     end
 
-    def generate_yml(base_dir, web_dir)
-      start_cmd = File.exist?(File.join(base_dir, 'approot', CFWEB_CMD)) ? "approot/#{CFWEB_CMD}" : "dnx --project #{web_dir} #{CFWEB_CMD}"
+    def generate_yml(cfweb_cmd, base_dir, web_dir)
+      start_cmd = File.exist?(File.join(base_dir, 'approot', cfweb_cmd)) ? "approot/#{cfweb_cmd}" : "dnx --project #{web_dir} #{cfweb_cmd}"
       yml = <<-EOT
 ---
 default_process_types:
@@ -53,11 +54,23 @@ EOT
     def main_project_path(app)
       path = app.deployment_file_project
       return path if path
-      app.with_project_json.sort { |p| app.commands(p)[CFWEB_CMD] ? 0 : 1 }.first
+      kestrel_path = app.with_project_json.sort { |p| app.commands(p)[KESTREL_CMD] ? 0 : 1 }.first
+      return kestrel_path if kestrel_path
+      app.with_project_json.sort { |p| app.commands(p)[WEB_CMD] ? 0 : 1 }.first
     end
 
     def startup_script_path(dir)
       File.join(dir, '.profile.d', 'startup.sh')
+    end
+
+    def get_cfweb_cmd(app, path)
+      fail "No #{KESTREL_CMD} or #{WEB_CMD} command found in #{path}" unless cfweb_path_exists(app, path)
+      return KESTREL_CMD if app.commands(path)[KESTREL_CMD]
+      WEB_CMD
+    end
+
+    def cfweb_path_exists(app, path)
+      app.commands(path)[KESTREL_CMD] || app.commands(path)[WEB_CMD]
     end
   end
 end

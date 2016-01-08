@@ -15,7 +15,7 @@ cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.g
 
 This buildpack will be used if there are one or more `project.json` files in the pushed application. 
 
-Also make sure the application includes a `kestrel` command and the corresponding dependency because the buildpack will use [Kestrel][] to run the application.
+Also make sure the application includes a `kestrel` or a `web` command and the corresponding Microsoft.AspNet.Server.Kestrel dependency because the buildpack will use [Kestrel][] to run the application.
 
 Use a `global.json` file to specify the desired DNX version if different than the latest stable beta release. Use a `NuGet.Config` file to specify non-default package sources.
 
