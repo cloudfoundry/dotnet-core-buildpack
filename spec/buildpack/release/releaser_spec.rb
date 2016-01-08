@@ -74,17 +74,25 @@ describe AspNet5Buildpack::Releaser do
         expect(web_process).to match('dnx --project foo kestrel')
       end
 
-      context 'project.json does not contain a kestrel command' do
-        let(:project_json) { '{"commands": {"web": "whatever"}}' }
+      context 'project.json does not contain a kestrel or web command' do
+        let(:project_json) { '{"commands": {"notkestrelorweb": "whatever"}}' }
 
         it 'raises an error because start command will not work' do
-          expect { subject.release(build_dir) }.to raise_error(/No kestrel command found in foo/)
+          expect { subject.release(build_dir) }.to raise_error(/No kestrel or web command found in foo/)
         end
       end
 
       context 'project.json contains a kestrel command' do
         it "runs 'dnx kestrel' for project" do
           expect(web_process).to match('dnx --project foo kestrel')
+        end
+      end
+
+      context 'project.json contains a web command' do
+        let(:project_json) { '{"commands": {"web": "whatever"}}' }
+
+        it "runs 'dnx web' for project" do
+          expect(web_process).to match('dnx --project foo web')
         end
       end
 
