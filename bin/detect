@@ -23,7 +23,7 @@ require 'buildpack'
 
 build_dir = ARGV[0]
 if AspNet5Buildpack.detect(build_dir)
-  puts 'ASP.NET 5'
+  puts "ASP.NET 5 (buildpack-#{AspNet5Buildpack::BuildpackVersion.new.version})"
   exit 0
 else
   exit 1
