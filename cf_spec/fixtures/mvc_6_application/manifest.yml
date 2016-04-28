@@ -1,0 +1,6 @@
+---
+applications:
+- name: mvc_6_app
+  random-route: true
+  memory: 256M
+  disk_quota: 1G
