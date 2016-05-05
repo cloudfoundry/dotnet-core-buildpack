@@ -28,6 +28,8 @@ Applications can be pushed with their other dependencies after "publishing" the 
 
 ## Building
 
+These steps only apply to admins who wish to install the buildpack into their Cloud Foundry deployment. They are meant to be run in a Linux shell and assume that git, Ruby, and the bundler gem are already installed.  
+
 1. Make sure you have fetched submodules
 
   ```bash
@@ -36,7 +38,7 @@ Applications can be pushed with their other dependencies after "publishing" the 
 
 2. Get latest buildpack dependencies
 
-  ```shell
+  ```bash
   BUNDLE_GEMFILE=cf.Gemfile bundle
   ```
 
@@ -48,7 +50,7 @@ Applications can be pushed with their other dependencies after "publishing" the 
 
     `uncached` means the buildpack's binary dependencies will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
 
-  ```shell
+  ```bash
   BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ uncached | cached ]
   ```
 
