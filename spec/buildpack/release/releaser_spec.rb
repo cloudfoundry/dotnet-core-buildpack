@@ -26,7 +26,7 @@ describe AspNet5Buildpack::Releaser do
   describe '#release' do
     context 'project.json does not exist' do
       it 'raises an error because dnu/dnx commands will not work' do
-        expect { subject.release(build_dir) }.to raise_error(/No application found/)
+        expect { subject.release(build_dir) }.to raise_error(/No kestrel or web command found/)
       end
     end
 
@@ -78,7 +78,7 @@ describe AspNet5Buildpack::Releaser do
         let(:project_json) { '{"commands": {"notkestrelorweb": "whatever"}}' }
 
         it 'raises an error because start command will not work' do
-          expect { subject.release(build_dir) }.to raise_error(/No kestrel or web command found in foo/)
+          expect { subject.release(build_dir) }.to raise_error(/No kestrel or web command found/)
         end
       end
 
@@ -98,6 +98,7 @@ describe AspNet5Buildpack::Releaser do
 
       context 'multiple directories contain project.json files' do
         let(:proj2) { File.join(build_dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) } }
+        let(:proj3) { File.join(build_dir, 'src', 'proj3').tap { |f| FileUtils.mkdir_p(f) } }
 
         before do
           File.open(File.join(proj1, 'project.json'), 'w') do |f|
@@ -105,6 +106,9 @@ describe AspNet5Buildpack::Releaser do
           end
           File.open(File.join(proj2, 'project.json'), 'w') do |f|
             f.write '{"commands": {"kestrel": "whatever"}}'
+          end
+          File.open(File.join(proj3, 'project.json'), 'w') do |f|
+            f.write '{"dependencies": {"dep1": "whatever"}}'
           end
         end
 
