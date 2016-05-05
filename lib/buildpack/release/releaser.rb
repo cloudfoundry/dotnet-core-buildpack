@@ -24,7 +24,7 @@ module AspNet5Buildpack
     def release(build_dir)
       app = AppDir.new(build_dir)
       path = main_project_path(app)
-      fail 'No application found' unless path
+      raise "No #{KESTREL_CMD} or #{WEB_CMD} command found" unless path
       cfweb_cmd = get_cfweb_cmd(app, path)
       write_startup_script(startup_script_path(build_dir))
       generate_yml(cfweb_cmd, build_dir, path)
@@ -54,9 +54,8 @@ EOT
     def main_project_path(app)
       path = app.deployment_file_project
       return path if path
-      kestrel_path = app.with_project_json.sort { |p| app.commands(p)[KESTREL_CMD] ? 0 : 1 }.first
-      return kestrel_path if kestrel_path
-      app.with_project_json.sort { |p| app.commands(p)[WEB_CMD] ? 0 : 1 }.first
+      kestrel_paths = app.with_project_json.select { |p| cfweb_path_exists(app, p) }
+      kestrel_paths.first
     end
 
     def startup_script_path(dir)
@@ -64,7 +63,6 @@ EOT
     end
 
     def get_cfweb_cmd(app, path)
-      fail "No #{KESTREL_CMD} or #{WEB_CMD} command found in #{path}" unless cfweb_path_exists(app, path)
       return KESTREL_CMD if app.commands(path)[KESTREL_CMD]
       WEB_CMD
     end

@@ -41,7 +41,7 @@ module AspNet5Buildpack
 
     def run_common_cmd(cmd, out)
       commoncmd = "bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'"
-      shell.exec(commoncmd, out)
+      @shell.exec(commoncmd, out)
     end
 
     def buildpack_root
@@ -52,10 +52,5 @@ module AspNet5Buildpack
     def dependency_name
       "libunwind-x-#{version}.tar.gz"
     end
-
-    private
-
-    attr_reader :app_dir
-    attr_reader :shell
   end
 end
