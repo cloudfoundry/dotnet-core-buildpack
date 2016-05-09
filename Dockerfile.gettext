@@ -1,0 +1,14 @@
+# To build gettext and extract the files from the Docker container:
+# export CF_STACK=cflinuxfs2
+# export GETTEXT_VERSION=0.19.7
+# cat Dockerfile.gettext | envsubst | docker build -t gettext-${CF_STACK}-${GETTEXT_VERSION} -
+# docker run -v /somehostdir:/built --rm gettext-${CF_STACK}-${GETTEXT_VERSION} /bin/bash -c "cd /usr/local && tar czf /built/gettext-${CF_STACK}-${GETTEXT_VERSION}.tar.gz ./lib/**"
+
+FROM cloudfoundry/$CF_STACK
+
+RUN curl -sSL http://ftpmirror.gnu.org/gettext/gettext-${GETTEXT_VERSION}.tar.gz | tar zxfv - -C /usr/local/src \
+      && cd /usr/local/src/gettext-${GETTEXT_VERSION} \
+      && ./configure \
+      && make \
+      && make install \
+      && rm -rf /usr/local/src/gettext-${GETTEXT_VERSION}

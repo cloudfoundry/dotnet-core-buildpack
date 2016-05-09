@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 # limitations under the License.
 
 module AspNet5Buildpack
-  class LibuvInstaller
-    VERSION = '1.4.2'.freeze
+  class GetTextInstaller
+    VERSION = '0.19.7'.freeze
 
     def initialize(app_dir, shell)
       @app_dir = app_dir
@@ -24,12 +24,12 @@ module AspNet5Buildpack
     end
 
     def extract(dest_dir, out)
-      out.print("libuv version: #{version}")
+      out.print("gettext version: #{version}")
       cmd = "mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null"
       run_common_cmd(cmd, out)
     end
 
-    def libuv_tar_gz(out)
+    def gettext_tar_gz(out)
       run_common_cmd("translate_dependency_url #{dependency_name}", out)
     end
 
@@ -50,7 +50,7 @@ module AspNet5Buildpack
     end
 
     def dependency_name
-      "libuv-x-#{version}.tar.gz"
+      "gettext-x-#{version}.tar.gz"
     end
   end
 end

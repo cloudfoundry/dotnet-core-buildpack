@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 module AspNet5Buildpack
   class Detecter
     def detect(dir)
-      !Dir.glob(File.join(dir, '**', 'project.json')).empty?
+      fromsource = !Dir.glob(File.join(dir, '**', 'project.json')).empty?
+      frompublish = !Dir.glob(File.join(dir, '*.runtimeconfig.json')).empty?
+      fromsource || frompublish
     end
   end
 end

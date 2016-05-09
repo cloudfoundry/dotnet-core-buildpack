@@ -34,11 +34,10 @@ module AspNet5Buildpack
     Compiler.new(
       build_dir,
       cache_dir,
-      LibuvInstaller.new(build_dir, shell),
       LibunwindInstaller.new(build_dir, shell),
-      DnvmInstaller.new(shell),
-      DnxInstaller.new(shell),
-      DNU.new(shell),
+      GetTextInstaller.new(build_dir, shell),
+      DotnetInstaller.new(shell),
+      Dotnet.new(shell),
       Copier.new,
       out)
   end

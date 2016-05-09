@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,19 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../app_dir'
-
 module AspNet5Buildpack
-  class DNU
+  class DotnetInstaller
     def initialize(shell)
       @shell = shell
     end
 
-    def restore(dir, out)
+    def install(dir, out)
       @shell.env['HOME'] = dir
-      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib"
-      project_list = AppDir.new(dir).with_project_json.join(' ')
-      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default; cd #{dir}; dnu restore --quiet #{project_list}'"
+      wrapper = File.join(File.dirname(__FILE__), 'ldconfig_wrapper.sh')
+      cmd = "bash -c 'source #{wrapper}; source <(curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh)'"
       @shell.exec(cmd, out)
     end
   end

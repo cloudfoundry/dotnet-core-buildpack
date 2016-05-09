@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,26 +20,26 @@ require 'tempfile'
 require_relative '../../../lib/buildpack.rb'
 require_relative '../../../lib/buildpack/shell.rb'
 
-describe AspNet5Buildpack::LibuvInstaller do
+describe AspNet5Buildpack::GetTextInstaller do
   let(:dir) { Dir.mktmpdir }
   let(:shell) { AspNet5Buildpack::Shell.new }
   let(:out) { double(:out) }
-  subject(:libuv_installer) { described_class.new(dir, shell) }
+  subject(:gettext_installer) { described_class.new(dir, shell) }
 
   describe '#version' do
     it 'has a default version' do
-      expect(subject.version).to eq('1.4.2')
+      expect(subject.version).to eq('0.19.7')
     end
   end
 
-  describe '#libuv_tar_gz' do
+  describe '#gettext_tar_gz' do
     context 'when binary present in dependencies dir' do
       it 'uses local binary' do
         begin
           dependencies = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'dependencies'))
           FileUtils.mkdir_p dependencies
           expect(out).to receive(:print).with(%r{file:///})
-          subject.libuv_tar_gz(out)
+          subject.gettext_tar_gz(out)
         ensure
           FileUtils.rm_rf(dependencies) if File.exist? dependencies
         end
@@ -49,13 +49,13 @@ describe AspNet5Buildpack::LibuvInstaller do
     context 'when binary not present in dependencies dir' do
       it 'uses remote binary' do
         expect(out).to receive(:print).with(%r{https://})
-        subject.libuv_tar_gz(out)
+        subject.gettext_tar_gz(out)
       end
     end
   end
 
   describe '#extract' do
-    it 'uses downloads file with compile-extensions' do
+    it 'downloads file with compile-extensions' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first
@@ -63,7 +63,7 @@ describe AspNet5Buildpack::LibuvInstaller do
         expect(cmd).to match(/translate_dependency_url/)
         expect(cmd).to match(/tar/)
       end
-      expect(out).to receive(:print).with(/libuv version/)
+      expect(out).to receive(:print).with(/gettext version/)
       subject.extract(dir, out)
     end
   end
