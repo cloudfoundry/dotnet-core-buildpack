@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2015-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 require 'rspec'
 require_relative '../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::BuildpackVersion do
+describe AspNetCoreBuildpack::BuildpackVersion do
   describe '#version' do
     it 'obtains version from VERSION file' do
       expect(subject.version).not_to be_nil
