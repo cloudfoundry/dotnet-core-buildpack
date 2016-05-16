@@ -82,5 +82,5 @@ Open an issue on this project.
 
 
 [Hello World sample]: https://github.com/IBM-Bluemix/asp.net5-helloworld
-[RC2]: https://github.com/aspnet/Home/releases/tag/v1.0.0-rc2-final
+[RC2]: https://github.com/aspnet/Home/releases/tag/1.0.0-rc2-final
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
