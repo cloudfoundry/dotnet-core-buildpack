@@ -24,7 +24,7 @@ module AspNet5Buildpack
           out.print line.chomp
         end
 
-        raise "command failed, exit status #{t.value.exitstatus}" unless t.value.success?
+        fail "command failed, exit status #{t.value.exitstatus}" unless t.value.success?
       end
     end
 

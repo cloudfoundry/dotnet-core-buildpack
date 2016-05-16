@@ -6,9 +6,9 @@
 
 FROM cloudfoundry/$CF_STACK
 
-RUN curl -SSL wget http://download.savannah.gnu.org/releases/libunwind/libunwind-${LIBUNWIND_VERSION}.tar.gz | tar zxfv - -C /usr/local/src \
+RUN curl -sSL http://download.savannah.gnu.org/releases/libunwind/libunwind-${LIBUNWIND_VERSION}.tar.gz | tar zxfv - -C /usr/local/src \
       && cd /usr/local/src/libunwind-${LIBUNWIND_VERSION} \
       && ./configure \
       && make \
-      && make install
+      && make install \
       && rm -rf /usr/local/src/libunwind-${LIBUNWIND_VERSION}

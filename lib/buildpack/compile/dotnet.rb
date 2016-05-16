@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'dnx_version'
+require_relative '../app_dir'
 
 module AspNet5Buildpack
-  class DnxInstaller
+  class Dotnet
     def initialize(shell)
       @shell = shell
     end
 
-    def install(dir, out)
+    def restore(dir, out)
       @shell.env['HOME'] = dir
-      version = DnxVersion.new.version(dir, out)
-      @shell.exec("bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm install #{version} -p -r coreclr'", out)
+      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib:#{dir}/gettext/lib"
+      @shell.env['PATH'] = "$PATH:#{dir}/.dotnet"
+      project_list = AppDir.new(dir).with_project_json.join(' ')
+      cmd = "bash -c 'cd #{dir}; dotnet restore --quiet #{project_list}'"
+      @shell.exec(cmd, out)
     end
   end
 end

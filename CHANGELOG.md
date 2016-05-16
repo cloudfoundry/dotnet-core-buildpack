@@ -1,3 +1,11 @@
+## v0.8.0 May 20, 2016
+- Switch to .NET CLI from DNX
+- Add support for RC2 apps
+- Remove support for RC1 and lower apps using DNX
+- detect now looks for project.json files or *.runtimeconfig.json files from publish output
+- global.json is no longer used to specify runtime version
+- Remove support for lucid64 stack
+
 ## v0.7.0 Sep 30, 2015
 - Make NuGet.Config optional, detect only looks for project.json files
 - Support published apps for offline mode and faster staging
