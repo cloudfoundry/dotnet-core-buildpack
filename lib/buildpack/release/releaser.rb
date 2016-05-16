@@ -1,5 +1,5 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
+# ASP.NET Core Buildpack
 # Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 
 require_relative '../app_dir'
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class Releaser
     def release(build_dir)
       app = AppDir.new(build_dir)

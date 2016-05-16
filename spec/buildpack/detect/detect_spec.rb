@@ -1,5 +1,5 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
+# ASP.NET Core Buildpack
 # Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ require 'rspec'
 require 'tmpdir'
 require_relative '../../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::Detecter do
+describe AspNetCoreBuildpack::Detecter do
   let(:dir) { Dir.mktmpdir }
 
   describe '#detect' do

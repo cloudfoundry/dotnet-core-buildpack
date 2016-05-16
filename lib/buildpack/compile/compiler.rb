@@ -1,5 +1,5 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
+# ASP.NET Core Buildpack
 # Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ require_relative '../bp_version.rb'
 require 'json'
 require 'pathname'
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class Compiler
     def initialize(build_dir, cache_dir, libunwind_binary, gettext_binary, dotnet_installer, dotnet, copier, out)
       @build_dir = build_dir
@@ -37,15 +37,15 @@ module AspNet5Buildpack
     end
 
     def compile
-      puts "ASP.NET 5 buildpack version: #{BuildpackVersion.new.version}\n"
-      puts "ASP.NET 5 buildpack starting compile\n"
+      puts "ASP.NET Core buildpack version: #{BuildpackVersion.new.version}\n"
+      puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
       step('Extracting libunwind', method(:extract_libunwind))
       step('Extracting gettext', method(:extract_gettext))
       step('Installing Dotnet CLI', method(:install_dotnet))
       step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies))
       step('Saving to buildpack cache', method(:save_cache))
-      puts "ASP.NET 5 buildpack is done creating the droplet\n"
+      puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
       out.fail(e.message)
