@@ -1,4 +1,4 @@
-## v0.8.0 May 20, 2016
+## v0.8.0 May 16, 2016
 - Switch to .NET CLI from DNX
 - Add support for RC2 apps
 - Remove support for RC1 and lower apps using DNX
