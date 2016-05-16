@@ -1,5 +1,5 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
+# ASP.NET Core Buildpack
 # Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class GetTextInstaller
     VERSION = '0.19.7'.freeze
 

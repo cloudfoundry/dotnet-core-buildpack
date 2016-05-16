@@ -1,8 +1,8 @@
-# Cloud Foundry buildpack: ASP.NET 5
+# Cloud Foundry buildpack: ASP.NET Core
 
 A Cloud Foundry buildpack for ASP.NET 5 web applications. Tested with [RC2][] applications that target .NET Core.
 
-For more information about ASP.NET 5 see:
+For more information about ASP.NET Core see:
 
 * https://github.com/aspnet/home
 * http://docs.asp.net/en/latest/conceptual-overview/aspnet.html
@@ -68,8 +68,8 @@ These steps only apply to admins who wish to install the buildpack into their Cl
     Upload the buildpack to your Cloud Foundry and optionally specify it by name
 
     ```bash
-    cf create-buildpack custom_aspnet5_buildpack aspnet5_buildpack-cached-custom.zip 1
-    cf push my_app -b custom_aspnet5_buildpack
+    cf create-buildpack custom_aspnetcore_buildpack aspnetcore_buildpack-cached-custom.zip 1
+    cf push my_app -b custom_aspnetcore_buildpack
     ```
 
 ## Contributing
