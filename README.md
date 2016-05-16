@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: ASP.NET Core
 
-A Cloud Foundry buildpack for ASP.NET 5 web applications. Tested with [RC2][] applications that target .NET Core.
+A Cloud Foundry buildpack for ASP.NET Core web applications. Tested with [RC2][] applications that target .NET Core.
 
 For more information about ASP.NET Core see:
 
