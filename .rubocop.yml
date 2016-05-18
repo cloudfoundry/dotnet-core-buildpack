@@ -2,6 +2,7 @@
 AllCops:
   Exclude:
     - compile-extensions/**/*
+    - vendor/**/*
 Documentation:
   Enabled: false
 LineLength:
