@@ -62,7 +62,7 @@ module AspNetCoreBuildpack
       path = deployment_file_project
       project_paths = with_project_json
       multiple_paths = project_paths.any? && !project_paths.one?
-      fail 'Multiple paths contain a project.json file, but no .deployment file was used' if multiple_paths unless path 
+      fail 'Multiple paths contain a project.json file, but no .deployment file was used' if multiple_paths unless path
       path = project_paths.first unless path
       path if path
     end
