@@ -32,7 +32,7 @@ module AspNetCoreBuildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/gettext/lib:$HOME/libunwind/lib;'
+        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib;'
         f.write 'export PATH=$PATH:$HOME/.dotnet;'
       end
     end

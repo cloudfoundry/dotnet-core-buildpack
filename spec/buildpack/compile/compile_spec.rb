@@ -21,7 +21,7 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNetCoreBuildpack::Compiler do
   subject(:compiler) do
-    AspNetCoreBuildpack::Compiler.new(build_dir, cache_dir, libunwind_binary, gettext_binary, dotnet_installer, dotnet, copier, out)
+    AspNetCoreBuildpack::Compiler.new(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
   end
 
   before do
@@ -29,7 +29,6 @@ describe AspNetCoreBuildpack::Compiler do
   end
 
   let(:libunwind_binary) { double(:libunwind_binary, extract: nil) }
-  let(:gettext_binary) { double(:gettext_binary, extract: nil) }
   let(:copier) { double(:copier, cp: nil) }
   let(:dotnet_installer) { double(:dotnet_installer, install: nil) }
   let(:dotnet) { double(:dotnet, restore: nil) }
@@ -83,7 +82,6 @@ describe AspNetCoreBuildpack::Compiler do
         end
 
         it 'binary files extracted' do
-          expect(gettext_binary).to receive(:extract)
           expect(libunwind_binary).to receive(:extract)
           compiler.compile
         end
@@ -92,22 +90,18 @@ describe AspNetCoreBuildpack::Compiler do
       context 'cache exists' do
         before(:each) do
           Dir.mkdir(File.join(cache_dir, '.nuget'))
-          Dir.mkdir(File.join(cache_dir, 'gettext'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
           Dir.mkdir(File.join(build_dir, 'libunwind'))
-          Dir.mkdir(File.join(build_dir, 'gettext'))
         end
 
         it 'copies files from cache to build dir' do
           expect(copier).to receive(:cp).with(File.join(cache_dir, '.nuget'), build_dir, anything)
-          expect(copier).to receive(:cp).with(File.join(cache_dir, 'gettext'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
           compiler.compile
         end
 
         it 'binary files not extracted' do
           expect(libunwind_binary).not_to receive(:extract)
-          expect(gettext_binary).not_to receive(:extract)
           compiler.compile
         end
       end
@@ -119,17 +113,6 @@ describe AspNetCoreBuildpack::Compiler do
       it 'installs dotnet cli' do
         expect(dotnet_installer).to receive(:install).with(build_dir, anything)
         compiler.compile
-      end
-
-      context 'when the app was published with DNX' do
-        before do
-          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'runtimes'))
-        end
-
-        it 'skips installing DNVM' do
-          expect(dotnet_installer).not_to receive(:install)
-          compiler.compile
-        end
       end
     end
 
@@ -157,7 +140,6 @@ describe AspNetCoreBuildpack::Compiler do
       it_behaves_like 'step', 'Saving to buildpack cache', :save_cache
 
       it 'copies files to cache dir' do
-        expect(copier).to receive(:cp).with("#{build_dir}/gettext", cache_dir, anything)
         expect(copier).to receive(:cp).with("#{build_dir}/libunwind", cache_dir, anything)
         compiler.compile
       end
@@ -165,7 +147,6 @@ describe AspNetCoreBuildpack::Compiler do
       context 'when the cache already exists' do
         before(:each) do
           Dir.mkdir(File.join(build_dir, '.nuget'))
-          Dir.mkdir(File.join(cache_dir, 'gettext'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
         end
 

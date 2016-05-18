@@ -24,7 +24,7 @@ module AspNetCoreBuildpack
 
     def restore(dir, out)
       @shell.env['HOME'] = dir
-      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib:#{dir}/gettext/lib"
+      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib"
       @shell.env['PATH'] = "$PATH:#{dir}/.dotnet"
       project_list = AppDir.new(dir).with_project_json.join(' ')
       cmd = "bash -c 'cd #{dir}; dotnet restore --quiet #{project_list}'"

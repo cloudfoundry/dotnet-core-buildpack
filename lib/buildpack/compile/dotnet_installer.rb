@@ -22,8 +22,8 @@ module AspNetCoreBuildpack
 
     def install(dir, out)
       @shell.env['HOME'] = dir
-      wrapper = File.join(File.dirname(__FILE__), 'ldconfig_wrapper.sh')
-      cmd = "bash -c 'source #{wrapper}; source <(curl -sSL https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh)'"
+      install_script_url = 'https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh'
+      cmd = "bash -c 'DOTNET_INSTALL_SKIP_PREREQS=1 source <(curl -sSL #{install_script_url})'"
       @shell.exec(cmd, out)
     end
   end

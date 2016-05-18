@@ -23,13 +23,13 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   subject(:installer) { AspNetCoreBuildpack::DotnetInstaller.new(shell) }
 
   describe '#install' do
-    it 'wraps calls to ldconfig so dotnet-install.sh does not complain' do
-      expect(shell).to receive(:exec).with(match(/source .*ldconfig_wrapper[.]sh; (.*)/), out)
+    it 'sets DOTNET_INSTALL_SKIP_PREREQS so dotnet-install.sh does not complain' do
+      expect(shell).to receive(:exec).with(match(/DOTNET_INSTALL_SKIP_PREREQS=1 (.*)/), out)
       installer.install('passed-directory', out)
     end
 
     it 'installs Dotnet CLI' do
-      cmd = %r{(bash -c 'source .*; source <\(curl -sSL https:\/\/.*\/dotnet-install.sh\)')}
+      cmd = %r{(bash -c 'DOTNET_INSTALL_SKIP_PREREQS=1 source <\(curl -sSL https:\/\/.*\/dotnet-install.sh\)')}
       expect(shell).to receive(:exec).with(match(cmd), out)
       installer.install('passed-directory', out)
     end
