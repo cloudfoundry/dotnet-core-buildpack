@@ -5,9 +5,6 @@ url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
     name: libunwind
     version: $2
-  - match: gettext-(.*)-(\d+\.\d+(\.\d+)?)
-    name: gettext
-    version: $2
 
 dependencies:
   - name: libunwind
@@ -16,13 +13,6 @@ dependencies:
       - cflinuxfs2
     uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
     md5: b76452a8a2400f3cfdf189761e8be97e
-
-  - name: gettext
-    version: 0.19.7
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.8/gettext-cflinuxfs2-0.19.7.tar.gz
-    md5: 59b73b2fab0b966717109feb662eb460
 
 exclude_files:
   - .git/

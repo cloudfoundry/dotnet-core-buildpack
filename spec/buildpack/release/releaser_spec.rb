@@ -74,7 +74,7 @@ describe AspNetCoreBuildpack::Releaser do
       end
 
       it 'set LD_LIBRARY_PATH in profile.d' do
-        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/gettext/lib')
+        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib')
       end
 
       it 'add Dotnet CLI to the PATH in profile.d' do

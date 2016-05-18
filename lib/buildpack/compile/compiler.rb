@@ -15,7 +15,6 @@
 # limitations under the License.
 
 require_relative 'libunwind_installer.rb'
-require_relative 'gettext_installer.rb'
 require_relative 'dotnet_installer.rb'
 require_relative 'dotnet.rb'
 require_relative '../bp_version.rb'
@@ -25,11 +24,10 @@ require 'pathname'
 
 module AspNetCoreBuildpack
   class Compiler
-    def initialize(build_dir, cache_dir, libunwind_binary, gettext_binary, dotnet_installer, dotnet, copier, out)
+    def initialize(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
       @libunwind_binary = libunwind_binary
-      @gettext_binary = gettext_binary
       @dotnet_installer = dotnet_installer
       @dotnet = dotnet
       @copier = copier
@@ -41,7 +39,6 @@ module AspNetCoreBuildpack
       puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
       step('Extracting libunwind', method(:extract_libunwind))
-      step('Extracting gettext', method(:extract_gettext))
       step('Installing Dotnet CLI', method(:install_dotnet))
       step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies))
       step('Saving to buildpack cache', method(:save_cache))
@@ -58,14 +55,9 @@ module AspNetCoreBuildpack
       libunwind_binary.extract(File.join(build_dir, 'libunwind'), out) unless File.exist? File.join(build_dir, 'libunwind')
     end
 
-    def extract_gettext(out)
-      gettext_binary.extract(File.join(build_dir, 'gettext'), out) unless File.exist? File.join(build_dir, 'gettext')
-    end
-
     def restore_cache(out)
       copier.cp(File.join(cache_dir, '.nuget'), build_dir, out) if File.exist? File.join(cache_dir, '.nuget')
       copier.cp(File.join(cache_dir, 'libunwind'), build_dir, out) if File.exist? File.join(cache_dir, 'libunwind')
-      copier.cp(File.join(cache_dir, 'gettext'), build_dir, out) if File.exist? File.join(cache_dir, 'gettext')
     end
 
     def install_dotnet(out)
@@ -79,7 +71,6 @@ module AspNetCoreBuildpack
     def save_cache(out)
       copier.cp(File.join(build_dir, '.nuget'), cache_dir, out) if File.exist? File.join(build_dir, '.nuget')
       copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
-      copier.cp(File.join(build_dir, 'gettext'), cache_dir, out) unless File.exist? File.join(cache_dir, 'gettext')
     end
 
     def step(description, method)
@@ -97,7 +88,6 @@ module AspNetCoreBuildpack
     attr_reader :build_dir
     attr_reader :cache_dir
     attr_reader :libunwind_binary
-    attr_reader :gettext_binary
     attr_reader :dotnet_installer
     attr_reader :mozroots
     attr_reader :dotnet
