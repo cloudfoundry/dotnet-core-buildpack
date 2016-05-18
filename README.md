@@ -29,9 +29,43 @@ cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.g
 
 Keep in mind that this support provided to allow users time to update their apps to use the Dotnet CLI, and you should switch to using the main branch of the buildpack (using the command further above) as soon as possible.
 
+## Using samples from the cli-samples repository
+
+The samples provided in the [cli-samples repo](https://github.com/aspnet/cli-samples/) will work with this buildpack but they need a slight modification to the `Main` method.  Before the line `var host = new WebHostBuilder()` add these lines:
+
+```c#
+var config = new ConfigurationBuilder()
+    .AddCommandLine(args)
+    .Build();
+```
+
+And then add this line after:
+`.UseConfiguration(config)`
+
+You'll also need to add a dependency to project.json:
+`"Microsoft.Extensions.Configuration.CommandLine": "1.0.0-rc2-final",`
+
+Example `Main` method:
+
+```c#
+public static void Main(string[] args)
+{
+    var config = new ConfigurationBuilder()
+        .AddCommandLine(args)
+        .Build();
+
+    var host = new WebHostBuilder()
+        .UseKestrel()
+        .UseConfiguration(config)
+        .UseStartup<Startup>()
+        .Build();
+    host.Run();
+}
+```
+
 ## Disconnected environments
 
-The binaries in `manifest.yml` can be cached with the buildpack. 
+The binaries in `manifest.yml` can be cached with the buildpack.
 
 Applications can be pushed with their other dependencies after "publishing" the application like `dotnet publish`. Then push from the `bin/<Debug|Release>/<framework>/publish` directory.
 

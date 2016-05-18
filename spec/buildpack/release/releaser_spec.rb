@@ -118,7 +118,7 @@ describe AspNetCoreBuildpack::Releaser do
           yml = YAML.load(subject.release(build_dir))
           yml.fetch('default_process_types').fetch('web')
         end
-        it "runs the project specified in the .deployment file" do
+        it 'runs the project specified in the .deployment file' do
           expect(web_process).to match('dotnet run --project src/proj2')
         end
       end

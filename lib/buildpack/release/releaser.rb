@@ -53,7 +53,7 @@ EOT
       project = app.published_project
       return "dotnet #{project}.dll" unless project.nil?
 
-      fail 'No project could be identified to run' unless !project.nil?
+      fail 'No project could be identified to run' if project.nil?
     end
 
     def startup_script_path(dir)

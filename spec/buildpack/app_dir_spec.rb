@@ -83,11 +83,11 @@ describe AspNetCoreBuildpack::AppDir do
             expect(appdir.deployment_file_project).to be_nil
           end
         end
-        
+
         context 'and specifies an existing project' do
           before do
             File.open(File.join(dir, '.deployment'), 'a') do |f|
-              f.write("project = src/proj1")
+              f.write('project = src/proj1')
             end
           end
 
@@ -104,7 +104,7 @@ describe AspNetCoreBuildpack::AppDir do
       end
 
       it 'raises an error to tell the user that they need a .deployment file' do
-        error_message = "Multiple paths contain a project.json file, but no .deployment file was used"
+        error_message = 'Multiple paths contain a project.json file, but no .deployment file was used'
         expect { appdir.main_project_path }.to raise_error(error_message)
       end
     end
