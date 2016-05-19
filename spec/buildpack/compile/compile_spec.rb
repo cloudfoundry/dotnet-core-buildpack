@@ -30,7 +30,7 @@ describe AspNetCoreBuildpack::Compiler do
 
   let(:libunwind_binary) { double(:libunwind_binary, extract: nil) }
   let(:copier) { double(:copier, cp: nil) }
-  let(:dotnet_installer) { double(:dotnet_installer, install: nil) }
+  let(:dotnet_installer) { double(:dotnet_installer, install: nil, should_install: true) }
   let(:dotnet) { double(:dotnet, restore: nil) }
   let(:build_dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
@@ -114,6 +114,14 @@ describe AspNetCoreBuildpack::Compiler do
         expect(dotnet_installer).to receive(:install).with(build_dir, anything)
         compiler.compile
       end
+
+      context 'when the app was published' do
+        it 'skips installing Dotnet CLI' do
+          allow(dotnet_installer).to receive(:should_install).and_return(false)
+          expect(dotnet_installer).not_to receive(:install).with(build_dir, anything)
+          compiler.compile
+        end
+      end
     end
 
     describe 'Restoring dependencies with Dotnet CLI' do
@@ -124,12 +132,9 @@ describe AspNetCoreBuildpack::Compiler do
         compiler.compile
       end
 
-      context 'when the app was published with NuGet packages' do
-        before do
-          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
-        end
-
+      context 'when the app was published' do
         it 'skips running dotnet restore' do
+          allow(dotnet_installer).to receive(:should_install).and_return(false)
           expect(dotnet).not_to receive(:restore)
           compiler.compile
         end

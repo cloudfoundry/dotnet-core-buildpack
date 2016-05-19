@@ -39,8 +39,8 @@ module AspNetCoreBuildpack
       puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
       step('Extracting libunwind', method(:extract_libunwind))
-      step('Installing Dotnet CLI', method(:install_dotnet))
-      step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies))
+      step('Installing Dotnet CLI', method(:install_dotnet)) if dotnet_installer.should_install(build_dir)
+      step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies)) if dotnet_installer.should_install(build_dir)
       step('Saving to buildpack cache', method(:save_cache))
       puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
@@ -61,11 +61,11 @@ module AspNetCoreBuildpack
     end
 
     def install_dotnet(out)
-      dotnet_installer.install(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'runtimes')
+      dotnet_installer.install(build_dir, out)
     end
 
     def restore_dependencies(out)
-      dotnet.restore(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'packages')
+      dotnet.restore(build_dir, out)
     end
 
     def save_cache(out)

@@ -27,7 +27,7 @@ With the introduction of support for the Dotnet CLI in buildpack version 0.8, ap
 cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.git#dnx
 ```
 
-Keep in mind that this support provided to allow users time to update their apps to use the Dotnet CLI, and you should switch to using the main branch of the buildpack (using the command further above) as soon as possible.
+Keep in mind that this support is provided only to allow users to take some time to update their applications to use the Dotnet CLI, and you should switch to using the main branch of the buildpack (using the command further above) as soon as possible.
 
 ## Using samples from the cli-samples repository
 
@@ -67,11 +67,17 @@ public static void Main(string[] args)
 
 The binaries in `manifest.yml` can be cached with the buildpack.
 
-Applications can be pushed with their other dependencies after "publishing" the application like `dotnet publish`. Then push from the `bin/<Debug|Release>/<framework>/publish` directory.
+Applications can be pushed with their other dependencies after "publishing" the application like `dotnet publish -r ubuntu.14.04-x64`.  Then push from the `bin/<Debug|Release>/<framework>/<runtime>/publish` directory.
+
+For this publish command to work, you will need to make some changes to your application code to ensure that the dotnet cli publishes it as a self-contained application rather than a portable application.
+
+See [Types of portability in .Net Core][] for more information on how to make the required changes to publish your application as a self-contained application.
+
+Also note that if you are using a `manifest.yml` file in your application, you can [specify the path][] in your manifest.yml to point to the publish output folder so that you don't have to be in that folder to push the application to Cloud Foundry.
 
 ## Building
 
-These steps only apply to admins who wish to install the buildpack into their Cloud Foundry deployment. They are meant to be run in a Linux shell and assume that git, Ruby, and the bundler gem are already installed.  
+These steps only apply to admins who wish to install the buildpack into their Cloud Foundry deployment. They are meant to be run in a Linux shell and assume that git, Ruby, and the bundler gem are already installed.
 
 1. Make sure you have fetched submodules
 
@@ -118,3 +124,5 @@ Open an issue on this project.
 [Hello World sample]: https://github.com/IBM-Bluemix/asp.net5-helloworld
 [RC2]: https://github.com/aspnet/Home/releases/tag/1.0.0-rc2-final
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
+[Types of portability in .Net Core]: http://dotnet.github.io/docs/core-concepts/app-types.html
+[specify the path]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path

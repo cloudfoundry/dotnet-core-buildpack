@@ -40,12 +40,28 @@ describe AspNetCoreBuildpack::Releaser do
         File.open(File.join(build_dir, 'proj1.runtimeconfig.json'), 'w') { |f| f.write('a') }
       end
 
-      it 'does not raise an error because project.json is not required' do
-        expect { subject.release(build_dir) }.not_to raise_error
+      context 'project is self-contained' do
+        before do
+          File.open(File.join(build_dir, 'proj1'), 'w') { |f| f.write('a') }
+        end
+
+        it 'does not raise an error because project.json is not required' do
+          expect { subject.release(build_dir) }.not_to raise_error
+        end
+
+        it 'runs native binary for the project which has a runtimeconfig.json file' do
+          expect(web_process).to match('proj1')
+        end
       end
 
-      it 'runs dotnet <dllname> for the project which has a runtimeconfig.json file' do
-        expect(web_process).to match('dotnet proj1.dll')
+      context 'project is a portable project' do
+        before do
+          File.open(File.join(build_dir, 'proj1.dll'), 'w') { |f| f.write('a') }
+        end
+
+        it 'runs dotnet <dllname> for the project which has a runtimeconfig.json file' do
+          expect(web_process).to match('dotnet proj1.dll')
+        end
       end
     end
 
