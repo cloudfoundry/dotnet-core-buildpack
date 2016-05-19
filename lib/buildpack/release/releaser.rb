@@ -22,6 +22,8 @@ module AspNetCoreBuildpack
       app = AppDir.new(build_dir)
       start_cmd = get_start_cmd(app)
 
+      fail 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
+
       write_startup_script(startup_script_path(build_dir))
       generate_yml(start_cmd)
     end
@@ -33,7 +35,7 @@ module AspNetCoreBuildpack
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
         f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib;'
-        f.write 'export PATH=$PATH:$HOME/.dotnet;'
+        f.write 'export PATH=$PATH:$HOME/.dotnet:$HOME;'
       end
     end
 
@@ -46,14 +48,21 @@ EOT
       yml
     end
 
-    def get_start_cmd(app)
-      project = app.main_project_path
+    def get_source_start_cmd(project)
       return "dotnet run --project #{project}" unless project.nil?
+    end
 
-      project = app.published_project
-      return "dotnet #{project}.dll" unless project.nil?
+    def get_published_start_cmd(project, build_dir)
+      return "#{project}" if File.exist? File.join(build_dir, "#{project}")
+      return "dotnet #{project}.dll" if File.exist? File.join(build_dir, "#{project}.dll")
+    end
 
-      fail 'No project could be identified to run' if project.nil?
+    def get_start_cmd(app)
+      start_cmd = get_source_start_cmd(app.main_project_path)
+      return start_cmd unless start_cmd.nil?
+
+      start_cmd = get_published_start_cmd(app.published_project, app.root)
+      return start_cmd unless start_cmd.nil?
     end
 
     def startup_script_path(dir)

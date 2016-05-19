@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative '../app_dir'
+
 module AspNetCoreBuildpack
   class DotnetInstaller
     def initialize(shell)
@@ -25,6 +27,14 @@ module AspNetCoreBuildpack
       install_script_url = 'https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh'
       cmd = "bash -c 'DOTNET_INSTALL_SKIP_PREREQS=1 source <(curl -sSL #{install_script_url})'"
       @shell.exec(cmd, out)
+    end
+
+    def should_install(dir)
+      published_project = AppDir.new(dir).published_project
+      if published_project && File.exist?(File.join(dir, published_project))
+        return false
+      end
+      true
     end
   end
 end
