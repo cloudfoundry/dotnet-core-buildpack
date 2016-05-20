@@ -15,7 +15,7 @@ cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.g
 
 This buildpack will be used if there are one or more `project.json` files in the pushed application, or if the application is pushed from the output directory of the `dotnet publish` command. 
 
-Use a `NuGet.Config` file to specify non-default package sources.
+Use a `global.json` file to specify the desired .Net CLI version if different than the latest stable beta release.  Use a `NuGet.Config` file to specify non-default package sources.
 
 For a basic example see this [Hello World sample][].
 

@@ -29,7 +29,7 @@ describe AspNetCoreBuildpack::DotnetInstaller do
     end
 
     it 'installs Dotnet CLI' do
-      cmd = %r{(bash -c 'DOTNET_INSTALL_SKIP_PREREQS=1 source <\(curl -sSL https:\/\/.*\/dotnet-install.sh\)')}
+      cmd = %r{(bash -c 'curl -OsSL https:\/\/.*\/dotnet-install.sh; .* DOTNET_INSTALL_SKIP_PREREQS=1 \.\/dotnet-install.sh -v latest')}
       expect(shell).to receive(:exec).with(match(cmd), out)
       installer.install('passed-directory', out)
     end
