@@ -25,12 +25,12 @@ module AspNetCoreBuildpack
 
     def extract(dest_dir, out)
       out.print("libunwind version: #{version}")
-      cmd = "mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null"
-      run_common_cmd(cmd, out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
     def libunwind_tar_gz(out)
-      run_common_cmd("translate_dependency_url #{dependency_name}", out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/translate_dependency_url #{dependency_name}", out)
     end
 
     def version
@@ -38,11 +38,6 @@ module AspNetCoreBuildpack
     end
 
     private
-
-    def run_common_cmd(cmd, out)
-      commoncmd = "bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'"
-      @shell.exec(commoncmd, out)
-    end
 
     def buildpack_root
       current_dir = File.expand_path(File.dirname(__FILE__))
