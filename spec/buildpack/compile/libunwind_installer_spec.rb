@@ -59,8 +59,7 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first
-        expect(cmd).to match(/curl/)
-        expect(cmd).to match(/translate_dependency_url/)
+        expect(cmd).to match(/download_dependency/)
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/libunwind version/)
