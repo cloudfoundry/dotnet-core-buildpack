@@ -63,6 +63,19 @@ public static void Main(string[] args)
 }
 ```
 
+## Deploying apps with multiple projects
+
+To deploy an app which contains multiple projects, you will need to specify which project you want the buildpack to run as the main project.  This can be done by creating a `.deployment` file in the root folder of the solution which sets the path to the main project.  The path to the main project can be specified as the project folder or the project file (.xproj or .csproj).
+
+For a solution which contains three projects (MyApp.DAL, MyApp.Services, and MyApp.Web which are contained in the "src" folder) where MyApp.Web is the main project to run, the format of the `.deployment` file would be as follows:
+
+```text
+[config]
+project = src/MyApp.Web
+```
+
+In this case, the buildpack would automatically compile the MyApp.DAL and MyApp.Services projects if they are listed as dependencies in the main project's (MyApp.Web) `project.json` file, but the buildpack would only attempt to execute the main project with `dotnet run -p src/MyApp.Web`.  The path to MyApp.Web could also be specified as `project = src/MyApp.Web/MyApp.Web.xproj` (assuming this project is an xproj project).
+
 ## Disconnected environments
 
 The binaries in `manifest.yml` can be cached with the buildpack.
