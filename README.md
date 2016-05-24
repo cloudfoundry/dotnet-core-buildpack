@@ -45,6 +45,9 @@ And then add this line after:
 You'll also need to add a dependency to project.json:
 `"Microsoft.Extensions.Configuration.CommandLine": "1.0.0-rc2-final",`
 
+And a using statement to the file which contains your `Main` method:
+`using Microsoft.Extensions.Configuration;`
+
 Example `Main` method:
 
 ```c#
