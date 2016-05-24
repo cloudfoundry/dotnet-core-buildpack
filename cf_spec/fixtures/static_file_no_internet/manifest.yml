@@ -1,6 +1,0 @@
----
-applications:
-- name: static_no_internet
-  random-route: true
-  memory: 256M
-  disk_quota: 1G

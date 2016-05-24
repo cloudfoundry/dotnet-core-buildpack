@@ -1,4 +1,4 @@
-$: << 'cf_spec'
+$LOAD_PATH << 'cf_spec'
 require 'spec_helper'
 
 describe 'CF Asp.Net5 Buildpack' do
@@ -9,31 +9,46 @@ describe 'CF Asp.Net5 Buildpack' do
     Machete::CF::DeleteApp.new.execute(app)
   end
 
-  context 'deploy static site application with internet' do
-    let(:app_name) { 'static_file_internet' }
+  context 'deploying simple web app with internet' do
+    let(:app_name) { 'asp_web_app' }
 
-    it 'responds to http' do
+    it 'displays a simple text homepage' do
       expect(app).to be_running
-      expect(app).to have_logged /ASP.NET 5 buildpack is done creating the droplet/
+      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
 
       browser.visit_path('/')
-      expect(browser).to have_body('ASP.NET')
-      expect(browser).to have_body('Starter Application')
+      expect(browser).to have_body('Hello World!')
     end
   end
 
-  context 'deploy project.json application' do
-    let(:app_name) { 'mvc_6_application' }
+  context 'deploying an mvc app' do
+    let(:app_name) { 'asp_mvc_app' }
 
-    it 'responds to http' do
+    it 'displays a page with an image routed through a controller' do
       expect(app).to be_running
-      expect(app).to have_logged /ASP.NET 5 buildpack is done creating the droplet/
+      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
 
       browser.visit_path('/')
-      expect(browser).to have_body("Hi, I'm Nora!")
+      expect(browser).to have_body("<img src=\"images/ASP-NET-Banners-01.png\" />")
+      expect(browser).to have_body('Hello World!')
+    end
+  end
 
-      browser.visit_path('/env')
-      expect(browser).to have_body('Starter Application')
+  context 'deploying an mvc api app' do
+    let(:app_name) { 'asp_mvc_api_app' }
+
+    it 'responds to API get requests with json' do
+      expect(app).to be_running
+      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
+
+      browser.visit_path('/api/products')
+      expected_json_response = [
+        { Id: 1, Name: 'Computer' },
+        { Id: 2, Name: 'Radio' },
+        { Id: 3, Name: 'Apple' }
+      ]
+      expect(browser).to have_body(expected_json_response.to_json)
+      expect(browser).to have_header('application/json; charset=utf-8')
     end
   end
 end
