@@ -1,6 +1,6 @@
-# Cloud Foundry buildpack: ASP.NET Core
+# Cloud Foundry buildpack: .NET Core
 
-A Cloud Foundry buildpack for ASP.NET Core web applications. Tested with [RC2][] applications that target .NET Core.
+A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core RC2][] applications that target .NET Core.
 
 For more information about ASP.NET Core see:
 
@@ -10,7 +10,7 @@ For more information about ASP.NET Core see:
 ## Usage
 
 ```bash
-cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.git
+cf push my_app -b https://github.com/cloudfoundry-community/dotnet-core-buildpack.git
 ```
 
 This buildpack will be used if there are one or more `project.json` files in the pushed application, or if the application is pushed from the output directory of the `dotnet publish` command. 
@@ -24,7 +24,7 @@ For a basic example see this [Hello World sample][].
 With the introduction of support for the Dotnet CLI in buildpack version 0.8, apps which relied on the older DNX toolchain will no longer work with the current buildpack.  If you need to keep your app running on DNX for now until you can update it to use the Dotnet CLI, use the following command:
 
 ```bash
-cf push my_app -b https://github.com/cloudfoundry-community/asp.net5-buildpack.git#dnx
+cf push my_app -b https://github.com/cloudfoundry-community/dotnet-core-buildpack.git#dnx
 ```
 
 Keep in mind that this support is provided only to allow users to take some time to update their applications to use the Dotnet CLI, and you should switch to using the main branch of the buildpack (using the command further above) as soon as possible.
@@ -157,8 +157,8 @@ Find our guidelines [here](./CONTRIBUTING.md).
 Open an issue on this project.
 
 
-[Hello World sample]: https://github.com/IBM-Bluemix/asp.net5-helloworld
-[RC2]: https://github.com/aspnet/Home/releases/tag/1.0.0-rc2-final
+[Hello World sample]: https://github.com/IBM-Bluemix/aspnet-core-helloworld
+[ASP.NET Core RC2]: https://github.com/aspnet/Home/releases/tag/1.0.0-rc2-final
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
 [Types of portability in .Net Core]: http://dotnet.github.io/docs/core-concepts/app-types.html
 [specify the path]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path

@@ -1,5 +1,5 @@
 ---
-language: aspnetcore
+language: dotnet-core
 
 url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
@@ -20,4 +20,4 @@ exclude_files:
   - .gitmodules
   - spec/
   - cf_spec/
-  - aspnetcore_buildpack-*v*.zip
+  - dotnet-core_buildpack-*v*.zip
