@@ -19,4 +19,5 @@ exclude_files:
   - .gitignore
   - .gitmodules
   - spec/
+  - cf_spec/
   - aspnetcore_buildpack-*v*.zip

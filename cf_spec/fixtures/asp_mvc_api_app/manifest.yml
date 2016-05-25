@@ -1,0 +1,4 @@
+---
+  applications:
+    - name: asp_mvc_api_app
+      disk_quota: 1024M
