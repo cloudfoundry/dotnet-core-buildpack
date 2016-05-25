@@ -24,13 +24,12 @@ describe 'CF Asp.Net5 Buildpack' do
   context 'deploying an mvc app' do
     let(:app_name) { 'asp_mvc_app' }
 
-    it 'displays a page with an image routed through a controller' do
+    it 'displays a page served through a controller and view' do
       expect(app).to be_running
       expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
 
       browser.visit_path('/')
-      expect(browser).to have_body("<img src=\"images/ASP-NET-Banners-01.png\" />")
-      expect(browser).to have_body('Hello World!')
+      expect(browser).to have_body('Hello! Served via a controller and view!')
     end
   end
 
