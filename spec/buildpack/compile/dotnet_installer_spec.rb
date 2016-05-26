@@ -18,26 +18,27 @@ require 'rspec'
 require_relative '../../../lib/buildpack.rb'
 
 describe AspNetCoreBuildpack::DotnetInstaller do
+  let(:dir) { Dir.mktmpdir }
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
   subject(:installer) { AspNetCoreBuildpack::DotnetInstaller.new(shell) }
 
+  describe '#version' do
+    it 'has a default version' do
+      expect(subject.version).to eq('1.0.0-preview1-002702')
+    end
+  end
+
   describe '#install' do
-    it 'sets DOTNET_INSTALL_SKIP_PREREQS so dotnet-install.sh does not complain' do
-      expect(shell).to receive(:exec).with(match(/DOTNET_INSTALL_SKIP_PREREQS=1 (.*)/), out)
-      installer.install('passed-directory', out)
-    end
-
-    it 'installs Dotnet CLI' do
-      cmd = %r{(bash -c 'curl -OsSL https:\/\/.*\/dotnet-install.sh; .* DOTNET_INSTALL_SKIP_PREREQS=1 \.\/dotnet-install.sh -v latest')}
-      expect(shell).to receive(:exec).with(match(cmd), out)
-      installer.install('passed-directory', out)
-    end
-
-    it 'sets HOME env variable' do
-      allow(shell).to receive(:exec)
-      installer.install('passed-directory', out)
-      expect(shell.env).to include('HOME' => 'passed-directory')
+    it 'downloads file with compile-extensions' do
+      allow(shell).to receive(:exec).and_return(0)
+      expect(shell).to receive(:exec) do |*args|
+        cmd = args.first
+        expect(cmd).to match(/download_dependency/)
+        expect(cmd).to match(/tar/)
+      end
+      expect(out).to receive(:print).with(/dotnet version/)
+      subject.install(dir, out)
     end
   end
 end
