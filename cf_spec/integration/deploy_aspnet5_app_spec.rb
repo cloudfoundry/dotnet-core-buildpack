@@ -56,7 +56,7 @@ describe 'CF Asp.Net5 Buildpack' do
 
     it 'displays a simple text homepage' do
       expect(app).to be_running
-      expect(app).to have_logged /ASP.NET Core buildpack is done creating the droplet/
+      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
       expect(app).not_to have_internet_traffic
 
       browser.visit_path('/')
