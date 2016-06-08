@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2015-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ require 'tempfile'
 require_relative '../../../lib/buildpack.rb'
 require_relative '../../../lib/buildpack/shell.rb'
 
-describe AspNet5Buildpack::LibunwindInstaller do
+describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:dir) { Dir.mktmpdir }
-  let(:shell) { AspNet5Buildpack::Shell.new }
+  let(:shell) { AspNetCoreBuildpack::Shell.new }
   let(:out) { double(:out) }
   subject(:libunwind_installer) { described_class.new(dir, shell) }
 
@@ -59,8 +59,7 @@ describe AspNet5Buildpack::LibunwindInstaller do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first
-        expect(cmd).to match(/curl/)
-        expect(cmd).to match(/translate_dependency_url/)
+        expect(cmd).to match(/download_dependency/)
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/libunwind version/)

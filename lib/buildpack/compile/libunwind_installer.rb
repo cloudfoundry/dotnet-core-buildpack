@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2015-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class LibunwindInstaller
     VERSION = '1.1'.freeze
 
@@ -25,12 +25,12 @@ module AspNet5Buildpack
 
     def extract(dest_dir, out)
       out.print("libunwind version: #{version}")
-      cmd = "mkdir -p #{dest_dir}; curl -L `translate_dependency_url #{dependency_name}` -s | tar zxv -C #{dest_dir} &> /dev/null"
-      run_common_cmd(cmd, out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
     def libunwind_tar_gz(out)
-      run_common_cmd("translate_dependency_url #{dependency_name}", out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/translate_dependency_url #{dependency_name}", out)
     end
 
     def version
@@ -38,11 +38,6 @@ module AspNet5Buildpack
     end
 
     private
-
-    def run_common_cmd(cmd, out)
-      commoncmd = "bash -c 'export BUILDPACK_PATH=#{buildpack_root}; source $BUILDPACK_PATH/compile-extensions/lib/common &> /dev/null; #{cmd}'"
-      @shell.exec(commoncmd, out)
-    end
 
     def buildpack_root
       current_dir = File.expand_path(File.dirname(__FILE__))

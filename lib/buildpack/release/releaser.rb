@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +16,16 @@
 
 require_relative '../app_dir'
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class Releaser
-    KESTREL_CMD = 'kestrel'.freeze
-    WEB_CMD = 'web'.freeze
-
     def release(build_dir)
       app = AppDir.new(build_dir)
-      path = main_project_path(app)
-      raise "No #{KESTREL_CMD} or #{WEB_CMD} command found" unless path
-      cfweb_cmd = get_cfweb_cmd(app, path)
+      start_cmd = get_start_cmd(app)
+
+      fail 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
+
       write_startup_script(startup_script_path(build_dir))
-      generate_yml(cfweb_cmd, build_dir, path)
+      generate_yml(start_cmd)
     end
 
     private
@@ -36,13 +34,12 @@ module AspNet5Buildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libuv/lib:$HOME/libunwind/lib;'
-        f.write '[ -f $HOME/.dnx/dnvm/dnvm.sh ] && { source $HOME/.dnx/dnvm/dnvm.sh; dnvm use default; }'
+        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib;'
+        f.write 'export PATH=$PATH:$HOME/.dotnet:$HOME;'
       end
     end
 
-    def generate_yml(cfweb_cmd, base_dir, web_dir)
-      start_cmd = File.exist?(File.join(base_dir, 'approot', cfweb_cmd)) ? "approot/#{cfweb_cmd}" : "dnx --project #{web_dir} #{cfweb_cmd}"
+    def generate_yml(start_cmd)
       yml = <<-EOT
 ---
 default_process_types:
@@ -51,24 +48,25 @@ EOT
       yml
     end
 
-    def main_project_path(app)
-      path = app.deployment_file_project
-      return path if path
-      kestrel_paths = app.with_project_json.select { |p| cfweb_path_exists(app, p) }
-      kestrel_paths.first
+    def get_source_start_cmd(project)
+      return "dotnet run --project #{project}" unless project.nil?
+    end
+
+    def get_published_start_cmd(project, build_dir)
+      return "#{project}" if File.exist? File.join(build_dir, "#{project}")
+      return "dotnet #{project}.dll" if File.exist? File.join(build_dir, "#{project}.dll")
+    end
+
+    def get_start_cmd(app)
+      start_cmd = get_source_start_cmd(app.main_project_path)
+      return start_cmd unless start_cmd.nil?
+
+      start_cmd = get_published_start_cmd(app.published_project, app.root)
+      return start_cmd unless start_cmd.nil?
     end
 
     def startup_script_path(dir)
       File.join(dir, '.profile.d', 'startup.sh')
-    end
-
-    def get_cfweb_cmd(app, path)
-      return KESTREL_CMD if app.commands(path)[KESTREL_CMD]
-      WEB_CMD
-    end
-
-    def cfweb_path_exists(app, path)
-      app.commands(path)[KESTREL_CMD] || app.commands(path)[WEB_CMD]
     end
   end
 end

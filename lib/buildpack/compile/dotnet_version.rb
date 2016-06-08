@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,26 +16,26 @@
 
 require 'json'
 
-module AspNet5Buildpack
-  class DnxVersion
-    DNX_VERSION_FILE_NAME = 'global.json'.freeze
-    DEFAULT_DNX_VERSION = 'latest'.freeze
+module AspNetCoreBuildpack
+  class DotnetVersion
+    DOTNET_VERSION_FILE_NAME = 'global.json'.freeze
+    DEFAULT_DOTNET_VERSION = 'latest'.freeze
 
     def version(dir, out)
-      dnx_version = DEFAULT_DNX_VERSION
-      version_file = File.expand_path(File.join(dir, DNX_VERSION_FILE_NAME))
+      dotnet_version = DEFAULT_DOTNET_VERSION
+      version_file = File.expand_path(File.join(dir, DOTNET_VERSION_FILE_NAME))
       if File.exist?(version_file)
         begin
           global_props = JSON.parse(File.read(version_file, encoding: 'bom|utf-8'))
           if global_props.key?('sdk')
             sdk = global_props['sdk']
-            dnx_version = sdk['version'] if sdk.key?('version')
+            dotnet_version = sdk['version'] if sdk.key?('version')
           end
         rescue
           out.warn("File #{version_file} is not valid JSON")
         end
       end
-      dnx_version
+      dotnet_version
     end
   end
 end

@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,21 +19,19 @@ require 'tmpdir'
 require 'fileutils'
 require_relative '../../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::Compiler do
+describe AspNetCoreBuildpack::Compiler do
   subject(:compiler) do
-    AspNet5Buildpack::Compiler.new(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, copier, out)
+    AspNetCoreBuildpack::Compiler.new(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
   end
 
   before do
     allow($stdout).to receive(:write)
   end
 
-  let(:libuv_binary) { double(:libuv_binary, extract: nil) }
   let(:libunwind_binary) { double(:libunwind_binary, extract: nil) }
   let(:copier) { double(:copier, cp: nil) }
-  let(:dnvm_installer) { double(:dnvm_installer, install: nil) }
-  let(:dnx_installer) { double(:dnx_installer, install: nil) }
-  let(:dnu) { double(:dnu, restore: nil) }
+  let(:dotnet_installer) { double(:dotnet_installer, install: nil, should_install: true) }
+  let(:dotnet) { double(:dotnet, restore: nil) }
   let(:build_dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
 
@@ -84,7 +82,6 @@ describe AspNet5Buildpack::Compiler do
         end
 
         it 'binary files extracted' do
-          expect(libuv_binary).to receive(:extract)
           expect(libunwind_binary).to receive(:extract)
           compiler.compile
         end
@@ -92,83 +89,53 @@ describe AspNet5Buildpack::Compiler do
 
       context 'cache exists' do
         before(:each) do
-          Dir.mkdir(File.join(cache_dir, '.dnx'))
-          Dir.mkdir(File.join(cache_dir, 'libuv'))
+          Dir.mkdir(File.join(cache_dir, '.nuget'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
-          Dir.mkdir(File.join(build_dir, 'libuv'))
           Dir.mkdir(File.join(build_dir, 'libunwind'))
         end
 
         it 'copies files from cache to build dir' do
-          expect(copier).to receive(:cp).with(File.join(cache_dir, '.dnx'), build_dir, anything)
-          expect(copier).to receive(:cp).with(File.join(cache_dir, 'libuv'), build_dir, anything)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, '.nuget'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
           compiler.compile
         end
 
         it 'binary files not extracted' do
-          expect(libuv_binary).not_to receive(:extract)
           expect(libunwind_binary).not_to receive(:extract)
           compiler.compile
         end
       end
     end
 
-    describe 'Installing DNVM' do
-      it_behaves_like 'step', 'Installing DNVM', :install_dnvm
+    describe 'Installing Dotnet CLI' do
+      it_behaves_like 'step', 'Installing Dotnet CLI', :install_dotnet
 
-      it 'installs dnvm' do
-        expect(dnvm_installer).to receive(:install).with(build_dir, anything)
+      it 'installs dotnet cli' do
+        expect(dotnet_installer).to receive(:install).with(build_dir, anything)
         compiler.compile
       end
 
-      context 'when the app was published with DNX' do
-        before do
-          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'runtimes'))
-        end
-
-        it 'skips installing DNVM' do
-          expect(dnvm_installer).not_to receive(:install)
+      context 'when the app was published' do
+        it 'skips installing Dotnet CLI' do
+          allow(dotnet_installer).to receive(:should_install).and_return(false)
+          expect(dotnet_installer).not_to receive(:install).with(build_dir, anything)
           compiler.compile
         end
       end
     end
 
-    describe 'Installing DNX with DNVM' do
-      it_behaves_like 'step', 'Installing DNX with DNVM', :install_dnx
+    describe 'Restoring dependencies with Dotnet CLI' do
+      it_behaves_like 'step', 'Restoring dependencies with Dotnet CLI', :restore_dependencies
 
-      it 'installs dnx' do
-        expect(dnx_installer).to receive(:install).with(build_dir, anything)
+      it 'runs dotnet restore' do
+        expect(dotnet).to receive(:restore).with(build_dir, anything)
         compiler.compile
       end
 
-      context 'when the app was published with DNX' do
-        before do
-          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'runtimes'))
-        end
-
-        it 'skips installing DNX' do
-          expect(dnx_installer).not_to receive(:install)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Restoring dependencies with DNU' do
-      it_behaves_like 'step', 'Restoring dependencies with DNU', :restore_dependencies
-
-      it 'runs dnu restore' do
-        expect(dnu).to receive(:restore).with(build_dir, anything)
-        compiler.compile
-      end
-
-      context 'when the app was published with NuGet packages' do
-        before do
-          FileUtils.mkdir_p(File.join(build_dir, 'approot', 'packages'))
-        end
-
-        it 'skips running dnu restore' do
-          expect(dnu).not_to receive(:restore)
+      context 'when the app was published' do
+        it 'skips running dotnet restore' do
+          allow(dotnet_installer).to receive(:should_install).and_return(false)
+          expect(dotnet).not_to receive(:restore)
           compiler.compile
         end
       end
@@ -178,21 +145,18 @@ describe AspNet5Buildpack::Compiler do
       it_behaves_like 'step', 'Saving to buildpack cache', :save_cache
 
       it 'copies files to cache dir' do
-        expect(copier).to receive(:cp).with("#{build_dir}/libuv", cache_dir, anything)
         expect(copier).to receive(:cp).with("#{build_dir}/libunwind", cache_dir, anything)
         compiler.compile
       end
 
       context 'when the cache already exists' do
         before(:each) do
-          Dir.mkdir(File.join(build_dir, '.dnx'))
-          Dir.mkdir(File.join(cache_dir, '.dnx'))
-          Dir.mkdir(File.join(cache_dir, 'libuv'))
+          Dir.mkdir(File.join(build_dir, '.nuget'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
         end
 
-        it 'copies only .dnx to cache dir' do
-          expect(copier).to receive(:cp).with("#{build_dir}/.dnx", cache_dir, anything)
+        it 'copies only .nuget to cache dir' do
+          expect(copier).to receive(:cp).with("#{build_dir}/.nuget", cache_dir, anything)
           compiler.compile
         end
       end

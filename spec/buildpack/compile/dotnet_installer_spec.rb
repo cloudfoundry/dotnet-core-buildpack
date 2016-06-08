@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,25 +17,20 @@
 require 'rspec'
 require_relative '../../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::DnvmInstaller do
+describe AspNetCoreBuildpack::DotnetInstaller do
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
-  subject(:installer) { AspNet5Buildpack::DnvmInstaller.new(shell) }
+  subject(:installer) { AspNetCoreBuildpack::DotnetInstaller.new(shell) }
 
   describe '#install' do
-    it 'creates .bashrc so dnvminstall.sh does not complain' do
-      expect(shell).to receive(:exec).with(match('touch ~/.bashrc'), out)
+    it 'sets DOTNET_INSTALL_SKIP_PREREQS so dotnet-install.sh does not complain' do
+      expect(shell).to receive(:exec).with(match(/DOTNET_INSTALL_SKIP_PREREQS=1 (.*)/), out)
       installer.install('passed-directory', out)
     end
 
-    it 'installs DNVM' do
-      cmd = 'curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh'
+    it 'installs Dotnet CLI' do
+      cmd = %r{(bash -c 'curl -OsSL https:\/\/.*\/dotnet-install.sh; .* DOTNET_INSTALL_SKIP_PREREQS=1 \.\/dotnet-install.sh -v latest')}
       expect(shell).to receive(:exec).with(match(cmd), out)
-      installer.install('passed-directory', out)
-    end
-
-    it 'deletes .bashrc because dnvminstall.sh updated it with temporary paths' do
-      expect(shell).to receive(:exec).with(match('rm -rf ~/.bashrc'), out)
       installer.install('passed-directory', out)
     end
 

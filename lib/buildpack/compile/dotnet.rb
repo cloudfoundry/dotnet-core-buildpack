@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 require_relative '../app_dir'
 
-module AspNet5Buildpack
-  class DNU
+module AspNetCoreBuildpack
+  class Dotnet
     def initialize(shell)
       @shell = shell
     end
@@ -25,8 +25,9 @@ module AspNet5Buildpack
     def restore(dir, out)
       @shell.env['HOME'] = dir
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib"
+      @shell.env['PATH'] = "$PATH:#{dir}/.dotnet"
       project_list = AppDir.new(dir).with_project_json.join(' ')
-      cmd = "bash -c 'source #{dir}/.dnx/dnvm/dnvm.sh; dnvm use default; cd #{dir}; dnu restore --quiet #{project_list}'"
+      cmd = "bash -c 'cd #{dir}; dotnet restore --verbosity minimal #{project_list}'"
       @shell.exec(cmd, out)
     end
   end

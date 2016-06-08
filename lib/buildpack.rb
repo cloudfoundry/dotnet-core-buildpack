@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ require_relative './buildpack/shell.rb'
 require_relative './buildpack/out.rb'
 require_relative './buildpack/copier.rb'
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   def self.detect(build_dir)
     Detecter.new.detect(build_dir)
   end
@@ -34,11 +34,9 @@ module AspNet5Buildpack
     Compiler.new(
       build_dir,
       cache_dir,
-      LibuvInstaller.new(build_dir, shell),
       LibunwindInstaller.new(build_dir, shell),
-      DnvmInstaller.new(shell),
-      DnxInstaller.new(shell),
-      DNU.new(shell),
+      DotnetInstaller.new(shell),
+      Dotnet.new(shell),
       Copier.new,
       out)
   end

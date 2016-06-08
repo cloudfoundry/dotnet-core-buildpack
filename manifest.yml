@@ -1,36 +1,12 @@
 ---
-language: aspnet5
+language: dotnet-core
 
 url_to_dependency_map:
-  - match: libuv-(.*)-(\d+\.\d+\.\d+)
-    name: libuv
-    version: $2
   - match: libunwind-(.*)-(\d+\.\d+)
     name: libunwind
     version: $2
 
 dependencies:
-  - name: libuv
-    version: 1.4.2
-    cf_stacks:
-      - lucid64
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.5/libuv-lucid64-1.4.2.tar.gz
-    md5: bec8ea66006c89abb0c7314d62b82a57
-
-  - name: libuv
-    version: 1.4.2
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.5/libuv-cflinuxfs2-1.4.2.tar.gz
-    md5: 72ad380dbab354bbc3d0f41825c22bd0
-
-  - name: libunwind
-    version: 1.1
-    cf_stacks:
-      - lucid64
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.7/libunwind-lucid64-1.1.tar.gz
-    md5: c49405a4565f3ca8838983edca697df6
-
   - name: libunwind
     version: 1.1
     cf_stacks:
@@ -43,4 +19,5 @@ exclude_files:
   - .gitignore
   - .gitmodules
   - spec/
-  - aspnet5_buildpack-*v*.zip
+  - cf_spec/
+  - dotnet-core_buildpack-*v*.zip

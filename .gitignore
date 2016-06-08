@@ -1,2 +1,3 @@
 dependencies/
-aspnet5_buildpack-*.zip
+aspnetcore_buildpack-*.zip
+log/

@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,41 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'libuv_installer.rb'
 require_relative 'libunwind_installer.rb'
-require_relative 'dnvm_installer.rb'
-require_relative 'dnx_installer.rb'
-require_relative 'dnu.rb'
+require_relative 'dotnet_installer.rb'
+require_relative 'dotnet.rb'
 require_relative '../bp_version.rb'
 
 require 'json'
 require 'pathname'
 
-module AspNet5Buildpack
+module AspNetCoreBuildpack
   class Compiler
-    def initialize(build_dir, cache_dir, libuv_binary, libunwind_binary, dnvm_installer, dnx_installer, dnu, copier, out)
+    def initialize(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
-      @libuv_binary = libuv_binary
       @libunwind_binary = libunwind_binary
-      @dnvm_installer = dnvm_installer
-      @dnx_installer = dnx_installer
-      @dnu = dnu
+      @dotnet_installer = dotnet_installer
+      @dotnet = dotnet
       @copier = copier
       @out = out
     end
 
     def compile
-      puts "ASP.NET 5 buildpack version: #{BuildpackVersion.new.version}\n"
-      puts "ASP.NET 5 buildpack starting compile\n"
+      puts "ASP.NET Core buildpack version: #{BuildpackVersion.new.version}\n"
+      puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
-      step('Extracting libuv', method(:extract_libuv))
       step('Extracting libunwind', method(:extract_libunwind))
-      step('Installing DNVM', method(:install_dnvm))
-      step('Installing DNX with DNVM', method(:install_dnx))
-      step('Restoring dependencies with DNU', method(:restore_dependencies))
+      step('Installing Dotnet CLI', method(:install_dotnet)) if dotnet_installer.should_install(build_dir)
+      step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies)) if dotnet_installer.should_install(build_dir)
       step('Saving to buildpack cache', method(:save_cache))
-      puts "ASP.NET 5 buildpack is done creating the droplet\n"
+      puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
       out.fail(e.message)
@@ -57,35 +51,25 @@ module AspNet5Buildpack
 
     private
 
-    def extract_libuv(out)
-      libuv_binary.extract(File.join(build_dir, 'libuv'), out) unless File.exist? File.join(build_dir, 'libuv')
-    end
-
     def extract_libunwind(out)
       libunwind_binary.extract(File.join(build_dir, 'libunwind'), out) unless File.exist? File.join(build_dir, 'libunwind')
     end
 
     def restore_cache(out)
-      copier.cp(File.join(cache_dir, '.dnx'), build_dir, out) if File.exist? File.join(cache_dir, '.dnx')
-      copier.cp(File.join(cache_dir, 'libuv'), build_dir, out) if File.exist? File.join(cache_dir, 'libuv')
+      copier.cp(File.join(cache_dir, '.nuget'), build_dir, out) if File.exist? File.join(cache_dir, '.nuget')
       copier.cp(File.join(cache_dir, 'libunwind'), build_dir, out) if File.exist? File.join(cache_dir, 'libunwind')
     end
 
-    def install_dnvm(out)
-      dnvm_installer.install(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'runtimes')
-    end
-
-    def install_dnx(out)
-      dnx_installer.install(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'runtimes')
+    def install_dotnet(out)
+      dotnet_installer.install(build_dir, out)
     end
 
     def restore_dependencies(out)
-      dnu.restore(build_dir, out) unless File.exist? File.join(build_dir, 'approot', 'packages')
+      dotnet.restore(build_dir, out)
     end
 
     def save_cache(out)
-      copier.cp(File.join(build_dir, '.dnx'), cache_dir, out) if File.exist? File.join(build_dir, '.dnx')
-      copier.cp(File.join(build_dir, 'libuv'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libuv')
+      copier.cp(File.join(build_dir, '.nuget'), cache_dir, out) if File.exist? File.join(build_dir, '.nuget')
       copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
     end
 
@@ -103,12 +87,10 @@ module AspNet5Buildpack
 
     attr_reader :build_dir
     attr_reader :cache_dir
-    attr_reader :libuv_binary
     attr_reader :libunwind_binary
-    attr_reader :dnvm_installer
-    attr_reader :dnx_installer
+    attr_reader :dotnet_installer
     attr_reader :mozroots
-    attr_reader :dnu
+    attr_reader :dotnet
     attr_reader :copier
     attr_reader :out
   end

@@ -1,6 +1,6 @@
 # Encoding: utf-8
-# ASP.NET 5 Buildpack
-# Copyright 2014-2015 the original author or authors.
+# ASP.NET Core Buildpack
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,13 +18,23 @@ require 'rspec'
 require 'tmpdir'
 require_relative '../../../lib/buildpack.rb'
 
-describe AspNet5Buildpack::Detecter do
+describe AspNetCoreBuildpack::Detecter do
   let(:dir) { Dir.mktmpdir }
 
   describe '#detect' do
-    context 'when no project.json' do
+    context 'when no project.json and no **.runtimeconfig.json' do
       it 'returns false' do
         expect(subject.detect(dir)).to be_falsey
+      end
+    end
+
+    context 'when **.runtimeconfig.json exists in root directory' do
+      before do
+        File.open(File.join(dir, 'proj1.runtimeconfig.json'), 'w') { |f| f.write('a') }
+      end
+
+      it 'returns true' do
+        expect(subject.detect(dir)).to be_truthy
       end
     end
 
