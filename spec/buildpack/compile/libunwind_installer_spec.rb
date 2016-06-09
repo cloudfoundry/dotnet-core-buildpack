@@ -32,28 +32,6 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
     end
   end
 
-  describe '#libunwind_tar_gz' do
-    context 'when binary present in dependencies dir' do
-      it 'uses local binary' do
-        begin
-          dependencies = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'dependencies'))
-          FileUtils.mkdir_p dependencies
-          expect(out).to receive(:print).with(%r{file:///})
-          subject.libunwind_tar_gz(out)
-        ensure
-          FileUtils.rm_rf(dependencies) if File.exist? dependencies
-        end
-      end
-    end
-
-    context 'when binary not present in dependencies dir' do
-      it 'uses remote binary' do
-        expect(out).to receive(:print).with(%r{https://})
-        subject.libunwind_tar_gz(out)
-      end
-    end
-  end
-
   describe '#extract' do
     it 'downloads file with compile-extensions' do
       allow(shell).to receive(:exec).and_return(0)

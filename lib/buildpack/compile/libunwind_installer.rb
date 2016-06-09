@@ -29,10 +29,6 @@ module AspNetCoreBuildpack
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
-    def libunwind_tar_gz(out)
-      @shell.exec("#{buildpack_root}/compile-extensions/bin/translate_dependency_url #{dependency_name}", out)
-    end
-
     def version
       VERSION
     end
