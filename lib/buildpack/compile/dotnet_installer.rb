@@ -24,11 +24,12 @@ module AspNetCoreBuildpack
     end
 
     def install(dir, out)
-      @shell.env['HOME'] = dir
-      version = DotnetVersion.new.version(dir, out)
-      install_script_url = 'https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh'
-      cmd = "bash -c 'curl -OsSL #{install_script_url}; chmod 755 dotnet-install.sh; DOTNET_INSTALL_SKIP_PREREQS=1 ./dotnet-install.sh -v #{version}'"
-      @shell.exec(cmd, out)
+      @version = DotnetVersion.new.version(dir, out)
+      dest_dir = "#{dir}/.dotnet"
+
+      out.print("dotnet version: #{version}")
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
     def should_install(dir)
@@ -38,5 +39,18 @@ module AspNetCoreBuildpack
       end
       true
     end
+
+    private
+
+    def buildpack_root
+      current_dir = File.expand_path(File.dirname(__FILE__))
+      File.dirname(File.dirname(File.dirname(current_dir)))
+    end
+
+    def dependency_name
+      "dotnet-dev-ubuntu-x64.#{version}.tar.gz"
+    end
+
+    attr_reader :version
   end
 end
