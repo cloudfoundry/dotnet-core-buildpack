@@ -1,7 +1,7 @@
 $LOAD_PATH << 'cf_spec'
 require 'spec_helper'
 
-describe 'CF Asp.Net5 Buildpack' do
+describe 'CF ASP.NET Core Buildpack' do
   subject(:app) { Machete.deploy_app(app_name) }
   let(:browser) { Machete::Browser.new(app) }
 
