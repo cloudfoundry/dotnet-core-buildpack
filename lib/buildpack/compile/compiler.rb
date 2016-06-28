@@ -56,12 +56,13 @@ module AspNetCoreBuildpack
     end
 
     def restore_cache(out)
+      copier.cp(File.join(cache_dir, '.dotnet'), build_dir, out) if File.exist? File.join(cache_dir, '.dotnet')
       copier.cp(File.join(cache_dir, '.nuget'), build_dir, out) if File.exist? File.join(cache_dir, '.nuget')
       copier.cp(File.join(cache_dir, 'libunwind'), build_dir, out) if File.exist? File.join(cache_dir, 'libunwind')
     end
 
     def install_dotnet(out)
-      dotnet_installer.install(build_dir, out)
+      dotnet_installer.install(build_dir, out) unless File.exist? File.join(build_dir, '.dotnet')
     end
 
     def restore_dependencies(out)
@@ -69,6 +70,7 @@ module AspNetCoreBuildpack
     end
 
     def save_cache(out)
+      copier.cp(File.join(build_dir, '.dotnet'), cache_dir, out) if File.exist? File.join(build_dir, '.dotnet')
       copier.cp(File.join(build_dir, '.nuget'), cache_dir, out) if File.exist? File.join(build_dir, '.nuget')
       copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
     end
