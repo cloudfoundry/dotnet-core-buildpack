@@ -23,12 +23,6 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   let(:out) { double(:out) }
   subject(:installer) { AspNetCoreBuildpack::DotnetInstaller.new(shell) }
 
-  describe '#version' do
-    it 'has a default version' do
-      expect(subject.version).to eq('1.0.0-preview1-002702')
-    end
-  end
-
   describe '#install' do
     it 'downloads file with compile-extensions' do
       allow(shell).to receive(:exec).and_return(0)

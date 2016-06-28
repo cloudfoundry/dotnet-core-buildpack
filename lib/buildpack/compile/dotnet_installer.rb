@@ -19,13 +19,12 @@ require_relative 'dotnet_version'
 
 module AspNetCoreBuildpack
   class DotnetInstaller
-    VERSION = '1.0.0-preview1-002702'.freeze
-
     def initialize(shell)
       @shell = shell
     end
 
     def install(dir, out)
+      @version = DotnetVersion.new.version(dir, out)
       dest_dir = "#{dir}/.dotnet"
 
       out.print("dotnet version: #{version}")
@@ -41,10 +40,6 @@ module AspNetCoreBuildpack
       true
     end
 
-    def version
-      VERSION
-    end
-
     private
 
     def buildpack_root
@@ -55,5 +50,7 @@ module AspNetCoreBuildpack
     def dependency_name
       "dotnet-dev-ubuntu-x64.#{version}.tar.gz"
     end
+
+    attr_reader :version
   end
 end

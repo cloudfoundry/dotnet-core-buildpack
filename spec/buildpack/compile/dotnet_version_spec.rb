@@ -21,11 +21,12 @@ require_relative '../../../lib/buildpack.rb'
 describe AspNetCoreBuildpack::DotnetVersion do
   let(:out) { double(:out) }
   let(:dir) { Dir.mktmpdir }
+  let(:latest_version) { '1.0.0-preview2-003121'.freeze }
 
   describe '#version' do
     context 'global.json does not exist' do
       it 'resolves to the latest version' do
-        expect(subject.version(dir, out)).to eq('latest')
+        expect(subject.version(dir, out)).to eq(latest_version)
       end
     end
 
@@ -59,7 +60,7 @@ describe AspNetCoreBuildpack::DotnetVersion do
 
       it 'warns and resolves to the latest version' do
         expect(out).to receive(:warn).with("File #{dir}/global.json is not valid JSON")
-        expect(subject.version(dir, out)).to eq('latest')
+        expect(subject.version(dir, out)).to eq(latest_version)
       end
     end
 
@@ -70,7 +71,7 @@ describe AspNetCoreBuildpack::DotnetVersion do
       end
 
       it 'resolves to the latest version' do
-        expect(subject.version(dir, out)).to eq('latest')
+        expect(subject.version(dir, out)).to eq(latest_version)
       end
     end
   end
