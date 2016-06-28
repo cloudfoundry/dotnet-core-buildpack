@@ -26,7 +26,7 @@ module AspNetCoreBuildpack
     def install(dir, out)
       @shell.env['HOME'] = dir
       version = DotnetVersion.new.version(dir, out)
-      install_script_url = 'https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview1/scripts/obtain/dotnet-install.sh'
+      install_script_url = 'https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0-preview2/scripts/obtain/dotnet-install.sh'
       cmd = "bash -c 'curl -OsSL #{install_script_url}; chmod 755 dotnet-install.sh; DOTNET_INSTALL_SKIP_PREREQS=1 ./dotnet-install.sh -v #{version}'"
       @shell.exec(cmd, out)
     end
