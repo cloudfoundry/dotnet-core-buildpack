@@ -5,14 +5,29 @@ url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
     name: libunwind
     version: $2
+  - match: dotnet-dev-ubuntu-x64\.(.*)\.tar\.gz
+    name: dotnet
+    version: $1
 
 dependencies:
   - name: libunwind
     version: 1.1
     cf_stacks:
       - cflinuxfs2
-    uri: https://github.com/cloudfoundry-community/asp.net5-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
+    uri: https://github.com/cloudfoundry-community/dotnet-core-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
     md5: b76452a8a2400f3cfdf189761e8be97e
+  - name: dotnet
+    version: 1.0.0-preview1-002702
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://go.microsoft.com/fwlink/?LinkID=798405
+    md5: 44d1dcae69a11976cfc6facc83b3aa49
+  - name: dotnet
+    version: 1.0.0-preview2-003121
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://go.microsoft.com/fwlink/?LinkID=809129
+    md5: 301bf94c4253c6e07826dd6e1d79821f
 
 exclude_files:
   - .git/

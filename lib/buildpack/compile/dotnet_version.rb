@@ -19,7 +19,7 @@ require 'json'
 module AspNetCoreBuildpack
   class DotnetVersion
     DOTNET_VERSION_FILE_NAME = 'global.json'.freeze
-    DEFAULT_DOTNET_VERSION = 'latest'.freeze
+    DEFAULT_DOTNET_VERSION = '1.0.0-preview2-003121'.freeze
 
     def version(dir, out)
       dotnet_version = DEFAULT_DOTNET_VERSION
