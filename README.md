@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: .NET Core
 
-A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core RC2][] applications that target .NET Core.
+A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core 1.0 RTM][] applications that target .NET Core.
 
 For more information about ASP.NET Core see:
 
@@ -43,7 +43,7 @@ And then add this line after:
 `.UseConfiguration(config)`
 
 You'll also need to add a dependency to project.json:
-`"Microsoft.Extensions.Configuration.CommandLine": "1.0.0-rc2-final",`
+`"Microsoft.Extensions.Configuration.CommandLine": "1.0.0",`
 
 And a using statement to the file which contains your `Main` method:
 `using Microsoft.Extensions.Configuration;`
@@ -158,7 +158,7 @@ Open an issue on this project.
 
 
 [Hello World sample]: https://github.com/IBM-Bluemix/aspnet-core-helloworld
-[ASP.NET Core RC2]: https://github.com/aspnet/Home/releases/tag/1.0.0-rc2-final
+[ASP.NET Core 1.0 RTM]: https://github.com/aspnet/Home/releases/tag/1.0.0
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
 [Types of portability in .Net Core]: http://dotnet.github.io/docs/core-concepts/app-types.html
 [specify the path]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path
