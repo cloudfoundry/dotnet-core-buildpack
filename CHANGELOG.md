@@ -1,3 +1,10 @@
+## v0.9.0 June 30, 2016
+
+This version of the buildpack includes the following changes:
+
+- Add support for the .NET CLI 1.0 Preview 2 build and .NET Core 1.0 RTM
+- The default .NET CLI version to be installed is now 1.0.0-preview2-003121
+
 ## v0.8.0 May 16, 2016
 - Switch to .NET CLI from DNX
 - Add support for RC2 apps
