@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/cloudfoundry/buildpack-packager
-  revision: 0257225aae41b49b071c01d7e9f7d0938920837d
-  tag: v2.2.8
+  revision: 534334110229076e043c2cc1280604e9a5a2360f
+  ref: 534334110229076e043c2cc1280604e9a5a2360f
   specs:
     buildpack-packager (2.2.8)
       activesupport (~> 4.1.8)
@@ -34,7 +34,7 @@ GEM
     json (1.8.3)
     kwalify (0.7.2)
     method_source (0.8.2)
-    minitest (5.8.4)
+    minitest (5.9.0)
     multi_xml (0.5.5)
     pry (0.10.3)
       coderay (~> 1.1.0)
