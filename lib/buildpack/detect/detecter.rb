@@ -17,7 +17,12 @@
 module AspNetCoreBuildpack
   class Detecter
     def detect(dir)
-      fromsource = !Dir.glob(File.join(dir, '**', 'project.json')).empty?
+      fromsource = false
+      arr = Dir.glob(File.join(dir, '**', 'project.json')).map { |file| File.dirname(file) }
+      arr.each do |directory|
+        fromsource = !Dir.glob(File.join(directory, '*.cs')).empty? unless fromsource
+        fromsource = !Dir.glob(File.join(directory, '**', '*.cs')).empty? unless fromsource
+      end
       frompublish = !Dir.glob(File.join(dir, '*.runtimeconfig.json')).empty?
       fromsource || frompublish
     end

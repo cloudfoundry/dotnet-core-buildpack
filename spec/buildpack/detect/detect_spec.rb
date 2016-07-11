@@ -43,8 +43,31 @@ describe AspNetCoreBuildpack::Detecter do
         File.open(File.join(dir, 'project.json'), 'w') { |f| f.write('a') }
       end
 
-      it 'returns true' do
-        expect(subject.detect(dir)).to be_truthy
+      context 'and .cs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .cs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'sub'))
+          File.open(File.join(dir, 'sub', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
       end
     end
 
@@ -54,8 +77,31 @@ describe AspNetCoreBuildpack::Detecter do
         File.open(File.join(dir, 'src', 'proj', 'project.json'), 'w') { |f| f.write('a') }
       end
 
-      it 'returns true' do
-        expect(subject.detect(dir)).to be_truthy
+      context 'and .cs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'src', 'proj', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .cs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'proj', 'sub'))
+          File.open(File.join(dir, 'src', 'proj', 'sub', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
       end
     end
   end
