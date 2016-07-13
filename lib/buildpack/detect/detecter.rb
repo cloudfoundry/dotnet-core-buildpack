@@ -16,6 +16,11 @@
 
 module AspNetCoreBuildpack
   class Detecter
+    def component_detections(components)
+      compacted_tags = components.map(&:detect).compact
+      compacted_tags.select { |tag| tag != '' }
+    end
+
     def detect(dir)
       fromsource = false
       arr = Dir.glob(File.join(dir, '**', 'project.json')).map { |file| File.dirname(file) }

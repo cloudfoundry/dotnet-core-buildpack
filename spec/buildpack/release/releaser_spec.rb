@@ -22,6 +22,11 @@ require_relative '../../../lib/buildpack.rb'
 
 describe AspNetCoreBuildpack::Releaser do
   let(:build_dir) { Dir.mktmpdir }
+  let(:cache_dir) { Dir.mktmpdir }
+  let(:out) { AspNetCoreBuildpack::Out.new }
+  before do
+    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetInstaller.new(build_dir, cache_dir, out).cache_dir))
+  end
 
   describe '#release' do
     context 'project.json does not exist in source code project' do

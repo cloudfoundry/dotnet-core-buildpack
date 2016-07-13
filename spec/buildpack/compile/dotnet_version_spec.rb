@@ -17,6 +17,7 @@
 require 'rspec'
 require 'tmpdir'
 require_relative '../../../lib/buildpack.rb'
+require_relative '../../../lib/buildpack/compile/dotnet_version.rb'
 
 describe AspNetCoreBuildpack::DotnetVersion do
   let(:out) { double(:out) }

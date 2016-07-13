@@ -17,14 +17,16 @@
 require 'rspec'
 require 'tmpdir'
 require 'tempfile'
-require_relative '../../../lib/buildpack.rb'
-require_relative '../../../lib/buildpack/shell.rb'
+require_relative '../../../../lib/buildpack.rb'
+require_relative '../../../../lib/buildpack/shell.rb'
+require_relative '../../../../lib/buildpack/compile/installers/libunwind_installer.rb'
 
 describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:dir) { Dir.mktmpdir }
+  let(:cache_dir) { Dir.mktmpdir }
   let(:shell) { AspNetCoreBuildpack::Shell.new }
   let(:out) { double(:out) }
-  subject(:libunwind_installer) { described_class.new(dir, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, shell) }
 
   describe '#version' do
     it 'has a default version' do
@@ -32,7 +34,25 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
     end
   end
 
-  describe '#extract' do
+  describe '#cached?' do
+    context 'cache directory exists in the build directory' do
+      before do
+        FileUtils.mkdir_p(File.join(dir, 'libunwind'))
+      end
+
+      it 'returns true' do
+        expect(installer.send(:cached?)).to be_truthy
+      end
+    end
+
+    context 'cache directory does not exist in the build directory' do
+      it 'returns false' do
+        expect(installer.send(:cached?)).not_to be_truthy
+      end
+    end
+  end
+
+  describe '#install' do
     it 'downloads file with compile-extensions' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
@@ -41,7 +61,23 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/libunwind version/)
-      subject.extract(dir, out)
+      subject.install(out)
+    end
+  end
+
+  describe '#should_install' do
+    context 'cache folder exists' do
+      it 'returns false' do
+        allow(installer).to receive(:cached?).and_return(true)
+        expect(installer.should_install(nil)).not_to be_truthy
+      end
+    end
+
+    context 'cache folder does not exist' do
+      it 'returns true' do
+        allow(installer).to receive(:cached?).and_return(false)
+        expect(installer.should_install(nil)).to be_truthy
+      end
     end
   end
 end

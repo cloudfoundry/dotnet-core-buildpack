@@ -19,6 +19,7 @@ require_relative '../app_dir'
 module AspNetCoreBuildpack
   class Releaser
     def release(build_dir)
+      @build_dir = build_dir
       app = AppDir.new(build_dir)
       start_cmd = get_start_cmd(app)
 
@@ -34,8 +35,13 @@ module AspNetCoreBuildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib;'
-        f.write 'export PATH=$PATH:$HOME/.dotnet:$HOME;'
+        installers = AspNetCoreBuildpack::Installer.descendants
+
+        library_path = get_library_path(installers)
+        f.write "export LD_LIBRARY_PATH=#{library_path};"
+
+        binary_path = get_binary_path(installers)
+        f.write "export PATH=#{binary_path};"
       end
     end
 
@@ -46,6 +52,22 @@ default_process_types:
   web: #{start_cmd} --server.urls http://0.0.0.0:${PORT}
 EOT
       yml
+    end
+
+    def get_binary_path(installers)
+      bin_paths = installers.map do |subclass|
+        subclass.new(@build_dir, @cache_dir, @shell).path
+      end
+      bin_paths.insert(0, '$PATH')
+      bin_paths.compact.join(':')
+    end
+
+    def get_library_path(installers)
+      library_paths = installers.map do |subclass|
+        subclass.new(@build_dir, @cache_dir, @shell).library_path
+      end
+      library_paths.insert(0, '$LD_LIBRARY_PATH')
+      library_paths.compact.join(':')
     end
 
     def get_source_start_cmd(project)
@@ -68,5 +90,7 @@ EOT
     def startup_script_path(dir)
       File.join(dir, '.profile.d', 'startup.sh')
     end
+
+    attr_reader :build_dir
   end
 end

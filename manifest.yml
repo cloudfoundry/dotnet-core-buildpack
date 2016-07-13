@@ -8,6 +8,12 @@ url_to_dependency_map:
   - match: dotnet-dev-ubuntu-x64\.(.*)\.tar\.gz
     name: dotnet
     version: $1
+  - match: node(.*)(\d+\.\d+\.\d+)-linux-x64.tar.gz
+    name: nodejs
+    version: $2
+  - match: bower-(\d+\.\d+\.\d+).tgz
+    name: bower
+    version: $1
 
 dependencies:
   - name: libunwind
@@ -28,6 +34,18 @@ dependencies:
       - cflinuxfs2
     uri: https://go.microsoft.com/fwlink/?LinkID=809129
     md5: 301bf94c4253c6e07826dd6e1d79821f
+  - name: nodejs
+    version: 5.4.1
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://nodejs.org/download/release/v5.4.1/node-v5.4.1-linux-x64.tar.gz
+    md5: 59504ee13daa0b00ee5d1ed9b8293c83
+  - name: bower
+    version: 1.7.9
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://registry.npmjs.org/bower/-/bower-1.7.9.tgz
+    md5: da482af431c5906e45c7372fc6e4f160
 
 exclude_files:
   - .git/
