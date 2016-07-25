@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+$LOAD_PATH << 'cf_spec'
+require 'spec_helper'
 require 'rspec'
 require 'tmpdir'
 require 'tempfile'
-require_relative '../../../lib/buildpack.rb'
-require_relative '../../../lib/buildpack/shell.rb'
 
 describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:dir) { Dir.mktmpdir }

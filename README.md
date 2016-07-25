@@ -130,23 +130,21 @@ These steps only apply to admins who wish to install the buildpack into their Cl
 
 ## Unit Testing
 
-
 Having performed the steps from Building:
 
   ```shell
-  BUNDLE_GEMFILE=cf.Gemfile bundle exec rspec
+  BUNDLE_GEMFILE=cf.Gemfile bundle exec rake spec
   ```
 
 ### Integration Testing
 
 Integration tests are run using [Machete](https://github.com/cloudfoundry/machete).
 
-To run the tests:
+To run all the tests (unit and integration):
 
 ```
 CF_PASSWORD=admin BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-build --host=local.pcfdev.io
 ```
-
 
 ## Contributing
 
@@ -155,7 +153,6 @@ Find our guidelines [here](./CONTRIBUTING.md).
 ## Reporting Issues
 
 Open an issue on this project.
-
 
 [Hello World sample]: https://github.com/IBM-Bluemix/aspnet-core-helloworld
 [ASP.NET Core 1.0 RTM]: https://github.com/aspnet/Home/releases/tag/1.0.0

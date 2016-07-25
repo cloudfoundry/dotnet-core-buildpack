@@ -1,6 +1,8 @@
 require 'bundler/setup'
 require 'machete'
 require 'machete/matchers'
+require_relative '../lib/buildpack.rb'
+require_relative '../lib/buildpack/shell.rb'
 
 `mkdir -p log`
 Machete.logger = Machete::Logger.new('log/integration.log')
