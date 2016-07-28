@@ -63,4 +63,13 @@ describe 'CF ASP.NET Core Buildpack' do
       expect(browser).to have_body('Hello World!')
     end
   end
+
+  context 'deploying simple web app in proxied environment', :uncached do
+    let(:app_name) { 'console_app' }
+
+    it 'displays a simple text homepage' do
+      expect(app).to have_logged(/Hello World/)
+      expect(app).to use_proxy_during_staging
+    end
+  end
 end
