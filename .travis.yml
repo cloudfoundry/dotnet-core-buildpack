@@ -2,5 +2,6 @@
 sudo: false
 language: ruby
 rvm:
-  - "1.9.3-p545"
   - "2.2.4"
+gemfile:
+  - cf.Gemfile

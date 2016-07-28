@@ -1,4 +1,4 @@
 ---
   applications:
-    - name: asp_web_app
+    - name: asp_web_app_vendored
       disk_quota: 1536M

@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+$LOAD_PATH << 'cf_spec'
+require 'spec_helper'
 require 'rspec'
 require 'yaml'
 require 'tmpdir'
 require 'fileutils'
-require_relative '../../../lib/buildpack.rb'
 
 describe AspNetCoreBuildpack::Releaser do
   let(:build_dir) { Dir.mktmpdir }

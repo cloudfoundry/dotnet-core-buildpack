@@ -1,13 +1,18 @@
 # Contributing
 
-## Run the tests
+## Run the unit tests
 
-1. `bundle install`
-1. `bundle exec rspec`
+1. `BUNDLE_GEMFILE=cf.Gemfile bundle install`
+1. `BUNDLE_GEMFILE=cf.Gemfile bundle exec rake spec`
+
+## Run the full test suite (unit and integration)
+
+1. `BUNDLE_GEMFILE=cf.Gemfile bundle install`
+1. `BUNDLE_GEMFILE=cf.Gemfile buildpack-build`
 
 ## Comply with formatting and style
 
-1. `bundle exec rubocop -a`
+1. `BUNDLE_GEMFILE=cf.Gemfile bundle exec rubocop -a`
 
 ## Pull Requests
 
