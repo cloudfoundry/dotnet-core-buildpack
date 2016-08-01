@@ -21,7 +21,7 @@ module AspNetCoreBuildpack
     def cp(from, to, out)
       before = files_in_dest(to)
       FileUtils.mkdir_p(to)
-      FileUtils.cp_r(from, to)
+      FileUtils.cp_r(from, to, remove_destination: true)
       after = files_in_dest(to)
 
       out.print("Copied #{(after - before).length} files from #{from} to #{to}")

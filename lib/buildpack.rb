@@ -34,10 +34,8 @@ module AspNetCoreBuildpack
     Compiler.new(
       build_dir,
       cache_dir,
-      LibunwindInstaller.new(build_dir, shell),
-      DotnetInstaller.new(shell),
-      Dotnet.new(shell),
       Copier.new,
+      AspNetCoreBuildpack::Installer.descendants.sort_by!(&:install_order).map { |b| b.new(build_dir, cache_dir, shell) },
       out)
   end
 

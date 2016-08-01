@@ -22,22 +22,22 @@ require 'fileutils'
 
 describe AspNetCoreBuildpack::Compiler do
   subject(:compiler) do
-    AspNetCoreBuildpack::Compiler.new(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
+    described_class.new(build_dir, cache_dir, copier, installer.descendants, out)
   end
 
   before do
     allow($stdout).to receive(:write)
   end
 
-  let(:libunwind_binary) { double(:libunwind_binary, extract: nil) }
+  let(:installer) { double(:installer, descendants: [libunwind_installer]) }
+  let(:libunwind_installer) { double(:libunwind_installer, install_order: 0, install_description: 'Installing libunwind', cache_dir: 'libunwind', should_install: true, install: nil) }
+
   let(:copier) { double(:copier, cp: nil) }
-  let(:dotnet_installer) { double(:dotnet_installer, install: nil, should_install: true) }
-  let(:dotnet) { double(:dotnet, restore: nil) }
   let(:build_dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
 
   let(:out) do
-    double(:out, step: double(:unknown_step, succeed: nil)).tap do |out|
+    double(:out, step: double(:unknown_step, succeed: nil, print: nil)).tap do |out|
       allow(out).to receive(:warn)
     end
   end
@@ -72,6 +72,24 @@ describe AspNetCoreBuildpack::Compiler do
     end
   end
 
+  describe 'Running Installers' do
+    context 'Installer should not be run' do
+      it 'does not run the installer' do
+        allow(libunwind_installer).to receive(:should_install).and_return(false)
+        expect(libunwind_installer).not_to receive(:install)
+        compiler.compile
+      end
+    end
+
+    context 'Installer should be run' do
+      it 'runs the installer' do
+        allow(libunwind_installer).to receive(:should_install).and_return(true)
+        expect(libunwind_installer).to receive(:install)
+        compiler.compile
+      end
+    end
+  end
+
   describe 'Steps' do
     describe 'Restoring Cache' do
       it_behaves_like 'step', 'Restoring files from buildpack cache', :restore_cache
@@ -79,11 +97,6 @@ describe AspNetCoreBuildpack::Compiler do
       context 'cache does not exist' do
         it 'skips restore' do
           expect(copier).not_to receive(:cp).with(match(cache_dir), anything, anything)
-          compiler.compile
-        end
-
-        it 'binary files extracted' do
-          expect(libunwind_binary).to receive(:extract)
           compiler.compile
         end
       end
@@ -100,65 +113,30 @@ describe AspNetCoreBuildpack::Compiler do
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
           compiler.compile
         end
-
-        it 'binary files not extracted' do
-          expect(libunwind_binary).not_to receive(:extract)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Installing Dotnet CLI' do
-      it_behaves_like 'step', 'Installing Dotnet CLI', :install_dotnet
-
-      it 'installs dotnet cli' do
-        expect(dotnet_installer).to receive(:install).with(build_dir, anything)
-        compiler.compile
-      end
-
-      context 'when the app was published' do
-        it 'skips installing Dotnet CLI' do
-          allow(dotnet_installer).to receive(:should_install).and_return(false)
-          expect(dotnet_installer).not_to receive(:install).with(build_dir, anything)
-          compiler.compile
-        end
-      end
-    end
-
-    describe 'Restoring dependencies with Dotnet CLI' do
-      it_behaves_like 'step', 'Restoring dependencies with Dotnet CLI', :restore_dependencies
-
-      it 'runs dotnet restore' do
-        expect(dotnet).to receive(:restore).with(build_dir, anything)
-        compiler.compile
-      end
-
-      context 'when the app was published' do
-        it 'skips running dotnet restore' do
-          allow(dotnet_installer).to receive(:should_install).and_return(false)
-          expect(dotnet).not_to receive(:restore)
-          compiler.compile
-        end
       end
     end
 
     describe 'Saving to buildpack cache' do
       it_behaves_like 'step', 'Saving to buildpack cache', :save_cache
 
+      before(:each) do
+        Dir.mkdir(File.join(build_dir, 'libunwind'))
+      end
+
       it 'copies files to cache dir' do
         expect(copier).to receive(:cp).with("#{build_dir}/libunwind", cache_dir, anything)
-        compiler.compile
+        subject.send(:save_cache, out)
       end
 
       context 'when the cache already exists' do
         before(:each) do
-          Dir.mkdir(File.join(build_dir, '.nuget'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
+          Dir.mkdir(File.join(build_dir, '.nuget'))
         end
 
         it 'copies only .nuget to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.nuget", cache_dir, anything)
-          compiler.compile
+          subject.send(:save_cache, out)
         end
       end
     end
