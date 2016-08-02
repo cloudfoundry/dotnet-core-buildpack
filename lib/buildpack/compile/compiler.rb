@@ -14,33 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'libunwind_installer.rb'
-require_relative 'dotnet_installer.rb'
-require_relative 'dotnet.rb'
 require_relative '../bp_version.rb'
+require_relative './installers/installer.rb'
+require_relative './installers/libunwind_installer.rb'
+require_relative './installers/dotnet_installer.rb'
+require_relative './installers/nodejs_installer.rb'
+require_relative './installers/bower_installer.rb'
 
 require 'json'
 require 'pathname'
 
 module AspNetCoreBuildpack
   class Compiler
-    def initialize(build_dir, cache_dir, libunwind_binary, dotnet_installer, dotnet, copier, out)
+    NUGET_CACHE_DIR = '.nuget'.freeze
+
+    def initialize(build_dir, cache_dir, copier, installers, out)
       @build_dir = build_dir
       @cache_dir = cache_dir
-      @libunwind_binary = libunwind_binary
-      @dotnet_installer = dotnet_installer
-      @dotnet = dotnet
       @copier = copier
       @out = out
+      @app_dir = AppDir.new(@build_dir)
+      @shell = AspNetCoreBuildpack.shell
+      @installers = installers
     end
 
     def compile
       puts "ASP.NET Core buildpack version: #{BuildpackVersion.new.version}\n"
       puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
-      step('Extracting libunwind', method(:extract_libunwind))
-      step('Installing Dotnet CLI', method(:install_dotnet)) if dotnet_installer.should_install(build_dir)
-      step('Restoring dependencies with Dotnet CLI', method(:restore_dependencies)) if dotnet_installer.should_install(build_dir)
+      run_installers
+      step('Restoring dependencies with Dotnet CLI', @dotnet.method(:restore)) if dotnet_should_restore
       step('Saving to buildpack cache', method(:save_cache))
       puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
@@ -51,28 +54,29 @@ module AspNetCoreBuildpack
 
     private
 
-    def extract_libunwind(out)
-      libunwind_binary.extract(File.join(build_dir, 'libunwind'), out) unless File.exist? File.join(build_dir, 'libunwind')
+    def dotnet_should_restore
+      dotnet.should_restore(@app_dir) unless dotnet.nil?
+    end
+
+    def run_installers
+      @installers.each do |installer|
+        @dotnet = installer if /(.*)::DotnetInstaller/.match(installer.class.name)
+        step(installer.install_description, installer.method(:install)) if installer.should_install(@app_dir)
+      end
     end
 
     def restore_cache(out)
-      copier.cp(File.join(cache_dir, '.dotnet'), build_dir, out) if File.exist? File.join(cache_dir, '.dotnet')
-      copier.cp(File.join(cache_dir, '.nuget'), build_dir, out) if File.exist? File.join(cache_dir, '.nuget')
-      copier.cp(File.join(cache_dir, 'libunwind'), build_dir, out) if File.exist? File.join(cache_dir, 'libunwind')
-    end
-
-    def install_dotnet(out)
-      dotnet_installer.install(build_dir, out) unless File.exist? File.join(build_dir, '.dotnet')
-    end
-
-    def restore_dependencies(out)
-      dotnet.restore(build_dir, out)
+      @installers.map(&:cache_dir).compact.each do |installer_cache_dir|
+        copier.cp(File.join(cache_dir, installer_cache_dir), build_dir, out) if File.exist? File.join(cache_dir, installer_cache_dir)
+      end
+      copier.cp(File.join(cache_dir, NUGET_CACHE_DIR), build_dir, out) if File.exist? File.join(cache_dir, NUGET_CACHE_DIR)
     end
 
     def save_cache(out)
-      copier.cp(File.join(build_dir, '.dotnet'), cache_dir, out) if File.exist? File.join(build_dir, '.dotnet')
-      copier.cp(File.join(build_dir, '.nuget'), cache_dir, out) if File.exist? File.join(build_dir, '.nuget')
-      copier.cp(File.join(build_dir, 'libunwind'), cache_dir, out) unless File.exist? File.join(cache_dir, 'libunwind')
+      @installers.map(&:cache_dir).compact.each do |installer_cache_dir|
+        copier.cp(File.join(build_dir, installer_cache_dir), cache_dir, out) if File.exist? File.join(build_dir, installer_cache_dir)
+      end
+      copier.cp(File.join(build_dir, NUGET_CACHE_DIR), cache_dir, out) if File.exist? File.join(build_dir, NUGET_CACHE_DIR)
     end
 
     def step(description, method)
@@ -87,14 +91,14 @@ module AspNetCoreBuildpack
       s.succeed
     end
 
+    attr_reader :app_dir
     attr_reader :build_dir
     attr_reader :cache_dir
-    attr_reader :libunwind_binary
-    attr_reader :dotnet_installer
-    attr_reader :mozroots
     attr_reader :dotnet
+    attr_reader :installers
     attr_reader :copier
     attr_reader :out
+    attr_reader :shell
   end
 
   class StepFailedError < StandardError

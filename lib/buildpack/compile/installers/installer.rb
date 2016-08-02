@@ -14,21 +14,47 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../app_dir'
+require_relative '../../app_dir'
 
 module AspNetCoreBuildpack
-  class Dotnet
-    def initialize(shell)
-      @shell = shell
+  class Installer
+    def self.descendants
+      ObjectSpace.each_object(Class).select { |subclass| subclass < self }
     end
 
-    def restore(dir, out)
-      @shell.env['HOME'] = dir
-      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{dir}/libunwind/lib"
-      @shell.env['PATH'] = "$PATH:#{dir}/.dotnet"
-      project_list = AppDir.new(dir).with_project_json.join(' ')
-      cmd = "bash -c 'cd #{dir}; dotnet restore --verbosity minimal #{project_list}'"
-      @shell.exec(cmd, out)
+    def self.install_order
+      1
     end
+
+    def cache_dir
+      nil
+    end
+
+    def install_description
+      'Installing'
+    end
+
+    def library_path
+      nil
+    end
+
+    def path
+      nil
+    end
+
+    def should_install(_app_dir)
+      false
+    end
+
+    protected
+
+    def buildpack_root
+      current_dir = File.expand_path(File.dirname(__FILE__))
+      File.dirname(File.dirname(File.dirname(File.dirname(current_dir))))
+    end
+
+    attr_reader :build_dir
+    attr_reader :bp_cache_dir
+    attr_reader :shell
   end
 end
