@@ -41,6 +41,7 @@ module AspNetCoreBuildpack
       out.print("libunwind version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
+      write_version_file(VERSION)
     end
 
     def install_description
@@ -62,7 +63,10 @@ module AspNetCoreBuildpack
     private
 
     def cached?
-      File.exist? File.join(@build_dir, CACHE_DIR)
+      # File.open can't create the directory structure
+      return false unless File.exist? File.join(@build_dir, CACHE_DIR)
+      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == VERSION }
+      !cached_version.empty?
     end
 
     def dependency_name

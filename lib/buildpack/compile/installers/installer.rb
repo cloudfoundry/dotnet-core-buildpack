@@ -18,6 +18,8 @@ require_relative '../../app_dir'
 
 module AspNetCoreBuildpack
   class Installer
+    VERSION_FILE = 'VERSION'.freeze
+
     def self.descendants
       ObjectSpace.each_object(Class).select { |subclass| subclass < self }
     end
@@ -51,6 +53,16 @@ module AspNetCoreBuildpack
     def buildpack_root
       current_dir = File.expand_path(File.dirname(__FILE__))
       File.dirname(File.dirname(File.dirname(File.dirname(current_dir))))
+    end
+
+    def version_file
+      File.join(@build_dir, cache_dir, VERSION_FILE) unless cache_dir.nil? || @build_dir.nil?
+    end
+
+    def write_version_file(version)
+      File.open(version_file, 'w') do |f|
+        f.write(version)
+      end unless version_file.nil?
     end
 
     attr_reader :build_dir

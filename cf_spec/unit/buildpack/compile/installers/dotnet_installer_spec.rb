@@ -25,7 +25,7 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
-  subject(:installer) { AspNetCoreBuildpack::DotnetInstaller.new(dir, cache_dir, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, shell) }
 
   describe '#cached?' do
     context 'cache directory exists in the build directory' do
@@ -33,20 +33,41 @@ describe AspNetCoreBuildpack::DotnetInstaller do
         FileUtils.mkdir_p(File.join(dir, '.dotnet'))
       end
 
-      it 'returns true' do
-        expect(installer.send(:cached?)).to be_truthy
+      context 'cached version is the same as the current version being installed' do
+        before do
+          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview2-003121'
+          end
+        end
+
+        it 'returns true' do
+          allow(subject).to receive(:version).and_return('1.0.0-preview2-003121')
+          expect(subject.send(:cached?)).to be_truthy
+        end
+      end
+
+      context 'cached version is different than the current version being installed' do
+        before do
+          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview1-002702'
+          end
+        end
+
+        it 'returns false' do
+          expect(subject.send(:cached?)).not_to be_truthy
+        end
       end
     end
 
     context 'cache directory does not exist in the build directory' do
       it 'returns false' do
-        expect(installer.send(:cached?)).not_to be_truthy
+        expect(subject.send(:cached?)).not_to be_truthy
       end
     end
   end
 
   describe '#install' do
-    it 'downloads file with compile-extensions' do
+    it 'downloads file with compile-extensions and writes a version file' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first
@@ -54,6 +75,7 @@ describe AspNetCoreBuildpack::DotnetInstaller do
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/dotnet version/)
+      expect(subject).to receive(:write_version_file).with(anything)
       subject.install(out)
     end
   end
@@ -64,8 +86,8 @@ describe AspNetCoreBuildpack::DotnetInstaller do
         cmd = args.first
         expect(cmd).to match(/dotnet restore/)
       end
-      installer.should_restore(app_dir)
-      installer.restore(out)
+      subject.should_restore(app_dir)
+      subject.restore(out)
     end
   end
 
@@ -76,13 +98,13 @@ describe AspNetCoreBuildpack::DotnetInstaller do
       end
 
       it 'returns false' do
-        expect(installer.should_install(self_contained_app_dir)).not_to be_truthy
+        expect(subject.should_install(self_contained_app_dir)).not_to be_truthy
       end
     end
 
     context 'app is not self-contained' do
       it 'returns true' do
-        expect(installer.should_install(app_dir)).to be_truthy
+        expect(subject.should_install(app_dir)).to be_truthy
       end
     end
   end
@@ -90,14 +112,25 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   describe '#should_restore' do
     context 'app is portable or self-contained' do
       it 'returns false' do
-        expect(installer.should_restore(self_contained_app_dir)).not_to be_truthy
+        expect(subject.should_restore(self_contained_app_dir)).not_to be_truthy
       end
     end
 
     context 'app is not portable or self-contained' do
       it 'returns true' do
-        expect(installer.should_restore(app_dir)).to be_truthy
+        expect(subject.should_restore(app_dir)).to be_truthy
       end
+    end
+  end
+
+  describe '#write_version_file' do
+    before do
+      FileUtils.mkdir_p(File.join(dir, '.dotnet'))
+    end
+
+    it 'writes a version file with the current .NET version' do
+      subject.send(:write_version_file, '1.0.0')
+      expect(File.exist?(File.join(dir, '.dotnet', 'VERSION'))).to be_truthy
     end
   end
 end

@@ -43,6 +43,7 @@ module AspNetCoreBuildpack
       out.print("Bower version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("PATH=$PATH:#{npm_path} npm install -g /tmp/#{dependency_name}", out)
+      write_version_file(VERSION)
     end
 
     def install_description
@@ -61,13 +62,25 @@ module AspNetCoreBuildpack
     private
 
     def cached?
-      npm_path = Dir.glob(File.join(@build_dir, '.node', '*', 'bin')).last
-      bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
-      File.exist? bower_path unless bower_path.nil?
+      # File.open can't create the directory structure
+      return false if version_file.nil?
+      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
     end
 
     def dependency_name
       "bower-#{version}.tgz"
+    end
+
+    def node_path
+      nil if @build_dir.nil?
+      Dir.glob(File.join(@build_dir, '.node', '*')).last
+    end
+
+    def version_file
+      npm_path = File.join(node_path, 'lib', 'node_modules') unless node_path.nil?
+      bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
+      File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end
   end
 end

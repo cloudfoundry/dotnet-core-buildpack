@@ -41,6 +41,7 @@ module AspNetCoreBuildpack
 
       out.print("Node.js version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      FileUtils.rm_rf(dest_dir) if File.exist?(dest_dir)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
@@ -49,7 +50,7 @@ module AspNetCoreBuildpack
     end
 
     def path
-      bin_folder if cached?
+      bin_folder if File.exist?(File.join(@build_dir, cache_dir))
     end
 
     def should_install(app_dir)

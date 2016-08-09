@@ -76,6 +76,8 @@ describe AspNetCoreBuildpack::Releaser do
       let(:project_json) { '{"commands": {"kestrel": "whatever"}}' }
 
       let(:profile_d_script) do
+        allow_any_instance_of(AspNetCoreBuildpack::DotnetInstaller).to receive(:cached?).and_return(true)
+        allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
         subject.release(build_dir)
         IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
       end

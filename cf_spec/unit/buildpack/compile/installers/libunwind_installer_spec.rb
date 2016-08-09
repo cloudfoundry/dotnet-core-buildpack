@@ -39,14 +39,34 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
         FileUtils.mkdir_p(File.join(dir, 'libunwind'))
       end
 
-      it 'returns true' do
-        expect(installer.send(:cached?)).to be_truthy
+      context 'cached version is the same as the current version being installed' do
+        before do
+          File.open(File.join(dir, 'libunwind', 'VERSION'), 'w') do |f|
+            f.write '1.1'
+          end
+        end
+
+        it 'returns true' do
+          expect(subject.send(:cached?)).to be_truthy
+        end
+      end
+
+      context 'cached version is different than the current version being installed' do
+        before do
+          File.open(File.join(dir, 'libunwind', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview1-002702'
+          end
+        end
+
+        it 'returns false' do
+          expect(subject.send(:cached?)).not_to be_truthy
+        end
       end
     end
 
     context 'cache directory does not exist in the build directory' do
       it 'returns false' do
-        expect(installer.send(:cached?)).not_to be_truthy
+        expect(subject.send(:cached?)).not_to be_truthy
       end
     end
   end
@@ -60,6 +80,7 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/libunwind version/)
+      expect(subject).to receive(:write_version_file).with(anything)
       subject.install(out)
     end
   end
@@ -67,15 +88,15 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
   describe '#should_install' do
     context 'cache folder exists' do
       it 'returns false' do
-        allow(installer).to receive(:cached?).and_return(true)
-        expect(installer.should_install(nil)).not_to be_truthy
+        allow(subject).to receive(:cached?).and_return(true)
+        expect(subject.should_install(nil)).not_to be_truthy
       end
     end
 
     context 'cache folder does not exist' do
       it 'returns true' do
-        allow(installer).to receive(:cached?).and_return(false)
-        expect(installer.should_install(nil)).to be_truthy
+        allow(subject).to receive(:cached?).and_return(false)
+        expect(subject.should_install(nil)).to be_truthy
       end
     end
   end
