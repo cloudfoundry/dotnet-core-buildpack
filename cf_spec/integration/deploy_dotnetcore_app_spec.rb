@@ -42,9 +42,9 @@ describe 'CF ASP.NET Core Buildpack' do
 
       browser.visit_path('/api/products')
       expected_json_response = [
-        { Id: 1, Name: 'Computer' },
-        { Id: 2, Name: 'Radio' },
-        { Id: 3, Name: 'Apple' }
+        { id: 1, name: 'Computer' },
+        { id: 2, name: 'Radio' },
+        { id: 3, name: 'Apple' }
       ]
       expect(browser).to have_body(expected_json_response.to_json)
       expect(browser).to have_header('application/json; charset=utf-8')
