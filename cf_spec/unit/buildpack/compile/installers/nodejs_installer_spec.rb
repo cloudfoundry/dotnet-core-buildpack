@@ -93,7 +93,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
         context 'has both npm and bower commands' do
           before do
             FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
-            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "prebuild":["npm install", "bower install"] }}') }
+            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile":["npm install", "bower install"] }}') }
           end
 
           it 'returns true' do
@@ -103,7 +103,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
 
         context 'has only npm command' do
           before do
-            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "prebuild": "npm install" }}') }
+            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile": "npm install" }}') }
           end
 
           it 'returns true' do
@@ -113,7 +113,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
 
         context 'has only bower command' do
           before do
-            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "prebuild": "bower install" }}') }
+            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile": "bower install" }}') }
           end
 
           it 'returns true' do
@@ -123,7 +123,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
 
         context 'has no bower or npm command' do
           before do
-            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "prebuild": "minify js" }}') }
+            File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile": "minify js" }}') }
           end
 
           it 'returns false' do
