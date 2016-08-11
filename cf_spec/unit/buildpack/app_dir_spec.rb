@@ -22,7 +22,7 @@ require 'fileutils'
 
 describe AspNetCoreBuildpack::AppDir do
   let(:dir) { Dir.mktmpdir }
-  subject(:appdir) { AspNetCoreBuildpack::AppDir.new(dir) }
+  subject(:appdir) { described_class.new(dir) }
 
   context 'with multiple projects' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
@@ -43,7 +43,7 @@ describe AspNetCoreBuildpack::AppDir do
     end
 
     it 'finds all project.json files from non-hidden directories' do
-      expect(appdir.with_project_json).to match_array([Pathname.new('src/proj1'), Pathname.new('src/föö')])
+      expect(subject.with_project_json).to match_array([Pathname.new('src/proj1'), Pathname.new('src/föö')])
     end
 
     context '.deployment file exists' do
@@ -55,7 +55,7 @@ describe AspNetCoreBuildpack::AppDir do
         end
 
         it 'finds specified project' do
-          expect(appdir.deployment_file_project).to eq(Pathname.new('src/föö'))
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö'))
         end
       end
 
@@ -67,7 +67,7 @@ describe AspNetCoreBuildpack::AppDir do
         end
 
         it 'does not find a project' do
-          expect(appdir.deployment_file_project).to be_nil
+          expect(subject.deployment_file_project).to be_nil
         end
       end
 
@@ -81,7 +81,7 @@ describe AspNetCoreBuildpack::AppDir do
 
         context 'but does not specify a project' do
           it 'does not find a project' do
-            expect(appdir.deployment_file_project).to be_nil
+            expect(subject.deployment_file_project).to be_nil
           end
         end
 
@@ -93,7 +93,7 @@ describe AspNetCoreBuildpack::AppDir do
           end
 
           it 'finds specified project' do
-            expect(appdir.deployment_file_project).to eq(Pathname.new('src/proj1'))
+            expect(subject.deployment_file_project).to eq(Pathname.new('src/proj1'))
           end
         end
       end
@@ -101,12 +101,12 @@ describe AspNetCoreBuildpack::AppDir do
 
     context 'no .deployment file exists' do
       it 'does not find a project' do
-        expect(appdir.deployment_file_project).to be_nil
+        expect(subject.deployment_file_project).to be_nil
       end
 
       it 'raises an error to tell the user that they need a .deployment file' do
         error_message = 'Multiple paths contain a project.json file, but no .deployment file was used'
-        expect { appdir.main_project_path }.to raise_error(error_message)
+        expect { subject.main_project_path }.to raise_error(error_message)
       end
     end
 
@@ -116,7 +116,7 @@ describe AspNetCoreBuildpack::AppDir do
       end
 
       it 'determines app name based on runtimeconfig.json file name' do
-        expect(appdir.published_project).to match('proj1')
+        expect(subject.published_project).to match('proj1')
       end
     end
   end

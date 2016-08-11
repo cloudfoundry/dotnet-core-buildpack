@@ -25,23 +25,42 @@ describe AspNetCoreBuildpack::BowerInstaller do
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
-  subject(:installer) { AspNetCoreBuildpack::BowerInstaller.new(dir, cache_dir, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, shell) }
 
   describe '#cached?' do
     context 'cache directory exists in the build directory' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'bin'))
-        File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
+        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower'))
       end
 
-      it 'returns true' do
-        expect(installer.send(:cached?)).to be_truthy
+      context 'cached version is the same as the current version being installed' do
+        before do
+          File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+            f.write '1.7.9'
+          end
+        end
+
+        it 'returns true' do
+          expect(subject.send(:cached?)).to be_truthy
+        end
+      end
+
+      context 'cached version is different than the current version being installed' do
+        before do
+          File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview1-002702'
+          end
+        end
+
+        it 'returns false' do
+          expect(subject.send(:cached?)).not_to be_truthy
+        end
       end
     end
 
     context 'cache directory does not exist in the build directory' do
       it 'returns false' do
-        expect(installer.send(:cached?)).not_to be_truthy
+        expect(subject.send(:cached?)).not_to be_truthy
       end
     end
   end
@@ -50,10 +69,11 @@ describe AspNetCoreBuildpack::BowerInstaller do
     context 'NPM is already installed' do
       before do
         FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower'))
         File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
       end
 
-      it 'downloads file with compile-extensions' do
+      it 'downloads file with compile-extensions and writes a version file' do
         allow(shell).to receive(:exec).and_return(0)
         expect(shell).to receive(:exec) do |*args|
           cmd = args.first
@@ -64,6 +84,7 @@ describe AspNetCoreBuildpack::BowerInstaller do
           expect(cmd).to match(/npm/)
         end
         expect(out).to receive(:print).with(/Bower version/)
+        expect(subject).to receive(:write_version_file).with(anything)
         subject.install(out)
       end
     end
@@ -78,7 +99,7 @@ describe AspNetCoreBuildpack::BowerInstaller do
   describe '#should_install' do
     context 'app is self-contained' do
       it 'returns false' do
-        expect(installer.should_install(self_contained_app_dir)).not_to be_truthy
+        expect(subject.should_install(self_contained_app_dir)).not_to be_truthy
       end
     end
 
@@ -89,7 +110,7 @@ describe AspNetCoreBuildpack::BowerInstaller do
       end
 
       it 'returns true when scripts section exists' do
-        expect(installer.should_install(app_dir)).to be_truthy
+        expect(subject.should_install(app_dir)).to be_truthy
       end
     end
   end

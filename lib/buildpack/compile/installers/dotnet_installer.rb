@@ -39,6 +39,7 @@ module AspNetCoreBuildpack
       out.print("dotnet version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
+      write_version_file(@version)
     end
 
     def install_description
@@ -46,7 +47,7 @@ module AspNetCoreBuildpack
     end
 
     def path
-      bin_folder if cached?
+      bin_folder if File.exist?(File.join(@build_dir, cache_dir))
     end
 
     def restore(out)
@@ -81,7 +82,10 @@ module AspNetCoreBuildpack
     end
 
     def cached?
-      File.exist? File.join(@build_dir, CACHE_DIR)
+      # File.open can't create the directory structure
+      return false unless File.exist? File.join(@build_dir, CACHE_DIR)
+      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
     end
 
     def dependency_name
