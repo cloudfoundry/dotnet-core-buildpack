@@ -50,7 +50,7 @@ module AspNetCoreBuildpack
 
     def scripts_section_exists?(check_commands)
       return_value = false
-      check_keys = ['prebuild'.freeze, 'postbuild'.freeze, 'prerestore'.freeze, 'postrestore'.freeze]
+      check_keys = ['precompile'.freeze, 'postcompile'.freeze]
       Dir.glob(File.join(@build_dir, '**', 'project.json'.freeze)).each do |project_json|
         scripts = get_scripts_section(project_json)
         next unless scripts

@@ -85,7 +85,7 @@ describe AspNetCoreBuildpack::BowerInstaller do
     context 'app is not self-contained' do
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
-        File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "prebuild": "bower install" }}') }
+        File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile": "bower install" }}') }
       end
 
       it 'returns true when scripts section exists' do
