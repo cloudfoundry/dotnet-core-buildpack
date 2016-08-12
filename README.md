@@ -29,9 +29,9 @@ cf push my_app -b https://github.com/cloudfoundry-community/dotnet-core-buildpac
 
 Keep in mind that this support is provided only to allow users to take some time to update their applications to use the Dotnet CLI, and you should switch to using the main branch of the buildpack (using the command further above) as soon as possible.
 
-## Using samples from the cli-samples repository
+## Configuring your application to listen on the proper port
 
-The samples provided in the [cli-samples repo](https://github.com/aspnet/cli-samples/) will work with this buildpack but they need a slight modification to the `Main` method.  Before the line `var host = new WebHostBuilder()` add these lines:
+The samples provided in the [cli-samples repo](https://github.com/aspnet/cli-samples/) and the templates provided by Visual Studio and Yeoman will work with this buildpack but they need a slight modification to the `Main` method to make the application listen on the port specified by the `$PORT` environment variable which is set automatically by Cloud Foundry.  Before the line `var host = new WebHostBuilder()` add these lines:
 
 ```c#
 var config = new ConfigurationBuilder()
