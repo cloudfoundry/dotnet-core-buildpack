@@ -26,8 +26,32 @@ describe AspNetCoreBuildpack::DotnetVersion do
 
   describe '#version' do
     context 'global.json does not exist' do
-      it 'resolves to the latest version' do
-        expect(subject.version(dir, out)).to eq(latest_version)
+      context '*.runtimeconfig.json does not exist' do
+        it 'resolves to the latest version' do
+          expect(subject.version(dir, out)).to eq(latest_version)
+        end
+      end
+
+      context 'invalid *.runtimeconfig.json exists' do
+        before do
+          json = '{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App" } } }'
+          IO.write(File.join(dir, 'testapp.runtimeconfig.json'), json)
+        end
+
+        it 'resolves to the latest version' do
+          expect(subject.version(dir, out)).to eq(latest_version)
+        end
+      end
+
+      context 'valid *.runtimeconfig.json exists' do
+        before do
+          json = '{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "1.0.0-rc2-3002702" } } }'
+          IO.write(File.join(dir, 'testapp.runtimeconfig.json'), json)
+        end
+
+        it 'maps the version specified in *.runtimeconfig.json' do
+          expect(subject.version(dir, out)).to eq('1.0.0-preview1-002702')
+        end
       end
     end
 

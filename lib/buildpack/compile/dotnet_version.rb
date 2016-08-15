@@ -18,24 +18,49 @@ require 'json'
 
 module AspNetCoreBuildpack
   class DotnetVersion
-    DOTNET_VERSION_FILE_NAME = 'global.json'.freeze
+    GLOBAL_JSON_FILE_NAME = 'global.json'.freeze
     DEFAULT_DOTNET_VERSION = '1.0.0-preview2-003121'.freeze
+    DOTNET_RUNTIME_VERSIONS = { '1.0.0-rc2-3002702'.freeze => '1.0.0-preview1-002702'.freeze,
+                                '1.0.0'.freeze => '1.0.0-preview2-003121'.freeze }.freeze
 
     def version(dir, out)
       dotnet_version = DEFAULT_DOTNET_VERSION
-      version_file = File.expand_path(File.join(dir, DOTNET_VERSION_FILE_NAME))
-      if File.exist?(version_file)
-        begin
-          global_props = JSON.parse(File.read(version_file, encoding: 'bom|utf-8'))
-          if global_props.key?('sdk')
-            sdk = global_props['sdk']
-            dotnet_version = sdk['version'] if sdk.key?('version')
-          end
-        rescue
-          out.warn("File #{version_file} is not valid JSON")
-        end
+      global_json_file = File.expand_path(File.join(dir, GLOBAL_JSON_FILE_NAME))
+      runtimeconfig_json_file = Dir.glob(File.join(dir, '*.runtimeconfig.json')).first
+      if File.exist?(global_json_file)
+        dotnet_version = get_version_from_global_json(global_json_file, out)
+      elsif !runtimeconfig_json_file.nil?
+        dotnet_version = get_version_from_runtime_config_json(runtimeconfig_json_file, out)
       end
       dotnet_version
+    end
+
+    private
+
+    def get_version_from_global_json(global_json_file, out)
+      begin
+        global_props = JSON.parse(File.read(global_json_file, encoding: 'bom|utf-8'))
+        if global_props.key?('sdk')
+          sdk = global_props['sdk']
+          return sdk['version'] if sdk.key?('version')
+        end
+      rescue
+        out.warn("File #{global_json_file} is not valid JSON")
+      end
+      DEFAULT_DOTNET_VERSION
+    end
+
+    def get_version_from_runtime_config_json(runtime_config_json_file, out)
+      begin
+        global_props = JSON.parse(File.read(runtime_config_json_file, encoding: 'bom|utf-8'))
+        if global_props.key?('runtimeOptions') && global_props['runtimeOptions'].key?('framework')
+          framework = global_props['runtimeOptions']['framework']
+          return DOTNET_RUNTIME_VERSIONS[framework['version']] if framework.key?('version') && DOTNET_RUNTIME_VERSIONS.key?(framework['version'])
+        end
+      rescue
+        out.warn("File #{runtime_config_json_file} is not valid JSON")
+      end
+      DEFAULT_DOTNET_VERSION
     end
   end
 end
