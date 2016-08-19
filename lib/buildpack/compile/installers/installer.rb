@@ -21,7 +21,7 @@ module AspNetCoreBuildpack
     VERSION_FILE = 'VERSION'.freeze
 
     def self.descendants
-      ObjectSpace.each_object(Class).select { |subclass| subclass < self }
+      [BowerInstaller, DotnetInstaller, LibunwindInstaller, NodeJsInstaller]
     end
 
     def self.install_order
