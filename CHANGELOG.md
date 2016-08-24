@@ -1,11 +1,16 @@
-## v0.9.0 June 30, 2016
+# Changelog
 
-This version of the buildpack includes the following changes:
+## v1.0.0 Aug 24, 2016
+
+- Add support for running pre and post compile scripts using NPM and Bower to install front-end javascript and css libraries.
+
+## v0.9.0 June 30, 2016
 
 - Add support for the .NET CLI 1.0 Preview 2 build and .NET Core 1.0 RTM
 - The default .NET CLI version to be installed is now 1.0.0-preview2-003121
 
 ## v0.8.0 May 16, 2016
+
 - Switch to .NET CLI from DNX
 - Add support for RC2 apps
 - Remove support for RC1 and lower apps using DNX
@@ -14,12 +19,14 @@ This version of the buildpack includes the following changes:
 - Remove support for lucid64 stack
 
 ## v0.7.0 Sep 30, 2015
+
 - Make NuGet.Config optional, detect only looks for project.json files
 - Support published apps for offline mode and faster staging
 - Remove Mono
 - Switch to .NET Core
 
 ## v0.6.0 Sep 10, 2015
+
 - Add support for beta7 apps
 
 ## v0.5.0 Aug 17, 2015
