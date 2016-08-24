@@ -91,6 +91,19 @@ See [Types of portability in .Net Core][] for more information on how to make th
 
 Also note that if you are using a `manifest.yml` file in your application, you can [specify the path][] in your manifest.yml to point to the publish output folder so that you don't have to be in that folder to push the application to Cloud Foundry.
 
+## Clearing NuGet package cache
+
+In some cases, it may be necessary to clear the NuGet packages which are cached in the buildpack.  For example, if you have added pre-release packages to test a new feature and then decided to revert back to the main NuGet feed, those packages may need to be removed from the cache to avoid conflicts.  To clear the NuGet cache, set an environment variable named `CACHE_NUGET_PACKAGES` to `false` in your manifest.yml file and push the application.  This will disable caching NuGet packages in the buildpack.
+
+```yml
+---
+applications:
+- name: sample-aspnetcore-app
+  memory: 512M
+  env:
+    CACHE_NUGET_PACKAGES: false
+```
+
 ## Building
 
 These steps only apply to admins who wish to install the buildpack into their Cloud Foundry deployment. They are meant to be run in a Linux shell and assume that git, Ruby, and the bundler gem are already installed.

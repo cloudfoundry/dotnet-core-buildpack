@@ -28,6 +28,10 @@ module AspNetCoreBuildpack
       1
     end
 
+    def cached?
+      false
+    end
+
     def cache_dir
       nil
     end
@@ -53,6 +57,10 @@ module AspNetCoreBuildpack
     def buildpack_root
       current_dir = File.expand_path(File.dirname(__FILE__))
       File.dirname(File.dirname(File.dirname(File.dirname(current_dir))))
+    end
+
+    def cached_version_file
+      File.join(@bp_cache_dir, cache_dir, VERSION_FILE) unless cache_dir.nil? || @bp_cache_dir.nil?
     end
 
     def version_file

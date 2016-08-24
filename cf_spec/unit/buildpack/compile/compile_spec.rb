@@ -30,7 +30,13 @@ describe AspNetCoreBuildpack::Compiler do
   end
 
   let(:installer) { double(:installer, descendants: [libunwind_installer]) }
-  let(:libunwind_installer) { double(:libunwind_installer, install_order: 0, install_description: 'Installing libunwind', cache_dir: 'libunwind', should_install: true, install: nil) }
+  let(:libunwind_installer) do
+    double(:libunwind_installer, install_order: 0, install: nil).tap do |libunwind_installer|
+      allow(libunwind_installer).to receive(:install_description)
+      allow(libunwind_installer).to receive(:cache_dir).and_return('libunwind')
+      allow(libunwind_installer).to receive(:should_install).and_return(true)
+    end
+  end
 
   let(:copier) { double(:copier, cp: nil) }
   let(:build_dir) { Dir.mktmpdir }
@@ -51,12 +57,14 @@ describe AspNetCoreBuildpack::Compiler do
 
     it 'outputs step name' do
       expect(out).to receive(:step).with(expected_message)
-      compiler.compile
+      allow(libunwind_installer).to receive(:cached?)
+      subject.compile
     end
 
     it 'runs step' do
       expect(step_out).to receive(:succeed)
-      compiler.compile
+      allow(libunwind_installer).to receive(:cached?)
+      subject.compile
     end
 
     context 'step fails' do
@@ -67,7 +75,7 @@ describe AspNetCoreBuildpack::Compiler do
         allow(out).to receive(:warn)
         expect(step_out).to receive(:fail).with(match(/fishfinger in the warp core/))
         expect(out).to receive(:fail).with(match(/#{expected_message} failed, fishfinger in the warp core/))
-        expect { compiler.compile }.not_to raise_error
+        expect { subject.compile }.not_to raise_error
       end
     end
   end
@@ -77,7 +85,7 @@ describe AspNetCoreBuildpack::Compiler do
       it 'does not run the installer' do
         allow(libunwind_installer).to receive(:should_install).and_return(false)
         expect(libunwind_installer).not_to receive(:install)
-        compiler.compile
+        subject.compile
       end
     end
 
@@ -85,33 +93,93 @@ describe AspNetCoreBuildpack::Compiler do
       it 'runs the installer' do
         allow(libunwind_installer).to receive(:should_install).and_return(true)
         expect(libunwind_installer).to receive(:install)
-        compiler.compile
+        subject.compile
       end
     end
   end
 
   describe 'Steps' do
+    before do
+      allow(subject).to receive(:should_clear_nuget_cache?).and_return(true)
+    end
+
     describe 'Restoring Cache' do
       it_behaves_like 'step', 'Restoring files from buildpack cache', :restore_cache
 
       context 'cache does not exist' do
         it 'skips restore' do
           expect(copier).not_to receive(:cp).with(match(cache_dir), anything, anything)
-          compiler.compile
+          subject.compile
         end
       end
 
       context 'cache exists' do
         before(:each) do
-          Dir.mkdir(File.join(cache_dir, '.nuget'))
           Dir.mkdir(File.join(cache_dir, 'libunwind'))
-          Dir.mkdir(File.join(build_dir, 'libunwind'))
         end
 
         it 'copies files from cache to build dir' do
-          expect(copier).to receive(:cp).with(File.join(cache_dir, '.nuget'), build_dir, anything)
           expect(copier).to receive(:cp).with(File.join(cache_dir, 'libunwind'), build_dir, anything)
-          compiler.compile
+          allow(libunwind_installer).to receive(:cached?).and_return(true)
+          subject.compile
+        end
+      end
+    end
+
+    describe 'Clearing NuGet cache' do
+      it_behaves_like 'step', 'Clearing NuGet packages cache', :clear_nuget_cache
+
+      context 'cache exists' do
+        before(:each) do
+          Dir.mkdir(File.join(cache_dir, '.nuget'))
+          File.open(File.join(cache_dir, '.nuget', 'Package.dll'), 'w') { |f| f.write 'test' }
+        end
+
+        it 'removes the NuGet cache folder' do
+          expect(File.exist?(File.join(cache_dir, '.nuget', 'Package.dll'))).to be_truthy
+          subject.compile
+          expect(File.exist?(File.join(cache_dir, '.nuget', 'Package.dll'))).not_to be_truthy
+        end
+      end
+
+      context 'cache does not exist' do
+        it 'does not raise an exception' do
+          expect { subject.compile }.not_to raise_error
+        end
+      end
+    end
+
+    describe 'Restoring NuGet packages cache' do
+      it_behaves_like 'step', 'Restoring NuGet packages cache', :restore_nuget_cache
+
+      context 'cache does not exist' do
+        it 'skips restore' do
+          expect(copier).not_to receive(:cp).with(match(cache_dir), anything, anything)
+          subject.compile
+        end
+      end
+
+      context 'cache exists and is valid' do
+        before(:each) do
+          Dir.mkdir(File.join(cache_dir, '.nuget'))
+        end
+
+        it 'copies files from cache to build dir' do
+          allow(subject).to receive(:nuget_cache_is_valid?).and_return(true)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, '.nuget'), build_dir, anything)
+          subject.compile
+        end
+      end
+
+      context 'cache exists, but is not valid' do
+        before(:each) do
+          Dir.mkdir(File.join(cache_dir, '.nuget'))
+        end
+
+        it 'skips restoring cache' do
+          allow(subject).to receive(:nuget_cache_is_valid?).and_return(false)
+          expect(copier).not_to receive(:cp)
+          subject.compile
         end
       end
     end
@@ -124,6 +192,7 @@ describe AspNetCoreBuildpack::Compiler do
       end
 
       it 'copies files to cache dir' do
+        allow(libunwind_installer).to receive(:cached?).and_return(false)
         expect(copier).to receive(:cp).with("#{build_dir}/libunwind", cache_dir, anything)
         subject.send(:save_cache, out)
       end
@@ -135,9 +204,104 @@ describe AspNetCoreBuildpack::Compiler do
         end
 
         it 'copies only .nuget to cache dir' do
+          allow(libunwind_installer).to receive(:cached?).and_return(true)
           expect(copier).to receive(:cp).with("#{build_dir}/.nuget", cache_dir, anything)
           subject.send(:save_cache, out)
         end
+      end
+    end
+  end
+
+  describe '#should_clear_nuget_cache?' do
+    context 'NuGet cache exists' do
+      context 'NuGet package cache is invalid' do
+        before do
+          allow(subject).to receive(:nuget_cache_is_valid?).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(subject).to receive(:should_clear_nuget_cache?).and_return(true)
+          subject.compile
+        end
+      end
+
+      context 'NuGet package cache is valid' do
+        context 'CACHE_NUGET_PACKAGES is set to false' do
+          before do
+            ENV['CACHE_NUGET_PACKAGES'] = 'false'
+          end
+
+          it 'returns true' do
+            expect(subject).to receive(:should_clear_nuget_cache?).and_return(true)
+            subject.compile
+          end
+        end
+
+        context 'CACHE_NUGET_PACKAGES is not set to false' do
+          it 'returns false' do
+            expect(subject).to receive(:should_clear_nuget_cache?).and_return(false)
+            subject.compile
+          end
+        end
+      end
+    end
+
+    context 'NuGet cache does not exist' do
+      it 'returns false' do
+        expect(subject).to receive(:should_clear_nuget_cache?).and_return(false)
+        subject.compile
+      end
+    end
+  end
+
+  describe '#should_save_nuget_cache' do
+    context '.nuget folder exists in build_dir' do
+      context 'CACHE_NUGET_PACKAGES is set to false' do
+        before do
+          ENV['CACHE_NUGET_PACKAGES'] = 'false'
+        end
+
+        it 'returns false' do
+          expect(subject).to receive(:should_save_nuget_cache?).and_return(false)
+          subject.compile
+        end
+      end
+
+      context 'CACHE_NUGET_PACKAGES is not set to false' do
+        it 'returns true' do
+          expect(subject).to receive(:should_save_nuget_cache?).and_return(false)
+          subject.compile
+        end
+      end
+    end
+  end
+
+  describe '#should_clear_nuget_cache?' do
+    context 'CACHE_NUGET_PACKAGES is set to false' do
+      before do
+        ENV['CACHE_NUGET_PACKAGES'] = 'false'
+      end
+
+      context 'cache folder exists' do
+        before do
+          FileUtils.mkdir_p(File.join(cache_dir, '.nuget'))
+        end
+
+        it 'returns true' do
+          expect(subject.send(:should_clear_nuget_cache?)).to be_truthy
+        end
+      end
+
+      context 'cache folder does not exist' do
+        it 'returns false' do
+          expect(subject.send(:should_clear_nuget_cache?)).not_to be_truthy
+        end
+      end
+    end
+
+    context 'CACHE_NUGET_PACKAGES is not set to false' do
+      it 'returns false' do
+        expect(subject.send(:should_clear_nuget_cache?)).not_to be_truthy
       end
     end
   end

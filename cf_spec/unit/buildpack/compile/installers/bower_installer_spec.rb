@@ -28,14 +28,14 @@ describe AspNetCoreBuildpack::BowerInstaller do
   subject(:installer) { described_class.new(dir, cache_dir, shell) }
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
             f.write '1.7.9'
           end
         end
@@ -47,7 +47,7 @@ describe AspNetCoreBuildpack::BowerInstaller do
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, '.node', 'node-v6.3.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
             f.write '1.0.0-preview1-002702'
           end
         end
