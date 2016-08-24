@@ -36,6 +36,10 @@ module AspNetCoreBuildpack
       @shell = shell
     end
 
+    def cached?
+      File.exist? File.join(@bp_cache_dir, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
+    end
+
     def install(out)
       dest_dir = File.join(@build_dir, CACHE_DIR)
 
@@ -66,10 +70,6 @@ module AspNetCoreBuildpack
 
     def bin_folder
       File.join('$HOME'.freeze, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
-    end
-
-    def cached?
-      File.exist? File.join(@build_dir, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
     end
 
     def dependency_name

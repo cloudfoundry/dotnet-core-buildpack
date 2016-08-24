@@ -32,6 +32,13 @@ module AspNetCoreBuildpack
       @shell = shell
     end
 
+    def cached?
+      # File.open can't create the directory structure
+      return false unless File.exist? File.join(@bp_cache_dir, CACHE_DIR)
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
+    end
+
     def install(out)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
       manifest_file = File.join(buildpack_root, 'manifest.yml')
@@ -84,13 +91,6 @@ module AspNetCoreBuildpack
 
     def cache_folder
       File.join(bp_cache_dir, CACHE_DIR)
-    end
-
-    def cached?
-      # File.open can't create the directory structure
-      return false unless File.exist? File.join(@build_dir, CACHE_DIR)
-      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
-      !cached_version.empty?
     end
 
     def dependency_name
