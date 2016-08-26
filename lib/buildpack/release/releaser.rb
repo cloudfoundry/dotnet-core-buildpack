@@ -75,8 +75,9 @@ EOT
     end
 
     def get_published_start_cmd(project, build_dir)
-      return "#{project}" if File.exist? File.join(build_dir, "#{project}")
+      return "./#{project}" if !project.nil? && File.exist?(File.join(build_dir, "#{project}"))
       return "dotnet #{project}.dll" if File.exist? File.join(build_dir, "#{project}.dll")
+      nil
     end
 
     def get_start_cmd(app)
