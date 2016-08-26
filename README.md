@@ -31,7 +31,9 @@ Keep in mind that this support is provided only to allow users to take some time
 
 ## Configuring your application to listen on the proper port
 
-The samples provided in the [cli-samples repo](https://github.com/aspnet/cli-samples/) and the templates provided by Visual Studio and Yeoman will work with this buildpack but they need a slight modification to the `Main` method to make the application listen on the port specified by the `$PORT` environment variable which is set automatically by Cloud Foundry.  Before the line `var host = new WebHostBuilder()` add these lines:
+The samples provided in the [cli-samples repo](https://github.com/aspnet/cli-samples/) and the templates provided by Visual Studio and Yeoman will work with this buildpack but they need a slight modification to the `Main` method to make the application listen on the port specified by the `$PORT` environment variable which is set automatically by Cloud Foundry.
+
+In the `Main` method, before the line `var host = new WebHostBuilder()` add these lines:
 
 ```c#
 var config = new ConfigurationBuilder()
@@ -39,14 +41,50 @@ var config = new ConfigurationBuilder()
     .Build();
 ```
 
-And then add this line after:
-`.UseConfiguration(config)`
+Add a `using` statement to the file which contains your `Main` method:
 
-You'll also need to add a dependency to project.json:
-`"Microsoft.Extensions.Configuration.CommandLine": "1.0.0",`
+```c#
+  using Microsoft.Extensions.Configuration;
+```
 
-And a using statement to the file which contains your `Main` method:
-`using Microsoft.Extensions.Configuration;`
+And then add this line after `.UseKestrel()`:
+
+```c#
+  .UseConfiguration(config)
+```
+
+Add the following dependency to project.json:
+
+```json
+  "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
+```
+
+Add the following property to the `buildOptions` section of project.json:
+
+```json
+  "copyToOutput": {
+    "include": [
+      "wwwroot",
+      "Areas/**/Views",
+      "Views",
+      "appsettings.json"
+    ]
+  }
+```
+
+In the `Startup` method, remove the following line:
+
+```c#
+  .SetBasePath(env.ContentRootPath)
+```
+
+In the `Main` method, remove the following line:
+
+```c#
+  .UseContentRoot(Directory.GetCurrentDirectory())
+```
+
+These changes should allow the .NET CLI to find your application's `Views` as they will now be copied to the build output when the `dotnet run` command executes.  If your application has any other files, such as json configuration files, which are required at runtime then you should also add those to the `include` section of `copyToOutput` in the project.json file.
 
 Example `Main` method:
 
@@ -116,7 +154,7 @@ These steps only apply to admins who wish to install the buildpack into their Cl
     `uncached` means the buildpack's binary dependencies will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
 
   ```bash
-  BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ uncached | cached ]
+  BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ --uncached | --cached ]
   ```
 
 5. Use in Cloud Foundry
@@ -124,8 +162,8 @@ These steps only apply to admins who wish to install the buildpack into their Cl
     Upload the buildpack to your Cloud Foundry and optionally specify it by name
 
     ```bash
-    cf create-buildpack custom_aspnetcore_buildpack aspnetcore_buildpack-cached-custom.zip 1
-    cf push my_app -b custom_aspnetcore_buildpack
+    cf create-buildpack custom_dotnet-core_buildpack dotnet-core_buildpack-cached-custom.zip 1
+    cf push my_app -b custom_dotnet-core_buildpack
     ```
 
 ## Unit Testing
