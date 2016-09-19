@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: .NET Core
 
-A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core 1.0 RTM][] applications that target .NET Core.
+A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core 1.0.1][] applications that target .NET Core.
 
 For more information about ASP.NET Core see:
 
@@ -193,7 +193,7 @@ Find our guidelines [here](./CONTRIBUTING.md).
 Open an issue on this project.
 
 [Hello World sample]: https://github.com/IBM-Bluemix/aspnet-core-helloworld
-[ASP.NET Core 1.0 RTM]: https://github.com/aspnet/Home/releases/tag/1.0.0
+[ASP.NET Core 1.0.1]: https://github.com/aspnet/Home/releases/tag/1.0.1
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
 [.NET Core App Types]: https://docs.microsoft.com/en-us/dotnet/articles/core/app-types
 [specify the path]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path
