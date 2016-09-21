@@ -22,7 +22,7 @@ require 'tmpdir'
 describe AspNetCoreBuildpack::DotnetVersion do
   let(:out) { double(:out) }
   let(:dir) { Dir.mktmpdir }
-  let(:latest_version) { '1.0.0-preview2-003121'.freeze }
+  let(:latest_version) { '1.0.0-preview2-003131'.freeze }
 
   describe '#version' do
     context 'global.json does not exist' do
