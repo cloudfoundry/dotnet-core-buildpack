@@ -45,8 +45,8 @@ module AspNetCoreBuildpack
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
-    def install_description
-      'Installing Node.js'.freeze
+    def name
+      'Node.js'.freeze
     end
 
     def path

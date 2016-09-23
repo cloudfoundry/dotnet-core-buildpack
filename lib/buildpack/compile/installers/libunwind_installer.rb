@@ -45,7 +45,11 @@ module AspNetCoreBuildpack
     end
 
     def install_description
-      'Extracting libunwind'
+      'Extracting libunwind'.freeze
+    end
+
+    def name
+      'libunwind'.freeze
     end
 
     def library_path

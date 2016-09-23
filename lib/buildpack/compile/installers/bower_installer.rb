@@ -46,8 +46,8 @@ module AspNetCoreBuildpack
       write_version_file(VERSION)
     end
 
-    def install_description
-      'Installing Bower'.freeze
+    def name
+      'Bower'.freeze
     end
 
     def should_install(app_dir)

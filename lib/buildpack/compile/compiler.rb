@@ -73,10 +73,17 @@ module AspNetCoreBuildpack
     end
 
     def save_cache(out)
-      @installers.map(&:cache_dir).compact.each do |installer_cache_dir|
-        copier.cp(File.join(build_dir, installer_cache_dir), cache_dir, out) if File.exist? File.join(build_dir, installer_cache_dir)
+      @installers.select { |installer| !installer.cache_dir.nil? }.compact.each do |installer|
+        save_installer_cache(out, installer.name, installer.cache_dir)
       end
-      copier.cp(File.join(build_dir, NUGET_CACHE_DIR), cache_dir, out) if File.exist? File.join(build_dir, NUGET_CACHE_DIR)
+      save_installer_cache(out, 'Nuget packages'.freeze, NUGET_CACHE_DIR)
+    end
+
+    def save_installer_cache(out, name, installer_cache_dir)
+      copier.cp(File.join(build_dir, installer_cache_dir), cache_dir, out) if File.exist? File.join(build_dir, installer_cache_dir)
+    rescue
+      out.fail("Failed to save cached files for #{name}")
+      FileUtils.rm_rf(File.join(cache_dir, installer_cache_dir)) if File.exist? File.join(cache_dir, installer_cache_dir)
     end
 
     def step(description, method)
