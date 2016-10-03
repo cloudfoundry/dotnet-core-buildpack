@@ -30,7 +30,7 @@ describe AspNetCoreBuildpack::Compiler do
   end
 
   let(:installer) { double(:installer, descendants: [libunwind_installer]) }
-  let(:libunwind_installer) { double(:libunwind_installer, install_order: 0, install_description: 'Installing libunwind', cache_dir: 'libunwind', should_install: true, install: nil) }
+  let(:libunwind_installer) { double(:libunwind_installer, install_order: 0, install_description: 'Installing libunwind', cache_dir: 'libunwind', should_install: true, install: nil, name: 'libunwind') }
 
   let(:copier) { double(:copier, cp: nil) }
   let(:build_dir) { Dir.mktmpdir }
@@ -137,6 +137,31 @@ describe AspNetCoreBuildpack::Compiler do
         it 'copies only .nuget to cache dir' do
           expect(copier).to receive(:cp).with("#{build_dir}/.nuget", cache_dir, anything)
           subject.send(:save_cache, out)
+        end
+      end
+
+      context 'when the files fail to copy to the cache' do
+        before(:each) do
+          Dir.mkdir(File.join(cache_dir, 'libunwind'))
+        end
+
+        it 'does not throw an exception' do
+          allow(copier).to receive(:cp).and_raise(StandardError)
+          expect(out).to receive(:fail).with(anything)
+          expect { subject.send(:save_cache, out) }.not_to raise_error
+        end
+
+        it 'outputs a failure message' do
+          allow(copier).to receive(:cp).and_raise(StandardError)
+          expect(out).to receive(:fail).with('Failed to save cached files for libunwind')
+          subject.send(:save_cache, out)
+        end
+
+        it 'removes the cache folder' do
+          allow(copier).to receive(:cp).and_raise(StandardError)
+          expect(out).to receive(:fail).with('Failed to save cached files for libunwind')
+          subject.send(:save_cache, out)
+          expect(File.exist?(File.join(cache_dir, 'libunwind'))).not_to be_truthy
         end
       end
     end
