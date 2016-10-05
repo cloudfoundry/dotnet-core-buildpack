@@ -14,31 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'yaml'
 require 'json'
 
 module AspNetCoreBuildpack
   class DotnetVersion
-    GLOBAL_JSON_FILE_NAME = 'global.json'.freeze
-    DEFAULT_DOTNET_VERSION = '1.0.0-preview2-003131'.freeze
-    DOTNET_RUNTIME_VERSIONS = { '1.0.0-rc2-3002702'.freeze => '1.0.0-preview1-002702'.freeze,
-                                '1.0.0'.freeze => '1.0.0-preview2-003121'.freeze,
-                                '1.0.1'.freeze => '1.0.0-preview2-003131' }.freeze
+    def initialize(build_dir, manifest_file, dotnet_versions_file, out)
+      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
 
-    def version(dir, out)
-      dotnet_version = DEFAULT_DOTNET_VERSION
-      global_json_file = File.expand_path(File.join(dir, GLOBAL_JSON_FILE_NAME))
-      runtimeconfig_json_file = Dir.glob(File.join(dir, '*.runtimeconfig.json')).first
+      @build_dir = build_dir
+      @dotnet_versions = YAML.load_file(dotnet_versions_file)
+      @global_json_file_name = 'global.json'
+      @default_dotnet_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
+      @out = out
+    end
+
+    def version
+      dotnet_version = @default_dotnet_version
+      global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
+      runtimeconfig_json_file = Dir.glob(File.join(@build_dir, '*.runtimeconfig.json')).first
       if File.exist?(global_json_file)
-        dotnet_version = get_version_from_global_json(global_json_file, out)
+        dotnet_version = get_version_from_global_json(global_json_file)
       elsif !runtimeconfig_json_file.nil?
-        dotnet_version = get_version_from_runtime_config_json(runtimeconfig_json_file, out)
+        dotnet_version = get_version_from_runtime_config_json(runtimeconfig_json_file)
       end
       dotnet_version
     end
 
     private
 
-    def get_version_from_global_json(global_json_file, out)
+    def get_version_from_global_json(global_json_file)
       begin
         global_props = JSON.parse(File.read(global_json_file, encoding: 'bom|utf-8'))
         if global_props.key?('sdk')
@@ -46,22 +51,28 @@ module AspNetCoreBuildpack
           return sdk['version'] if sdk.key?('version')
         end
       rescue
-        out.warn("File #{global_json_file} is not valid JSON")
+        @out.warn("File #{global_json_file} is not valid JSON")
       end
-      DEFAULT_DOTNET_VERSION
+      @default_dotnet_version
     end
 
-    def get_version_from_runtime_config_json(runtime_config_json_file, out)
+    def get_version_from_runtime_config_json(runtime_config_json_file)
       begin
         global_props = JSON.parse(File.read(runtime_config_json_file, encoding: 'bom|utf-8'))
         if global_props.key?('runtimeOptions') && global_props['runtimeOptions'].key?('framework')
           framework = global_props['runtimeOptions']['framework']
-          return DOTNET_RUNTIME_VERSIONS[framework['version']] if framework.key?('version') && DOTNET_RUNTIME_VERSIONS.key?(framework['version'])
+
+          if framework.key?('version')
+            version = @dotnet_versions.find do |version|
+              version['framework'] == framework['version']
+            end
+            return version['dotnet'] unless version.nil?
+          end
         end
       rescue
-        out.warn("File #{runtime_config_json_file} is not valid JSON")
+        @out.warn("File #{runtime_config_json_file} is not valid JSON")
       end
-      DEFAULT_DOTNET_VERSION
+      @default_dotnet_version
     end
   end
 end

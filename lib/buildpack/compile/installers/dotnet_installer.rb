@@ -33,7 +33,12 @@ module AspNetCoreBuildpack
     end
 
     def install(out)
-      @version = DotnetVersion.new.version(@build_dir, out)
+      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..','..')
+      manifest_file = File.join(buildpack_root, 'manifest.yml')
+      dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
+
+      @version = DotnetVersion.new(@build_dir, manifest_file, dotnet_versions_file, out).version
+
       dest_dir = File.join(@build_dir, CACHE_DIR)
 
       out.print("dotnet version: #{version}")
