@@ -33,7 +33,11 @@ module AspNetCoreBuildpack
     end
 
     def install_description
-      'Installing'
+      "Installing #{name}"
+    end
+
+    def name
+      nil
     end
 
     def library_path

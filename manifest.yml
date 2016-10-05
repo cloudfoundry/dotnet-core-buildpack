@@ -34,6 +34,12 @@ dependencies:
       - cflinuxfs2
     uri: https://go.microsoft.com/fwlink/?LinkID=809129
     md5: 301bf94c4253c6e07826dd6e1d79821f
+  - name: dotnet
+    version: 1.0.0-preview2-003131
+    cf_stacks:
+      - cflinuxfs2
+    uri: https://go.microsoft.com/fwlink/?LinkID=827536
+    md5: c5880e1fafd17e28d157d32784e1aed1
   - name: nodejs
     version: 6.3.0
     cf_stacks:

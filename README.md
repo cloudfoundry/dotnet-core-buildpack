@@ -1,6 +1,6 @@
 # Cloud Foundry buildpack: .NET Core
 
-A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core 1.0 RTM][] applications that target .NET Core.
+A Cloud Foundry buildpack for .NET Core applications. Tested with [ASP.NET Core 1.0.1][] applications that target .NET Core.
 
 For more information about ASP.NET Core see:
 
@@ -125,7 +125,7 @@ Applications can be pushed with their other dependencies after "publishing" the 
 
 For this publish command to work, you will need to make some changes to your application code to ensure that the dotnet cli publishes it as a self-contained application rather than a portable application.
 
-See [.NET Core App Types][] for more information on how to make the required changes to publish your application as a self-contained application.
+See [.NET Core Application Deployment][] for more information on how to make the required changes to publish your application as a self-contained application.
 
 Also note that if you are using a `manifest.yml` file in your application, you can [specify the path][] in your manifest.yml to point to the publish output folder so that you don't have to be in that folder to push the application to Cloud Foundry.
 
@@ -193,7 +193,7 @@ Find our guidelines [here](./CONTRIBUTING.md).
 Open an issue on this project.
 
 [Hello World sample]: https://github.com/IBM-Bluemix/aspnet-core-helloworld
-[ASP.NET Core 1.0 RTM]: https://github.com/aspnet/Home/releases/tag/1.0.0
+[ASP.NET Core 1.0.1]: https://github.com/aspnet/Home/releases/tag/1.0.1
 [Kestrel]: https://github.com/aspnet/KestrelHttpServer
-[.NET Core App Types]: https://docs.microsoft.com/en-us/dotnet/articles/core/app-types
+[.NET Core Application Deployment]: https://docs.microsoft.com/en-us/dotnet/articles/core/deploying/index
 [specify the path]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path

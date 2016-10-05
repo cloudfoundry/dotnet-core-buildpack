@@ -42,8 +42,8 @@ module AspNetCoreBuildpack
       write_version_file(@version)
     end
 
-    def install_description
-      'Installing Dotnet CLI'
+    def name
+      'Dotnet CLI'.freeze
     end
 
     def path
