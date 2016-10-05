@@ -63,8 +63,8 @@ module AspNetCoreBuildpack
           framework = global_props['runtimeOptions']['framework']
 
           if framework.key?('version')
-            version = @dotnet_versions.find do |version|
-              version['framework'] == framework['version']
+            version = @dotnet_versions.find do |ver|
+              ver['framework'] == framework['version']
             end
             return version['dotnet'] unless version.nil?
           end

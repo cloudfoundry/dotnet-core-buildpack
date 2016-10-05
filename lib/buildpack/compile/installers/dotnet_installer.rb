@@ -33,7 +33,7 @@ module AspNetCoreBuildpack
     end
 
     def install(out)
-      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..','..')
+      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
       manifest_file = File.join(buildpack_root, 'manifest.yml')
       dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
 

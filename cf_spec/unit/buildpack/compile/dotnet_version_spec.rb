@@ -22,8 +22,8 @@ require 'tmpdir'
 describe AspNetCoreBuildpack::DotnetVersion do
   let(:out) { double(:out) }
   let(:dir) { Dir.mktmpdir }
-  let(:manifest_file) {File.join(dir, 'manifest.yml')}
-  let(:dotnet_versions_file) {File.join(dir, 'dotnet-versions.yml')}
+  let(:manifest_file) { File.join(dir, 'manifest.yml') }
+  let(:dotnet_versions_file) { File.join(dir, 'dotnet-versions.yml') }
 
   let(:dotnet_versions_yml) do
     <<~YAML
