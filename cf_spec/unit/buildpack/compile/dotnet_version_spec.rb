@@ -26,31 +26,31 @@ describe AspNetCoreBuildpack::DotnetVersion do
   let(:dotnet_versions_file) { File.join(dir, 'dotnet-versions.yml') }
 
   let(:dotnet_versions_yml) do
-    <<~YAML
-       ---
-       - dotnet: sdk-version-1
-         framework: 0.9.99
-       - dotnet: sdk-version-2
-         framework: 1.0.0
-       - dotnet: sdk-version-3
-         framework: 1.0.1
-       YAML
+    <<-YAML
+---
+- dotnet: sdk-version-1
+  framework: 0.9.99
+- dotnet: sdk-version-2
+  framework: 1.0.0
+- dotnet: sdk-version-3
+  framework: 1.0.1
+  YAML
   end
 
   let(:manifest_yml) do
-    <<~YAML
-       ---
-       default_versions:
-         - name: dotnet
-           version: sdk-version-3
-       dependencies:
-         - name: dotnet
-           version: sdk-version-1
-         - name: dotnet
-           version: sdk-version-2
-         - name: dotnet
-           version: sdk-version-3
-       YAML
+    <<-YAML
+---
+default_versions:
+- name: dotnet
+  version: sdk-version-3
+dependencies:
+- name: dotnet
+  version: sdk-version-1
+- name: dotnet
+  version: sdk-version-2
+- name: dotnet
+  version: sdk-version-3
+  YAML
   end
 
   let(:latest_version) { 'sdk-version-3'.freeze }
