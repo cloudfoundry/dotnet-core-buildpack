@@ -89,7 +89,7 @@ module AspNetCoreBuildpack
     end
 
     def dependency_name
-      "dotnet-dev-ubuntu-x64.#{version}.tar.gz"
+      "dotnet.#{version}.linux-amd64.tar.gz"
     end
 
     attr_reader :app_dir
