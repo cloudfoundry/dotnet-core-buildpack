@@ -1,0 +1,27 @@
+{
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "debugType": "portable"
+  },
+  "dependencies" : {
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.1"
+    },
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
+    "console_app": {
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "netcoreapp1.0": { }
+  },
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+      "version": "1.0.0-preview2-final",
+      "imports": "portable-net45+wp80+win8+wpa81+dnxcore50"
+    }
+  }
+}
