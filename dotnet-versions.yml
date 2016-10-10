@@ -1,6 +1,4 @@
 ---
-- dotnet: 1.0.0-preview1-002702
-  framework: 1.0.0-rc2-3002702
 - dotnet: 1.0.0-preview2-003121
   framework: 1.0.0
 - dotnet: 1.0.0-preview2-003131
