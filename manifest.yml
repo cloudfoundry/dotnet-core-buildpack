@@ -45,11 +45,11 @@ dependencies:
     uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64.tar.gz
     md5: 0abbf8aaae612c02aa529ca2a80d091a
   - name: nodejs
-    version: 6.3.0
+    version: 6.7.0
     cf_stacks:
       - cflinuxfs2
-    uri: https://nodejs.org/download/release/v6.3.0/node-v6.3.0-linux-x64.tar.gz
-    md5: 41d14f57079c5935a4f0b470abd9f6b6
+    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/node/node-6.7.0-linux-x64.tgz
+    md5: 67785b03200cf7c3b78c2bdfeecfdc67
   - name: bower
     version: 1.7.9
     cf_stacks:
