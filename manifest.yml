@@ -9,7 +9,7 @@ url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
     name: libunwind
     version: $2
-  - match: dotnet-dev-ubuntu-x64\.(.*)\.tar\.gz
+  - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
     name: dotnet
     version: $1
   - match: node(.*)(\d+\.\d+\.\d+)-linux-x64.tar.gz
@@ -36,14 +36,14 @@ dependencies:
     version: 1.0.0-preview2-003121
     cf_stacks:
       - cflinuxfs2
-    uri: https://go.microsoft.com/fwlink/?LinkID=809129
-    md5: 301bf94c4253c6e07826dd6e1d79821f
+    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003121.linux-amd64.tar.gz
+    md5: 8496b07e910f3b7997196e23427f3676
   - name: dotnet
     version: 1.0.0-preview2-003131
     cf_stacks:
       - cflinuxfs2
-    uri: https://go.microsoft.com/fwlink/?LinkID=827536
-    md5: c5880e1fafd17e28d157d32784e1aed1
+    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64.tar.gz
+    md5: 0abbf8aaae612c02aa529ca2a80d091a
   - name: nodejs
     version: 6.3.0
     cf_stacks:
