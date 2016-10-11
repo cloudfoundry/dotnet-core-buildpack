@@ -1,3 +1,18 @@
+v1.0.2 Oct 11, 2016
+====================
+
+* Remove .NET Core 1.0.0 RC2
+  (https://www.pivotaltracker.com/story/show/132028795)
+
+* Add node 6.7.0, remove node 6.3.0
+  (https://www.pivotaltracker.com/story/show/131987641)
+
+* Use Cloud Foundry built + hosted dotnet dependencies
+  (https://www.pivotaltracker.com/story/show/130932637)
+
+* Add default_versions support to buildpack
+  (https://www.pivotaltracker.com/story/show/130932637)
+
 v1.0.1 Oct 5, 2016
 ===================
 
