@@ -54,7 +54,7 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
       context 'cached version is different than the current version being installed' do
         before do
           File.open(File.join(cache_dir, 'libunwind', 'VERSION'), 'w') do |f|
-            f.write '1.0.0-preview1-002702'
+            f.write '1.0.0-preview2-003131'
           end
         end
 

@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section id="content">
+    <div class="container">
+        <div class="row">
+            <my-app>
+                <div class="alert alert-info" role="alert">
+                    <h3>Loading...</h3>
+                </div>
+            </my-app>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        System.config({
+            packages: {
+                'app': { defaultExtension: 'js' },
+                'lib': { defaultExtension: 'js' },
+            },
+        });
+
+        System.import('app/boot')
+            .then(null, console.error.bind(console));
+    </script>
+}
