@@ -34,6 +34,13 @@ module AspNetCoreBuildpack
       @shell = shell
     end
 
+    def cached?
+      # File.open can't create the directory structure
+      return false if cached_version_file.nil?
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
+    end
+
     def install(out)
       # get latest npm version path
       npm_path = Dir.glob(File.join(@build_dir, '.node', '*', 'bin')).last
@@ -61,24 +68,23 @@ module AspNetCoreBuildpack
 
     private
 
-    def cached?
-      # File.open can't create the directory structure
-      return false if version_file.nil?
-      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
-      !cached_version.empty?
-    end
-
     def dependency_name
       "bower-#{version}.tgz"
     end
 
-    def node_path
-      nil if @build_dir.nil?
-      Dir.glob(File.join(@build_dir, '.node', '*')).last
+    def node_path(dir)
+      nil if dir.nil?
+      Dir.glob(File.join(dir, '.node', '*')).last
+    end
+
+    def cached_version_file
+      npm_path = File.join(node_path(@bp_cache_dir), 'lib', 'node_modules') unless node_path(@bp_cache_dir).nil?
+      bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
+      File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end
 
     def version_file
-      npm_path = File.join(node_path, 'lib', 'node_modules') unless node_path.nil?
+      npm_path = File.join(node_path(@build_dir), 'lib', 'node_modules') unless node_path(@build_dir).nil?
       bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
       File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end

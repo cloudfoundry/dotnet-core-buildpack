@@ -28,14 +28,14 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   subject(:installer) { described_class.new(dir, cache_dir, shell) }
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.dotnet'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.dotnet'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, '.dotnet', 'VERSION'), 'w') do |f|
             f.write '1.0.0-preview2-003121'
           end
         end
@@ -48,7 +48,7 @@ describe AspNetCoreBuildpack::DotnetInstaller do
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, '.dotnet', 'VERSION'), 'w') do |f|
             f.write '1.0.0-preview2-003131'
           end
         end

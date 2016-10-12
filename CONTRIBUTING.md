@@ -17,4 +17,4 @@
 ## Pull Requests
 
 1. Fork the project
-1. Submit a pull request
+1. Submit a pull request to the `develop` branch
