@@ -2,6 +2,7 @@ $LOAD_PATH << 'cf_spec'
 require 'spec_helper'
 require 'capybara/poltergeist'
 require 'capybara/rspec'
+require 'phantomjs'
 
 describe 'Deploying an app that relies on Node libraries during staging', type: :feature do
   subject(:app) { Machete.deploy_app(app_name) }
@@ -15,6 +16,10 @@ describe 'Deploying an app that relies on Node libraries during staging', type: 
     let(:app_name) { 'app_using_angular' }
 
     before do
+      Capybara.register_driver :poltergeist do |app|
+        Capybara::Poltergeist::Driver.new(app, :phantomjs => Phantomjs.path)
+      end
+
       Capybara.current_driver = :poltergeist
       Capybara.run_server = false
 
