@@ -8,16 +8,16 @@ describe 'Deploying an app that relies on Node libraries during staging', type: 
   subject(:app) { Machete.deploy_app(app_name) }
   let(:browser) { Machete::Browser.new(app) }
 
-   after do
-     Machete::CF::DeleteApp.new.execute(app)
-   end
+  after do
+    Machete::CF::DeleteApp.new.execute(app)
+  end
 
   context 'deploying an app using angular' do
     let(:app_name) { 'app_using_angular' }
 
     before do
       Capybara.register_driver :poltergeist do |app|
-        Capybara::Poltergeist::Driver.new(app, :phantomjs => Phantomjs.path)
+        Capybara::Poltergeist::Driver.new(app, phantomjs: Phantomjs.path)
       end
 
       Capybara.current_driver = :poltergeist
