@@ -30,7 +30,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v6.7.0-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v6.8.0-linux-x64', 'bin'))
       end
 
       it 'returns true' do

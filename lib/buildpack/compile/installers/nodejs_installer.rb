@@ -23,7 +23,7 @@ module AspNetCoreBuildpack
     BOWER_COMMAND = 'bower'.freeze
     CACHE_DIR = '.node'.freeze
     NPM_COMMAND = 'npm'.freeze
-    VERSION = '6.7.0'.freeze
+    VERSION = '6.8.0'.freeze
 
     def cache_dir
       CACHE_DIR
