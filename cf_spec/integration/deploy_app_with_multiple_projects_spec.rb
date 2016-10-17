@@ -19,8 +19,7 @@ describe 'CF ASP.NET Core Buildpack' do
 
       browser.visit_path('/')
       expect(browser).to have_body("Hello, I'm a string!")
-      expect(app).to have_logged("Hello from a secondary project!")
+      expect(app).to have_logged('Hello from a secondary project!')
     end
   end
-
 end
