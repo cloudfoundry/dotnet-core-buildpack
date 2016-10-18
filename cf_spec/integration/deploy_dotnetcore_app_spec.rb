@@ -21,7 +21,7 @@ describe 'CF ASP.NET Core Buildpack' do
     end
 
     context 'with BP_DEBUG enabled' do
-      subject(:app) { Machete.deploy_app(app_name, env: {'BP_DEBUG' => '1' } ) }
+      subject(:app) { Machete.deploy_app(app_name, env: { 'BP_DEBUG' => '1' }) }
 
       it 'logs dotnet restore debug output' do
         expect(app).to be_running
