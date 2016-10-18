@@ -71,7 +71,8 @@ EOT
     end
 
     def get_source_start_cmd(project)
-      return "dotnet run --project #{project}" unless project.nil?
+      verbosity = ENV['BP_DEBUG'].nil? ? '': '--verbose '
+      return "dotnet #{verbosity}run --project #{project}" unless project.nil?
     end
 
     def get_published_start_cmd(project, build_dir)
