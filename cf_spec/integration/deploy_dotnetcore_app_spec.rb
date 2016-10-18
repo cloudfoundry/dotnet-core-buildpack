@@ -19,6 +19,15 @@ describe 'CF ASP.NET Core Buildpack' do
       browser.visit_path('/')
       expect(browser).to have_body('Hello World!')
     end
+
+    context 'with BP_DEBUG enabled' do
+      subject(:app) { Machete.deploy_app(app_name, env: {'BP_DEBUG' => '1' } ) }
+
+      it 'logs debug output' do
+        expect(app).to be_running
+        expect(app).to have_logged(/debug: Checking compatibility for/)
+      end
+    end
   end
 
   context 'deploying an mvc app' do

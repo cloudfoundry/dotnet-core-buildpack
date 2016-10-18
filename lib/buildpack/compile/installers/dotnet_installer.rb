@@ -67,7 +67,9 @@ module AspNetCoreBuildpack
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
       @shell.env['PATH'] = "$PATH:#{path}"
       project_list = @app_dir.with_project_json.join(' ')
-      cmd = "bash -c 'cd #{build_dir}; dotnet restore --verbosity minimal #{project_list}'"
+
+      verbosity = ENV['BP_DEBUG'].nil? ? 'minimal' : 'debug'
+      cmd = "bash -c 'cd #{build_dir}; dotnet restore --verbosity #{verbosity} #{project_list}'"
       @shell.exec(cmd, out)
     end
 
