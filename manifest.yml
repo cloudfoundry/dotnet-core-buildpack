@@ -1,64 +1,60 @@
 ---
 language: dotnet-core
-
 default_versions:
-  - name: dotnet
-    version: 1.0.0-preview2-003131
-  - name: node
-    version: 6.9.0
-  - name: bower
-    version: 1.7.9
-
+- name: dotnet
+  version: 1.0.0-preview2-003131
+- name: bower
+  version: 1.7.9
+- name: node
+  version: 6.9.1
 url_to_dependency_map:
-  - match: libunwind-(.*)-(\d+\.\d+)
-    name: libunwind
-    version: $2
-  - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
-    name: dotnet
-    version: $1
-  - match: node(.*)(\d+\.\d+\.\d+)-linux-x64.tar.gz
-    name: node
-    version: $2
-  - match: bower-(\d+\.\d+\.\d+).tgz
-    name: bower
-    version: $1
-
+- match: libunwind-(.*)-(\d+\.\d+)
+  name: libunwind
+  version: "$2"
+- match: dotnet\.(.*)\.linux-amd64\.tar\.gz
+  name: dotnet
+  version: "$1"
+- match: node(.*)(\d+\.\d+\.\d+)-linux-x64.tar.gz
+  name: node
+  version: "$2"
+- match: bower-(\d+\.\d+\.\d+).tgz
+  name: bower
+  version: "$1"
 dependencies:
-  - name: libunwind
-    version: 1.1
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://github.com/cloudfoundry-community/dotnet-core-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
-    md5: b76452a8a2400f3cfdf189761e8be97e
-  - name: dotnet
-    version: 1.0.0-preview2-003121
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003121.linux-amd64.tar.gz
-    md5: 8496b07e910f3b7997196e23427f3676
-  - name: dotnet
-    version: 1.0.0-preview2-003131
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64.tar.gz
-    md5: 0abbf8aaae612c02aa529ca2a80d091a
-  - name: node
-    version: 6.9.0
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://buildpacks.cloudfoundry.org/concourse-binaries/node/node-6.9.0-linux-x64.tgz
-    md5: 6c1e3fcff5c9275206543d5a7fe92d57
-  - name: bower
-    version: 1.7.9
-    cf_stacks:
-      - cflinuxfs2
-    uri: https://registry.npmjs.org/bower/-/bower-1.7.9.tgz
-    md5: da482af431c5906e45c7372fc6e4f160
-
+- name: libunwind
+  version: 1.1
+  cf_stacks:
+  - cflinuxfs2
+  uri: https://github.com/cloudfoundry-community/dotnet-core-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
+  md5: b76452a8a2400f3cfdf189761e8be97e
+- name: dotnet
+  version: 1.0.0-preview2-003121
+  cf_stacks:
+  - cflinuxfs2
+  uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003121.linux-amd64.tar.gz
+  md5: 8496b07e910f3b7997196e23427f3676
+- name: dotnet
+  version: 1.0.0-preview2-003131
+  cf_stacks:
+  - cflinuxfs2
+  uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64.tar.gz
+  md5: 0abbf8aaae612c02aa529ca2a80d091a
+- name: bower
+  version: 1.7.9
+  cf_stacks:
+  - cflinuxfs2
+  uri: https://registry.npmjs.org/bower/-/bower-1.7.9.tgz
+  md5: da482af431c5906e45c7372fc6e4f160
+- name: node
+  version: 6.9.1
+  uri: https://buildpacks.cloudfoundry.org/concourse-binaries/node/node-6.9.1-linux-x64.tgz
+  md5: 3a0fbba5d2b27fbc6d7f1a89b4a6a108
+  cf_stacks:
+  - cflinuxfs2
 exclude_files:
-  - .git/
-  - .gitignore
-  - .gitmodules
-  - spec/
-  - cf_spec/
-  - dotnet-core_buildpack-*v*.zip
+- ".git/"
+- ".gitignore"
+- ".gitmodules"
+- spec/
+- cf_spec/
+- dotnet-core_buildpack-*v*.zip
