@@ -21,7 +21,6 @@ require_relative '../scripts_parser'
 module AspNetCoreBuildpack
   class BowerInstaller < Installer
     BOWER_COMMAND = 'bower'.freeze
-    VERSION = '1.7.9'.freeze
 
     def self.install_order
       2
@@ -51,7 +50,7 @@ module AspNetCoreBuildpack
       out.print("Bower version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("PATH=$PATH:#{npm_path} npm install -g /tmp/#{dependency_name}", out)
-      write_version_file(VERSION)
+      write_version_file(version)
     end
 
     def name
@@ -64,7 +63,8 @@ module AspNetCoreBuildpack
     end
 
     def version
-      VERSION
+      compile_extensions_dir = File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'compile-extensions')
+      @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} bower`
     end
 
     private

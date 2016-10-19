@@ -30,7 +30,17 @@ describe AspNetCoreBuildpack::BowerInstaller do
   let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
   let(:manifest_contents) do
     <<-YAML
-doesn't matter for these tests
+---
+default_versions:
+- name: bower
+  version: 1.23.45
+dependencies:
+- name: bower
+  version: 4.7.10
+- name: bower
+  version: 1.3.5
+- name: bower
+  version: 1.23.45
     YAML
   end
 
@@ -44,6 +54,12 @@ doesn't matter for these tests
 
   subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
 
+  describe '#version' do
+    it 'returns the default version' do
+      expect(subject.version).to eq '1.23.45'
+    end
+  end
+
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
       before do
@@ -53,7 +69,7 @@ doesn't matter for these tests
       context 'cached version is the same as the current version being installed' do
         before do
           File.open(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
-            f.write '1.7.9'
+            f.write '1.23.45'
           end
         end
 

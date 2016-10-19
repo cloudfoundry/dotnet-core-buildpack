@@ -6,6 +6,8 @@ default_versions:
     version: 1.0.0-preview2-003131
   - name: node
     version: 6.9.0
+  - name: bower
+    version: 1.7.9
 
 url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
