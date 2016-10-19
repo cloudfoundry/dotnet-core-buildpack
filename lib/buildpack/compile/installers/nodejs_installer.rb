@@ -63,7 +63,7 @@ module AspNetCoreBuildpack
     end
 
     def version
-      compile_extensions_dir = File.join(__dir__, '..', '..', '..', '..', 'compile-extensions')
+      compile_extensions_dir = File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'compile-extensions')
       @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} node`
     end
 

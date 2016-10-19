@@ -31,7 +31,7 @@ module AspNetCoreBuildpack
   end
 
   def self.compiler(build_dir, cache_dir)
-    manifest_file = File.join(__dir__, '..', 'manifest.yml')
+    manifest_file = File.join(File.dirname(__FILE__), '..', 'manifest.yml')
 
     Compiler.new(
       build_dir,

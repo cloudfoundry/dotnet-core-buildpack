@@ -94,7 +94,7 @@ EOT
     end
 
     def manifest_file
-      File.join(__dir__, '..', '..', '..', 'manifest.yml')
+      File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
     attr_reader :build_dir
