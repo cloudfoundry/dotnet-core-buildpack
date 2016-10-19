@@ -35,6 +35,8 @@ doesn't matter for these tests
   end
 
   before do
+    allow(AspNetCoreBuildpack::DotnetVersion).to receive(:new).with(any_args).and_return(double(version: '4.4.4-002222'))
+
     File.write(manifest_file, manifest_contents)
   end
 
@@ -43,6 +45,12 @@ doesn't matter for these tests
   end
 
   subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+
+  describe '#version' do
+    it 'is always defined' do
+      expect(installer.send(:version)).to_not eq(nil)
+    end
+  end
 
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
@@ -84,10 +92,6 @@ doesn't matter for these tests
   end
 
   describe '#install' do
-    before do
-      allow(AspNetCoreBuildpack::DotnetVersion).to receive(:new).with(any_args).and_return(double(version: '4.4.4-002222'))
-    end
-
     it 'downloads file with compile-extensions and writes a version file' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|

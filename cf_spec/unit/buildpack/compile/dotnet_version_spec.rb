@@ -20,7 +20,6 @@ require 'rspec'
 require 'tmpdir'
 
 describe AspNetCoreBuildpack::DotnetVersion do
-  let(:out) { double(:out) }
   let(:dir) { Dir.mktmpdir }
   let(:manifest_file) { File.join(dir, 'manifest.yml') }
   let(:dotnet_versions_file) { File.join(dir, 'dotnet-versions.yml') }
@@ -55,6 +54,8 @@ dependencies:
 
   let(:latest_version) { 'sdk-version-3'.freeze }
 
+  subject { described_class.new(dir, manifest_file, dotnet_versions_file) }
+
   before do
     File.write(dotnet_versions_file, dotnet_versions_yml)
     File.write(manifest_file, manifest_yml)
@@ -63,8 +64,6 @@ dependencies:
   after do
     FileUtils.rm_rf(dir)
   end
-
-  subject { described_class.new(dir, manifest_file, dotnet_versions_file, out) }
 
   describe '#version' do
     context 'global.json does not exist' do
@@ -131,9 +130,12 @@ dependencies:
     end
 
     context 'invalid global.json exists' do
+      let(:out) { double(:out) }
+
       before do
         json = '"version": "1.0.0-beta1"'
         IO.write(File.join(dir, 'global.json'), json)
+        allow(subject).to receive(:out).and_return(out)
       end
 
       it 'warns and resolves to the latest version' do

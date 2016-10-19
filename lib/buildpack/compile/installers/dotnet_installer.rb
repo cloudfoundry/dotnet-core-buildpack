@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require_relative '../../app_dir'
+require_relative '../../out'
 require_relative '../dotnet_version'
 require_relative 'installer'
 
@@ -41,17 +42,12 @@ module AspNetCoreBuildpack
     end
 
     def install(out)
-      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
-      dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
-
-      @version = DotnetVersion.new(@build_dir, @manifest_file, dotnet_versions_file, out).version
-
       dest_dir = File.join(@build_dir, CACHE_DIR)
 
       out.print("dotnet version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
-      write_version_file(@version)
+      write_version_file(version)
     end
 
     def name
@@ -99,7 +95,16 @@ module AspNetCoreBuildpack
       "dotnet.#{version}.linux-amd64.tar.gz"
     end
 
+    def version
+      if @version.nil?
+        buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
+        dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
+        @version = DotnetVersion.new(@build_dir, @manifest_file, dotnet_versions_file).version
+      end
+
+      @version
+    end
+
     attr_reader :app_dir
-    attr_reader :version
   end
 end
