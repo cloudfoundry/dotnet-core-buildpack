@@ -27,9 +27,10 @@ module AspNetCoreBuildpack
       2
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @manifest_file = manifest_file
       @scripts_parser = ScriptsParser.new(build_dir)
       @shell = shell
     end

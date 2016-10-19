@@ -4,6 +4,8 @@ language: dotnet-core
 default_versions:
   - name: dotnet
     version: 1.0.0-preview2-003131
+  - name: node
+    version: 6.9.0
 
 url_to_dependency_map:
   - match: libunwind-(.*)-(\d+\.\d+)
@@ -13,7 +15,7 @@ url_to_dependency_map:
     name: dotnet
     version: $1
   - match: node(.*)(\d+\.\d+\.\d+)-linux-x64.tar.gz
-    name: nodejs
+    name: node
     version: $2
   - match: bower-(\d+\.\d+\.\d+).tgz
     name: bower
@@ -38,7 +40,7 @@ dependencies:
       - cflinuxfs2
     uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64.tar.gz
     md5: 0abbf8aaae612c02aa529ca2a80d091a
-  - name: nodejs
+  - name: node
     version: 6.9.0
     cf_stacks:
       - cflinuxfs2

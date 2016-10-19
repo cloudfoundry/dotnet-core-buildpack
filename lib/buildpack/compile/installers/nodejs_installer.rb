@@ -23,16 +23,16 @@ module AspNetCoreBuildpack
     BOWER_COMMAND = 'bower'.freeze
     CACHE_DIR = '.node'.freeze
     NPM_COMMAND = 'npm'.freeze
-    VERSION = '6.9.0'.freeze
 
     def cache_dir
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
-      @bp_cache_dir = bp_cache_dir
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @build_dir = build_dir
+      @bp_cache_dir = bp_cache_dir
       @scripts_parser = ScriptsParser.new(build_dir)
+      @manifest_file = manifest_file
       @shell = shell
     end
 
@@ -63,7 +63,8 @@ module AspNetCoreBuildpack
     end
 
     def version
-      VERSION
+      compile_extensions_dir = File.join(__dir__, '..', '..', '..', '..', 'compile-extensions')
+      @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} node`
     end
 
     private

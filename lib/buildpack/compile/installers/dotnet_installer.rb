@@ -26,9 +26,10 @@ module AspNetCoreBuildpack
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @manifest_file = manifest_file
       @shell = shell
     end
 
@@ -41,10 +42,9 @@ module AspNetCoreBuildpack
 
     def install(out)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
-      manifest_file = File.join(buildpack_root, 'manifest.yml')
       dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
 
-      @version = DotnetVersion.new(@build_dir, manifest_file, dotnet_versions_file, out).version
+      @version = DotnetVersion.new(@build_dir, @manifest_file, dotnet_versions_file, out).version
 
       dest_dir = File.join(@build_dir, CACHE_DIR)
 

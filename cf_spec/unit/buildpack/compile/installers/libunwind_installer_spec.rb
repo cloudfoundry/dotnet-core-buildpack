@@ -25,7 +25,24 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:cache_dir) { Dir.mktmpdir }
   let(:shell) { AspNetCoreBuildpack::Shell.new }
   let(:out) { double(:out) }
-  subject(:installer) { described_class.new(dir, cache_dir, shell) }
+
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:manifest_contents) do
+    <<-YAML
+doesn't matter for these tests
+    YAML
+  end
+
+  before do
+    File.write(manifest_file, manifest_contents)
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
+  end
+
+  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
 
   describe '#version' do
     it 'has a default version' do

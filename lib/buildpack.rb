@@ -31,11 +31,13 @@ module AspNetCoreBuildpack
   end
 
   def self.compiler(build_dir, cache_dir)
+    manifest_file = File.join(__dir__, '..', 'manifest.yml')
+
     Compiler.new(
       build_dir,
       cache_dir,
       Copier.new,
-      AspNetCoreBuildpack::Installer.descendants.sort_by!(&:install_order).map { |b| b.new(build_dir, cache_dir, shell) },
+      AspNetCoreBuildpack::Installer.descendants.sort_by!(&:install_order).map { |b| b.new(build_dir, cache_dir, manifest_file, shell) },
       out)
   end
 
