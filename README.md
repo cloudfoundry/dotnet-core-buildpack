@@ -35,11 +35,11 @@ These steps only apply to admins who wish to install the buildpack into their Cl
 
 1. Build the binary dependencies (optional)
 
-If you need to rebuild these, to change a version for example, see the included Dockerfiles. They contain comments specifying the commands to run. Then update manifest.yml to point to your files.
+  If you need to rebuild these, to change a version for example, see the included Dockerfiles. They contain comments specifying the commands to run. Then update manifest.yml to point to your files.
 
 1. Build the buildpack
 
-`uncached` means the buildpack's binary dependencies will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
+  `uncached` means the buildpack's binary dependencies will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
 
   ```bash
   BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ --uncached | --cached ]
@@ -47,7 +47,7 @@ If you need to rebuild these, to change a version for example, see the included 
 
 1. Use in Cloud Foundry
 
-Upload the buildpack to your Cloud Foundry and optionally specify it by name
+  Upload the buildpack to your Cloud Foundry and optionally specify it by name
 
   ```bash
   cf create-buildpack custom_dotnet-core_buildpack dotnet-core_buildpack-cached-custom.zip 1
@@ -58,9 +58,9 @@ Upload the buildpack to your Cloud Foundry and optionally specify it by name
 
 Having performed the steps from Building:
 
-  ```shell
-  BUNDLE_GEMFILE=cf.Gemfile bundle exec rake spec
-  ```
+```shell
+BUNDLE_GEMFILE=cf.Gemfile bundle exec rake spec
+```
 
 ### Integration Testing
 
