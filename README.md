@@ -10,7 +10,7 @@ For more information about ASP.NET Core see:
 ## Usage
 
 ```bash
-cf push my_app -b https://github.com/cloudfoundry-community/dotnet-core-buildpack.git
+cf push my_app -b https://github.com/cloudfoundry/dotnet-core-buildpack.git
 ```
 
 ## Buildpack User Documentation
