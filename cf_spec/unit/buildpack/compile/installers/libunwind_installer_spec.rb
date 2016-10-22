@@ -25,7 +25,24 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:cache_dir) { Dir.mktmpdir }
   let(:shell) { AspNetCoreBuildpack::Shell.new }
   let(:out) { double(:out) }
-  subject(:installer) { described_class.new(dir, cache_dir, shell) }
+
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:manifest_contents) do
+    <<-YAML
+doesn't matter for these tests
+    YAML
+  end
+
+  before do
+    File.write(manifest_file, manifest_contents)
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
+  end
+
+  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
 
   describe '#version' do
     it 'has a default version' do
@@ -34,14 +51,14 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
   end
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, 'libunwind'))
+        FileUtils.mkdir_p(File.join(cache_dir, 'libunwind'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(dir, 'libunwind', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, 'libunwind', 'VERSION'), 'w') do |f|
             f.write '1.1'
           end
         end
@@ -53,8 +70,8 @@ describe AspNetCoreBuildpack::LibunwindInstaller do
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(dir, 'libunwind', 'VERSION'), 'w') do |f|
-            f.write '1.0.0-preview1-002702'
+          File.open(File.join(cache_dir, 'libunwind', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview2-003131'
           end
         end
 

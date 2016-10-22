@@ -19,14 +19,14 @@ require 'json'
 
 module AspNetCoreBuildpack
   class DotnetVersion
-    def initialize(build_dir, manifest_file, dotnet_versions_file, out)
+    def initialize(build_dir, manifest_file, dotnet_versions_file)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
 
       @build_dir = build_dir
       @dotnet_versions = YAML.load_file(dotnet_versions_file)
       @global_json_file_name = 'global.json'
       @default_dotnet_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
-      @out = out
+      @out = Out.new
     end
 
     def version
@@ -51,7 +51,7 @@ module AspNetCoreBuildpack
           return sdk['version'] if sdk.key?('version')
         end
       rescue
-        @out.warn("File #{global_json_file} is not valid JSON")
+        out.warn("File #{global_json_file} is not valid JSON")
       end
       @default_dotnet_version
     end
@@ -70,9 +70,11 @@ module AspNetCoreBuildpack
           end
         end
       rescue
-        @out.warn("File #{runtime_config_json_file} is not valid JSON")
+        out.warn("File #{runtime_config_json_file} is not valid JSON")
       end
       @default_dotnet_version
     end
+
+    attr_reader :out
   end
 end

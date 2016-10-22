@@ -25,12 +25,45 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
-  subject(:installer) { described_class.new(dir, cache_dir, shell) }
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+
+  let(:manifest_contents) do
+    <<-YAML
+---
+default_versions:
+- name: node
+  version: 6.7.99
+dependencies:
+- name: node
+  version: 4.7.0
+- name: node
+  version: 6.7.99
+- name: node
+  version: 0.12.32
+    YAML
+  end
+
+  before do
+    File.write(manifest_file, manifest_contents)
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
+  end
+
+  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+
+  describe '#version' do
+    it 'returns the default version' do
+      expect(subject.version).to eq '6.7.99'
+    end
+  end
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v6.7.99-linux-x64', 'bin'))
       end
 
       it 'returns true' do

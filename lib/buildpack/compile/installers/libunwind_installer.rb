@@ -29,10 +29,18 @@ module AspNetCoreBuildpack
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @manifest_file = manifest_file
       @shell = shell
+    end
+
+    def cached?
+      # File.open can't create the directory structure
+      return false unless File.exist? File.join(@bp_cache_dir, CACHE_DIR)
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == VERSION }
+      !cached_version.empty?
     end
 
     def install(out)
@@ -65,13 +73,6 @@ module AspNetCoreBuildpack
     end
 
     private
-
-    def cached?
-      # File.open can't create the directory structure
-      return false unless File.exist? File.join(@build_dir, CACHE_DIR)
-      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == VERSION }
-      !cached_version.empty?
-    end
 
     def dependency_name
       "libunwind-x-#{version}.tar.gz"

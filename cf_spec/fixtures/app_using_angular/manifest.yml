@@ -1,0 +1,5 @@
+---
+  applications:
+    - name: app_using_angular
+      disk_quota: 1536M
+      memory: 2G

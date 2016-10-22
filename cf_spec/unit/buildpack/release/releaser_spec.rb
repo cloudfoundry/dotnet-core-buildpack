@@ -25,8 +25,22 @@ describe AspNetCoreBuildpack::Releaser do
   let(:build_dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
   let(:out) { AspNetCoreBuildpack::Out.new }
+
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:manifest_contents) do
+    <<-YAML
+doesn't matter for these tests
+    YAML
+  end
+
   before do
-    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetInstaller.new(build_dir, cache_dir, out).cache_dir))
+    File.write(manifest_file, manifest_contents)
+    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetInstaller.new(build_dir, cache_dir, manifest_file, out).cache_dir))
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
   end
 
   describe '#release' do

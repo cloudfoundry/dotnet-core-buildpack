@@ -25,18 +25,51 @@ describe AspNetCoreBuildpack::BowerInstaller do
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
-  subject(:installer) { described_class.new(dir, cache_dir, shell) }
+
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:manifest_contents) do
+    <<-YAML
+---
+default_versions:
+- name: bower
+  version: 1.23.45
+dependencies:
+- name: bower
+  version: 4.7.10
+- name: bower
+  version: 1.3.5
+- name: bower
+  version: 1.23.45
+    YAML
+  end
+
+  before do
+    File.write(manifest_file, manifest_contents)
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
+  end
+
+  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+
+  describe '#version' do
+    it 'returns the default version' do
+      expect(subject.version).to eq '1.23.45'
+    end
+  end
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'lib', 'node_modules', 'bower'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
-            f.write '1.7.9'
+          File.open(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+            f.write '1.23.45'
           end
         end
 
@@ -47,8 +80,8 @@ describe AspNetCoreBuildpack::BowerInstaller do
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
-            f.write '1.0.0-preview1-002702'
+          File.open(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview2-003131'
           end
         end
 
@@ -68,9 +101,9 @@ describe AspNetCoreBuildpack::BowerInstaller do
   describe '#install' do
     context 'NPM is already installed' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'bin'))
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'lib', 'node_modules', 'bower'))
-        File.open(File.join(dir, '.node', 'node-v6.7.0-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
+        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
+        File.open(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
       end
 
       it 'downloads file with compile-extensions and writes a version file' do

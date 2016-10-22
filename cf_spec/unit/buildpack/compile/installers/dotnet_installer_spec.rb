@@ -25,17 +25,42 @@ describe AspNetCoreBuildpack::DotnetInstaller do
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
-  subject(:installer) { described_class.new(dir, cache_dir, shell) }
+
+  let(:manifest_dir)  { Dir.mktmpdir }
+  let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:manifest_contents) do
+    <<-YAML
+doesn't matter for these tests
+    YAML
+  end
+
+  before do
+    allow(AspNetCoreBuildpack::DotnetVersion).to receive(:new).with(any_args).and_return(double(version: '4.4.4-002222'))
+
+    File.write(manifest_file, manifest_contents)
+  end
+
+  after do
+    FileUtils.rm_rf(manifest_dir)
+  end
+
+  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+
+  describe '#version' do
+    it 'is always defined' do
+      expect(installer.send(:version)).to_not eq(nil)
+    end
+  end
 
   describe '#cached?' do
-    context 'cache directory exists in the build directory' do
+    context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.dotnet'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.dotnet'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, '.dotnet', 'VERSION'), 'w') do |f|
             f.write '1.0.0-preview2-003121'
           end
         end
@@ -48,8 +73,8 @@ describe AspNetCoreBuildpack::DotnetInstaller do
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(dir, '.dotnet', 'VERSION'), 'w') do |f|
-            f.write '1.0.0-preview1-002702'
+          File.open(File.join(cache_dir, '.dotnet', 'VERSION'), 'w') do |f|
+            f.write '1.0.0-preview2-003131'
           end
         end
 
@@ -72,6 +97,7 @@ describe AspNetCoreBuildpack::DotnetInstaller do
       expect(shell).to receive(:exec) do |*args|
         cmd = args.first
         expect(cmd).to match(/download_dependency/)
+        expect(cmd).to match(/4.4.4-002222/)
         expect(cmd).to match(/tar/)
       end
       expect(out).to receive(:print).with(/dotnet version/)

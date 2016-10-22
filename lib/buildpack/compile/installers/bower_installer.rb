@@ -21,17 +21,24 @@ require_relative '../scripts_parser'
 module AspNetCoreBuildpack
   class BowerInstaller < Installer
     BOWER_COMMAND = 'bower'.freeze
-    VERSION = '1.7.9'.freeze
 
     def self.install_order
       2
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @manifest_file = manifest_file
       @scripts_parser = ScriptsParser.new(build_dir)
       @shell = shell
+    end
+
+    def cached?
+      # File.open can't create the directory structure
+      return false if cached_version_file.nil?
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
     end
 
     def install(out)
@@ -43,7 +50,7 @@ module AspNetCoreBuildpack
       out.print("Bower version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("PATH=$PATH:#{npm_path} npm install -g /tmp/#{dependency_name}", out)
-      write_version_file(VERSION)
+      write_version_file(version)
     end
 
     def name
@@ -56,29 +63,29 @@ module AspNetCoreBuildpack
     end
 
     def version
-      VERSION
+      compile_extensions_dir = File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'compile-extensions')
+      @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} bower`
     end
 
     private
-
-    def cached?
-      # File.open can't create the directory structure
-      return false if version_file.nil?
-      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
-      !cached_version.empty?
-    end
 
     def dependency_name
       "bower-#{version}.tgz"
     end
 
-    def node_path
-      nil if @build_dir.nil?
-      Dir.glob(File.join(@build_dir, '.node', '*')).last
+    def node_path(dir)
+      nil if dir.nil?
+      Dir.glob(File.join(dir, '.node', '*')).last
+    end
+
+    def cached_version_file
+      npm_path = File.join(node_path(@bp_cache_dir), 'lib', 'node_modules') unless node_path(@bp_cache_dir).nil?
+      bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
+      File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end
 
     def version_file
-      npm_path = File.join(node_path, 'lib', 'node_modules') unless node_path.nil?
+      npm_path = File.join(node_path(@build_dir), 'lib', 'node_modules') unless node_path(@build_dir).nil?
       bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
       File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end

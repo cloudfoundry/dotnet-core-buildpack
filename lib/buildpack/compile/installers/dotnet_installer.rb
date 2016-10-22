@@ -15,6 +15,7 @@
 # limitations under the License.
 
 require_relative '../../app_dir'
+require_relative '../../out'
 require_relative '../dotnet_version'
 require_relative 'installer'
 
@@ -26,25 +27,27 @@ module AspNetCoreBuildpack
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @manifest_file = manifest_file
       @shell = shell
     end
 
+    def cached?
+      # File.open can't create the directory structure
+      return false unless File.exist? File.join(@bp_cache_dir, CACHE_DIR)
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
+      !cached_version.empty?
+    end
+
     def install(out)
-      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
-      manifest_file = File.join(buildpack_root, 'manifest.yml')
-      dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
-
-      @version = DotnetVersion.new(@build_dir, manifest_file, dotnet_versions_file, out).version
-
       dest_dir = File.join(@build_dir, CACHE_DIR)
 
       out.print("dotnet version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
-      write_version_file(@version)
+      write_version_file(version)
     end
 
     def name
@@ -60,7 +63,9 @@ module AspNetCoreBuildpack
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
       @shell.env['PATH'] = "$PATH:#{path}"
       project_list = @app_dir.with_project_json.join(' ')
-      cmd = "bash -c 'cd #{build_dir}; dotnet restore --verbosity minimal #{project_list}'"
+
+      verbosity = ENV['BP_DEBUG'].nil? ? 'minimal' : 'debug'
+      cmd = "bash -c 'cd #{build_dir}; dotnet restore --verbosity #{verbosity} #{project_list}'"
       @shell.exec(cmd, out)
     end
 
@@ -86,18 +91,20 @@ module AspNetCoreBuildpack
       File.join(bp_cache_dir, CACHE_DIR)
     end
 
-    def cached?
-      # File.open can't create the directory structure
-      return false unless File.exist? File.join(@build_dir, CACHE_DIR)
-      cached_version = File.open(version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
-      !cached_version.empty?
-    end
-
     def dependency_name
       "dotnet.#{version}.linux-amd64.tar.gz"
     end
 
+    def version
+      if @version.nil?
+        buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
+        dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
+        @version = DotnetVersion.new(@build_dir, @manifest_file, dotnet_versions_file).version
+      end
+
+      @version
+    end
+
     attr_reader :app_dir
-    attr_reader :version
   end
 end

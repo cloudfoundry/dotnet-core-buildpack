@@ -56,7 +56,7 @@ EOT
 
     def get_binary_path(installers)
       bin_paths = installers.map do |subclass|
-        subclass.new(@build_dir, @cache_dir, @shell).path
+        subclass.new(@build_dir, @cache_dir, manifest_file, @shell).path
       end
       bin_paths.insert(0, '$PATH')
       bin_paths.compact.join(':')
@@ -64,14 +64,15 @@ EOT
 
     def get_library_path(installers)
       library_paths = installers.map do |subclass|
-        subclass.new(@build_dir, @cache_dir, @shell).library_path
+        subclass.new(@build_dir, @cache_dir, manifest_file, @shell).library_path
       end
       library_paths.insert(0, '$LD_LIBRARY_PATH')
       library_paths.compact.join(':')
     end
 
     def get_source_start_cmd(project)
-      return "dotnet run --project #{project}" unless project.nil?
+      verbosity = ENV['BP_DEBUG'].nil? ? '' : '--verbose '
+      return "dotnet #{verbosity}run --project #{project}" unless project.nil?
     end
 
     def get_published_start_cmd(project, build_dir)
@@ -90,6 +91,10 @@ EOT
 
     def startup_script_path(dir)
       File.join(dir, '.profile.d', 'startup.sh')
+    end
+
+    def manifest_file
+      File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
     attr_reader :build_dir

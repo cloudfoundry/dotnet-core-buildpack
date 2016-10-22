@@ -23,17 +23,21 @@ module AspNetCoreBuildpack
     BOWER_COMMAND = 'bower'.freeze
     CACHE_DIR = '.node'.freeze
     NPM_COMMAND = 'npm'.freeze
-    VERSION = '6.7.0'.freeze
 
     def cache_dir
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, shell)
-      @bp_cache_dir = bp_cache_dir
+    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
       @build_dir = build_dir
+      @bp_cache_dir = bp_cache_dir
       @scripts_parser = ScriptsParser.new(build_dir)
+      @manifest_file = manifest_file
       @shell = shell
+    end
+
+    def cached?
+      File.exist? File.join(@bp_cache_dir, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
     end
 
     def install(out)
@@ -59,17 +63,14 @@ module AspNetCoreBuildpack
     end
 
     def version
-      VERSION
+      compile_extensions_dir = File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'compile-extensions')
+      @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} node`
     end
 
     private
 
     def bin_folder
       File.join('$HOME'.freeze, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
-    end
-
-    def cached?
-      File.exist? File.join(@build_dir, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
     end
 
     def dependency_name

@@ -1,3 +1,22 @@
+v1.0.3 Oct 21, 2016
+====================
+
+* Add default_versions support to buildpack
+  (https://www.pivotaltracker.com/story/show/132168017)
+  (https://www.pivotaltracker.com/story/show/132167537)
+
+* Add option to clear Nuget cache
+  (https://www.pivotaltracker.com/story/show/132160087)
+
+* Run verbose `dotnet run` and `dotnet restore` when BP_DEBUG is specified
+  (https://www.pivotaltracker.com/story/show/130651349)
+
+* Add node 6.9.1, remove node 6.7.0
+  (https://www.pivotaltracker.com/story/show/132796533)
+
+* Remove .NET Core 1.0.0 RC2 from manifest
+  (https://www.pivotaltracker.com/story/show/132028795)
+
 v1.0.2 Oct 11, 2016
 ====================
 
