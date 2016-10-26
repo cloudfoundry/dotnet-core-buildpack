@@ -1,8 +1,8 @@
 ---
 applications:
 - name: nancy-kestrel
-  disk_quota: 1536M
-  memory: 512M
+  disk_quota: 2G
+  memory: 1G
   instances: 1
   buildpack: dotnet-core-test-buildpack
   Stack: cflinuxfs2
