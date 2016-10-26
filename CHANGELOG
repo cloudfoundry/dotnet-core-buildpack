@@ -1,3 +1,10 @@
+v1.0.4 Oct 26, 2016
+====================
+
+* Add dotnet 1.0.0-preview2-1-003155
+  - includes .NET Framework 1.1.0-preview1-001100-00
+  (https://www.pivotaltracker.com/story/show/133041819)
+
 v1.0.3 Oct 21, 2016
 ====================
 
