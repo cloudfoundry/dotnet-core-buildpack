@@ -1,0 +1,30 @@
+﻿{
+    "buildOptions": {
+        "debugType": "portable",
+        "emitEntryPoint": true
+    },
+    "dependencies": {
+        "Nancy": "2.0.0-barneyrubble",
+        "Nancy.Validation.FluentValidation": "2.0.0-barneyrubble"
+    },
+    "frameworks": {
+        "netcoreapp1.0": {
+            "dependencies": {
+                "Microsoft.AspNetCore.Hosting": "1.1.0-preview1-final",
+                "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-preview1-final",
+                "Microsoft.AspNetCore.Owin": "1.1.0-preview1-final",
+                "Microsoft.Extensions.Configuration.CommandLine": "1.1.0-preview1-final",
+                "Microsoft.Extensions.Configuration.Binder": "1.1.0-preview1-final",
+                "Microsoft.Extensions.Configuration.Json": "1.1.0-preview1-final",
+                "Microsoft.NETCore.App": {
+                    "type": "platform",
+                    "version": "1.1.0-preview1-001100-00"
+                }
+            },
+            "imports": [
+                "dotnet54",
+                "portable-net451+win8"
+            ]
+        }
+    }
+}
