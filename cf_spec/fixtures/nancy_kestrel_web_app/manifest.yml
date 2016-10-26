@@ -4,8 +4,8 @@ applications:
   disk_quota: 2G
   memory: 1G
   instances: 1
-  buildpack: dotnet-core-test-buildpack
-  Stack: cflinuxfs2
+  stack: cflinuxfs2
   command: dotnet --verbose run --project . --server.urls http://0.0.0.0:$PORT --configuration Release
   env:
     DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    CACHE_NUGET_PACKAGES: false
