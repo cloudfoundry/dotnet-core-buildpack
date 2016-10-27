@@ -31,7 +31,7 @@ describe 'CF ASP.NET Core Buildpack' do
       it 'logs dotnet run verbose output' do
         expect(app).to be_running
         expect(app).to have_logged(/Process ID:/)
-        expect(app).to have_logged(/Generating deps.json at:/)
+        expect(app).to have_logged(/Running \/home\/vcap\/app\/\.dotnet\/dotnet/)
       end
     end
   end
