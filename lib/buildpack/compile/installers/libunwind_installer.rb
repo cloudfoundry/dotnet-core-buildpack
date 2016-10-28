@@ -65,7 +65,7 @@ module AspNetCoreBuildpack
     end
 
     def should_install(_app_dir)
-      !(cached?)
+      !cached?
     end
 
     def version

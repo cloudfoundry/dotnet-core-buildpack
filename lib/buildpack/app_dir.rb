@@ -41,7 +41,7 @@ module AspNetCoreBuildpack
     end
 
     def commands(dir)
-      JSON.load(IO.read(project_json(dir), encoding: 'bom|utf-8')).fetch('commands', {})
+      JSON.parse(IO.read(project_json(dir), encoding: 'bom|utf-8')).fetch('commands', {})
     end
 
     def deployment_file_project
@@ -62,7 +62,7 @@ module AspNetCoreBuildpack
       path = deployment_file_project
       project_paths = with_project_json
       multiple_paths = project_paths.any? && !project_paths.one?
-      fail 'Multiple paths contain a project.json file, but no .deployment file was used' if multiple_paths unless path
+      raise 'Multiple paths contain a project.json file, but no .deployment file was used' unless path || !multiple_paths
       path = project_paths.first unless path
       path if path
     end

@@ -38,7 +38,8 @@ module AspNetCoreBuildpack
       cache_dir,
       Copier.new,
       AspNetCoreBuildpack::Installer.descendants.sort_by!(&:install_order).map { |b| b.new(build_dir, cache_dir, manifest_file, shell) },
-      out)
+      out
+    )
   end
 
   def self.release(build_dir)

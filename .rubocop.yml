@@ -3,6 +3,8 @@ AllCops:
   Exclude:
     - compile-extensions/**/*
     - vendor/**/*
+    - cf_spec/unit/**/*
+    - cf_spec/integration/**/*
 Documentation:
   Enabled: false
 LineLength:

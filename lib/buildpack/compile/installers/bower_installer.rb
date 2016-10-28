@@ -45,7 +45,7 @@ module AspNetCoreBuildpack
       # get latest npm version path
       npm_path = Dir.glob(File.join(@build_dir, '.node', '*', 'bin')).last
       # fail if NPM is not installed
-      fail 'Could not find NPM' if npm_path.nil?
+      raise 'Could not find NPM' if npm_path.nil?
 
       out.print("Bower version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)

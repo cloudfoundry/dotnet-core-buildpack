@@ -42,7 +42,8 @@ describe AspNetCoreBuildpack::Copier do
       subject.cp(src, dest, out)
       expect(Dir[File.join(dest, '**/*')]).to include(
         File.join(dest, File.basename(src), File.basename(file1)),
-        File.join(dest, File.basename(src), 'dir1', File.basename(one_level_deep)))
+        File.join(dest, File.basename(src), 'dir1', File.basename(one_level_deep))
+      )
     end
 
     it 'prints the number of files copied and the src/dest' do

@@ -23,7 +23,7 @@ module AspNetCoreBuildpack
       app = AppDir.new(build_dir)
       start_cmd = get_start_cmd(app)
 
-      fail 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
+      raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
       write_startup_script(startup_script_path(build_dir))
       generate_yml(start_cmd)
@@ -76,7 +76,7 @@ EOT
     end
 
     def get_published_start_cmd(project, build_dir)
-      return "./#{project}" if !project.nil? && File.exist?(File.join(build_dir, "#{project}"))
+      return "./#{project}" if !project.nil? && File.exist?(File.join(build_dir, project.to_s))
       return "dotnet #{project}.dll" if File.exist? File.join(build_dir, "#{project}.dll")
       nil
     end

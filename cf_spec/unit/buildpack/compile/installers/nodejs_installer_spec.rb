@@ -24,7 +24,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
-  let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1', 'project2'])) }
+  let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1 project2'])) }
   let(:manifest_dir)  { Dir.mktmpdir }
   let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
 
