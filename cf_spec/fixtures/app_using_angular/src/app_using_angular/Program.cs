@@ -20,7 +20,6 @@ namespace app_using_angular
                         .UseKestrel()
                         .UseConfiguration(config)
                         .UseContentRoot(content_root)
-                        .UseIISIntegration()
                         .UseStartup<Startup>()
                         .Build();
 
