@@ -1,18 +1,14 @@
 {
-  "version": "1.0.1",
-
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
+    "Newtonsoft.Json": "*",
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.1"
+      "version": "*"
     }
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": "dnxcore50"
-    }
+    "netcoreapp1.0": {}
   },
 
   "tooling": {
