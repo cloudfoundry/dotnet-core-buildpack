@@ -25,8 +25,8 @@ dependencies:
   version: 1.1
   cf_stacks:
   - cflinuxfs2
-  uri: https://github.com/cloudfoundry/dotnet-core-buildpack/releases/download/v0.7/libunwind-cflinuxfs2-1.1.tar.gz
-  md5: b76452a8a2400f3cfdf189761e8be97e
+  uri: https://buildpacks.cloudfoundry.org/manual-binaries/dotnet/libunwind-cflinuxfs2-1.1.tar.gz
+  md5: 50346cd02a15a541f2a0ef7fffb4ada2
 - name: dotnet
   version: 1.0.0-preview2-003121
   cf_stacks:
