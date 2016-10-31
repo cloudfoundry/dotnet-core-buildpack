@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/cloudfoundry/buildpack-packager
+  remote: https://github.com/cloudfoundry/buildpack-packager.git
   revision: 720b7ef03b7b677dc7a83d42a3838468433c4a2b
   tag: v2.3.4
   specs:
@@ -122,4 +122,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   1.13.5
+   1.13.6
