@@ -25,13 +25,13 @@ module AspNetCoreBuildpack
 
       raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
-      write_startup_script(startup_script_path(build_dir))
+      write_startup_script(startup_script_path(build_dir), start_cmd)
       generate_yml(start_cmd)
     end
 
     private
 
-    def write_startup_script(startup_script)
+    def write_startup_script(startup_script, start_cmd)
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
@@ -42,6 +42,8 @@ module AspNetCoreBuildpack
 
         binary_path = get_binary_path(installers)
         f.write "export PATH=#{binary_path};"
+
+        f.write "export PID=`ps -C '#{start_cmd}' -o pid= | tr -d '[:space:]'`"
       end
     end
 

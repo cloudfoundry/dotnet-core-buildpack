@@ -115,6 +115,10 @@ doesn't matter for these tests
         expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib')
       end
 
+      it 'set PID env variable in profile.d' do
+        expect(profile_d_script).to include('export PID=')
+      end
+
       it 'add Dotnet CLI to the PATH in profile.d' do
         expect(profile_d_script).to include('$HOME/.dotnet')
       end
