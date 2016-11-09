@@ -1,3 +1,12 @@
+v1.0.5 Nov 09, 2016
+====================
+
+* Add bower 1.8.0, remove bower 1.7.9
+  (https://www.pivotaltracker.com/story/show/133829973)
+
+* Serve libunwind from buildpacks.cloudfoundry.org
+  (https://www.pivotaltracker.com/story/show/132852595)
+
 v1.0.4 Oct 26, 2016
 ====================
 
