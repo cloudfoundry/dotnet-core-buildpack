@@ -1,0 +1,93 @@
+= IniParse {<img src="https://secure.travis-ci.org/antw/iniparse.png" alt="Build Status" />}[http://travis-ci.org/antw/iniparse]
+
+IniParse is a pure Ruby library for parsing
+INI[http://en.wikipedia.org/wiki/INI_file] configuration and data
+files.
+
+=== Main features
+
+* <b>Support for duplicate options.</b> While not common, some INI files
+  contain an option more than once. IniParse does not overwrite previous
+  options, but allows you to access all of the duplicate values.
+
+* <b>Preservation of white space and blank lines.</b> When writing back to
+  your INI file, line indents, white space and comments (and their indents)
+  are preserved. Only trailing white space (which has no significance in INI
+  files) will be removed.
+
+* <b>Preservation of section and option ordering.</b> Sections and options
+  are kept in the same order they are in the original document ensuring that
+  nothing gets mangled when writing back to the file.
+
+If you don't need the above mentioned features, you may find the simpler
+IniFile gem does all you need.
+
+=== Opening an INI file
+
+Parsing an INI file is fairly simple:
+
+    IniParse.parse( File.read('path/to/my/file.ini') ) # => IniParse::Document
+
+IniParse.parse returns an IniParse::Document instance which represents the
+passed "INI string". Assuming you know the structure of the document, you can
+access the sections in the INI document with IniParse::Document#[]. For
+example:
+
+    document = IniParse.parse( File.read('path/to/my/file.ini') )
+
+    document['a_section']
+      # => IniParse::Lines::Section
+
+    document['a_section']['an_option']
+      # => "a value"
+    document['a_section']['another_option']
+      # => "another value"
+
+In the event that duplicate options were found, an array of the values will
+be supplied to you.
+
+    document = IniParse.parse <<-EOS
+      [my_section]
+      key = value
+      key = another value
+      key = a third value
+    EOS
+
+    document['my_section']['key']
+      # => ['value', 'another value', 'third value']
+
+Options which appear before the first section will be added to a section called
+"__anonymous__".
+
+    document = IniParse.parse <<-EOS
+      driver = true
+
+      [driver]
+      key = value
+    EOS
+
+    document['__anonymous__']['driver']
+      # => true
+
+    document['driver']['key']
+      # => 'value'
+
+=== Updating an INI file
+
+    document['a_section']['an_option']
+      # => "a value"
+    document['a_section']['an_option'] = 'a new value'
+    document['a_section']['an_option']
+      # => "a new value"
+
+Delete entire sections by calling `#delete` with the section name...
+
+    document.delete('a_section')
+
+... or a single option with `#delete` on the section object:
+
+    document['a_section'].delete('an_option')
+
+=== Creating a new INI file
+
+See IniParse::Generator.

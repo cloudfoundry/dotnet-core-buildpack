@@ -50,6 +50,7 @@ describe AspNetCoreBuildpack::AppDir do
       context 'and specifies an existing project' do
         before do
           File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
             f.write("project = src/föö\n")
           end
         end
@@ -59,9 +60,39 @@ describe AspNetCoreBuildpack::AppDir do
         end
       end
 
+      context 'and does not specify a project' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("some_other_key = src/föö\n")
+          end
+        end
+
+        it 'throws a helpful error about needing a project key' do
+          expect{ subject.deployment_file_project }.to raise_error(AspNetCoreBuildpack::DeploymentConfigError,
+                                                                   /Invalid .deployment file: must have project key/)
+        end
+      end
+
+      context 'and does not specifies more than one project' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = src/föö\n")
+            f.write("project = src/fööbar\n")
+          end
+        end
+
+        it 'throws a helpful error about only allowing one project key' do
+          expect{ subject.deployment_file_project }.to raise_error(AspNetCoreBuildpack::DeploymentConfigError,
+                                                                   /Invalid .deployment file: must only contain one project key/)
+        end
+      end
+
       context 'and specifies a non-existent project' do
         before do
           File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
             f.write("project = dne\n")
           end
         end
@@ -80,8 +111,8 @@ describe AspNetCoreBuildpack::AppDir do
         end
 
         context 'but does not specify a project' do
-          it 'does not find a project' do
-            expect(subject.deployment_file_project).to be_nil
+          it 'throws a helpful error about needing a project key' do
+            expect{ subject.deployment_file_project }.to raise_error(AspNetCoreBuildpack::DeploymentConfigError, /Invalid .deployment file: must have project key/)
           end
         end
 
