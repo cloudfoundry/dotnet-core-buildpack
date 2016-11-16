@@ -60,6 +60,32 @@ describe AspNetCoreBuildpack::AppDir do
         end
       end
 
+      context 'and specifies an existing .xproj file' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = src/föö/project.xproj\n")
+          end
+        end
+
+        it 'finds specified project' do
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö'))
+        end
+      end
+
+      context 'and specifies an existing .csproj file' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = src/föö/project.csproj\n")
+          end
+        end
+
+        it 'finds specified project' do
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö'))
+        end
+      end
+
       context 'and does not specify a project' do
         before do
           File.open(File.join(dir, '.deployment'), 'w') do |f|
