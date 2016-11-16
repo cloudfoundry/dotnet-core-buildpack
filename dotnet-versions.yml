@@ -5,3 +5,5 @@
   framework: 1.0.1
 - dotnet: 1.0.0-preview2-1-003155
   framework: 1.1.0-preview1-001100-00
+- dotnet: 1.0.0-preview2-1-003177
+  framework: 1.1.0
