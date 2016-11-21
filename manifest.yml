@@ -6,7 +6,7 @@ default_versions:
 - name: bower
   version: 1.8.0
 - name: dotnet
-  version: 1.0.0-preview2-1-003177
+  version: 1.0.0-preview2-003131
 url_to_dependency_map:
 - match: libunwind-(.*)-(\d+\.\d+)
   name: libunwind
