@@ -32,7 +32,7 @@
     "Microsoft.Extensions.Logging.Debug": "*",
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "*"
+      "version": "1.0.*"
     },
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "*"
   },

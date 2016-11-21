@@ -19,7 +19,7 @@
     "Microsoft.Extensions.Logging.Console": "*",
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "*"
+      "version": "1.0.*"
     },
     "Microsoft.Extensions.Configuration.CommandLine": "*"
   },
