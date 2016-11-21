@@ -45,12 +45,6 @@ dependencies:
   md5: 3a0fbba5d2b27fbc6d7f1a89b4a6a108
   cf_stacks:
   - cflinuxfs2
-- name: dotnet
-  version: 1.0.0-preview2-1-003155
-  uri: https://buildpacks.cloudfoundry.org/concourse-binaries/dotnet/dotnet.1.0.0-preview2-1-003155.linux-amd64.tar.gz
-  md5: eb600b09335639e5e892cfce5dac56fd
-  cf_stacks:
-  - cflinuxfs2
 - name: bower
   version: 1.8.0
   uri: https://buildpacks.cloudfoundry.org/concourse-binaries/bower/bower-1.8.0.tgz
