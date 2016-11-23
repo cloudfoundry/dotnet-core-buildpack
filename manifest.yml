@@ -25,7 +25,7 @@ dependencies:
   version: 1.1
   cf_stacks:
   - cflinuxfs2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/libunwind-cflinuxfs2-1.1.tar.gz
+  uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/libunwind-1.1-linux-x64.tgz
   md5: b2b1bf2bc9f80a24f6a902e977261345
 - name: dotnet
   version: 1.0.0-preview2-003121
