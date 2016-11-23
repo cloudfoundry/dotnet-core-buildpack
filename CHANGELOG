@@ -1,3 +1,26 @@
+v1.0.6 Nov 23, 2016
+====================
+
+* Remove .NET SDK 1.0.0-preview2-1-003155
+  (https://www.pivotaltracker.com/story/show/134541255)
+
+* Set default version of .NET to latest LTS release (1.0.1)
+  (https://www.pivotaltracker.com/story/show/134541255)
+
+* Use vendored iniparse gem to parse .deployment
+  - Now error out if multiple project keys/paths are specified
+  - Now error out if .deployment file with no project key
+  (https://www.pivotaltracker.com/story/show/133932443)
+
+* Add dotnet 1.0.0-preview2-1-003177
+  (https://www.pivotaltracker.com/story/show/134444267)
+
+* Rebuild and change path for dotnet, node, and bower binaries
+  - We identified a potential, but unlikely, attack vector in our continuous
+    integration system. Our own auditing strongly suggests that this attack
+    vector was not taken advantage of. However, out of an abundance of caution,
+    we are rebuilding all buildpack dependencies that we maintain.
+
 v1.0.5 Nov 09, 2016
 ====================
 
