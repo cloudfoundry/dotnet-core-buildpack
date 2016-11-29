@@ -65,7 +65,28 @@ describe AspNetCoreBuildpack::Detecter do
         end
       end
 
-      context 'but no .cs file exists in the directory or sub directories' do
+      context 'and .fs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .fs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'sub'))
+          File.open(File.join(dir, 'sub', 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs or .fs file exists in the directory or sub directories' do
         it 'returns false' do
           expect(subject.detect(dir)).not_to be_truthy
         end
@@ -99,7 +120,28 @@ describe AspNetCoreBuildpack::Detecter do
         end
       end
 
-      context 'but no .cs file exists in the directory or sub directories' do
+      context 'and .fs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'src', 'proj', 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .fs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'proj', 'sub'))
+          File.open(File.join(dir, 'src', 'proj', 'sub', 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs or .fs file exists in the directory or sub directories' do
         it 'returns false' do
           expect(subject.detect(dir)).not_to be_truthy
         end
