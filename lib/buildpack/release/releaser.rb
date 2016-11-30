@@ -38,6 +38,8 @@ module AspNetCoreBuildpack
         installers = AspNetCoreBuildpack::Installer.descendants
 
         library_path = get_library_path(installers)
+        custom_library_path = ENV['LD_LIBRARY_PATH']
+        library_path = "#{library_path}:#{custom_library_path}" if custom_library_path
         f.write "export LD_LIBRARY_PATH=#{library_path};"
 
         binary_path = get_binary_path(installers)
@@ -67,6 +69,7 @@ EOT
         subclass.new(@build_dir, @cache_dir, manifest_file, @shell).library_path
       end
       library_paths.insert(0, '$LD_LIBRARY_PATH')
+      library_paths.insert(1, '$HOME/ld_library_path')
       library_paths.compact.join(':')
     end
 
