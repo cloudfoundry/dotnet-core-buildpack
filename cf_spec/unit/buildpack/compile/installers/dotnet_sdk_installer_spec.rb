@@ -18,7 +18,7 @@ $LOAD_PATH << 'cf_spec'
 require 'spec_helper'
 require 'rspec'
 
-describe AspNetCoreBuildpack::DotnetInstaller do
+describe AspNetCoreBuildpack::DotnetSdkInstaller do
   let(:dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
   let(:shell) { double(:shell, env: {}) }
@@ -35,7 +35,7 @@ doesn't matter for these tests
   end
 
   before do
-    allow(AspNetCoreBuildpack::DotnetVersion).to receive(:new).with(any_args).and_return(double(version: '4.4.4-002222'))
+    allow(AspNetCoreBuildpack::DotnetSdkVersion).to receive(:new).with(any_args).and_return(double(version: '4.4.4-002222'))
 
     File.write(manifest_file, manifest_contents)
   end
@@ -100,7 +100,7 @@ doesn't matter for these tests
         expect(cmd).to match(/4.4.4-002222/)
         expect(cmd).to match(/tar/)
       end
-      expect(out).to receive(:print).with(/dotnet version/)
+      expect(out).to receive(:print).with(/.NET SDK version: /)
       expect(subject).to receive(:write_version_file).with(anything)
       subject.install(out)
     end

@@ -7,7 +7,7 @@
     "Microsoft.AspNetCore.Server.Kestrel": "*",
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.*"
+      "version": "1.1.*"
     },
     "Microsoft.Extensions.Configuration.CommandLine": "*"
   },
