@@ -36,7 +36,7 @@ doesn't matter for these tests
 
   before do
     File.write(manifest_file, manifest_contents)
-    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetInstaller.new(build_dir, cache_dir, manifest_file, out).cache_dir))
+    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetSdkInstaller.new(build_dir, cache_dir, manifest_file, out).cache_dir))
   end
 
   after do
@@ -90,7 +90,7 @@ doesn't matter for these tests
       let(:project_json) { '{"commands": {"kestrel": "whatever"}}' }
 
       let(:profile_d_script) do
-        allow_any_instance_of(AspNetCoreBuildpack::DotnetInstaller).to receive(:cached?).and_return(true)
+        allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
         allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
         subject.release(build_dir)
         IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))

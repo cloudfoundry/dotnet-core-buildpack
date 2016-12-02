@@ -18,27 +18,25 @@ require 'yaml'
 require 'json'
 
 module AspNetCoreBuildpack
-  class DotnetVersion
-    def initialize(build_dir, manifest_file, dotnet_versions_file)
+  class DotnetSdkVersion
+    def initialize(build_dir, manifest_file)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
 
       @build_dir = build_dir
-      @dotnet_versions = YAML.load_file(dotnet_versions_file)
       @global_json_file_name = 'global.json'
-      @default_dotnet_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
+      @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
       @out = Out.new
     end
 
     def version
-      dotnet_version = @default_dotnet_version
+      sdk_version = @default_sdk_version
       global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
-      runtimeconfig_json_file = Dir.glob(File.join(@build_dir, '*.runtimeconfig.json')).first
+
       if File.exist?(global_json_file)
-        dotnet_version = get_version_from_global_json(global_json_file)
-      elsif !runtimeconfig_json_file.nil?
-        dotnet_version = get_version_from_runtime_config_json(runtimeconfig_json_file)
+        sdk_version = get_version_from_global_json(global_json_file)
       end
-      dotnet_version
+
+      sdk_version
     end
 
     private
@@ -53,26 +51,7 @@ module AspNetCoreBuildpack
       rescue
         out.warn("File #{global_json_file} is not valid JSON")
       end
-      @default_dotnet_version
-    end
-
-    def get_version_from_runtime_config_json(runtime_config_json_file)
-      begin
-        global_props = JSON.parse(File.read(runtime_config_json_file, encoding: 'bom|utf-8'))
-        if global_props.key?('runtimeOptions') && global_props['runtimeOptions'].key?('framework')
-          framework = global_props['runtimeOptions']['framework']
-
-          if framework.key?('version')
-            version = @dotnet_versions.find do |ver|
-              ver['framework'] == framework['version']
-            end
-            return version['dotnet'] unless version.nil?
-          end
-        end
-      rescue
-        out.warn("File #{runtime_config_json_file} is not valid JSON")
-      end
-      @default_dotnet_version
+      @default_sdk_version
     end
 
     attr_reader :out

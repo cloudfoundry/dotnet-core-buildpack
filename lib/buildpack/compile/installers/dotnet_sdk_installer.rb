@@ -16,11 +16,11 @@
 
 require_relative '../../app_dir'
 require_relative '../../out'
-require_relative '../dotnet_version'
+require_relative '../dotnet_sdk_version'
 require_relative 'installer'
 
 module AspNetCoreBuildpack
-  class DotnetInstaller < Installer
+  class DotnetSdkInstaller < Installer
     CACHE_DIR = '.dotnet'.freeze
 
     def cache_dir
@@ -44,14 +44,14 @@ module AspNetCoreBuildpack
     def install(out)
       dest_dir = File.join(@build_dir, CACHE_DIR)
 
-      out.print("dotnet version: #{version}")
+      out.print(".NET SDK version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
       write_version_file(version)
     end
 
     def name
-      'Dotnet CLI'.freeze
+      '.NET SDK'.freeze
     end
 
     def path
@@ -96,15 +96,10 @@ module AspNetCoreBuildpack
     end
 
     def version
-      if @version.nil?
-        buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..', '..')
-        dotnet_versions_file = File.join(buildpack_root, 'dotnet-versions.yml')
-        @version = DotnetVersion.new(@build_dir, @manifest_file, dotnet_versions_file).version
-      end
-
-      @version
+      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file).version
     end
 
     attr_reader :app_dir
+    attr_accessor :dotnet_restored
   end
 end

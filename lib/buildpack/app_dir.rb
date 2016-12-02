@@ -20,7 +20,6 @@ require 'iniparse'
 # limitations under the License.
 
 module AspNetCoreBuildpack
-
   class DeploymentConfigError < StandardError
     def initialize(error_reason)
       super("Invalid .deployment file: #{error_reason}")
@@ -64,26 +63,27 @@ module AspNetCoreBuildpack
 
       if File.exist?(deployment_file)
         deployment_ini = IniParse.parse(File.read(deployment_file, encoding: 'bom|utf-8'))
-        deployment_project_path = deployment_ini['config']['project']
+        deployment_project = deployment_ini['config']['project']
 
-        if deployment_project_path.nil?
-          raise DeploymentConfigError.new("must have project key")
-        elsif deployment_project_path.class == Array
-          raise DeploymentConfigError.new("must only contain one project key")
-        end
+        raise DeploymentConfigError, 'must have project key' if deployment_project.nil?
+        raise DeploymentConfigError, 'must only contain one project key' if deployment_project.class == Array
 
-        project_suffix = deployment_project_path.split('.').last
-
-        if project_suffix == 'xproj' || project_suffix == 'csproj'
-          path = Pathname.new(File.dirname(deployment_project_path))
-        else
-          path = Pathname.new(deployment_project_path)
-        end
+        path = get_project_dir(deployment_project)
 
         project_path = path if paths.include?(path)
       end
 
       project_path
+    end
+
+    def get_project_dir(project_path)
+      project_suffix = project_path.split('.').last
+
+      if project_suffix == 'xproj' || project_suffix == 'csproj'
+        Pathname.new(File.dirname(project_path))
+      else
+        Pathname.new(project_path)
+      end
     end
 
     def main_project_path

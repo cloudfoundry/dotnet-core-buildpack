@@ -15,9 +15,10 @@
 # limitations under the License.
 
 require_relative '../bp_version.rb'
+require_relative 'dotnet_framework.rb'
 require_relative './installers/installer.rb'
 require_relative './installers/libunwind_installer.rb'
-require_relative './installers/dotnet_installer.rb'
+require_relative './installers/dotnet_sdk_installer.rb'
 require_relative './installers/nodejs_installer.rb'
 require_relative './installers/bower_installer.rb'
 
@@ -37,7 +38,8 @@ module AspNetCoreBuildpack
       @app_dir = AppDir.new(@build_dir)
       @shell = AspNetCoreBuildpack.shell
       @installers = installers
-      @dotnet = installers.find { |installer| /(.*)::DotnetInstaller/.match(installer.class.name) }
+      @dotnet_sdk = installers.find { |installer| /(.*)::DotnetSdkInstaller/.match(installer.class.name) }
+      @manifest_file = File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
     def compile
@@ -46,8 +48,16 @@ module AspNetCoreBuildpack
       step('Restoring files from buildpack cache', method(:restore_cache))
       step('Clearing NuGet packages cache', method(:clear_nuget_cache)) if should_clear_nuget_cache?
       step('Restoring NuGet packages cache', method(:restore_nuget_cache))
+
       run_installers
-      step('Restoring dependencies with Dotnet CLI', @dotnet.method(:restore)) if dotnet_should_restore
+
+      step('Restoring dependencies with Dotnet CLI', @dotnet_sdk.method(:restore)) if should_restore?
+
+      unless @dotnet_sdk.nil?
+        @dotnet_framework = DotnetFramework.new(@build_dir, File.join(@build_dir, NUGET_CACHE_DIR), File.join(@build_dir, @dotnet_sdk.cache_dir), shell)
+        step('Installing .NET Framework(s)', @dotnet_framework.method(:install))
+      end
+
       step('Saving to buildpack cache', method(:save_cache))
       puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
@@ -62,13 +72,13 @@ module AspNetCoreBuildpack
       FileUtils.rm_rf(File.join(cache_dir, NUGET_CACHE_DIR))
     end
 
-    def dotnet_should_restore
-      dotnet.should_restore(@app_dir) unless dotnet.nil?
+    def should_restore?
+      @dotnet_sdk.should_restore(@app_dir) unless @dotnet_sdk.nil?
     end
 
     def nuget_cache_is_valid?
-      return false if @dotnet.nil? || !File.exist?(File.join(cache_dir, NUGET_CACHE_DIR))
-      !@dotnet.should_install(@app_dir)
+      return false if @dotnet_sdk.nil? || !File.exist?(File.join(cache_dir, NUGET_CACHE_DIR))
+      !@dotnet_sdk.should_install(@app_dir)
     end
 
     def run_installers
@@ -124,7 +134,6 @@ module AspNetCoreBuildpack
     attr_reader :app_dir
     attr_reader :build_dir
     attr_reader :cache_dir
-    attr_reader :dotnet
     attr_reader :installers
     attr_reader :copier
     attr_reader :out
