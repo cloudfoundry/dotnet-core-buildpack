@@ -112,7 +112,7 @@ doesn't matter for these tests
       end
 
       it 'set LD_LIBRARY_PATH in profile.d' do
-        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/libunwind/lib')
+        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib')
       end
 
       it 'add Dotnet CLI to the PATH in profile.d' do
@@ -125,6 +125,16 @@ doesn't matter for these tests
 
       it "runs 'dotnet run' for project" do
         expect(web_process).to match('dotnet run --project foo')
+      end
+
+      context 'LD_LIBRARY_PATH specifies a custom library path' do
+        before do
+          ENV['LD_LIBRARY_PATH'] = '$HOME/my_custom_library/'
+        end
+
+        it 'appends the custom library path to LD_LIBRARY_PATH in profile.d' do
+          expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib:$HOME/my_custom_library/')
+        end
       end
     end
 
