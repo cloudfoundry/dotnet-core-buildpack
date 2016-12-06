@@ -24,8 +24,9 @@ describe AspNetCoreBuildpack::DotnetSdkInstaller do
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
-  let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1 project2'])) }
-
+  let(:project_paths) { %w(project1 project2) }
+  let(:app_dir) { double(:app_dir, published_project: false,
+                         project_paths: project_paths) }
   let(:manifest_dir)  { Dir.mktmpdir }
   let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
   let(:manifest_contents) do
@@ -42,6 +43,7 @@ doesn't matter for these tests
 
   after do
     FileUtils.rm_rf(manifest_dir)
+    FileUtils.rm_rf(dir)
   end
 
   subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
@@ -107,13 +109,63 @@ doesn't matter for these tests
   end
 
   describe '#restore' do
-    it 'runs dotnet restore' do
-      expect(shell).to receive(:exec) do |*args|
-        cmd = args.first
-        expect(cmd).to match(/dotnet restore/)
+    context 'intalled sdk uses msbuild' do
+      let(:project_paths) { %w(src1/project1.csproj src2/project2.csproj) }
+
+      before do
+        allow(subject).to receive(:msbuild?).with(dir).and_return(true)
       end
-      subject.should_restore(app_dir)
-      subject.restore(out)
+
+      it 'runs dotnet restore and rewrites project.assets.json' do
+        expect(shell).to receive(:exec) do |*args|
+          cmd = args.first
+          expect(cmd).to match(/dotnet restore src1\/project1.csproj/)
+        end
+        expect(shell).to receive(:exec) do |*args|
+          cmd = args.first
+          expect(cmd).to match(/dotnet restore src2\/project2.csproj/)
+        end
+        expect(subject).to receive(:rewrite_project_assets_json).with(%w(src1/project1.csproj src2/project2.csproj))
+
+        subject.should_restore(app_dir)
+        subject.restore(out)
+      end
+    end
+
+    context 'installed sdk uses project.json ' do
+      before do
+        allow(subject).to receive(:msbuild?).with(dir).and_return(false)
+      end
+
+      it 'runs dotnet restore and does not rewrite project.assets.json' do
+        expect(shell).to receive(:exec) do |*args|
+          cmd = args.first
+          expect(cmd).to match(/dotnet restore project1 project2/)
+        end
+        expect(subject).not_to receive(:rewrite_project_assets_json)
+
+        subject.should_restore(app_dir)
+        subject.restore(out)
+      end
+    end
+  end
+
+  describe '#rewrite_project_assets_json' do
+    let(:csproj_files) { %w(src1/project1.csproj src2/project2.csproj) }
+
+    before do
+      FileUtils.mkdir_p(File.join(dir, 'src1', 'obj'))
+      FileUtils.mkdir_p(File.join(dir, 'src2', 'obj'))
+
+      File.write(File.join(dir, 'src1', 'obj', 'project.assets.json'), '/tmp/app/.nuget/packages/')
+      File.write(File.join(dir, 'src2', 'obj', 'project.assets.json'), '/tmp/app/.nuget/packages/')
+    end
+
+    it 'substitutes runtime nuget package dir for staging dir in all projects' do
+      subject.rewrite_project_assets_json(csproj_files)
+
+      expect(File.read(File.join(dir, 'src1', 'obj', 'project.assets.json'))).to eq '/app/.nuget/packages/'
+      expect(File.read(File.join(dir, 'src2', 'obj', 'project.assets.json'))).to eq '/app/.nuget/packages/'
     end
   end
 

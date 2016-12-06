@@ -1,0 +1,5 @@
+---
+  applications:
+    - name: app_using_angular_msbuild
+      disk_quota: 1536M
+      memory: 2G

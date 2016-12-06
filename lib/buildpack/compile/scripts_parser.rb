@@ -13,13 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+require 'rexml/document'
+require_relative '../sdk_info'
+require_relative '../app_dir'
 
 module AspNetCoreBuildpack
   class ScriptsParser
+    include SdkInfo
+
     SCRIPTS_KEY = 'scripts'.freeze
 
     def initialize(build_dir)
       @build_dir = build_dir
+      @app_dir = AppDir.new(@build_dir)
     end
 
     def get_scripts_section(project_json)
@@ -48,7 +54,7 @@ module AspNetCoreBuildpack
       false
     end
 
-    def scripts_section_exists?(check_commands)
+    def json_scripts_section_exists?(check_commands)
       return_value = false
       check_keys = ['precompile'.freeze, 'postcompile'.freeze]
       Dir.glob(File.join(@build_dir, '**', 'project.json'.freeze)).each do |project_json|
@@ -62,6 +68,40 @@ module AspNetCoreBuildpack
         end
       end
       return_value
+    end
+
+    def xml_scripts_section_exists?(check_commands)
+      check_keys = %w(PrecompileScript PostcompileScript)
+
+      @app_dir.msbuild_projects.each do |proj|
+        doc = REXML::Document.new(File.read(File.join(@build_dir, proj), encoding: 'bom|utf-8'))
+
+        scripts = doc.elements.to_a('Project/Target').select do |e|
+          check_keys.include? e.attributes['Name']
+        end
+
+        commands = []
+
+        scripts.each do |script|
+          commands += script.elements.to_a('Exec')
+        end
+
+        commands.each do |command|
+          check_commands.each do |check|
+            return true if command.attributes['Command'].include? check
+          end
+        end
+      end
+
+      false
+    end
+
+    def scripts_section_exists?(check_commands)
+      if msbuild?(@build_dir)
+        xml_scripts_section_exists?(check_commands)
+      elsif project_json?(@build_dir)
+        json_scripts_section_exists?(check_commands)
+      end
     end
 
     private

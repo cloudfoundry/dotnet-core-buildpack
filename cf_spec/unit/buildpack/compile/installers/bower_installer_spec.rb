@@ -130,6 +130,11 @@ dependencies:
   end
 
   describe '#should_install' do
+    before do
+      allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:msbuild?).and_return(false)
+      allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:project_json?).and_return(true)
+    end
+
     context 'app is self-contained' do
       it 'returns false' do
         expect(subject.should_install(self_contained_app_dir)).not_to be_truthy

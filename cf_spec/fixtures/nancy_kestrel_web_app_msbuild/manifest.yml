@@ -1,0 +1,10 @@
+---
+applications:
+- name: nancy-kestrel-msbuild
+  disk_quota: 2G
+  memory: 1G
+  instances: 1
+  stack: cflinuxfs2
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    CACHE_NUGET_PACKAGES: false

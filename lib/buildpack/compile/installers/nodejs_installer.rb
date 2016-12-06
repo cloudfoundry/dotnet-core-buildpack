@@ -24,6 +24,10 @@ module AspNetCoreBuildpack
     CACHE_DIR = '.node'.freeze
     NPM_COMMAND = 'npm'.freeze
 
+    def self.install_order
+      2
+    end
+
     def cache_dir
       CACHE_DIR
     end

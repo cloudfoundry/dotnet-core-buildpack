@@ -15,13 +15,20 @@
 # limitations under the License.
 
 require_relative '../../app_dir'
+require_relative '../../sdk_info'
 require_relative '../../out'
 require_relative '../dotnet_sdk_version'
 require_relative 'installer'
 
 module AspNetCoreBuildpack
   class DotnetSdkInstaller < Installer
+    include SdkInfo
+
     CACHE_DIR = '.dotnet'.freeze
+
+    def self.install_order
+      1
+    end
 
     def cache_dir
       CACHE_DIR
@@ -62,11 +69,28 @@ module AspNetCoreBuildpack
       @shell.env['HOME'] = @build_dir
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
       @shell.env['PATH'] = "$PATH:#{path}"
-      project_list = @app_dir.with_project_json.join(' ')
 
-      verbosity = ENV['BP_DEBUG'].nil? ? 'minimal' : 'debug'
-      cmd = "bash -c 'cd #{build_dir}; dotnet restore --verbosity #{verbosity} #{project_list}'"
-      @shell.exec(cmd, out)
+      if msbuild?(build_dir)
+        @app_dir.project_paths.each do |project|
+          cmd = "bash -c 'cd #{build_dir}; dotnet restore #{project}'"
+          @shell.exec(cmd, out)
+        end
+
+        rewrite_project_assets_json(@app_dir.project_paths)
+      else
+        project_list = @app_dir.project_paths.join(' ')
+        cmd = "bash -c 'cd #{build_dir}; dotnet restore #{project_list}'"
+        @shell.exec(cmd, out)
+      end
+    end
+
+    def rewrite_project_assets_json(msbuild_projects)
+      msbuild_projects.each do |proj|
+        json_file = File.join(@build_dir, File.dirname(proj), 'obj', 'project.assets.json')
+        json = File.read(json_file)
+        json.gsub!('/tmp/app/.nuget/packages/', '/app/.nuget/packages/')
+        File.write(json_file, json)
+      end
     end
 
     def should_install(app_dir)
@@ -96,7 +120,8 @@ module AspNetCoreBuildpack
     end
 
     def version
-      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file).version
+      dotnet_sdk_tools_file = File.join(File.dirname(@manifest_file), 'dotnet-sdk-tools.yml')
+      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file, dotnet_sdk_tools_file).version
     end
 
     attr_reader :app_dir

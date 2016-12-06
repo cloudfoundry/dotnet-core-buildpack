@@ -18,13 +18,26 @@ $LOAD_PATH << 'cf_spec'
 require 'spec_helper'
 require 'rspec'
 require 'tmpdir'
+require 'fileutils'
 
 describe AspNetCoreBuildpack::ScriptsParser do
-  let(:out) { double(:out) }
-  let(:dir) { Dir.mktmpdir }
-  subject(:parser) { described_class.new(dir) }
+  let(:out)              { double(:out) }
+  let(:dir)              { Dir.mktmpdir }
+  let(:sdk_msbuild)      { 'override' }
+  let(:sdk_project_json) { 'override' }
+  subject(:parser)       { described_class.new(dir) }
+
+  before do
+    allow(subject).to receive(:msbuild?).and_return(sdk_msbuild)
+    allow(subject).to receive(:project_json?).and_return(sdk_project_json)
+  end
+
+  after do
+    FileUtils.rm_rf(dir)
+  end
 
   describe '#get_scripts_section' do
+
     context 'scripts section exists in project.json' do
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
@@ -146,7 +159,30 @@ describe AspNetCoreBuildpack::ScriptsParser do
       FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
     end
 
+    context 'sdk uses msbuild' do
+      let(:sdk_msbuild)      { true }
+      let(:sdk_project_json) { false }
+
+      it 'use the xml parsing logic' do
+        expect(subject).to receive(:xml_scripts_section_exists?).with(%w(command))
+        subject.scripts_section_exists?(%w(command))
+      end
+    end
+
+    context 'sdk uses project.json' do
+      let(:sdk_msbuild)      { false }
+      let(:sdk_project_json) { true }
+
+      it 'use the json parsing logic' do
+        expect(subject).to receive(:json_scripts_section_exists?).with(%w(command))
+        subject.scripts_section_exists?(%w(command))
+      end
+    end
+
     context 'multiple project.json files exist' do
+      let(:sdk_msbuild)      { false }
+      let(:sdk_project_json) { true }
+
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'project2'))
         File.open(File.join(dir, 'src', 'project1', 'project.json'), 'w') { |f| f.write('{"scripts": { "precompile":["other command", "another command"] }}') }
@@ -167,6 +203,87 @@ describe AspNetCoreBuildpack::ScriptsParser do
         expect(subject).to receive(:key_contains_command).with({ 'precompile' => ['other command', 'another command'] }, 'precompile', 'npm')
         expect(subject).to receive(:key_contains_command).with({ 'precompile' => ['npm install', 'bower install'] }, 'precompile', 'npm')
         subject.scripts_section_exists?(%w(npm))
+      end
+    end
+  end
+
+  describe '#xml_scripts_section_exists?' do
+    let(:sample_xml) { 'override' }
+
+    before do
+      file_dir = FileUtils.mkdir_p(File.join(dir, 'xmldir'))
+      File.write(File.join(file_dir, 'xml.csproj'), sample_xml)
+    end
+
+    context 'a post compile script exists' do
+      let(:sample_xml) do
+        <<-XML
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
+
+  <Target Name="PostcompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+    <Exec Command="npm install" />
+  </Target>
+
+  <Import Project="$(MSBuildToolsPath)\\Microsoft.CSharp.targets" />
+</Project>
+XML
+      end
+
+      it 'returns true when the command is present' do
+        expect(subject.xml_scripts_section_exists?(%w(npm))).to eq(true)
+      end
+
+      it 'returns false when the command is not present' do
+        expect(subject.xml_scripts_section_exists?(%w(bash))).to eq(false)
+      end
+
+
+    end
+
+    context 'a pre compile script exists' do
+      let(:sample_xml) do
+        <<-XML
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
+
+  <Target Name="PrecompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+    <Exec Command="npm install" />
+  </Target>
+
+  <Import Project="$(MSBuildToolsPath)\\Microsoft.CSharp.targets" />
+</Project>
+XML
+      end
+
+      it 'returns true when the command is present' do
+        expect(subject.xml_scripts_section_exists?(%w(npm))).to eq(true)
+      end
+
+      it 'returns false when the command is not present' do
+        expect(subject.xml_scripts_section_exists?(%w(bash))).to eq(false)
+      end
+
+    end
+
+    context 'neither script exists' do
+      let(:sample_xml) do
+        <<-XML
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
+
+  <Target Name="SomeOtherScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+    <Exec Command="npm install" />
+  </Target>
+
+  <Import Project="$(MSBuildToolsPath)\\Microsoft.CSharp.targets" />
+</Project>
+XML
+      end
+
+      it 'returns false no matter the command' do
+        expect(subject.xml_scripts_section_exists?(%w(npm))).to eq(false)
+        expect(subject.xml_scripts_section_exists?(%w(bash))).to eq(false)
       end
     end
   end

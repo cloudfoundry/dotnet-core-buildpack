@@ -45,6 +45,8 @@ dependencies:
   end
 
   before do
+    allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:msbuild?).and_return(false)
+    allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:project_json?).and_return(true)
     File.write(manifest_file, manifest_contents)
   end
 

@@ -15,9 +15,12 @@
 # limitations under the License.
 
 require_relative '../app_dir'
+require_relative '../sdk_info'
 
 module AspNetCoreBuildpack
   class Releaser
+    include SdkInfo
+
     def release(build_dir)
       @build_dir = build_dir
       app = AppDir.new(build_dir)
@@ -35,6 +38,7 @@ module AspNetCoreBuildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
+        f.write 'export NugetPackageRoot=/app/.nuget/packages/;' if msbuild?(@build_dir)
         installers = AspNetCoreBuildpack::Installer.descendants
 
         library_path = get_library_path(installers)

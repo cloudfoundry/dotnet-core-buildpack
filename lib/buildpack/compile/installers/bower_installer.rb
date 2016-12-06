@@ -23,7 +23,7 @@ module AspNetCoreBuildpack
     BOWER_COMMAND = 'bower'.freeze
 
     def self.install_order
-      2
+      3
     end
 
     def initialize(build_dir, bp_cache_dir, manifest_file, shell)
