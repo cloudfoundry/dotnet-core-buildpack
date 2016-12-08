@@ -20,10 +20,9 @@ module AspNetCoreBuildpack
       fromsource = false
       arr = Dir.glob(File.join(dir, '**', 'project.json')).map { |file| File.dirname(file) }
       arr.each do |directory|
-        fromsource = !Dir.glob(File.join(directory, '*.cs')).empty? unless fromsource
-        fromsource = !Dir.glob(File.join(directory, '**', '*.cs')).empty? unless fromsource
+        fromsource = Dir.glob(File.join(directory, '**', '*.??')).grep(/.+\.(?:cs|fs)/).any? unless fromsource
       end
-      frompublish = !Dir.glob(File.join(dir, '*.runtimeconfig.json')).empty?
+      frompublish = Dir.glob(File.join(dir, '*.runtimeconfig.json')).any?
       fromsource || frompublish
     end
   end
