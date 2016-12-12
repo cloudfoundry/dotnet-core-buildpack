@@ -215,13 +215,13 @@ describe AspNetCoreBuildpack::ScriptsParser do
       File.write(File.join(file_dir, 'xml.csproj'), sample_xml)
     end
 
-    context 'a post compile script exists' do
+    context 'a valid AfterTargets attribute exists' do
       let(:sample_xml) do
         <<-XML
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
 
-  <Target Name="PostcompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+  <Target Name="SomeTarget" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
     <Exec Command="npm install" />
   </Target>
 
@@ -241,13 +241,13 @@ XML
 
     end
 
-    context 'a pre compile script exists' do
+    context 'the Target Name is BeforePublish' do
       let(:sample_xml) do
         <<-XML
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
 
-  <Target Name="PrecompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+  <Target Name="BeforePublish" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
     <Exec Command="npm install" />
   </Target>
 
@@ -266,13 +266,13 @@ XML
 
     end
 
-    context 'neither script exists' do
+    context 'no valid Targets' do
       let(:sample_xml) do
         <<-XML
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\\Microsoft.Common.props" />
 
-  <Target Name="SomeOtherScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+  <Target Name="SomeOtherScript" AfterTargets="SomeOtherTarget" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
     <Exec Command="npm install" />
   </Target>
 

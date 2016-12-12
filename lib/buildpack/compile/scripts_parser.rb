@@ -71,19 +71,17 @@ module AspNetCoreBuildpack
     end
 
     def xml_scripts_section_exists?(check_commands)
-      check_keys = %w(PrecompileScript PostcompileScript)
-
       @app_dir.msbuild_projects.each do |proj|
         doc = REXML::Document.new(File.read(File.join(@build_dir, proj), encoding: 'bom|utf-8'))
 
-        scripts = doc.elements.to_a('Project/Target').select do |e|
-          check_keys.include? e.attributes['Name']
+        targets = doc.elements.to_a('Project/Target').select do |e|
+          target_valid?(e)
         end
 
         commands = []
 
-        scripts.each do |script|
-          commands += script.elements.to_a('Exec')
+        targets.each do |target|
+          commands += target.elements.to_a('Exec')
         end
 
         commands.each do |command|
@@ -105,6 +103,27 @@ module AspNetCoreBuildpack
     end
 
     private
+
+    def target_valid?(target)
+      target_names = %w(BeforeBuild BeforeCompile BeforePublish AfterBuild AfterCompile AfterPublish)
+      target_attributes = %w(BeforeTargets AfterTargets)
+
+      name_matches = target_names.include? target.attributes['Name']
+
+      attribute_matches = target_attributes.any? do |attribute|
+        target.attributes.key?(attribute) && target_contains_step(target.attributes[attribute])
+      end
+
+      name_matches || attribute_matches
+    end
+
+    def target_contains_step(target)
+      target_steps = %w(Build Compile Publish)
+
+      target_steps.any? do |step|
+        target.include? step
+      end
+    end
 
     attr_reader :build_dir
   end
