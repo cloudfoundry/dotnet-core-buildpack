@@ -20,8 +20,9 @@ module AspNetCoreBuildpack
       fromsource = false
 
       dirs_to_check = Dir.glob(File.join(dir, '**', 'project.json')).map { |file| File.dirname(file) }
-      dirs_to_check += Dir.glob(File.join(dir, '**', '*.csproj')).map { |file| File.dirname(file) }
-      dirs_to_check += Dir.glob(File.join(dir, '**', '*.fsproj')).map { |file| File.dirname(file) }
+
+      proj_files_regex = /.+\.(?:csproj|fsproj)/
+      dirs_to_check += Dir.glob(File.join(dir, '**', '*.??proj')).grep(proj_files_regex).map { |file| File.dirname(file) }
 
       dirs_to_check.each do |directory|
         fromsource = Dir.glob(File.join(directory, '**', '*.??')).grep(/.+\.(?:cs|fs)/).any?

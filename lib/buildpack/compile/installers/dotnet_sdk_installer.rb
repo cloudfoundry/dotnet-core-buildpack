@@ -120,8 +120,7 @@ module AspNetCoreBuildpack
     end
 
     def version
-      dotnet_sdk_tools_file = File.join(File.dirname(@manifest_file), 'dotnet-sdk-tools.yml')
-      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file, dotnet_sdk_tools_file).version
+      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file).version
     end
 
     attr_reader :app_dir

@@ -20,12 +20,12 @@ require_relative '../app_dir'
 
 module AspNetCoreBuildpack
   class DotnetSdkVersion
-    def initialize(build_dir, manifest_file, sdk_tools_file)
+    def initialize(build_dir, manifest_file)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
 
       @build_dir = build_dir
       @global_json_file_name = 'global.json'
-      @sdk_tools_file = sdk_tools_file
+      @sdk_tools_file = File.join(File.dirname(manifest_file), 'dotnet-sdk-tools.yml')
       @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
       @out = Out.new
       @app_dir = AppDir.new(@build_dir)
@@ -47,11 +47,8 @@ module AspNetCoreBuildpack
 
     def sdk_version_to_install
       global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
-
-      if File.exist?(global_json_file)
-        sdk_version = get_version_from_global_json(global_json_file)
-        return sdk_version unless sdk_version.nil?
-      end
+      sdk_version = get_version_from_global_json(global_json_file)
+      return sdk_version unless sdk_version.nil?
 
       app_has_project_json = @app_dir.with_project_json.any?
       app_has_msbuild_projects = @app_dir.msbuild_projects.any?
@@ -82,6 +79,7 @@ module AspNetCoreBuildpack
     end
 
     def get_version_from_global_json(global_json_file)
+      return nil unless File.exist?(global_json_file)
       begin
         global_props = JSON.parse(File.read(global_json_file, encoding: 'bom|utf-8'))
         if global_props.key?('sdk')

@@ -62,7 +62,7 @@ msbuild:
 
   let(:default_version) { 'sdk-version-2'.freeze }
 
-  subject { described_class.new(dir, manifest_file, dotnet_tools_file) }
+  subject { described_class.new(dir, manifest_file) }
 
   before do
     File.write(manifest_file, manifest_yml)
