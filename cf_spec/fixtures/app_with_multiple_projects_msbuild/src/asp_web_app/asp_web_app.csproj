@@ -31,7 +31,7 @@
       <Version>*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.App">
-      <Version>1.0.*</Version>
+      <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine">
       <Version>*</Version>
