@@ -1,0 +1,11 @@
+This fixture app was copied from:
+https://github.com/NancyFx/Nancy/tree/897a746c7aa56732299fd691d5e5c52d0858bc58/samples/Nancy.Demo.Hosting.Kestrel
+
+It has been modified:
+- global.json added
+- project.json was updated
+- Program.cs updated to consume port setting from commandline
+- Nancy.Demo.Hosting.Kestrel.xproj was deleted
+- manifest.yml added
+
+This fixture does not track the upstream repo.

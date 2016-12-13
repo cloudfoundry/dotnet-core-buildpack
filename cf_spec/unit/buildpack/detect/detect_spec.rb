@@ -23,7 +23,7 @@ describe AspNetCoreBuildpack::Detecter do
   let(:dir) { Dir.mktmpdir }
 
   describe '#detect' do
-    context 'when no project.json and no **.runtimeconfig.json' do
+    context 'when no project.json and no **.runtimeconfig.json and no *.csproj' do
       it 'returns false' do
         expect(subject.detect(dir)).to be_falsey
       end
@@ -93,6 +93,39 @@ describe AspNetCoreBuildpack::Detecter do
       end
     end
 
+    context 'when *.csproj exists in root directory' do
+      before do
+        File.open(File.join(dir, 'program.csproj'), 'w') { |f| f.write('a') }
+      end
+
+      context 'and .cs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .cs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'sub'))
+          File.open(File.join(dir, 'sub', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
+      end
+    end
+
     context 'when project.json exists in sub-directory' do
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'proj'))
@@ -118,6 +151,74 @@ describe AspNetCoreBuildpack::Detecter do
         it 'returns true' do
           expect(subject.detect(dir)).to be_truthy
         end
+      end
+
+      context 'and .fs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'src', 'proj', 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .fs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'proj', 'sub'))
+          File.open(File.join(dir, 'src', 'proj', 'sub', 'Program.fs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs or .fs file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
+      end
+    end
+
+    context 'when *.csproj exists in sub-directory' do
+      before do
+        FileUtils.mkdir_p(File.join(dir, 'src', 'proj'))
+        File.open(File.join(dir, 'src', 'proj', 'app.csproj'), 'w') { |f| f.write('a') }
+      end
+
+      context 'and .cs file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'src', 'proj', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .cs file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'proj', 'sub'))
+          File.open(File.join(dir, 'src', 'proj', 'sub', 'Program.cs'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .cs file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
+      end
+    end
+
+    context 'when *.fsproj exists in sub-directory' do
+      before do
+        FileUtils.mkdir_p(File.join(dir, 'src', 'proj'))
+        File.open(File.join(dir, 'src', 'proj', 'app.fsproj'), 'w') { |f| f.write('a') }
       end
 
       context 'and .fs file exists in the same directory' do

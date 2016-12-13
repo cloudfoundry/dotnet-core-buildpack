@@ -16,9 +16,12 @@
 
 require 'yaml'
 require 'json'
+require_relative '../sdk_info'
 
 module AspNetCoreBuildpack
   class DotnetFrameworkVersion
+    include SdkInfo
+
     def initialize(build_dir, nuget_cache_dir)
       @build_dir = build_dir
       @nuget_cache_dir = nuget_cache_dir
@@ -45,7 +48,13 @@ module AspNetCoreBuildpack
     private
 
     def restored_framework_versions
-      Dir.glob(File.join(@nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '*')).map do |path|
+      if project_json?(@build_dir)
+        netcore_app_dir = 'Microsoft.NETCore.App'
+      elsif msbuild?(@build_dir)
+        netcore_app_dir = 'microsoft.netcore.app'
+      end
+
+      Dir.glob(File.join(@nuget_cache_dir, 'packages', netcore_app_dir, '*')).map do |path|
         File.basename(path)
       end
     end

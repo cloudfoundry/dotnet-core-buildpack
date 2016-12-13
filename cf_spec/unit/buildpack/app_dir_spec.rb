@@ -21,8 +21,56 @@ require 'tmpdir'
 require 'fileutils'
 
 describe AspNetCoreBuildpack::AppDir do
-  let(:dir) { Dir.mktmpdir }
+  let(:dir)                   { Dir.mktmpdir }
+  let(:app_uses_msbuild)      { false }
+  let(:app_uses_project_json) { true }
+
   subject(:appdir) { described_class.new(dir) }
+
+  before do
+    allow(appdir).to receive(:msbuild?).and_return(app_uses_msbuild)
+    allow(appdir).to receive(:project_json?).and_return(app_uses_project_json)
+  end
+
+  context 'with multiple .csproj projects' do
+    let(:app_uses_msbuild)      { true }
+    let(:app_uses_project_json) { false }
+
+    let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
+    let(:proj2) { File.join(dir, 'src', 'föö').tap { |f| FileUtils.mkdir_p(f) } }
+    let(:nuget) { File.join(dir, '.nuget', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
+
+    before do
+      File.open(File.join(proj1, 'proj1.fsproj'), 'w') do |f|
+        f.write 'a fsproj file'
+      end
+      File.open(File.join(proj2, 'föö.csproj'), 'w') do |f|
+        f.write 'an csproj file'
+      end
+      File.open(File.join(nuget, 'dep.csproj'), 'w') do |f|
+        f.write 'a third csproj file'
+      end
+    end
+
+    it 'finds all MSBuild files from non-hidden directories' do
+      expect(subject.msbuild_projects).to match_array([Pathname.new('src/proj1/proj1.fsproj'), Pathname.new('src/föö/föö.csproj')])
+    end
+
+    context '.deployment file exists' do
+      context 'and specifies an existing project' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = src/föö/föö.csproj\n")
+          end
+        end
+
+        it 'finds specified project' do
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö/föö.csproj'))
+        end
+      end
+    end
+  end
 
   context 'with multiple projects' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }

@@ -21,10 +21,17 @@ require 'tmpdir'
 require 'fileutils'
 
 describe AspNetCoreBuildpack::DotnetFrameworkVersion do
-  let(:build_dir)       { Dir.mktmpdir }
-  let(:nuget_cache_dir) { Dir.mktmpdir}
+  let(:build_dir)             { Dir.mktmpdir }
+  let(:nuget_cache_dir)       { Dir.mktmpdir}
+  let(:app_uses_msbuild)      { false }
+  let(:app_uses_project_json) { false }
 
   subject { described_class.new(build_dir, nuget_cache_dir) }
+
+  before do
+    allow(subject).to receive(:msbuild?).and_return(app_uses_msbuild)
+    allow(subject).to receive(:project_json?).and_return(app_uses_project_json)
+  end
 
   after do
     FileUtils.rm_rf(build_dir)
@@ -40,7 +47,8 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
         end
 
         it 'returns the framework version specified in *.runtimeconfig.json' do
-          expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with("Detected .NET Framework version 1.0.0 in #{build_dir}/testapp.runtimeconfig.json")
+          expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+            "Detected .NET Framework version 1.0.0 in #{build_dir}/testapp.runtimeconfig.json")
           expect(subject.versions).to eq( ['1.0.0'] )
         end
       end
@@ -56,7 +64,7 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
         end
       end
 
-      context '*.runtimeconfig.json  is invalid json' do
+      context '*.runtimeconfig.json is invalid json' do
         before do
           json = '{ "runtimeOptions": "badjson"  "framework": { "name": "Microsoft.NETCore.App" } } }'
           IO.write(File.join(build_dir, 'testapp.runtimeconfig.json'), json)
@@ -69,21 +77,49 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
     end
 
     context '*.runtimeconfig.json does not exist' do
-      context 'dotnet restore detected required frameworks' do
-        before do
-          FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '3.3.3'))
-          FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '4.4.4'))
+      context 'with project.json' do
+        let(:app_uses_project_json) { true }
+
+        context 'dotnet restore detected required frameworks' do
+          before do
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '3.3.3'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '4.4.4'))
+          end
+
+          it 'returns the restored framework versions' do
+            expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+              "Detected .NET Framework version(s) 3.3.3, 4.4.4 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['3.3.3', '4.4.4'] )
+          end
         end
 
-        it 'returns the restored framework versions' do
-          expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with("Detected .NET Framework version(s) 3.3.3, 4.4.4 required according to 'dotnet restore'")
-          expect(subject.versions).to eq( ['3.3.3', '4.4.4'] )
+        context 'dotnet restore detected no framework versions' do
+          it 'throws an exception with a helpful message' do
+            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Framework version(s) to install")
+          end
         end
       end
 
-      context 'dotnet restore detected no framework versions' do
-        it 'throws an exception with a helpful message' do
-          expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Framework version(s) to install")
+      context 'with .csproj' do
+        let(:app_uses_msbuild) { true }
+
+        context 'dotnet restore detected required frameworks' do
+          before do
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.1.1'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '2.2.2'))
+          end
+
+          it 'returns the restored framework versions' do
+            expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+              "Detected .NET Framework version(s) 1.1.1, 2.2.2 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['1.1.1', '2.2.2'] )
+          end
+        end
+
+        context 'dotnet restore detected no framework versions' do
+          it 'throws an exception with a helpful message' do
+            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Framework version(s) to install")
+          end
         end
       end
     end

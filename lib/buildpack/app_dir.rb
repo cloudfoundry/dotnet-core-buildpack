@@ -1,6 +1,7 @@
 $LOAD_PATH.push "#{File.dirname(__FILE__)}/../../vendor/iniparse-1.4.2/lib"
 
 require 'iniparse'
+require_relative 'sdk_info'
 
 # Encoding: utf-8
 
@@ -27,6 +28,8 @@ module AspNetCoreBuildpack
   end
 
   class AppDir
+    include SdkInfo
+
     DEPLOYMENT_FILE_NAME = '.deployment'.freeze
 
     def initialize(dir)
@@ -37,28 +40,37 @@ module AspNetCoreBuildpack
       @dir
     end
 
-    def with_command(cmd)
-      with_project_json.select { |d| !commands(d)[cmd].nil? && commands(d)[cmd] != '' }
-    end
-
     def with_project_json
       Dir.glob(File.join(@dir, '**', 'project.json')).map do |d|
         Pathname.new(File.dirname(d)).relative_path_from(Pathname.new(@dir))
       end
     end
 
-    def project_json(dir)
-      File.join(@dir, dir, 'project.json')
+    def msbuild_projects
+      cs_projects = Dir.glob(File.join(@dir, '**', '*.csproj')).map do |d|
+        Pathname.new(d).relative_path_from(Pathname.new(@dir))
+      end
+      fs_projects = Dir.glob(File.join(@dir, '**', '*.fsproj')).map do |d|
+        Pathname.new(d).relative_path_from(Pathname.new(@dir))
+      end
+
+      cs_projects + fs_projects
     end
 
-    def commands(dir)
-      JSON.parse(IO.read(project_json(dir), encoding: 'bom|utf-8')).fetch('commands', {})
+    def project_paths
+      if msbuild?(@dir)
+        msbuild_projects
+      elsif project_json?(@dir)
+        with_project_json
+      else
+        []
+      end
     end
 
     def deployment_file_project
       project_path = nil
 
-      paths = with_project_json
+      paths = project_paths
       deployment_file = File.expand_path(File.join(@dir, DEPLOYMENT_FILE_NAME))
 
       if File.exist?(deployment_file)
@@ -68,7 +80,7 @@ module AspNetCoreBuildpack
         raise DeploymentConfigError, 'must have project key' if deployment_project.nil?
         raise DeploymentConfigError, 'must only contain one project key' if deployment_project.class == Array
 
-        path = get_project_dir(deployment_project)
+        path = project_json?(@dir) ? get_project_dir(deployment_project) : Pathname.new(deployment_project)
 
         project_path = path if paths.include?(path)
       end
@@ -88,10 +100,10 @@ module AspNetCoreBuildpack
 
     def main_project_path
       path = deployment_file_project
-      project_paths = with_project_json
-      multiple_paths = project_paths.any? && !project_paths.one?
+      found_project_paths = project_paths
+      multiple_paths = found_project_paths.any? && !found_project_paths.one?
       raise 'Multiple paths contain a project.json file, but no .deployment file was used' unless path || !multiple_paths
-      path = project_paths.first unless path
+      path = found_project_paths.first unless path
       path if path
     end
 

@@ -56,6 +56,10 @@ module AspNetCoreBuildpack
       false
     end
 
+    def version_file
+      File.join(@build_dir, cache_dir, VERSION_FILE) unless cache_dir.nil? || @build_dir.nil?
+    end
+
     protected
 
     def buildpack_root
@@ -65,10 +69,6 @@ module AspNetCoreBuildpack
 
     def cached_version_file
       File.join(@bp_cache_dir, cache_dir, VERSION_FILE) unless cache_dir.nil? || @bp_cache_dir.nil?
-    end
-
-    def version_file
-      File.join(@build_dir, cache_dir, VERSION_FILE) unless cache_dir.nil? || @build_dir.nil?
     end
 
     def write_version_file(version)

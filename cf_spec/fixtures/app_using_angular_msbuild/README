@@ -1,0 +1,4 @@
+This fixture application is based on Nicolás Bello Camilletti's example app, found at
+   https://github.com/nbellocam/Angular2ASPNETCoreBaseApp
+
+It has been modified to run on dotnet-core buildpack, simplified and brought up to date.
