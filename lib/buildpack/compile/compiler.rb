@@ -55,7 +55,7 @@ module AspNetCoreBuildpack
 
       unless @dotnet_sdk.nil?
         @dotnet_framework = DotnetFramework.new(@build_dir, File.join(@build_dir, NUGET_CACHE_DIR), File.join(@build_dir, @dotnet_sdk.cache_dir), shell)
-        step('Installing .NET Framework(s)', @dotnet_framework.method(:install))
+        step('Installing .NET Core runtime(s)', @dotnet_framework.method(:install))
       end
 
       step('Saving to buildpack cache', method(:save_cache))

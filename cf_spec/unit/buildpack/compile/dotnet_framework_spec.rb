@@ -45,11 +45,11 @@ describe AspNetCoreBuildpack::DotnetFramework do
   describe '#install' do
     context 'both required versions not installed' do
       it 'downloads both frameworks with with compile-extensions' do
-        expect(out).to receive(:print).with("Downloading and installing .NET Framework 4.4.4")
+        expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 4.4.4")
         expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.4.4.4.linux-amd64.tar.gz \/tmp/, out)
         expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.4.4.4.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
 
-        expect(out).to receive(:print).with("Downloading and installing .NET Framework 5.5.5")
+        expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
         expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
         expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
 
@@ -63,9 +63,9 @@ describe AspNetCoreBuildpack::DotnetFramework do
       end
 
       it 'only downloads the framework that has not been installed' do
-        expect(out).to receive(:print).with(".NET Framework 4.4.4 already installed")
+        expect(out).to receive(:print).with(".NET Core runtime 4.4.4 already installed")
 
-        expect(out).to receive(:print).with("Downloading and installing .NET Framework 5.5.5")
+        expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
         expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
         expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
 
@@ -81,10 +81,10 @@ describe AspNetCoreBuildpack::DotnetFramework do
       end
 
       it 'installs the required version and removes the extra version' do
-        expect(out).to receive(:print).with("Downloading and installing .NET Framework 5.5.5")
+        expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
         expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
         expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
-        expect(out).to receive(:print).with("Removing .NET Framework 4.4.4")
+        expect(out).to receive(:print).with("Removing .NET Core runtime 4.4.4")
 
         subject.install(out)
 

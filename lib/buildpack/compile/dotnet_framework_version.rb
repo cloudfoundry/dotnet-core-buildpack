@@ -36,10 +36,10 @@ module AspNetCoreBuildpack
       if !runtime_config_json_file.nil?
         framework_versions += [get_version_from_runtime_config_json(runtime_config_json_file)]
       elsif restored_framework_versions.any?
-        out.print("Detected .NET Framework version(s) #{restored_framework_versions.join(', ')} required according to 'dotnet restore'")
+        out.print("Detected .NET Core runtime version(s) #{restored_framework_versions.join(', ')} required according to 'dotnet restore'")
         framework_versions += restored_framework_versions
       else
-        raise 'Unable to determine .NET Framework version(s) to install'
+        raise 'Unable to determine .NET Core runtime version(s) to install'
       end
 
       framework_versions.uniq
@@ -73,7 +73,7 @@ module AspNetCoreBuildpack
       raise "Could not get version from #{runtime_config_json_file}" unless has_well_formed_version
 
       version = global_props['runtimeOptions']['framework']['version']
-      out.print("Detected .NET Framework version #{version} in #{runtime_config_json_file}")
+      out.print("Detected .NET Core runtime version #{version} in #{runtime_config_json_file}")
 
       version
     end

@@ -48,7 +48,7 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
 
         it 'returns the framework version specified in *.runtimeconfig.json' do
           expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
-            "Detected .NET Framework version 1.0.0 in #{build_dir}/testapp.runtimeconfig.json")
+            "Detected .NET Core runtime version 1.0.0 in #{build_dir}/testapp.runtimeconfig.json")
           expect(subject.versions).to eq( ['1.0.0'] )
         end
       end
@@ -88,14 +88,14 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
 
           it 'returns the restored framework versions' do
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
-              "Detected .NET Framework version(s) 3.3.3, 4.4.4 required according to 'dotnet restore'")
+              "Detected .NET Core runtime version(s) 3.3.3, 4.4.4 required according to 'dotnet restore'")
             expect(subject.versions).to eq( ['3.3.3', '4.4.4'] )
           end
         end
 
         context 'dotnet restore detected no framework versions' do
           it 'throws an exception with a helpful message' do
-            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Framework version(s) to install")
+            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Core runtime version(s) to install")
           end
         end
       end
@@ -111,14 +111,14 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
 
           it 'returns the restored framework versions' do
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
-              "Detected .NET Framework version(s) 1.1.1, 2.2.2 required according to 'dotnet restore'")
+              "Detected .NET Core runtime version(s) 1.1.1, 2.2.2 required according to 'dotnet restore'")
             expect(subject.versions).to eq( ['1.1.1', '2.2.2'] )
           end
         end
 
         context 'dotnet restore detected no framework versions' do
           it 'throws an exception with a helpful message' do
-            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Framework version(s) to install")
+            expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Core runtime version(s) to install")
           end
         end
       end

@@ -32,11 +32,11 @@ module AspNetCoreBuildpack
 
       versions.each do |version|
         if installed?(version)
-          out.print(".NET Framework #{version} already installed")
+          out.print(".NET Core runtime #{version} already installed")
           next
         end
 
-        out.print("Downloading and installing .NET Framework #{version}")
+        out.print("Downloading and installing .NET Core runtime #{version}")
         @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name(version)} /tmp", out)
         @shell.exec("mkdir -p #{@dotnet_install_dir}; tar xzf /tmp/#{dependency_name(version)} -C #{@dotnet_install_dir}", out)
       end
@@ -45,7 +45,7 @@ module AspNetCoreBuildpack
     end
 
     def name
-      '.NET Framework'.freeze
+      '.NET Core runtime'.freeze
     end
 
     private
@@ -54,7 +54,7 @@ module AspNetCoreBuildpack
       frameworks_to_remove = installed_frameworks - versions
 
       frameworks_to_remove.each do |version|
-        out.print("Removing .NET Framework #{version}")
+        out.print("Removing .NET Core runtime #{version}")
         FileUtils.rm_rf(File.join(@dotnet_install_dir, 'shared', 'Microsoft.NETCore.App', version))
       end
     end
