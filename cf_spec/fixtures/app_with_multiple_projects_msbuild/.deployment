@@ -1,4 +1,4 @@
 [config]
-project = src/asp_web_app/asp_web_app.csproj
+project = ./src/asp_web_app/asp_web_app.csproj
 
 

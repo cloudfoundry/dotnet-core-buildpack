@@ -57,7 +57,7 @@ describe AspNetCoreBuildpack::AppDir do
     end
 
     context '.deployment file exists' do
-      context 'and specifies an existing project' do
+      context 'and specifies an existing project without a ./ at the start of the path' do
         before do
           File.open(File.join(dir, '.deployment'), 'w') do |f|
             f.write("[config]\n")
@@ -70,9 +70,23 @@ describe AspNetCoreBuildpack::AppDir do
         end
       end
     end
+    context '.deployment file exists' do
+      context 'and specifies an existing project with a ./ at the start of the path' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = ./src/föö/föö.csproj\n")
+          end
+        end
+
+        it 'finds specified project' do
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö/föö.csproj'))
+        end
+      end
+    end
   end
 
-  context 'with multiple projects' do
+  context 'with multiple projects with project.json' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
     let(:proj2) { File.join(dir, 'src', 'föö').tap { |f| FileUtils.mkdir_p(f) } }
     let(:nuget) { File.join(dir, '.nuget', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
@@ -95,11 +109,24 @@ describe AspNetCoreBuildpack::AppDir do
     end
 
     context '.deployment file exists' do
-      context 'and specifies an existing project' do
+      context 'and specifies an existing project without a ./ at the start of path' do
         before do
           File.open(File.join(dir, '.deployment'), 'w') do |f|
             f.write("[config]\n")
             f.write("project = src/föö\n")
+          end
+        end
+
+        it 'finds specified project' do
+          expect(subject.deployment_file_project).to eq(Pathname.new('src/föö'))
+        end
+      end
+
+      context 'and specifies an existing project with a ./ at the start of path' do
+        before do
+          File.open(File.join(dir, '.deployment'), 'w') do |f|
+            f.write("[config]\n")
+            f.write("project = ./src/föö\n")
           end
         end
 

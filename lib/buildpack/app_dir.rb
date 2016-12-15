@@ -81,6 +81,7 @@ module AspNetCoreBuildpack
         raise DeploymentConfigError, 'must only contain one project key' if deployment_project.class == Array
 
         path = project_json?(@dir) ? get_project_dir(deployment_project) : Pathname.new(deployment_project)
+        path = path_without_dot_slash_prefix(path)
 
         project_path = path if paths.include?(path)
       end
@@ -111,6 +112,17 @@ module AspNetCoreBuildpack
       config_files = Dir.glob(File.join(@dir, '*.runtimeconfig.json'))
       m = /(.*)[.]runtimeconfig[.]json/i.match(Pathname.new(config_files.first).basename.to_s) if config_files.one?
       m[1].to_s unless m.nil?
+    end
+
+    private
+
+    def path_without_dot_slash_prefix(path)
+      path_string = path.to_s
+      if path_string.start_with?('./')
+        Pathname.new(path_string[2..-1])
+      else
+        path
+      end
     end
   end
 end
