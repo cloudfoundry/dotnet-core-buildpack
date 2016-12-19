@@ -4,7 +4,7 @@ default_versions:
 - name: bower
   version: 1.8.0
 - name: dotnet
-  version: 1.0.0-preview2-003158
+  version: 1.0.0-preview2-003156
 - name: node
   version: 6.9.2
 url_to_dependency_map:
@@ -31,11 +31,11 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/libunwind-1.1-linux-x64.tgz
   md5: b2b1bf2bc9f80a24f6a902e977261345
 - name: dotnet
-  version: 1.0.0-preview2-003158
+  version: 1.0.0-preview2-003156
   cf_stacks:
   - cflinuxfs2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-003158.linux-amd64.tar.gz
-  md5: 135e03c002a7be0abe94bb423391c77f
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-003156.linux-amd64.tar.gz
+  md5: 0afc3d78c0d44e89b01b1eb333824ff5
 - name: dotnet
   version: 1.0.0-preview2-003131
   cf_stacks:
@@ -81,7 +81,7 @@ dependencies:
 - name: dotnet-framework
   version: 1.0.3
   uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/dotnet-framework.1.0.3.linux-amd64.tar.gz
-  md5: c26765c71aadc569a1e5acd2b70d097a
+  md5: cc6bc4bd77c900c3c1f2a3a5ef28e420
   cf_stacks:
   - cflinuxfs2
 - name: dotnet-framework
