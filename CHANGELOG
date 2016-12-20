@@ -1,3 +1,36 @@
+v1.0.7 Dec 20, 2016
+====================
+
+* Add .NET SDK 1.0.0-preview2-003156, remove .NET SDK 1.0.0-preview2-003121
+  - Make .NET SDK 1.0.0-preview2-003156 the default SDK version
+  (https://www.pivotaltracker.com/story/show/136046769)
+
+* Add .NET Core framework 1.0.3
+  (https://www.pivotaltracker.com/story/show/136046769)
+
+* Allow project paths in .deployment file to start with ./
+  (https://www.pivotaltracker.com/story/show/133851173)
+
+* Store process id in the PID environment variable
+  (https://www.pivotaltracker.com/story/show/135799949)
+
+* Add MSBuild support
+  - Add .NET SDK 1.0.0-preview3-004056, which uses MSBuild
+  - Documented here: https://docs.cloudfoundry.org/buildpacks/dotnet-core/index.html#cli_tools
+  (https://www.pivotaltracker.com/story/show/134472507)
+
+* Add F# support
+  (https://www.pivotaltracker.com/story/show/135725073)
+
+* Package .NET Core runtimes and install separately from .NET Core SDK
+  (https://www.pivotaltracker.com/story/show/135703675)
+
+* Add node 6.9.2, remove node 6.9.1
+  (https://www.pivotaltracker.com/story/show/135643989)
+
+* Allow custom library path
+  (https://www.pivotaltracker.com/story/show/135356453)
+
 v1.0.6 Nov 23, 2016
 ====================
 
