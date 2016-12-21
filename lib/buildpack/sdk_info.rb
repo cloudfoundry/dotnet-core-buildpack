@@ -3,7 +3,7 @@ module AspNetCoreBuildpack
     def installed_sdk_version(build_dir)
       version_file = DotnetSdkInstaller.new(build_dir, '', '', '').version_file
 
-      raise ".NET SDK version file: #{version_file} does not exist" unless File.exist? version_file
+      return nil unless File.exist? version_file
       File.read(version_file).strip
     end
 

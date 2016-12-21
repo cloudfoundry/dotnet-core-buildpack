@@ -59,8 +59,8 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
           IO.write(File.join(build_dir, 'testapp.runtimeconfig.json'), json)
         end
 
-        it 'throws an exception with a helpful message' do
-          expect { subject.versions }.to raise_error(RuntimeError, "Could not get version from #{build_dir}/testapp.runtimeconfig.json")
+        it 'returns an empty array' do
+          expect(subject.versions).to eq ( [] )
         end
       end
 

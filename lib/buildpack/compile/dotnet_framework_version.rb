@@ -34,7 +34,8 @@ module AspNetCoreBuildpack
       framework_versions = []
 
       if !runtime_config_json_file.nil?
-        framework_versions += [get_version_from_runtime_config_json(runtime_config_json_file)]
+        runtime_config_framework = get_version_from_runtime_config_json(runtime_config_json_file)
+        framework_versions.push runtime_config_framework unless runtime_config_framework.nil?
       elsif restored_framework_versions.any?
         out.print("Detected .NET Core runtime version(s) #{restored_framework_versions.join(', ')} required according to 'dotnet restore'")
         framework_versions += restored_framework_versions
@@ -66,11 +67,11 @@ module AspNetCoreBuildpack
         raise "#{runtime_config_json_file} contains invalid JSON"
       end
 
-      has_well_formed_version = global_props.key?('runtimeOptions') &&
-                                global_props['runtimeOptions'].key?('framework') &&
-                                global_props['runtimeOptions']['framework'].key?('version')
+      has_framework_version = global_props.key?('runtimeOptions') &&
+                              global_props['runtimeOptions'].key?('framework') &&
+                              global_props['runtimeOptions']['framework'].key?('version')
 
-      raise "Could not get version from #{runtime_config_json_file}" unless has_well_formed_version
+      return nil unless has_framework_version
 
       version = global_props['runtimeOptions']['framework']['version']
       out.print("Detected .NET Core runtime version #{version} in #{runtime_config_json_file}")

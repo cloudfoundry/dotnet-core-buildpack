@@ -53,9 +53,9 @@ module AspNetCoreBuildpack
 
       step('Restoring dependencies with Dotnet CLI', @dotnet_sdk.method(:restore)) if should_restore?
 
-      unless @dotnet_sdk.nil?
+      if @dotnet_sdk
         @dotnet_framework = DotnetFramework.new(@build_dir, File.join(@build_dir, NUGET_CACHE_DIR), File.join(@build_dir, @dotnet_sdk.cache_dir), shell)
-        step('Installing .NET Core runtime(s)', @dotnet_framework.method(:install))
+        step('Installing required .NET Core runtime(s)', @dotnet_framework.method(:install)) if @dotnet_framework.should_install?
       end
 
       step('Saving to buildpack cache', method(:save_cache))

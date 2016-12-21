@@ -56,9 +56,8 @@ msbuild:
     context 'dotnet sdk has not been installed' do
       before { FileUtils.rm_rf(sdk_version_file) }
 
-      it "errors and states the VERSION file does not exist" do
-        expect{ subject.installed_sdk_version(build_dir) }.to raise_error(RuntimeError,
-          ".NET SDK version file: #{build_dir}/.dotnet/VERSION does not exist")
+      it "returns nil" do
+        expect(subject.installed_sdk_version(build_dir)).to eq nil
       end
     end
 

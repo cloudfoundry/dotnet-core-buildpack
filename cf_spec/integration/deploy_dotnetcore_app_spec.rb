@@ -61,19 +61,6 @@ describe 'CF ASP.NET Core Buildpack' do
     end
   end
 
-  context 'deploying simple vendored web app with no internet', :cached do
-    let(:app_name) { 'asp_web_app_vendored' }
-
-    it 'displays a simple text homepage' do
-      expect(app).to be_running
-      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
-      expect(app).not_to have_internet_traffic
-
-      browser.visit_path('/')
-      expect(browser).to have_body('Hello World!')
-    end
-  end
-
   context 'deploying simple web app in proxied environment', :uncached do
     let(:app_name) { 'console_app' }
 

@@ -48,6 +48,10 @@ module AspNetCoreBuildpack
       '.NET Core runtime'.freeze
     end
 
+    def should_install?
+      versions.any?
+    end
+
     private
 
     def clean_up_frameworks(out)
