@@ -1,3 +1,13 @@
+v1.0.8 Dec 23, 2016
+====================
+
+* Fix self contained app regression (#128)
+  (https://www.pivotaltracker.com/story/show/136522395)
+
+* Add warning if app was previously staged with a different version of
+the buildpack
+  (https://www.pivotaltracker.com/story/show/136522395)
+
 v1.0.7 Dec 20, 2016
 ====================
 
