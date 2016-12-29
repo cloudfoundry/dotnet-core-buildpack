@@ -55,7 +55,7 @@ module AspNetCoreBuildpack
         netcore_app_dir = 'microsoft.netcore.app'
       end
 
-      Dir.glob(File.join(@nuget_cache_dir, 'packages', netcore_app_dir, '*')).map do |path|
+      Dir.glob(File.join(@nuget_cache_dir, 'packages', netcore_app_dir, '*')).sort.map do |path|
         File.basename(path)
       end
     end
