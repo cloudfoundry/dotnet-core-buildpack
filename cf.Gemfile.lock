@@ -10,10 +10,10 @@ GIT
 
 GIT
   remote: https://github.com/cloudfoundry/machete
-  revision: e1c010097d4452e15abe373de8e1b49c1fb8166f
-  tag: v0.0.55
+  revision: 1db07817a85084e6070e2555d8acb44fdbb04fb1
+  tag: v0.0.56
   specs:
-    machete (0.0.55)
+    machete (0.0.56)
       childprocess
       httparty
 
@@ -52,7 +52,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
     parser (2.3.1.4)
@@ -122,4 +122,4 @@ DEPENDENCIES
   rubocop
 
 BUNDLED WITH
-   1.13.6
+   1.13.7
