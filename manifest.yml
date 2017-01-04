@@ -6,7 +6,7 @@ default_versions:
 - name: dotnet
   version: 1.0.0-preview2-003156
 - name: node
-  version: 6.9.2
+  version: 6.9.3
 url_to_dependency_map:
 - match: libunwind-(.*)-(\d+\.\d+)
   name: libunwind
@@ -60,12 +60,6 @@ dependencies:
   md5: b61dd4e9685101f82dab8c13b5c085e1
   cf_stacks:
   - cflinuxfs2
-- name: node
-  version: 6.9.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.9.2-linux-x64.tgz
-  md5: 31fe14fbee2f1da3de2101eeba95e6bc
-  cf_stacks:
-  - cflinuxfs2
 - name: dotnet-framework
   version: 1.0.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/dotnet-framework.1.0.0.linux-amd64.tar.gz
@@ -94,6 +88,12 @@ dependencies:
   version: 1.0.0-preview4-004233
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview4-004233.linux-amd64.tar.gz
   md5: 30bff5f194e75c4d8e2933c3d50742a6
+  cf_stacks:
+  - cflinuxfs2
+- name: node
+  version: 6.9.3
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.9.3-linux-x64.tgz
+  md5: 1687dab3977a5f20c069802a6b71b790
   cf_stacks:
   - cflinuxfs2
 exclude_files:
