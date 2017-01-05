@@ -53,6 +53,7 @@ module AspNetCoreBuildpack
 
       out.print(".NET SDK version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
       write_version_file(version)
     end

@@ -49,6 +49,7 @@ module AspNetCoreBuildpack
 
       out.print("Node.js version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       FileUtils.rm_rf(dest_dir) if File.exist?(dest_dir)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end

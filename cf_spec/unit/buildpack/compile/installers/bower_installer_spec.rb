@@ -114,6 +114,10 @@ dependencies:
         end
         expect(shell).to receive(:exec) do |*args|
           cmd = args.first
+          expect(cmd).to match(/warn_if_newer_patch/)
+        end
+        expect(shell).to receive(:exec) do |*args|
+          cmd = args.first
           expect(cmd).to match(/npm/)
         end
         expect(out).to receive(:print).with(/Bower version/)

@@ -49,6 +49,7 @@ module AspNetCoreBuildpack
 
       out.print("Bower version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
+      @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       @shell.exec("PATH=$PATH:#{npm_path} npm install -g /tmp/#{dependency_name}", out)
       write_version_file(version)
     end
