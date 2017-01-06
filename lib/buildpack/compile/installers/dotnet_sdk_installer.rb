@@ -66,38 +66,13 @@ module AspNetCoreBuildpack
       bin_folder if File.exist?(File.join(@build_dir, cache_dir))
     end
 
-    def restore(out)
-      @shell.env['HOME'] = @build_dir
-      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
-      @shell.env['PATH'] = "$PATH:#{path}"
-
-      if msbuild?(build_dir)
-        @app_dir.project_paths.each do |project|
-          cmd = "bash -c 'cd #{build_dir}; dotnet restore #{project}'"
-          @shell.exec(cmd, out)
-        end
-
-        rewrite_project_assets_json(@app_dir.project_paths)
-      else
-        project_list = @app_dir.project_paths.join(' ')
-        cmd = "bash -c 'cd #{build_dir}; dotnet restore #{project_list}'"
-        @shell.exec(cmd, out)
-      end
-    end
-
-    def rewrite_project_assets_json(msbuild_projects)
-      msbuild_projects.each do |proj|
-        json_file = File.join(@build_dir, File.dirname(proj), 'obj', 'project.assets.json')
-        json = File.read(json_file)
-        json.gsub!('/tmp/app/.nuget/packages/', '/app/.nuget/packages/')
-        File.write(json_file, json)
-      end
-    end
-
     def should_install(app_dir)
+      !self_contained_project?(app_dir) && !cached?
+    end
+
+    def self_contained_project?(app_dir)
       published_project = app_dir.published_project
-      no_install = published_project && File.exist?(File.join(@build_dir, published_project))
-      !(no_install || cached?)
+      published_project && File.exist?(File.join(@build_dir, published_project))
     end
 
     def should_restore(app_dir)

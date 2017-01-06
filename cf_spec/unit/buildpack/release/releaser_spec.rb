@@ -147,7 +147,7 @@ doesn't matter for these tests
       end
 
       it "runs 'dotnet run' for project" do
-        expect(web_process).to match('dotnet run --project foo')
+        expect(web_process).to match('cd . && dotnet run --project foo')
       end
 
       context 'LD_LIBRARY_PATH specifies a custom library path' do
@@ -195,12 +195,11 @@ doesn't matter for these tests
       end
     end
 
-    context '*.csproj exists' do
+    context '*.csproj exists and the app is published during staging' do
       let(:is_sdk_project_json) { false }
       let(:is_sdk_msbuild)      { true }
 
-      let(:proj1) { File.join(build_dir, 'foo').tap { |f| Dir.mkdir(f) } }
-      let(:csproj) { '<xml>anything</xml>' }
+      let(:publish_dir) {File.join(build_dir, '.cloudfoundry', 'dotnet_publish')}
 
       let(:profile_d_script) do
         allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
@@ -215,17 +214,13 @@ doesn't matter for these tests
       end
 
       before do
-        File.open(File.join(proj1, 'foo.csproj'), 'w') do |f|
-          f.write csproj
-        end
+        FileUtils.mkdir_p(publish_dir)
+        File.open(File.join(publish_dir, 'proj1.runtimeconfig.json'), 'w') { |f| f.write('a') }
+        File.open(File.join(publish_dir, 'proj1.dll'), 'w') { |f| f.write('a') }
       end
 
       it 'set HOME env variable in profile.d' do
         expect(profile_d_script).to include('export HOME=/app')
-      end
-
-      it 'sets NugetPackageRoot env variable in profile.d' do
-        expect(profile_d_script).to include('export NugetPackageRoot=/app/.nuget/packages/')
       end
 
       it 'set LD_LIBRARY_PATH in profile.d' do
@@ -240,10 +235,6 @@ doesn't matter for these tests
         expect(web_process).not_to include('export')
       end
 
-      it "runs 'dotnet run' for project" do
-        expect(web_process).to match('dotnet run --project foo/foo.csproj')
-      end
-
       context 'LD_LIBRARY_PATH specifies a custom library path' do
         before do
           ENV['LD_LIBRARY_PATH'] = '$HOME/my_custom_library/'
@@ -254,37 +245,27 @@ doesn't matter for these tests
         end
       end
 
-      context 'multiple directories contain project.json files but no .deployment file exists' do
-        let(:proj1) { File.join(build_dir, 'src', 'foo').tap { |f| FileUtils.mkdir_p(f) } }
-        let(:proj2) { File.join(build_dir, 'src', 'proj2').tap { |f| FileUtils.mkdir_p(f) } }
-        let(:proj3) { File.join(build_dir, 'src', 'proj3').tap { |f| FileUtils.mkdir_p(f) } }
-
+      context 'project is self-contained' do
         before do
-          File.open(File.join(proj1, 'foo.csproj'), 'w') do |f|
-            f.write '<xml>anything</xml>'
-          end
-          File.open(File.join(proj2, 'proj2.csproj'), 'w') do |f|
-            f.write '<xml>anything</xml>'
-          end
-          File.open(File.join(proj3, 'proj3.csproj'), 'w') do |f|
-            f.write '<xml>anything</xml>'
-          end
+          File.open(File.join(publish_dir, 'proj1'), 'w') { |f| f.write('a') }
         end
 
-        context '.deployment file exists' do
-          before do
-            File.open(File.join(build_dir, '.deployment'), 'w') do |f|
-              f.write "[config]\n"
-              f.write 'project=src/proj2/proj2.csproj'
-            end
-          end
-          let(:web_process) do
-            yml = YAML.load(subject.release(build_dir))
-            yml.fetch('default_process_types').fetch('web')
-          end
-          it 'runs the project specified in the .deployment file' do
-            expect(web_process).to match('dotnet run --project src/proj2')
-          end
+        it 'does not raise an error because project.json is not required' do
+          expect { subject.release(build_dir) }.not_to raise_error
+        end
+
+        it 'runs native binary for the project which has a runtimeconfig.json file' do
+          expect(web_process).to match('cd .cloudfoundry/dotnet_publish && ./proj1')
+        end
+      end
+
+      context 'project is a portable project' do
+        before do
+          File.open(File.join(publish_dir, 'proj1.dll'), 'w') { |f| f.write('a') }
+        end
+
+        it 'runs dotnet <dllname> for the project which has a runtimeconfig.json file' do
+          expect(web_process).to match('cd .cloudfoundry/dotnet_publish && dotnet proj1.dll')
         end
       end
     end

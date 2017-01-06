@@ -21,12 +21,17 @@ require_relative './installers/libunwind_installer.rb'
 require_relative './installers/dotnet_sdk_installer.rb'
 require_relative './installers/nodejs_installer.rb'
 require_relative './installers/bower_installer.rb'
+require_relative '../sdk_info'
+require_relative 'dotnet_cli.rb'
 
 require 'json'
 require 'pathname'
+require 'tmpdir'
 
 module AspNetCoreBuildpack
   class Compiler
+    include SdkInfo
+
     CACHE_NUGET_PACKAGES_VAR = 'CACHE_NUGET_PACKAGES'.freeze
     NUGET_CACHE_DIR = '.nuget'.freeze
 
@@ -39,6 +44,14 @@ module AspNetCoreBuildpack
       @shell = AspNetCoreBuildpack.shell
       @installers = installers
       @dotnet_sdk = installers.find { |installer| /(.*)::DotnetSdkInstaller/.match(installer.class.name) }
+
+      if @dotnet_sdk
+        nuget_dir = File.join(@build_dir, NUGET_CACHE_DIR)
+        sdk_dir = File.join(@build_dir, @dotnet_sdk.cache_dir)
+        @dotnet_framework = DotnetFramework.new(@build_dir, nuget_dir, sdk_dir, shell)
+      end
+
+      @dotnet_cli = DotnetCli.new(@build_dir, @installers)
       @manifest_file = File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
@@ -51,14 +64,13 @@ module AspNetCoreBuildpack
 
       run_installers
 
-      step('Restoring dependencies with Dotnet CLI', @dotnet_sdk.method(:restore)) if should_restore?
+      step('Restoring dependencies with Dotnet CLI', @dotnet_cli.method(:restore)) if should_restore?
 
-      if @dotnet_sdk
-        @dotnet_framework = DotnetFramework.new(@build_dir, File.join(@build_dir, NUGET_CACHE_DIR), File.join(@build_dir, @dotnet_sdk.cache_dir), shell)
-        step('Installing required .NET Core runtime(s)', @dotnet_framework.method(:install)) if @dotnet_framework.should_install?
-      end
+      step('Installing required .NET Core runtime(s)', @dotnet_framework.method(:install)) if should_install_framework?
 
+      step('Publishing application using Dotnet CLI', @dotnet_cli.method(:publish)) if should_publish?
       step('Saving to buildpack cache', method(:save_cache))
+      step('Cleaning staging area', method(:clean_staging_area))
       puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
     rescue StepFailedError => e
@@ -68,12 +80,37 @@ module AspNetCoreBuildpack
 
     private
 
-    def clear_nuget_cache(_out)
-      FileUtils.rm_rf(File.join(cache_dir, NUGET_CACHE_DIR))
-    end
-
     def should_restore?
       @dotnet_sdk.should_restore(@app_dir) unless @dotnet_sdk.nil?
+    end
+
+    def should_install_framework?
+      @dotnet_framework.should_install? unless @dotnet_framework.nil?
+    end
+
+    def should_publish?
+      should_restore? && msbuild?(@build_dir)
+    end
+
+    def clean_staging_area(out)
+      return unless msbuild?(@build_dir)
+
+      directories_to_remove = %w(.node .nuget)
+
+      if @dotnet_sdk && @dotnet_sdk.self_contained_project?(@app_dir)
+        directories_to_remove.push '.dotnet'
+      end
+
+      Dir.chdir(@build_dir) do
+        directories_to_remove.each do |dir|
+          out.print("Removing #{File.join(@build_dir, dir)}")
+          FileUtils.rm_rf(dir)
+        end
+      end
+    end
+
+    def clear_nuget_cache(_out)
+      FileUtils.rm_rf(File.join(cache_dir, NUGET_CACHE_DIR))
     end
 
     def nuget_cache_is_valid?

@@ -14,7 +14,7 @@ namespace app_using_angular
                           .AddCommandLine(args)
                           .Build();
 
-            var content_root = Path.Combine(Directory.GetCurrentDirectory(), "src", "app_using_angular");
+            var content_root = Directory.GetCurrentDirectory();
 
             var host = new WebHostBuilder()
                         .UseKestrel()
