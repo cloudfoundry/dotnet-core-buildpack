@@ -1,3 +1,20 @@
+v1.0.9 Jan 11, 2017
+====================
+
+* Add warning if downloaded dependency is not the latest patch version for a
+given major and minor version
+  (https://www.pivotaltracker.com/story/show/134863437)
+
+* Add warning if buildpack version used to stage an app changes
+  (https://www.pivotaltracker.com/story/show/135234395)
+
+* Add node 6.9.4, remove node 6.9.2
+  (https://www.pivotaltracker.com/story/show/137135283)
+  (https://www.pivotaltracker.com/story/show/136991485)
+
+* Add .NET SDK 1.0.0-preview4-004233
+  (https://www.pivotaltracker.com/story/show/136046769)
+
 v1.0.8 Dec 23, 2016
 ====================
 
