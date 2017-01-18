@@ -202,13 +202,12 @@ describe AspNetCoreBuildpack::Compiler do
 
       context 'project is msbuild' do
         context 'published app is self-contained' do
-          let(:dotnet_sdk_installer) { AspNetCoreBuildpack::DotnetSdkInstaller.new(build_dir, cache_dir, 'manifest.yml', nil)}
-          let(:installer)            { double(:installer, descendants: [dotnet_sdk_installer]) }
 
           before do
-            allow(dotnet_sdk_installer).to receive(:should_restore).and_return(false)
-            allow(dotnet_sdk_installer).to receive(:self_contained_project?).and_return(true)
-            allow_any_instance_of(AspNetCoreBuildpack::DotnetFramework).to receive(:should_install?).and_return(false)
+            publish_dir = File.join(build_dir, '.cloudfoundry', 'dotnet_publish')
+            FileUtils.mkdir_p(publish_dir)
+            File.write(File.join(publish_dir, 'project_name'), 'xxx')
+            File.write(File.join(publish_dir, 'project_name.runtimeconfig.json'), 'xxx')
           end
 
           it 'removes the .dotnet, .node, and .nuget directories' do

@@ -97,16 +97,23 @@ module AspNetCoreBuildpack
 
       directories_to_remove = %w(.node .nuget)
 
-      if @dotnet_sdk && @dotnet_sdk.self_contained_project?(@app_dir)
-        directories_to_remove.push '.dotnet'
-      end
+      directories_to_remove.push '.dotnet' if generated_self_contained_project?
 
       Dir.chdir(@build_dir) do
         directories_to_remove.each do |dir|
-          out.print("Removing #{File.join(@build_dir, dir)}")
+          dir = File.join(@build_dir, dir)
+          next unless File.exist?(dir)
+          out.print("Removing #{dir}")
           FileUtils.rm_rf(dir)
         end
       end
+    end
+
+    def generated_self_contained_project?
+      generated_app_dir = AppDir.new(File.join(@build_dir, '.cloudfoundry', 'dotnet_publish'))
+      project_name = generated_app_dir.published_project
+      return false unless project_name
+      File.exist? File.join(@build_dir, '.cloudfoundry', 'dotnet_publish', project_name)
     end
 
     def clear_nuget_cache(_out)
