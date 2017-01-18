@@ -5,7 +5,6 @@ applications:
   memory: 1G
   instances: 1
   stack: cflinuxfs2
-  command: dotnet --verbose run --project . --server.urls http://0.0.0.0:$PORT --configuration Release
   env:
     DOTNET_CLI_TELEMETRY_OPTOUT: 1
     CACHE_NUGET_PACKAGES: false

@@ -9,9 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="**\*.cs" Exclude="wwwroot\**\*;node_modules;bin\**;obj\**;**\*.xproj;packages\**" />
-    <EmbeddedResource Include="**\*.resx" />
-    <EmbeddedResource Include="compiler\resources\**\*" />
+    <Compile Include="**\*.cs" Exclude="$(GlobalExclude)" />
+    <EmbeddedResource Include="**\*.resx" Exclude="$(GlobalExclude)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +19,7 @@
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Sdk.Web">
-      <Version>1.0.0-alpha-20161104-2</Version>
+      <Version>1.0.0-alpha-20161104-2-112</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics">
@@ -60,7 +59,7 @@
       <Version>*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.App">
-      <Version>1.0.1</Version>
+      <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader">
       <Version>*</Version>
@@ -71,13 +70,27 @@
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>
 
-  <Target Name="PostcompileScript" AfterTargets="Build" Condition=" '$(IsCrossTargetingBuild)' != 'true' ">
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <Target Name="CustomCollectFiles" DependsOnTargets="BeforePublish">
+    <ItemGroup>
+      <Content Include="wwwroot/**/*;appsettings.json">
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+  </Target>
+  <PropertyGroup>
+    <AssignTargetPathsDependsOn>
+      CustomCollectFiles;
+      $(AssignTargetPathsDependsOn);
+    </AssignTargetPathsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="BeforePublish">
     <Exec Command="npm install" />
     <Exec Command="bower install" />
     <Exec Command="gulp clean" />
     <Exec Command="gulp min" />
     <Exec Command="gulp copy-deps" />
   </Target>
-  
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

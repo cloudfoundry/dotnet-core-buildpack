@@ -23,13 +23,20 @@ module AspNetCoreBuildpack
 
     def release(build_dir)
       @build_dir = build_dir
-      app = AppDir.new(build_dir)
+
+      app_root_dir = if File.exist?(File.join(@build_dir, DotnetCli::PUBLISH_DIR))
+                       DotnetCli::PUBLISH_DIR
+                     else
+                       '.'
+                     end
+
+      app = AppDir.new(File.expand_path(File.join(@build_dir, app_root_dir)))
       start_cmd = get_start_cmd(app)
 
       raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
       write_startup_script(startup_script_path(build_dir), start_cmd)
-      generate_yml(start_cmd)
+      generate_yml(start_cmd, app_root_dir)
     end
 
     private
@@ -38,7 +45,6 @@ module AspNetCoreBuildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        f.write 'export NugetPackageRoot=/app/.nuget/packages/;' if msbuild?(@build_dir)
         installers = AspNetCoreBuildpack::Installer.descendants
 
         library_path = get_library_path(installers)
@@ -53,11 +59,11 @@ module AspNetCoreBuildpack
       end
     end
 
-    def generate_yml(start_cmd)
+    def generate_yml(start_cmd, app_root_dir)
       yml = <<-EOT
 ---
 default_process_types:
-  web: #{start_cmd} --server.urls http://0.0.0.0:${PORT}
+  web: cd #{app_root_dir} && #{start_cmd} --server.urls http://0.0.0.0:${PORT}
 EOT
       yml
     end

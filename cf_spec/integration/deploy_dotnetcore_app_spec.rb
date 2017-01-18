@@ -69,4 +69,17 @@ describe 'CF ASP.NET Core Buildpack' do
       expect(app).to use_proxy_during_staging
     end
   end
+
+  context 'deploying an msbuild app with RuntimeIdentfier' do
+    let(:app_name) { 'msbuild_self_contained' }
+
+    it 'displays a simple text homepage' do
+      expect(app).to be_running
+      expect(app).to have_logged(%r{Removing /tmp/app/\.dotnet})
+      expect(app).to have_logged(%r{started using .* \./msbuild_self_contained })
+
+      browser.visit_path('/')
+      expect(browser).to have_body('Hello World!')
+    end
+  end
 end

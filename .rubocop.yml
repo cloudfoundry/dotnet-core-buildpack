@@ -15,3 +15,5 @@ ParameterLists:
   Max: 9
 Metrics/AbcSize:
   Max: 30
+ClassLength:
+  Max: 150

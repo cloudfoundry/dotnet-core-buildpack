@@ -63,6 +63,7 @@ describe AspNetCoreBuildpack::Compiler do
     end
 
     it 'runs step' do
+      allow(step_out).to receive(:print)
       expect(step_out).to receive(:succeed)
       allow(libunwind_installer).to receive(:cached?)
       subject.compile
@@ -181,6 +182,62 @@ describe AspNetCoreBuildpack::Compiler do
           allow(subject).to receive(:nuget_cache_is_valid?).and_return(false)
           expect(copier).not_to receive(:cp)
           subject.compile
+        end
+      end
+    end
+
+    describe 'Cleaning staging area' do
+      let(:node_dir)   { File.join(build_dir, '.node') }
+      let(:nuget_dir)  { File.join(build_dir, '.nuget') }
+      let(:dotnet_dir) { File.join(build_dir, '.dotnet') }
+
+      before do
+        FileUtils.mkdir_p(node_dir)
+        FileUtils.mkdir_p(nuget_dir)
+        FileUtils.mkdir_p(dotnet_dir)
+        allow(subject).to receive(:msbuild?).with(build_dir).and_return(true)
+      end
+
+      it_behaves_like 'step', 'Cleaning staging area', :clean_staging_area
+
+      context 'project is msbuild' do
+        context 'published app is self-contained' do
+
+          before do
+            publish_dir = File.join(build_dir, '.cloudfoundry', 'dotnet_publish')
+            FileUtils.mkdir_p(publish_dir)
+            File.write(File.join(publish_dir, 'project_name'), 'xxx')
+            File.write(File.join(publish_dir, 'project_name.runtimeconfig.json'), 'xxx')
+          end
+
+          it 'removes the .dotnet, .node, and .nuget directories' do
+            subject.compile
+            expect(File.exist?(node_dir)).to be_falsey
+            expect(File.exist?(nuget_dir)).to be_falsey
+            expect(File.exist?(dotnet_dir)).to be_falsey
+          end
+        end
+
+        context 'published app is portable' do
+          it 'removes the .node and .nuget directories' do
+            subject.compile
+            expect(File.exist?(node_dir)).to be_falsey
+            expect(File.exist?(nuget_dir)).to be_falsey
+            expect(File.exist?(dotnet_dir)).to be_truthy
+          end
+        end
+      end
+
+      context 'project is project.json' do
+        before do
+          allow(subject).to receive(:msbuild?).with(build_dir).and_return(false)
+        end
+
+        it 'does not remove any directories' do
+          subject.compile
+          expect(File.exist?(node_dir)).to be_truthy
+          expect(File.exist?(nuget_dir)).to be_truthy
+          expect(File.exist?(dotnet_dir)).to be_truthy
         end
       end
     end
