@@ -24,8 +24,8 @@ module AspNetCoreBuildpack
     def release(build_dir)
       @build_dir = build_dir
 
-      app_root_dir = if File.exist?(File.join(@build_dir, '.cloudfoundry', 'dotnet_publish'))
-                       File.join('.cloudfoundry', 'dotnet_publish')
+      app_root_dir = if File.exist?(File.join(@build_dir, DotnetCli::PUBLISH_DIR))
+                       DotnetCli::PUBLISH_DIR
                      else
                        '.'
                      end

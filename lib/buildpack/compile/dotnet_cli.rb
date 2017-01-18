@@ -20,6 +20,7 @@ require_relative '../app_dir'
 module AspNetCoreBuildpack
   class DotnetCli
     include SdkInfo
+    PUBLISH_DIR = File.join('.cloudfoundry', 'dotnet_publish')
 
     def initialize(build_dir, installers)
       @build_dir = build_dir
@@ -49,7 +50,7 @@ module AspNetCoreBuildpack
       main_project = @app_dir.main_project_path
       raise 'No project found to build' if main_project.nil?
 
-      publish_dir = File.join(@build_dir, '.cloudfoundry', 'dotnet_publish')
+      publish_dir = File.join(@build_dir, PUBLISH_DIR)
       FileUtils.mkdir_p(publish_dir)
 
       cmd = "bash -c 'cd #{@build_dir}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"

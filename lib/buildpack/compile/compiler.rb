@@ -110,10 +110,11 @@ module AspNetCoreBuildpack
     end
 
     def generated_self_contained_project?
-      generated_app_dir = AppDir.new(File.join(@build_dir, '.cloudfoundry', 'dotnet_publish'))
-      project_name = generated_app_dir.published_project
-      return false unless project_name
-      File.exist? File.join(@build_dir, '.cloudfoundry', 'dotnet_publish', project_name)
+      Dir.chdir(@build_dir) do
+        project_name = AppDir.new(DotnetCli::PUBLISH_DIR).published_project
+        return false unless project_name
+        File.exist? File.join(DotnetCli::PUBLISH_DIR, project_name)
+      end
     end
 
     def clear_nuget_cache(_out)
