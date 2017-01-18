@@ -1,6 +1,6 @@
 # To build libunwind and extract the files from the Docker container:
 # export CF_STACK=cflinuxfs2
-# export LIBUNWIND_VERSION=1.1
+# export LIBUNWIND_VERSION=1.2
 # cat Dockerfile.libunwind | envsubst | docker build -t libunwind-${CF_STACK}-${LIBUNWIND_VERSION} -
 # docker run -v /somehostdir:/built --rm libunwind-${CF_STACK}-${LIBUNWIND_VERSION} /bin/bash -c "cd /usr/local && tar czf /built/libunwind-${CF_STACK}-${LIBUNWIND_VERSION}.tar.gz ./include/*unwind* ./lib/libunwind*"
 

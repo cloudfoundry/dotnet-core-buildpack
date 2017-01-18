@@ -46,7 +46,7 @@ doesn't matter for these tests
 
   describe '#version' do
     it 'has a default version' do
-      expect(subject.version).to eq('1.1')
+      expect(subject.version).to eq('1.2')
     end
   end
 
@@ -59,7 +59,7 @@ doesn't matter for these tests
       context 'cached version is the same as the current version being installed' do
         before do
           File.open(File.join(cache_dir, 'libunwind', 'VERSION'), 'w') do |f|
-            f.write '1.1'
+            f.write '1.2'
           end
         end
 

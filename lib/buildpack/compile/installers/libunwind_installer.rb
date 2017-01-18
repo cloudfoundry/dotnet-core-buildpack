@@ -19,7 +19,7 @@ require_relative 'installer'
 module AspNetCoreBuildpack
   class LibunwindInstaller < Installer
     CACHE_DIR = 'libunwind'.freeze
-    VERSION = '1.1'.freeze
+    VERSION = '1.2'.freeze
 
     def self.install_order
       0
