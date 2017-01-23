@@ -1,3 +1,18 @@
+v1.0.10 Jan 23, 2017
+=====================
+
+* Add libunwind 1.2, remove libunwind 1.1
+  (https://www.pivotaltracker.com/story/show/137618327)
+
+* Publish msbuild applications during staging
+  - project.json and pre-published apps are not affected
+  (https://www.pivotaltracker.com/story/show/131118559)
+
+* Add ability to configure Debug/Release mode for apps published during
+staging
+  - default is Debug to match local cli's behavior
+  (https://www.pivotaltracker.com/story/show/131118559)
+
 v1.0.9 Jan 11, 2017
 ====================
 
