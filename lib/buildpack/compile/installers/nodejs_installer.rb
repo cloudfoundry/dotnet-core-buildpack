@@ -63,6 +63,8 @@ module AspNetCoreBuildpack
     end
 
     def should_install(app_dir)
+      return true if ENV['INSTALL_NODE'] == 'true'
+
       published_project = app_dir.published_project
       !(published_project || cached?) && @scripts_parser.scripts_section_exists?([BOWER_COMMAND, NPM_COMMAND])
     end

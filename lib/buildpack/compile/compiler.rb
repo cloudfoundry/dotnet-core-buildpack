@@ -95,9 +95,10 @@ module AspNetCoreBuildpack
     def clean_staging_area(out)
       return unless msbuild?(@build_dir)
 
-      directories_to_remove = %w(.node .nuget)
+      directories_to_remove = %w(.nuget)
 
       directories_to_remove.push '.dotnet' if generated_self_contained_project?
+      directories_to_remove.push '.node' unless ENV['INSTALL_NODE'] == 'true'
 
       Dir.chdir(@build_dir) do
         directories_to_remove.each do |dir|

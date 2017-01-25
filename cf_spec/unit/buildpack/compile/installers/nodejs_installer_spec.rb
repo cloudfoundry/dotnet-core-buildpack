@@ -117,11 +117,41 @@ dependencies:
       it 'returns false' do
         expect(subject.should_install(self_contained_app_dir)).not_to be_truthy
       end
+
+      context 'INSTALL_NODE = true' do
+        before do
+          @old_install_node = ENV['INSTALL_NODE']
+          ENV['INSTALL_NODE'] = 'true'
+        end
+
+        after do
+          ENV['INSTALL_NODE'] = @old_install_node
+        end
+
+        it 'returns true' do
+          expect(subject.should_install(self_contained_app_dir)).to be_truthy
+        end
+      end
     end
 
     context 'app is not self-contained' do
       before do
         FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
+      end
+
+      context 'INSTALL_NODE = true' do
+        before do
+          @old_install_node = ENV['INSTALL_NODE']
+          ENV['INSTALL_NODE'] = 'true'
+        end
+
+        after do
+          ENV['INSTALL_NODE'] = @old_install_node
+        end
+
+        it 'returns true' do
+          expect(subject.should_install(app_dir)).to be_truthy
+        end
       end
 
       context 'scripts section exists' do

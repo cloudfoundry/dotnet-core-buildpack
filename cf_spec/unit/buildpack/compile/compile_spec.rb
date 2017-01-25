@@ -216,6 +216,24 @@ describe AspNetCoreBuildpack::Compiler do
             expect(File.exist?(nuget_dir)).to be_falsey
             expect(File.exist?(dotnet_dir)).to be_falsey
           end
+
+          context 'INSTALL_NODE = true' do
+            before do
+              @old_install_node = ENV['INSTALL_NODE']
+              ENV['INSTALL_NODE'] = 'true'
+            end
+
+            after do
+              ENV['INSTALL_NODE'] = @old_install_node
+            end
+
+            it 'removes the .dotnet and .nuget directories' do
+              subject.compile
+              expect(File.exist?(node_dir)).to be_truthy
+              expect(File.exist?(nuget_dir)).to be_falsey
+              expect(File.exist?(dotnet_dir)).to be_falsey
+            end
+          end
         end
 
         context 'published app is portable' do
@@ -224,6 +242,24 @@ describe AspNetCoreBuildpack::Compiler do
             expect(File.exist?(node_dir)).to be_falsey
             expect(File.exist?(nuget_dir)).to be_falsey
             expect(File.exist?(dotnet_dir)).to be_truthy
+          end
+
+          context 'INSTALL_NODE = true' do
+            before do
+              @old_install_node = ENV['INSTALL_NODE']
+              ENV['INSTALL_NODE'] = 'true'
+            end
+
+            after do
+              ENV['INSTALL_NODE'] = @old_install_node
+            end
+
+            it 'removes the .nuget directories' do
+              subject.compile
+              expect(File.exist?(node_dir)).to be_truthy
+              expect(File.exist?(nuget_dir)).to be_falsey
+              expect(File.exist?(dotnet_dir)).to be_truthy
+            end
           end
         end
       end
