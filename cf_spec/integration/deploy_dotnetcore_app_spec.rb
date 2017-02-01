@@ -43,6 +43,18 @@ describe 'CF ASP.NET Core Buildpack' do
     end
   end
 
+  context 'deploying an mvc app with node prerendering' do
+    let(:app_name) { 'asp_prerender_node' }
+
+    it 'displays a page rendered by node' do
+      expect(app).to be_running
+      expect(app).to have_logged(/ASP.NET Core buildpack is done creating the droplet/)
+
+      browser.visit_path('/')
+      expect(browser).to have_body('1 + 2 = 3')
+    end
+  end
+
   context 'deploying an mvc api app' do
     let(:app_name) { 'asp_mvc_api_app' }
 

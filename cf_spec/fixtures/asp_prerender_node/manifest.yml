@@ -1,0 +1,7 @@
+---
+  applications:
+    - name: asp_prerender_node
+      disk_quota: 1536M
+      env:
+        CACHE_NUGET_PACKAGES: false
+        INSTALL_NODE: true

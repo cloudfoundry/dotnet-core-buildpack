@@ -1,0 +1,30 @@
+{
+  "buildOptions": {
+    "preserveCompilationContext": true,
+    "emitEntryPoint": true,
+    "debugType": "portable"
+  },
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "Views"
+    ]
+  },
+  "dependencies": {
+    "Newtonsoft.Json": "*",
+    "Microsoft.AspNetCore.Diagnostics": "*",
+    "Microsoft.AspNetCore.Mvc": "*",
+    "Microsoft.AspNetCore.Server.Kestrel": "*",
+    "Microsoft.AspNetCore.StaticFiles": "*",
+    "Microsoft.Extensions.Logging.Console": "*",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.1.0"
+    },
+    "Microsoft.AspNetCore.NodeServices": "*",
+    "Microsoft.Extensions.Configuration.CommandLine": "*"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {}
+  }
+}
