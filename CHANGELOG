@@ -1,3 +1,17 @@
+v1.0.11 Feb 08, 2017
+=====================
+
+* Add node 6.9.5, remove node 6.9.4
+  (https://www.pivotaltracker.com/story/show/138771375)
+
+* Add EOL dates for node
+  (https://www.pivotaltracker.com/story/show/137374307)
+
+* Allow user to force node to be installed
+  - node will be installed if the environment variable
+    INSTALL_NODE is set to true
+  (https://www.pivotaltracker.com/story/show/137382231)
+
 v1.0.10 Jan 23, 2017
 =====================
 
