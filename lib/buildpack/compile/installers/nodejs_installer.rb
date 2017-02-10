@@ -15,11 +15,14 @@
 # limitations under the License.
 
 require_relative '../../app_dir'
+require_relative '../../sdk_info'
 require_relative 'installer'
 require_relative '../scripts_parser'
+require 'pathname'
 
 module AspNetCoreBuildpack
   class NodeJsInstaller < Installer
+    include SdkInfo
     BOWER_COMMAND = 'bower'.freeze
     CACHE_DIR = '.node'.freeze
     NPM_COMMAND = 'npm'.freeze
@@ -59,7 +62,7 @@ module AspNetCoreBuildpack
     end
 
     def path
-      bin_folder if File.exist?(File.join(@build_dir, cache_dir))
+      "#{bin_folder}:#{node_modules_folders}" if File.exist?(File.join(@build_dir, cache_dir))
     end
 
     def should_install(app_dir)
@@ -78,6 +81,21 @@ module AspNetCoreBuildpack
 
     def bin_folder
       File.join('$HOME'.freeze, CACHE_DIR, File.basename(dependency_name, '.tar.gz'.freeze), 'bin'.freeze)
+    end
+
+    def node_modules_folders
+      app_dir = AppDir.new(@build_dir)
+      project_dirs = app_dir.project_paths.map do |project|
+        if msbuild?(@build_dir)
+          File.join(@build_dir, File.dirname(project))
+        else
+          File.join(@build_dir, project)
+        end
+      end
+
+      project_dirs.map do |dir|
+        File.join('$HOME', Pathname.new(dir).relative_path_from(Pathname.new(@build_dir)).to_s, 'node_modules', '.bin')
+      end.compact.join(':')
     end
 
     def dependency_name

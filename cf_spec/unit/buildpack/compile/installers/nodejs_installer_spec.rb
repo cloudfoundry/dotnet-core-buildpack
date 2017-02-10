@@ -27,18 +27,19 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
   let(:app_dir) { double(:app_dir, published_project: false, with_project_json: %w(['project1 project2'])) }
   let(:manifest_dir)  { Dir.mktmpdir }
   let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
+  let(:node_version) { '6.7.99'.freeze }
 
   let(:manifest_contents) do
     <<-YAML
 ---
 default_versions:
 - name: node
-  version: 6.7.99
+  version: #{node_version}
 dependencies:
 - name: node
   version: 4.7.0
 - name: node
-  version: 6.7.99
+  version: #{node_version}
 - name: node
   version: 0.12.32
     YAML
@@ -58,14 +59,28 @@ dependencies:
 
   describe '#version' do
     it 'returns the default version' do
-      expect(subject.version).to eq '6.7.99'
+      expect(subject.version).to eq node_version
+    end
+  end
+
+  describe '#path' do
+    before do
+      FileUtils.mkdir_p(File.join(dir, '.node', "node-v#{node_version}-linux-x64", 'bin'))
+      FileUtils.mkdir_p(File.join(dir, 'src', 'proj1', 'node_modules', '.bin'))
+      File.open(File.join(dir, 'src', 'proj1', 'project.json'), 'w') { |f| f.write('a') }
+      allow_any_instance_of(AspNetCoreBuildpack::AppDir).to receive(:project_paths).and_return([File.join(dir, 'src', 'proj1')])
+    end
+
+    it 'includes locally and globally installed node_modules path' do
+      node_modules_path = File.join(dir, 'src', 'proj1', 'node_modules', '.bin')
+      expect(subject.path).to match("$HOME/.node/node-v#{node_version}-linux-x64/bin:$HOME#{node_modules_path}")
     end
   end
 
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v6.7.99-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(cache_dir, '.node', "node-v#{node_version}-linux-x64", 'bin'))
       end
 
       it 'returns true' do
