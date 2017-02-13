@@ -10,7 +10,7 @@ describe 'CF ASP.NET Core Buildpack' do
   end
 
   context 'deploying simple web app with internet' do
-    let(:app_name) { 'asp_web_app' }
+    let(:app_name) { 'asp' }
 
     it 'displays a simple text homepage' do
       expect(app).to be_running
@@ -32,7 +32,7 @@ describe 'CF ASP.NET Core Buildpack' do
   end
 
   context 'deploying an mvc app' do
-    let(:app_name) { 'asp_mvc_app' }
+    let(:app_name) { 'asp_mvc' }
 
     it 'displays a page served through a controller and view' do
       expect(app).to be_running
@@ -56,7 +56,7 @@ describe 'CF ASP.NET Core Buildpack' do
   end
 
   context 'deploying an mvc api app' do
-    let(:app_name) { 'asp_mvc_api_app' }
+    let(:app_name) { 'asp_mvc_api' }
 
     it 'responds to API get requests with json' do
       expect(app).to be_running
@@ -83,7 +83,7 @@ describe 'CF ASP.NET Core Buildpack' do
   end
 
   context 'deploying an msbuild app with RuntimeIdentfier' do
-    let(:app_name) { 'msbuild_self_contained' }
+    let(:app_name) { 'self_contained_msbuild' }
 
     it 'displays a simple text homepage' do
       expect(app).to be_running

@@ -1,4 +1,4 @@
 ---
   applications:
-    - name: vendored_self_contained
+    - name: asp_vendored
       disk_quota: 1536M

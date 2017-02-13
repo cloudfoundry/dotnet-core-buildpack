@@ -1,4 +1,4 @@
 ---
   applications:
-    - name: asp_mvc_api_app
+    - name: self_contained
       disk_quota: 1536M

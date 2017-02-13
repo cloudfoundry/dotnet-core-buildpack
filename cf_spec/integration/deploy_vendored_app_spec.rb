@@ -10,7 +10,7 @@ describe 'deploying vendored dotnet apps' do
   end
 
   context 'the app is portable', :cached do
-    let(:app_name) { 'asp_web_app_vendored' }
+    let(:app_name) { 'asp_vendored' }
 
     it 'displays a simple text homepage' do
       expect(app).to be_running
@@ -23,7 +23,7 @@ describe 'deploying vendored dotnet apps' do
   end
 
   context 'the app is self contained', :cached do
-    let(:app_name) { 'vendored_self_contained' }
+    let(:app_name) { 'self_contained' }
 
     it 'displays a simple text homepage' do
       expect(app).to be_running

@@ -14,7 +14,7 @@ describe 'Deploying an app that relies on Node libraries during staging', type: 
 
   context 'deploying an app using angular' do
     context 'app uses project.json' do
-      let(:app_name) { 'app_using_angular' }
+      let(:app_name) { 'angular' }
 
       before do
         Capybara.register_driver :poltergeist do |app|
@@ -38,7 +38,7 @@ describe 'Deploying an app that relies on Node libraries during staging', type: 
     end
 
     context 'app uses msbuild' do
-      let(:app_name) { 'app_using_angular_msbuild' }
+      let(:app_name) { 'angular_msbuild' }
 
       before do
         Capybara.register_driver :poltergeist do |app|

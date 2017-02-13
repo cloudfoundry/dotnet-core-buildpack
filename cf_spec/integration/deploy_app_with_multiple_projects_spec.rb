@@ -11,7 +11,7 @@ describe 'CF ASP.NET Core Buildpack' do
 
   context 'deploying an app with multiple projects' do
     context 'app uses project.json' do
-      let(:app_name) { 'app_with_multiple_projects' }
+      let(:app_name) { 'multiple_projects' }
 
       it 'compiles both apps' do
         expect(app).to be_running
@@ -25,7 +25,7 @@ describe 'CF ASP.NET Core Buildpack' do
     end
 
     context 'app uses msbuild' do
-      let(:app_name) { 'app_with_multiple_projects_msbuild' }
+      let(:app_name) { 'multiple_projects_msbuild' }
 
       it 'compiles both apps' do
         expect(app).to be_running

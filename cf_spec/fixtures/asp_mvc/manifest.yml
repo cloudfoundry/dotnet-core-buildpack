@@ -1,6 +1,6 @@
 ---
   applications:
-    - name: asp_mvc_app
+    - name: asp_mvc
       disk_quota: 1536M
       env:
         CACHE_NUGET_PACKAGES: false

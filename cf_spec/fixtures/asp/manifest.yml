@@ -1,0 +1,4 @@
+---
+  applications:
+    - name: asp
+      disk_quota: 1536M

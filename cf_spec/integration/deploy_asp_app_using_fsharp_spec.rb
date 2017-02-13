@@ -10,7 +10,7 @@ describe 'CF ASP.NET Core Buildpack' do
   end
 
   context 'deploying simple web app written in F#' do
-    let(:app_name) { 'asp_app_using_fsharp' }
+    let(:app_name) { 'asp_fsharp' }
 
     it 'displays a simple text homepage' do
       expect(app).to be_running

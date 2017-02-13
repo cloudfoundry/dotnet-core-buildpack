@@ -1,4 +1,4 @@
 ---
   applications:
-    - name: asp_web_app
+    - name: multiple_projects
       disk_quota: 1536M
