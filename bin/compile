@@ -24,6 +24,10 @@ require 'buildpack'
 build_dir = ARGV[0]
 cache_dir = ARGV[1]
 buildpack_dir = File.join(File.dirname(__FILE__), '..')
+
+version = File.read(File.join(buildpack_dir, 'VERSION')).strip
+puts "-----> Buildpack version #{version}"
+
 system("#{buildpack_dir}/compile-extensions/bin/check_buildpack_version #{buildpack_dir} #{cache_dir}")
 
 if AspNetCoreBuildpack.compile(build_dir, cache_dir)
