@@ -1,3 +1,12 @@
+v1.0.12 Feb 27, 2017
+=====================
+
+* Add node 6.10.0, remove node 6.9.5
+  (https://www.pivotaltracker.com/story/show/140375739)
+
+* Add local node_modules to path
+  (https://www.pivotaltracker.com/story/show/139601543)
+
 v1.0.11 Feb 08, 2017
 =====================
 
