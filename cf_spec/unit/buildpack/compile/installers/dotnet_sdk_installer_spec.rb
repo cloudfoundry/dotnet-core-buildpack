@@ -74,7 +74,7 @@ doesn't matter for these tests
       context 'cached version is different than the current version being installed' do
         before do
           File.open(File.join(cache_dir, '.dotnet', 'VERSION'), 'w') do |f|
-            f.write '1.0.0-preview2-003131'
+            f.write '1.0.0-preview2-003156'
           end
         end
 

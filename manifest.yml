@@ -42,21 +42,9 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-003156.linux-amd64-0afc3d78.tar.gz
   md5: 0afc3d78c0d44e89b01b1eb333824ff5
 - name: dotnet
-  version: 1.0.0-preview2-003131
-  cf_stacks:
-  - cflinuxfs2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-003131.linux-amd64-ca1ca58a.tar.gz
-  md5: ca1ca58a95992c90b0c4230d86168e03
-- name: dotnet
   version: 1.0.0-preview2-1-003177
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-1-003177.linux-amd64-5fd10e42.tar.gz
   md5: 5fd10e42a9fb412a2d25c09fcf14e036
-  cf_stacks:
-  - cflinuxfs2
-- name: dotnet
-  version: 1.0.0-preview3-004056
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview3-004056.linux-amd64-f3808b1b.tar.gz
-  md5: f3808b1b6d2d632d6392b1b0f9762e97
   cf_stacks:
   - cflinuxfs2
 - name: bower
@@ -93,6 +81,12 @@ dependencies:
   version: 1.0.0-preview4-004233
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview4-004233.linux-amd64-30bff5f1.tar.gz
   md5: 30bff5f194e75c4d8e2933c3d50742a6
+  cf_stacks:
+  - cflinuxfs2
+- name: dotnet
+  version: 1.0.0-rc4-004771
+  uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/dotnet.1.0.0-rc4-004771.linux-amd64-8ede5531.tar.gz
+  md5: 8ede5531b428f4629a7aaab67c75c83b
   cf_stacks:
   - cflinuxfs2
 - name: node
