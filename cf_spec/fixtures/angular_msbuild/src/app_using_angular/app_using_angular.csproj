@@ -1,27 +1,14 @@
-﻿<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
-  
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>app_using_angular</AssemblyName>
     <OutputType>Exe</OutputType>
+    <GeneratedItemPatterns>wwwroot/lib/**;</GeneratedItemPatterns>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(GeneratedItemPatterns)</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="**\*.cs" Exclude="$(GlobalExclude)" />
-    <EmbeddedResource Include="**\*.resx" Exclude="$(GlobalExclude)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Sdk">
-      <Version>1.0.0-alpha-20161104-2</Version>
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Sdk.Web">
-      <Version>1.0.0-alpha-20161104-2-112</Version>
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics">
       <Version>*</Version>
     </PackageReference>
@@ -58,9 +45,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug">
       <Version>*</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.NETCore.App">
-      <Version>1.0.3</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader">
       <Version>*</Version>
     </PackageReference>
@@ -70,27 +54,15 @@
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
-  <Target Name="CustomCollectFiles" DependsOnTargets="BeforePublish">
-    <ItemGroup>
-      <Content Include="wwwroot/**/*;appsettings.json">
-        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-  </Target>
-  <PropertyGroup>
-    <AssignTargetPathsDependsOn>
-      CustomCollectFiles;
-      $(AssignTargetPathsDependsOn);
-    </AssignTargetPathsDependsOn>
-  </PropertyGroup>
-
-  <Target Name="BeforePublish">
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <Exec Command="npm install" />
     <Exec Command="bower install" />
     <Exec Command="gulp clean" />
     <Exec Command="gulp min" />
     <Exec Command="gulp copy-deps" />
+    <ItemGroup>
+      <_GeneratedFiles Include="$(GeneratedItemPatterns)" />
+      <ContentWithTargetPath Include="@(_GeneratedFiles->'%(FullPath)')" RelativePath="%(_GeneratedFiles.Identity)" TargetPath="%(_GeneratedFiles.Identity)" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
   </Target>
 </Project>

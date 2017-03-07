@@ -35,7 +35,7 @@ describe AspNetCoreBuildpack::DotnetSdkVersion do
 ---
 default_versions:
 - name: dotnet
-  version: sdk-version-2
+  version: sdk-version-4
 dependencies:
 - name: dotnet
   version: sdk-version-1

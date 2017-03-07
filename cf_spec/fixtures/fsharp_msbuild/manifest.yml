@@ -1,0 +1,7 @@
+---
+applications:
+  - name: fsharp_msbuild
+    disk_quota: 1536M
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      CACHE_NUGET_PACKAGES: false

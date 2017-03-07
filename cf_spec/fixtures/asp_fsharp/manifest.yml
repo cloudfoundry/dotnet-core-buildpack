@@ -1,5 +1,0 @@
-applications:
-- memory: 768M
-  disk_quota: 1536M
-  env:
-    CACHE_NUGET_PACKAGES: false

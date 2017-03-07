@@ -63,8 +63,8 @@ module AspNetCoreBuildpack
         out.warn(warning)
 
         raise 'App contains both project.json and MSBuild projects'
-      elsif app_has_msbuild_projects
-        msbuild_sdk_versions.last
+      elsif app_has_project_json
+        project_json_sdk_versions.last
       else
         @default_sdk_version
       end
