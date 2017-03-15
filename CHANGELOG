@@ -1,3 +1,12 @@
+v1.0.13 Mar 15, 2017
+=====================
+
+* Add dotnet 1.0.1
+  - remove dotnet 1.0.0-preview3-004056
+  - remove dotnet 1.0.0-preview2-003131 (oldest project.json SDK)
+  - dotnet 1.0.1 is default version
+  (https://www.pivotaltracker.com/story/show/1042066)
+
 v1.0.12 Feb 27, 2017
 =====================
 
