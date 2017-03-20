@@ -48,6 +48,7 @@ if deps_dir
   stdout, stderr, status = Open3.capture3("#{buildpack_dir}/compile-extensions/bin/write_profiled_from_supply #{deps_dir} #{build_dir}")
   if status.exitstatus != 0
     puts "write_profiled_from_supply failed: #{stdout} \n====\n #{stderr}"
+    exit 1
   end
 end
 
