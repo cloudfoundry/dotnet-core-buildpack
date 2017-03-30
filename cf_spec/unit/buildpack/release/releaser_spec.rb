@@ -138,6 +138,10 @@ doesn't matter for these tests
         expect(profile_d_script).to include('export PID=')
       end
 
+      it 'sets ASPNETCORE_URLS in profile.d' do
+        expect(profile_d_script).to include('export ASPNETCORE_URLS=http://0.0.0.0:${PORT};')
+      end
+
       it 'add Dotnet CLI to the PATH in profile.d' do
         expect(profile_d_script).to include('$HOME/.dotnet')
       end
@@ -225,6 +229,10 @@ doesn't matter for these tests
 
       it 'set LD_LIBRARY_PATH in profile.d' do
         expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib')
+      end
+
+      it 'sets ASPNETCORE_URLS in profile.d' do
+        expect(profile_d_script).to include('export ASPNETCORE_URLS=http://0.0.0.0:${PORT};')
       end
 
       it 'add Dotnet CLI to the PATH in profile.d' do

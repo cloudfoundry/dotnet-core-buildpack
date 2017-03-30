@@ -35,7 +35,7 @@ system("#{buildpack_dir}/compile-extensions/bin/check_buildpack_version #{buildp
 if deps_dir
   stdout, stderr, status = Open3.capture3("#{buildpack_dir}/compile-extensions/bin/build_path_from_supply #{deps_dir}")
 
-  if status.exitstatus != 0
+  if status.exitstatus.nonzero?
     puts "build_path_from_supply script failed: #{stdout} \n====\n #{stderr}"
     exit 1
   end
@@ -44,9 +44,9 @@ if deps_dir
     var, val = line.split('=')
     ENV[var] = val
   end
-  
+
   stdout, stderr, status = Open3.capture3("#{buildpack_dir}/compile-extensions/bin/write_profiled_from_supply #{deps_dir} #{build_dir}")
-  if status.exitstatus != 0
+  if status.exitstatus.nonzero?
     puts "write_profiled_from_supply failed: #{stdout} \n====\n #{stderr}"
     exit 1
   end

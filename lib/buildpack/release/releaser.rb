@@ -51,6 +51,7 @@ module AspNetCoreBuildpack
         custom_library_path = ENV['LD_LIBRARY_PATH']
         library_path = "#{library_path}:#{custom_library_path}" if custom_library_path
         f.write "export LD_LIBRARY_PATH=#{library_path};"
+        f.write "export ASPNETCORE_URLS=http://0.0.0.0:${PORT};"
 
         binary_path = get_binary_path(installers)
         f.write "export PATH=#{binary_path};"

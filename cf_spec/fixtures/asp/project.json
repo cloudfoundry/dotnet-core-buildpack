@@ -9,7 +9,6 @@
       "type": "platform",
       "version": "1.1.*"
     },
-    "Microsoft.Extensions.Configuration.CommandLine": "*"
   },
   "frameworks": {
     "netcoreapp1.0": { }
