@@ -1,3 +1,9 @@
+v1.0.15 Apr 03, 2017
+=====================
+
+* Use ASPNETCORE_URLS instead of command line arguments
+  (https://www.pivotaltracker.com/story/show/142635287)
+
 v1.0.14 Mar 28, 2017
 =====================
 
