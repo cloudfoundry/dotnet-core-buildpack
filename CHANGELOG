@@ -1,3 +1,13 @@
+v1.0.16 Apr 25, 2017
+=====================
+
+* Add dotnet 1.0.3, remove dotnet 1.0.0-preview4-004233
+    - dotnet 1.0.3 is now the default SDK version
+  (https://www.pivotaltracker.com/story/show/144058131)
+
+* Add node 6.10.2, remove node 6.10.1
+  (https://www.pivotaltracker.com/story/show/143029841)
+
 v1.0.15 Apr 03, 2017
 =====================
 
