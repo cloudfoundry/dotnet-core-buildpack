@@ -3,10 +3,10 @@ language: dotnet-core
 default_versions:
 - name: bower
   version: 1.8.0
-- name: node
-  version: 6.10.2
 - name: dotnet
   version: 1.0.3
+- name: node
+  version: 6.10.3
 url_to_dependency_map:
 - match: libunwind-(.*)-(\d+\.\d+)
   name: libunwind
@@ -95,16 +95,16 @@ dependencies:
   md5: 99324cccbde98d6b35d8aad57ed7f75f
   cf_stacks:
   - cflinuxfs2
-- name: node
-  version: 6.10.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.10.2-linux-x64-9f48b587.tgz
-  md5: 9f48b58738d33e263789c30f9d1a044b
-  cf_stacks:
-  - cflinuxfs2
 - name: dotnet
   version: 1.0.3
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.3.linux-amd64-03ab1021.tar.gz
   md5: 03ab1021597815f7ca9502877cb09a77
+  cf_stacks:
+  - cflinuxfs2
+- name: node
+  version: 6.10.3
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.10.3-linux-x64-34d4554a.tgz
+  md5: 34d4554aed60809aa0d3df581c84d3a7
   cf_stacks:
   - cflinuxfs2
 exclude_files:
