@@ -28,6 +28,7 @@ dependency_deprecation_dates:
   version_line: '6'
   name: node
   date: 2019-04-18
+  link: https://github.com/nodejs/LTS
 dependencies:
 - name: libunwind
   version: 1.2
