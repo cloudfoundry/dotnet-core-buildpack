@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/cloudfoundry/buildpack-packager
-  revision: 82f301072cbb1ab1275fc0fb00a18e4e2ca4ee29
-  tag: v2.3.7
+  revision: 1dcb43b064f2499652b021ffe5a32713cf93d79e
+  tag: v2.3.8
   specs:
-    buildpack-packager (2.3.7)
+    buildpack-packager (2.3.8)
       activesupport (~> 4.1)
       kwalify (~> 0)
       terminal-table (~> 1.4)
@@ -49,7 +49,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
-    minitest (5.10.1)
+    minitest (5.10.2)
     multi_xml (0.6.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
