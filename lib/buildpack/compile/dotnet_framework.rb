@@ -41,8 +41,6 @@ module AspNetCoreBuildpack
         @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name(version)} #{buildpack_root}/manifest.yml", out)
         @shell.exec("mkdir -p #{@dotnet_install_dir}; tar xzf /tmp/#{dependency_name(version)} -C #{@dotnet_install_dir}", out)
       end
-
-      clean_up_frameworks(out)
     end
 
     def name
@@ -54,15 +52,6 @@ module AspNetCoreBuildpack
     end
 
     private
-
-    def clean_up_frameworks(out)
-      frameworks_to_remove = installed_frameworks - versions
-
-      frameworks_to_remove.each do |version|
-        out.print("Removing .NET Core runtime #{version}")
-        FileUtils.rm_rf(File.join(@dotnet_install_dir, 'shared', 'Microsoft.NETCore.App', version))
-      end
-    end
 
     def installed_frameworks
       Dir.glob(File.join(@dotnet_install_dir, 'shared', 'Microsoft.NETCore.App', '*')).map do |path|

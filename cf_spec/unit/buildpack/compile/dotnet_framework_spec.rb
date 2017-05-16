@@ -76,19 +76,12 @@ describe AspNetCoreBuildpack::DotnetFramework do
     context 'a version is installed that is not required' do
       let(:versions) { %w(5.5.5) }
 
-      before do
-        FileUtils.mkdir_p(File.join(dotnet_install_dir, 'shared', 'Microsoft.NETCore.App', '4.4.4'))
-      end
-
-      it 'installs the required version and removes the extra version' do
+      it 'installs the required version' do
         expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
         expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
         expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
-        expect(out).to receive(:print).with("Removing .NET Core runtime 4.4.4")
 
         subject.install(out)
-
-        expect(File.exist?(File.join(dotnet_install_dir, 'shared', 'Microsoft.NETCore.App', '4.4.4'))).to eq false
       end
     end
   end
