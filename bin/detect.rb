@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 # Encoding: utf-8
 # ASP.NET Core Buildpack
-# Copyright 2017 the original author or authors.
+# Copyright 2014-2016 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-`dirname $0`/compile.rb "$@" | tee -a staging_task.log
-exit_status=${PIPESTATUS[0]}
-if [ $exit_status -ne 0 ]; then
-  exit $exit_status
-fi
-mkdir -p $1/logs
-cp -f staging_task.log $1/logs/staging_task.log
+$stdout.sync = true
+$stderr.sync = true
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
+require 'buildpack'
+
+build_dir = ARGV[0]
+if AspNetCoreBuildpack.detect(build_dir)
+  puts "ASP.NET Core (buildpack-#{AspNetCoreBuildpack::BuildpackVersion.new.version})"
+  exit 0
+else
+  exit 1
+end
