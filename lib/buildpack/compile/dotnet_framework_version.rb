@@ -16,7 +16,9 @@
 
 require 'yaml'
 require 'json'
+require 'rexml/document'
 require_relative '../sdk_info'
+require_relative '../app_dir'
 
 module AspNetCoreBuildpack
   class DotnetFrameworkVersion
@@ -37,8 +39,8 @@ module AspNetCoreBuildpack
         runtime_config_framework = get_version_from_runtime_config_json(runtime_config_json_file)
         framework_versions.push runtime_config_framework unless runtime_config_framework.nil?
       elsif restored_framework_versions.any?
-        out.print("Detected .NET Core runtime version(s) #{restored_framework_versions.join(', ')} required according to 'dotnet restore'")
-        framework_versions += restored_framework_versions
+        out.print("Detected .NET Core runtime version(s) #{needed_framework_versions.join(', ')} required according to 'dotnet restore'")
+        framework_versions += needed_framework_versions
       else
         raise 'Unable to determine .NET Core runtime version(s) to install'
       end
@@ -47,6 +49,39 @@ module AspNetCoreBuildpack
     end
 
     private
+
+    def needed_framework_versions
+      version_hash = {}
+
+      restored_framework_versions.each do |ver|
+        major, minor, = ver.split('.')
+        version_line = "#{major}.#{minor}"
+
+        if version_hash[version_line].nil?
+          version_hash[version_line] = [ver]
+        else
+          version_hash[version_line].push ver
+        end
+      end
+
+      required_versions = version_hash.values.map do |v|
+        v.sort { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }.last
+      end
+
+      required_versions += runtime_framework_versions if msbuild?(@build_dir)
+
+      required_versions.sort { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }
+    end
+
+    def runtime_framework_versions
+      AppDir.new(@build_dir).msbuild_projects.map do |proj|
+        doc = REXML::Document.new(File.read(File.join(@build_dir, proj), encoding: 'bom|utf-8'))
+
+        runtime_version = doc.elements.to_a('Project/PropertyGroup/RuntimeFrameworkVersion').first
+
+        runtime_version.text unless runtime_version.nil?
+      end.compact
+    end
 
     def restored_framework_versions
       if project_json?(@build_dir)
