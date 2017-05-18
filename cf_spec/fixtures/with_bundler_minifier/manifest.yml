@@ -1,0 +1,8 @@
+---
+applications:
+  - name: with_bundler_minifier
+    disk_quota: 1536M
+    memory: 2G
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      CACHE_NUGET_PACKAGES: false

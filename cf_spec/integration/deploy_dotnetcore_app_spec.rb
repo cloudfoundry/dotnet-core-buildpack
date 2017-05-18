@@ -94,4 +94,16 @@ describe 'CF ASP.NET Core Buildpack' do
       expect(browser).to have_body('Hello World!')
     end
   end
+
+  context 'deploying an msbuild app with BundlerMinifier.Core' do
+    let(:app_name) { 'with_bundler_minifier' }
+
+    it 'does not install dotnet 1.1.0' do
+      expect(app).to be_running
+      expect(app).not_to have_logged('Downloading and installing .NET Core runtime 1.1.0')
+
+      browser.visit_path('/')
+      expect(browser).to have_body('Hello World!')
+    end
+  end
 end

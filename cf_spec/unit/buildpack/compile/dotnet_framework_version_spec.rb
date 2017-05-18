@@ -82,14 +82,16 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
 
         context 'dotnet restore detected required frameworks' do
           before do
-            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '3.3.3'))
-            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '4.4.4'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.3.3'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.3.4'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.4.6'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.4.5'))
           end
 
-          it 'returns the restored framework versions' do
+          it 'returns the latest patch version for each restored major/minor line' do
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
-              "Detected .NET Core runtime version(s) 3.3.3, 4.4.4 required according to 'dotnet restore'")
-            expect(subject.versions).to eq( ['3.3.3', '4.4.4'] )
+              "Detected .NET Core runtime version(s) 1.3.4, 1.4.6 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['1.3.4', '1.4.6'] )
           end
         end
 
@@ -103,20 +105,104 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
       context 'with .csproj' do
         let(:app_uses_msbuild) { true }
 
-        context 'dotnet restore detected required frameworks' do
+        before do
+          FileUtils.mkdir_p(File.join(build_dir, 'prj1'))
+          File.write(File.join(build_dir, 'prj1', 'prj1.csproj'), prj1_xml)
+
+          FileUtils.mkdir_p(File.join(build_dir, 'prj2'))
+          File.write(File.join(build_dir, 'prj2', 'prj2.csproj'), prj2_xml)
+        end
+
+        context '.csproj has RuntimeFrameworkVersion' do
+          let(:prj1_xml) do
+            <<-XML
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>simple_brats</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <RuntimeFrameworkVersion>1.2.3</RuntimeFrameworkVersion>
+  </PropertyGroup>
+</Project>
+XML
+          end
+
+          let(:prj2_xml) do
+            <<-XML
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>simple_brats</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <RuntimeFrameworkVersion>1.4.5</RuntimeFrameworkVersion>
+  </PropertyGroup>
+</Project>
+XML
+          end
+
+          before do
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.2.2'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.2.3'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.2.4'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.4.5'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.4.6'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.4.7'))
+          end
+
+          it 'returns the latest patch version for each restored major/minor line + any specified as RuntimeFramworkVersion in .csproj files' do
+            expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+              "Detected .NET Core runtime version(s) 1.2.3, 1.2.4, 1.4.5, 1.4.7 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['1.2.3', '1.2.4', '1.4.5', '1.4.7'] )
+          end
+        end
+
+        context '.csproj does not have RuntimeFrameworkVersion' do
+          let(:prj1_xml) do
+            <<-XML
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>simple_brats</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+</Project>
+XML
+          end
+
+          let(:prj2_xml) do
+            <<-XML
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>simple_brats</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+</Project>
+XML
+          end
+
           before do
             FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.1.1'))
             FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '2.2.2'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '1.1.2'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '2.2.3'))
           end
 
-          it 'returns the restored framework versions' do
+          it 'returns the latest patch version for each restored major/minor line' do
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
-              "Detected .NET Core runtime version(s) 1.1.1, 2.2.2 required according to 'dotnet restore'")
-            expect(subject.versions).to eq( ['1.1.1', '2.2.2'] )
+              "Detected .NET Core runtime version(s) 1.1.2, 2.2.3 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['1.1.2', '2.2.3'] )
           end
         end
 
         context 'dotnet restore detected no framework versions' do
+          let(:prj1_xml) { 'does not matter'}
+          let(:prj2_xml) { 'does not matter'}
+
           it 'throws an exception with a helpful message' do
             expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Core runtime version(s) to install")
           end
