@@ -1,3 +1,20 @@
+v1.0.19 May 22, 2017
+=====================
+
+* Only install the latest patch version for each .NET Framework
+  Also install any explicitly specified as RuntimeFramworkVersion in
+  msbuild files
+  (https://www.pivotaltracker.com/story/show/145625557)
+
+* Add staging_task.log file (#142)
+  (https://www.pivotaltracker.com/story/show/144524001)
+
+* Do not remove any .NET Frameworks during staging (#146)
+  (https://www.pivotaltracker.com/story/show/145544585)
+
+* Add EOL warning for node
+  (https://www.pivotaltracker.com/story/show/144943203)
+
 v1.0.18 May 10, 2017
 =====================
 
