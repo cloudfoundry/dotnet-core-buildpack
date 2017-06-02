@@ -15,13 +15,19 @@
 # limitations under the License.
 
 require 'fileutils'
+require 'open3'
 
 module AspNetCoreBuildpack
   class Copier
     def cp(from, to, out)
       before = files_in_dest(to)
       FileUtils.mkdir_p(to)
-      FileUtils.cp_r(from, to, remove_destination: true)
+      args = ['-R']
+      if RUBY_PLATFORM.match /linux/
+        args += ['-l', '--remove_destination']
+      end
+      _, s = Open3.capture2('cp', *args, from, to)
+      raise "Could not copy from #{from} to #{to}" unless s.success?
       after = files_in_dest(to)
 
       out.print("Copied #{(after - before).length} files from #{from} to #{to}")
