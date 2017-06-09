@@ -50,6 +50,12 @@ module AspNetCoreBuildpack
 
     private
 
+    def gem_version_parse(v)
+      Gem::Version.new(v)
+    rescue
+      Gem::Version.new(v.split('-').first)
+    end
+
     def needed_framework_versions
       version_hash = {}
 
@@ -65,12 +71,12 @@ module AspNetCoreBuildpack
       end
 
       required_versions = version_hash.values.map do |v|
-        v.sort_by { |a| Gem::Version.new(a) rescue Gem::Version.new(a.split('-').first) }.last
+        v.sort_by { |a| gem_version_parse(a) }.last
       end
 
       required_versions += runtime_framework_versions if msbuild?(@build_dir)
 
-      required_versions.sort_by { |a| Gem::Version.new(a) rescue Gem::Version.new(a.split('-').first) }
+      required_versions.sort_by { |a| gem_version_parse(a) }
     end
 
     def runtime_framework_versions
