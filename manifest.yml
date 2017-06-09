@@ -97,7 +97,7 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
 - name: dotnet
-  version: 2.0.0-preview1
+  version: 2.0.0-preview1-005977
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.2.0.0.linux-amd64-1e641006.tar.gz
   md5: 1e6410060d9c72ec34363e9dea2635bb
   cf_stacks:
