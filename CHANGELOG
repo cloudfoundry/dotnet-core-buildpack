@@ -1,3 +1,22 @@
+v1.0.20 Jun 12, 2017
+=====================
+
+* Add dotnet-framework 2.0.0-preview1-002111-00"
+  (https://www.pivotaltracker.com/story/show/145211249)
+
+* Remove 1.0.0-preview2-1-003177, 1.0.0 and 1.0.1
+  (https://www.pivotaltracker.com/story/show/143973661)
+
+* Add node 6.11.0, remove node 6.10.3
+  (https://www.pivotaltracker.com/story/show/146731549)
+
+* Use hard-links when copying into cache.
+  - lowers disk usage
+  (https://www.pivotaltracker.com/story/show/145211249)
+
+* Make version sorting work on ruby 1.9 (cf lts)
+  (https://www.pivotaltracker.com/story/show/145211249)
+
 v1.0.19 May 22, 2017
 =====================
 
