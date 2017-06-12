@@ -56,6 +56,8 @@ module AspNetCoreBuildpack
     end
 
     def compile
+      set_default_env
+
       puts "ASP.NET Core buildpack version: #{BuildpackVersion.new.version}\n"
       puts "ASP.NET Core buildpack starting compile\n"
       step('Restoring files from buildpack cache', method(:restore_cache))
@@ -79,6 +81,12 @@ module AspNetCoreBuildpack
     end
 
     private
+
+    def set_default_env
+      return unless msbuild?(@build_dir)
+
+      ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true'
+    end
 
     def should_restore?
       @dotnet_sdk.should_restore(@app_dir) unless @dotnet_sdk.nil?
