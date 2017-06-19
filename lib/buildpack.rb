@@ -15,8 +15,9 @@
 # limitations under the License.
 
 require_relative './buildpack/compile/compiler.rb'
+require_relative './buildpack/compile/finalizer.rb'
+require_relative './buildpack/compile/start_command_writer.rb'
 require_relative './buildpack/detect/detecter.rb'
-require_relative './buildpack/release/releaser.rb'
 require_relative './buildpack/shell.rb'
 require_relative './buildpack/out.rb'
 require_relative './buildpack/copier.rb'
@@ -26,24 +27,40 @@ module AspNetCoreBuildpack
     Detecter.new.detect(build_dir)
   end
 
-  def self.compile(build_dir, cache_dir)
-    compiler(build_dir, cache_dir).compile
+  def self.supply(build_dir, cache_dir, deps_dir, deps_idx)
+    supplier(build_dir, cache_dir, deps_dir, deps_idx).supply
   end
 
-  def self.compiler(build_dir, cache_dir)
+  def self.supplier(build_dir, cache_dir, deps_dir, deps_idx)
     manifest_file = File.join(File.dirname(__FILE__), '..', 'manifest.yml')
 
     Compiler.new(
       build_dir,
       cache_dir,
+      deps_dir,
+      deps_idx.to_s,
       Copier.new,
-      AspNetCoreBuildpack::Installer.descendants.sort_by!(&:install_order).map { |b| b.new(build_dir, cache_dir, manifest_file, shell) },
+      [AspNetCoreBuildpack::LibunwindInstaller, AspNetCoreBuildpack::DotnetSdkInstaller, AspNetCoreBuildpack::NodeJsInstaller].map { |b| b.new(build_dir, cache_dir, deps_dir, deps_idx, manifest_file, shell) },
       out
     )
   end
 
-  def self.release(build_dir)
-    Releaser.new.release(build_dir)
+  def self.finalize(build_dir, cache_dir, deps_dir, deps_idx)
+    finalizer(build_dir, cache_dir, deps_dir, deps_idx).finalize
+  end
+
+  def self.finalizer(build_dir, cache_dir, deps_dir, deps_idx)
+    manifest_file = File.join(File.dirname(__FILE__), '..', 'manifest.yml')
+
+    Finalizer.new(
+      build_dir,
+      cache_dir,
+      deps_dir,
+      deps_idx.to_s,
+      Copier.new,
+      [AspNetCoreBuildpack::BowerInstaller, AspNetCoreBuildpack::DotnetSdkInstaller].map { |b| b.new(build_dir, cache_dir, deps_dir, deps_idx, manifest_file, shell) },
+      out
+    )
   end
 
   def self.out

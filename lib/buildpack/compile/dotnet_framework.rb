@@ -20,8 +20,10 @@ require 'fileutils'
 
 module AspNetCoreBuildpack
   class DotnetFramework
-    def initialize(build_dir, nuget_cache_dir, dotnet_install_dir, shell)
+    def initialize(build_dir, nuget_cache_dir, deps_dir, deps_idx, dotnet_install_dir, shell)
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @nuget_cache_dir = nuget_cache_dir
       @dotnet_install_dir = dotnet_install_dir
       @shell = shell
@@ -68,7 +70,7 @@ module AspNetCoreBuildpack
     end
 
     def versions
-      @versions ||= DotnetFrameworkVersion.new(@build_dir, @nuget_cache_dir).versions
+      @versions ||= DotnetFrameworkVersion.new(@build_dir, @nuget_cache_dir, @deps_dir, @deps_idx).versions
     end
   end
 end

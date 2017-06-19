@@ -22,10 +22,12 @@ require 'fileutils'
 
 describe AspNetCoreBuildpack::AppDir do
   let(:dir)                   { Dir.mktmpdir }
+  let(:deps_dir)                   { Dir.mktmpdir }
+  let(:deps_idx)                   { '55' }
   let(:app_uses_msbuild)      { false }
   let(:app_uses_project_json) { true }
 
-  subject(:appdir) { described_class.new(dir) }
+  subject(:appdir) { described_class.new(dir, deps_dir, deps_idx) }
 
   before do
     allow(appdir).to receive(:msbuild?).and_return(app_uses_msbuild)
@@ -38,7 +40,7 @@ describe AspNetCoreBuildpack::AppDir do
 
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
     let(:proj2) { File.join(dir, 'src', 'föö').tap { |f| FileUtils.mkdir_p(f) } }
-    let(:nuget) { File.join(dir, '.nuget', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
+    let(:nuget) { File.join(dir, '.hidden', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
 
     before do
       File.open(File.join(proj1, 'proj1.fsproj'), 'w') do |f|
@@ -89,7 +91,7 @@ describe AspNetCoreBuildpack::AppDir do
   context 'with multiple projects with project.json' do
     let(:proj1) { File.join(dir, 'src', 'proj1').tap { |f| FileUtils.mkdir_p(f) } }
     let(:proj2) { File.join(dir, 'src', 'föö').tap { |f| FileUtils.mkdir_p(f) } }
-    let(:nuget) { File.join(dir, '.nuget', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
+    let(:nuget) { File.join(dir, '.hidden', 'dep').tap { |f| FileUtils.mkdir_p(f) } }
 
     before do
       File.open(File.join(proj1, 'project.json'), 'w') do |f|
