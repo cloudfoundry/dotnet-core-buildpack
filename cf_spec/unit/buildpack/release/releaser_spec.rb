@@ -75,10 +75,20 @@ doesn't matter for these tests
       context 'project is self-contained' do
         before do
           File.open(File.join(build_dir, 'proj1'), 'w') { |f| f.write('a') }
+          FileUtils.chmod 0664, File.join(build_dir, 'proj1')
         end
 
         it 'does not raise an error because project.json is not required' do
           expect { subject.release(build_dir) }.not_to raise_error
+        end
+
+        it 'marks proj1 as executable' do
+          mode = ->{ sprintf("%o", File.stat(File.join(build_dir, 'proj1')).mode) }
+          writable = "100664"
+          executable = "100775"
+          expect {
+            subject.release(build_dir)
+          }.to change{ mode.call() }.from(writable).to(executable)
         end
 
         it 'runs native binary for the project which has a runtimeconfig.json file' do
