@@ -1,3 +1,12 @@
+v1.0.21 Jun 28, 2017
+=====================
+
+* Self contained (published) apps are now executable
+  (https://www.pivotaltracker.com/story/show/147516983)
+
+* Set DOTNET_SKIP_FIRST_TIME_EXPERIENCE by default
+  (https://www.pivotaltracker.com/story/show/147023711)
+
 v1.0.20 Jun 12, 2017
 =====================
 
