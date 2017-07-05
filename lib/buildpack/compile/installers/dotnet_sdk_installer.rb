@@ -56,6 +56,7 @@ module AspNetCoreBuildpack
       @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
       write_version_file(version)
+      set_default_env
     end
 
     def name
@@ -93,6 +94,12 @@ module AspNetCoreBuildpack
 
     def dependency_name
       "dotnet.#{version}.linux-amd64.tar.gz"
+    end
+
+    def set_default_env
+      return unless msbuild?(@build_dir)
+
+      ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true'
     end
 
     def version

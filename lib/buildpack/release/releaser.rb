@@ -93,7 +93,7 @@ EOT
 
     def get_published_start_cmd(project, build_dir)
       if !project.nil? && File.exist?(File.join(build_dir, project.to_s))
-        FileUtils.chmod "+x", File.join(build_dir, project.to_s)
+        FileUtils.chmod '+x', File.join(build_dir, project.to_s)
         return "./#{project}"
       end
       return "dotnet #{project}.dll" if File.exist? File.join(build_dir, "#{project}.dll")
