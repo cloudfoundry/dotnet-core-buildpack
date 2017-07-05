@@ -1,8 +1,8 @@
 ---
 project_json:
 - 1.0.0-preview2-003156
-- 2.0.0-preview2
 msbuild:
 - 1.0.3
 - 1.0.4
 - 2.0.0-preview1-005977
+- 2.0.0-preview2
