@@ -122,19 +122,6 @@ describe AspNetCoreBuildpack::Compiler do
           }.to_not change { ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] }
         end
       end
-
-      context 'msbuild' do
-        before do
-          allow(subject).to receive(:msbuild?).with(build_dir).and_return(true)
-          expect(ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to be_nil
-        end
-
-        it 'sets DOTNET_SKIP_FIRST_TIME_EXPERIENCE' do
-          expect {
-            subject.compile
-          }.to change { ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] }.from(nil).to('true')
-        end
-      end
     end
 
     describe 'Restoring Cache' do

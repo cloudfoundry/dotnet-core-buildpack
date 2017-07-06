@@ -45,6 +45,7 @@ describe AspNetCoreBuildpack::DotnetCli do
         end
 
         subject.restore(out)
+        expect(shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to eq "true"
         expect(shell.env['HOME']).to eq build_dir
         expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
         path = "$PATH::#{build_dir}/src/project1/node_modules/.bin:#{build_dir}/src/project2/node_modules/.bin"
@@ -104,6 +105,7 @@ describe AspNetCoreBuildpack::DotnetCli do
           subject.publish(out)
 
           expect(File.exist? publish_dir).to be_truthy
+          expect(shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to eq "true"
           expect(shell.env['HOME']).to eq build_dir
           expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
           expect(shell.env['PATH']).to eq "$PATH::#{build_dir}/src/project1/node_modules/.bin"

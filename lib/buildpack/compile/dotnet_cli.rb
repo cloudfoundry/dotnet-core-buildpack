@@ -81,6 +81,10 @@ module AspNetCoreBuildpack
         File.join(dir, 'node_modules', '.bin')
       end.compact.join(':')
 
+      if msbuild?(@build_dir)
+        @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = "true"
+      end
+
       @shell.env['HOME'] = @build_dir
       @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{@build_dir}/libunwind/lib"
       @shell.env['PATH'] = "$PATH:#{@installers.map(&:path).compact.join(':')}:#{node_modules_paths}"

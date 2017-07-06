@@ -90,6 +90,15 @@ describe 'CF ASP.NET Core Buildpack' do
       expect(browser).to have_body('Hello From Dotnet 2.0')
     end
   end
+  
+  context 'deploying simple web app with dotnet 2.0 using dotnet 2.0 sdk', :uncached do
+    let(:app_name) { 'dotnet2_with_global_json' }
+
+    it 'displays a simple text homepage' do
+      browser.visit_path('/')
+      expect(browser).to have_body('Hello From Dotnet 2.0')
+    end
+  end
 
   context 'deploying an msbuild app with RuntimeIdentfier' do
     let(:app_name) { 'self_contained_msbuild' }
