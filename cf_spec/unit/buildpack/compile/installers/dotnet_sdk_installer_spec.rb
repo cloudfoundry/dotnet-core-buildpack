@@ -92,6 +92,43 @@ doesn't matter for these tests
   end
 
   describe '#install' do
+    describe 'Env DOTNET_SKIP_FIRST_TIME_EXPERIENCE' do
+      before do
+        allow(out).to receive(:print).with(anything)
+        allow(subject).to receive(:write_version_file)
+        allow(shell).to receive(:exec).with(anything, out)
+      end
+      after do
+        ENV.delete('DOTNET_SKIP_FIRST_TIME_EXPERIENCE')
+      end
+
+      context 'project.json' do
+        before do
+          allow(subject).to receive(:msbuild?).with(dir).and_return(false)
+          expect(ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to be_nil
+        end
+
+        it 'does not set DOTNET_SKIP_FIRST_TIME_EXPERIENCE' do
+          expect {
+            subject.install(out)
+          }.to_not change { ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] }
+        end
+      end
+
+      context 'msbuild' do
+        before do
+          allow(subject).to receive(:msbuild?).with(dir).and_return(true)
+          expect(ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to be_nil
+        end
+
+        it 'sets DOTNET_SKIP_FIRST_TIME_EXPERIENCE' do
+          expect {
+            subject.install(out)
+          }.to change { ENV['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] }.from(nil).to('true')
+        end
+      end
+    end
+
     it 'downloads file with compile-extensions and writes a version file' do
       allow(shell).to receive(:exec).and_return(0)
       expect(shell).to receive(:exec) do |*args|
