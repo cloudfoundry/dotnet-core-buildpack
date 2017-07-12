@@ -82,7 +82,7 @@ module AspNetCoreBuildpack
       end.compact.join(':')
 
       if msbuild?(@build_dir)
-        @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = "true"
+        @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true'
       end
 
       @shell.env['HOME'] = @build_dir
