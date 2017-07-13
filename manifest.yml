@@ -28,9 +28,9 @@ dependency_deprecation_dates:
   link: https://github.com/nodejs/LTS
 dependencies:
 - name: libunwind
-  version: 1.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/libunwind-1.2-linux-x64-f56347d4.tgz
-  md5: f56347d4e83c27658a4181ceacd93b35
+  version: 1.2.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/dotnet/libunwind-1.2.1-linux-x64-80af276a.tgz
+  md5: 80af276ac93a1dccc52ff62a102eb2cc
   cf_stacks:
   - cflinuxfs2
 - name: dotnet
