@@ -19,7 +19,6 @@ require_relative 'installer'
 module AspNetCoreBuildpack
   class LibunwindInstaller < Installer
     CACHE_DIR = 'libunwind'.freeze
-    VERSION = '1.2'.freeze
 
     def self.install_order
       0
@@ -39,7 +38,7 @@ module AspNetCoreBuildpack
     def cached?
       # File.open can't create the directory structure
       return false unless File.exist? File.join(@bp_cache_dir, CACHE_DIR)
-      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == VERSION }
+      cached_version = File.open(cached_version_file, File::RDONLY | File::CREAT).select { |line| line.chomp == version }
       !cached_version.empty?
     end
 
@@ -50,7 +49,7 @@ module AspNetCoreBuildpack
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
-      write_version_file(VERSION)
+      write_version_file(version)
     end
 
     def install_description
@@ -70,7 +69,8 @@ module AspNetCoreBuildpack
     end
 
     def version
-      VERSION
+      compile_extensions_dir = File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'compile-extensions')
+      @version ||= `#{compile_extensions_dir}/bin/default_version_for #{@manifest_file} #{name}`
     end
 
     private

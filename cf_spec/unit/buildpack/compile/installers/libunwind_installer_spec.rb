@@ -36,6 +36,8 @@ doesn't matter for these tests
 
   before do
     File.write(manifest_file, manifest_contents)
+
+    allow(subject).to receive(:`).with(/default_version_for.*libunwind/).and_return('1.2.3')
   end
 
   after do
@@ -46,7 +48,7 @@ doesn't matter for these tests
 
   describe '#version' do
     it 'has a default version' do
-      expect(subject.version).to eq('1.2')
+      expect(subject.version).to eq('1.2.3')
     end
   end
 
@@ -59,7 +61,7 @@ doesn't matter for these tests
       context 'cached version is the same as the current version being installed' do
         before do
           File.open(File.join(cache_dir, 'libunwind', 'VERSION'), 'w') do |f|
-            f.write '1.2'
+            f.write '1.2.3'
           end
         end
 
