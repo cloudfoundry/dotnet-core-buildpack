@@ -1,3 +1,16 @@
+v1.0.22 Jul 13, 2017
+=====================
+
+* Add node 6.11.1, remove node 6.11.0
+  (https://www.pivotaltracker.com/story/show/148684925)
+
+* Update buildpack to work with dotnet v2.0.0-preview2
+  - rename v2.0.0-preview2 to match output of dotnet --version
+  (https://www.pivotaltracker.com/story/show/148018577)
+  (https://www.pivotaltracker.com/story/show/148018577)
+
+* Add dotnet 1.1.0-preview1-005051
+
 v1.0.21 Jun 28, 2017
 =====================
 
