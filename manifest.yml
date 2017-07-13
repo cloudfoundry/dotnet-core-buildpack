@@ -8,9 +8,6 @@ default_versions:
 - name: node
   version: 6.11.1
 url_to_dependency_map:
-- match: libunwind-(.*)-(\d+\.\d+)
-  name: libunwind
-  version: "$2"
 - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
   name: dotnet
   version: "$1"
