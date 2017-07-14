@@ -129,6 +129,12 @@ dependencies:
   md5: 19c09bc722d9af37801e474e3776daa1
   cf_stacks:
   - cflinuxfs2
+- name: dotnet
+  version: 1.1.0-preview1-005077
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.1.0.linux-amd64-b90b66ea.tar.gz
+  md5: b90b66ea1c66ff6af3940253a0dda2d7
+  cf_stacks:
+  - cflinuxfs2
 exclude_files:
 - ".git/"
 - ".gitignore"
