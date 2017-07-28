@@ -22,11 +22,13 @@ require 'fileutils'
 
 describe AspNetCoreBuildpack::DotnetFrameworkVersion do
   let(:build_dir)             { Dir.mktmpdir }
+  let(:deps_dir)             { Dir.mktmpdir }
+  let(:deps_idx)             { '66' }
   let(:nuget_cache_dir)       { Dir.mktmpdir}
   let(:app_uses_msbuild)      { false }
   let(:app_uses_project_json) { false }
 
-  subject { described_class.new(build_dir, nuget_cache_dir) }
+  subject { described_class.new(build_dir, nuget_cache_dir, deps_dir, deps_idx) }
 
   before do
     allow(subject).to receive(:msbuild?).and_return(app_uses_msbuild)

@@ -20,15 +20,17 @@ require_relative '../app_dir'
 
 module AspNetCoreBuildpack
   class DotnetSdkVersion
-    def initialize(build_dir, manifest_file)
+    def initialize(build_dir, deps_dir, deps_idx, manifest_file)
       buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
 
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @global_json_file_name = 'global.json'
       @sdk_tools_file = File.join(File.dirname(manifest_file), 'dotnet-sdk-tools.yml')
       @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
       @out = Out.new
-      @app_dir = AppDir.new(@build_dir)
+      @app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
       @dotnet_sdk_tooling = ENV['DOTNET_SDK_TOOLING']
     end
 

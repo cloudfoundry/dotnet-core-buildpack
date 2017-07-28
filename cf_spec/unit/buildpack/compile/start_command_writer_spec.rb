@@ -21,9 +21,11 @@ require 'yaml'
 require 'tmpdir'
 require 'fileutils'
 
-describe AspNetCoreBuildpack::Releaser do
+describe AspNetCoreBuildpack::StartCommandWriter do
   let(:build_dir)           { Dir.mktmpdir }
   let(:cache_dir)           { Dir.mktmpdir }
+  let(:deps_dir)            { Dir.mktmpdir }
+  let(:deps_idx)            { '44' }
   let(:out)                 { AspNetCoreBuildpack::Out.new }
   let(:is_sdk_project_json) { 'override' }
   let(:is_sdk_msbuild)      { 'override' }
@@ -36,9 +38,11 @@ doesn't matter for these tests
     YAML
   end
 
+  subject { described_class.new(build_dir, deps_dir, deps_idx) }
+
   before do
     File.write(manifest_file, manifest_contents)
-    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetSdkInstaller.new(build_dir, cache_dir, manifest_file, out).cache_dir))
+    FileUtils.mkdir_p(File.join(build_dir, AspNetCoreBuildpack::DotnetSdkInstaller.new(build_dir, cache_dir, deps_dir, deps_idx, manifest_file, out).cache_dir))
     allow(subject).to receive(:msbuild?).and_return(is_sdk_msbuild)
     allow(subject).to receive(:project_json?).and_return(is_sdk_project_json)
     allow_any_instance_of(AspNetCoreBuildpack::AppDir).to receive(:msbuild?).and_return(is_sdk_msbuild)
@@ -47,15 +51,18 @@ doesn't matter for these tests
 
   after do
     FileUtils.rm_rf(manifest_dir)
+    FileUtils.rm_rf(build_dir)
+    FileUtils.rm_rf(deps_dir)
+    FileUtils.rm_rf(cache_dir)
   end
 
-  describe '#release' do
+  describe '#write_startup_script' do
     context 'project.json and *.csproj does not exist in source code project' do
       let(:is_sdk_project_json) { false }
       let(:is_sdk_msbuild)      { false }
 
       it 'raises an error because dotnet run command will not work' do
-        expect { subject.release(build_dir) }.to raise_error(/No project could be identified to run/)
+        expect { subject.run }.to raise_error(/No project could be identified to run/)
       end
     end
 
@@ -64,7 +71,7 @@ doesn't matter for these tests
       let(:is_sdk_msbuild)      { false }
 
       let(:web_process) do
-        yml = YAML.load(subject.release(build_dir))
+        yml = YAML.load(subject.run)
         yml.fetch('default_process_types').fetch('web')
       end
 
@@ -79,7 +86,7 @@ doesn't matter for these tests
         end
 
         it 'does not raise an error because project.json is not required' do
-          expect { subject.release(build_dir) }.not_to raise_error
+          expect { subject.run }.not_to raise_error
         end
 
         it 'marks proj1 as executable' do
@@ -87,7 +94,7 @@ doesn't matter for these tests
           writable = "100664"
           executable = "100775"
           expect {
-            subject.release(build_dir)
+            subject.run
           }.to change{ mode.call() }.from(writable).to(executable)
         end
 
@@ -117,12 +124,12 @@ doesn't matter for these tests
       let(:profile_d_script) do
         allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
         allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
-        subject.release(build_dir)
+        subject.run
         IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
       end
 
       let(:web_process) do
-        yml = YAML.load(subject.release(build_dir))
+        yml = YAML.load(subject.run)
         yml.fetch('default_process_types').fetch('web')
       end
 
@@ -137,11 +144,7 @@ doesn't matter for these tests
       end
 
       it 'does not set NugetPackageRoot env variable in profile.d' do
-        expect(profile_d_script).to_not include('export NugetPackageRoot=/app/.nuget/packages/')
-      end
-
-      it 'set LD_LIBRARY_PATH in profile.d' do
-        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib')
+        expect(profile_d_script).to_not include('export NugetPackageRoot=/app/nuget/packages/')
       end
 
       it 'set PID env variable in profile.d' do
@@ -152,26 +155,12 @@ doesn't matter for these tests
         expect(profile_d_script).to include('export ASPNETCORE_URLS=http://0.0.0.0:${PORT};')
       end
 
-      it 'add Dotnet CLI to the PATH in profile.d' do
-        expect(profile_d_script).to include('$HOME/.dotnet')
-      end
-
       it 'start command does not contain any exports' do
         expect(web_process).not_to include('export')
       end
 
       it "runs 'dotnet run' for project" do
         expect(web_process).to match('cd . && dotnet run --project foo')
-      end
-
-      context 'LD_LIBRARY_PATH specifies a custom library path' do
-        before do
-          ENV['LD_LIBRARY_PATH'] = '$HOME/my_custom_library/'
-        end
-
-        it 'appends the custom library path to LD_LIBRARY_PATH in profile.d' do
-          expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib:$HOME/my_custom_library/')
-        end
       end
 
       context 'multiple directories contain project.json files but no .deployment file exists' do
@@ -198,10 +187,12 @@ doesn't matter for these tests
               f.write 'project=src/proj2'
             end
           end
+
           let(:web_process) do
-            yml = YAML.load(subject.release(build_dir))
+            yml = YAML.load(subject.run)
             yml.fetch('default_process_types').fetch('web')
           end
+
           it 'runs the project specified in the .deployment file' do
             expect(web_process).to match('dotnet run --project src/proj2')
           end
@@ -218,12 +209,12 @@ doesn't matter for these tests
       let(:profile_d_script) do
         allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
         allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
-        subject.release(build_dir)
+        subject.run
         IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
       end
 
       let(:web_process) do
-        yml = YAML.load(subject.release(build_dir))
+        yml = YAML.load(subject.run)
         yml.fetch('default_process_types').fetch('web')
       end
 
@@ -237,30 +228,12 @@ doesn't matter for these tests
         expect(profile_d_script).to include('export HOME=/app')
       end
 
-      it 'set LD_LIBRARY_PATH in profile.d' do
-        expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib')
-      end
-
       it 'sets ASPNETCORE_URLS in profile.d' do
         expect(profile_d_script).to include('export ASPNETCORE_URLS=http://0.0.0.0:${PORT};')
       end
 
-      it 'add Dotnet CLI to the PATH in profile.d' do
-        expect(profile_d_script).to include('$HOME/.dotnet')
-      end
-
       it 'start command does not contain any exports' do
         expect(web_process).not_to include('export')
-      end
-
-      context 'LD_LIBRARY_PATH specifies a custom library path' do
-        before do
-          ENV['LD_LIBRARY_PATH'] = '$HOME/my_custom_library/'
-        end
-
-        it 'appends the custom library path to LD_LIBRARY_PATH in profile.d' do
-          expect(profile_d_script).to include('export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ld_library_path:$HOME/libunwind/lib:$HOME/my_custom_library/')
-        end
       end
 
       context 'project is self-contained' do
@@ -269,7 +242,7 @@ doesn't matter for these tests
         end
 
         it 'does not raise an error because project.json is not required' do
-          expect { subject.release(build_dir) }.not_to raise_error
+          expect { subject.run }.not_to raise_error
         end
 
         it 'runs native binary for the project which has a runtimeconfig.json file' do

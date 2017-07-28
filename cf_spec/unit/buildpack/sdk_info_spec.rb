@@ -7,13 +7,20 @@ require 'fileutils'
 describe AspNetCoreBuildpack::SdkInfo do
   class StubUsingSdkInfo
     include AspNetCoreBuildpack::SdkInfo
+    def initialize(build_dir, deps_dir, deps_idx)
+      @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
+    end
   end
 
   subject do
-    StubUsingSdkInfo.new
+    StubUsingSdkInfo.new(build_dir, deps_dir, deps_idx)
   end
 
   let(:build_dir)     { Dir.mktmpdir }
+  let(:deps_dir)     { Dir.mktmpdir }
+  let(:deps_idx)     {'99'}
   let(:buildpack_dir) { Dir.mktmpdir }
   let(:dotnet_sdk_tools_file) { File.join(buildpack_dir, 'dotnet-sdk-tools.yml') }
   let(:dotnet_sdk_tools_yml) do
@@ -29,10 +36,10 @@ msbuild:
   end
 
   let(:sdk_version)      { 'override' }
-  let(:sdk_version_file) { File.join(build_dir, '.dotnet', 'VERSION') }
+  let(:sdk_version_file) { File.join(deps_dir, deps_idx, 'dotnet', 'VERSION') }
 
   before do
-    FileUtils.mkdir_p(File.join(build_dir, '.dotnet'))
+    FileUtils.mkdir_p(File.join(deps_dir, deps_idx, 'dotnet'))
     File.write(sdk_version_file, sdk_version)
 
     File.write(dotnet_sdk_tools_file, dotnet_sdk_tools_yml)
@@ -41,26 +48,8 @@ msbuild:
 
   after do
     FileUtils.rm_rf(build_dir)
+    FileUtils.rm_rf(deps_dir)
     FileUtils.rm_rf(buildpack_dir)
-  end
-
-  describe '#installed_sdk_version' do
-    let(:sdk_version) { 'sdk-version' }
-
-    context 'dotnet sdk has been installed' do
-      it "returns the sdk version written to .dotnet/VERSION" do
-        expect(subject.installed_sdk_version(build_dir)).to eq('sdk-version')
-      end
-    end
-
-    context 'dotnet sdk has not been installed' do
-      before { FileUtils.rm_rf(sdk_version_file) }
-
-      it "returns nil" do
-        expect(subject.installed_sdk_version(build_dir)).to eq nil
-      end
-    end
-
   end
 
   describe '#msbuild?' do
@@ -68,7 +57,7 @@ msbuild:
       let(:sdk_version) { 'sdk-version-3' }
 
       it "returns true" do
-        expect(subject.msbuild?(build_dir)).to be_truthy
+        expect(subject.msbuild?).to be_truthy
       end
     end
 
@@ -76,7 +65,7 @@ msbuild:
       let(:sdk_version) { 'sdk-version-2' }
 
       it "returns false" do
-        expect(subject.msbuild?(build_dir)).to be_falsey
+        expect(subject.msbuild?).to be_falsey
       end
     end
   end
@@ -86,7 +75,7 @@ msbuild:
       let(:sdk_version) { 'sdk-version-4' }
 
       it "returns true" do
-        expect(subject.project_json?(build_dir)).to be_falsey
+        expect(subject.project_json?).to be_falsey
       end
     end
 
@@ -94,7 +83,7 @@ msbuild:
       let(:sdk_version) { 'sdk-version-1' }
 
       it "returns false" do
-        expect(subject.project_json?(build_dir)).to be_truthy
+        expect(subject.project_json?).to be_truthy
       end
     end
 

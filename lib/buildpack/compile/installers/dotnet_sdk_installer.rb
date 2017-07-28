@@ -24,19 +24,17 @@ module AspNetCoreBuildpack
   class DotnetSdkInstaller < Installer
     include SdkInfo
 
-    CACHE_DIR = '.dotnet'.freeze
-
-    def self.install_order
-      1
-    end
+    CACHE_DIR = 'dotnet'.freeze
 
     def cache_dir
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
+    def initialize(build_dir, bp_cache_dir, deps_dir, deps_idx, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @manifest_file = manifest_file
       @shell = shell
     end
@@ -49,7 +47,7 @@ module AspNetCoreBuildpack
     end
 
     def install(out)
-      dest_dir = File.join(@build_dir, CACHE_DIR)
+      dest_dir = File.join(@deps_dir, @deps_idx, CACHE_DIR)
 
       out.print(".NET SDK version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
@@ -58,12 +56,17 @@ module AspNetCoreBuildpack
       write_version_file(version)
     end
 
+    def create_links(out)
+      @shell.exec("mkdir -p #{File.join(@deps_dir, @deps_idx, 'bin')}; cd #{File.join(@deps_dir, @deps_idx, 'bin')}; ln -s ../dotnet/dotnet dotnet", out)
+      @shell.exec("cd #{File.join(@deps_dir, @deps_idx)}; ln -s dotnet .dotnet; mkdir -p nuget; ln -s nuget .nuget; ls -la", out)
+    end
+
     def name
       '.NET SDK'.freeze
     end
 
     def path
-      bin_folder if File.exist?(File.join(@build_dir, cache_dir))
+      bin_folder if File.exist?(File.join(@deps_dir, @deps_idx, CACHE_DIR))
     end
 
     def should_install(app_dir)
@@ -96,7 +99,7 @@ module AspNetCoreBuildpack
     end
 
     def version
-      @version ||= DotnetSdkVersion.new(@build_dir, @manifest_file).version
+      @version ||= DotnetSdkVersion.new(@build_dir, @deps_dir, @deps_idx, @manifest_file).version
     end
 
     attr_reader :app_dir

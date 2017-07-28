@@ -21,6 +21,8 @@ require 'rspec'
 describe AspNetCoreBuildpack::NodeJsInstaller do
   let(:dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
+  let(:deps_dir) { Dir.mktmpdir }
+  let(:deps_idx) { '55' }
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
@@ -28,6 +30,7 @@ describe AspNetCoreBuildpack::NodeJsInstaller do
   let(:manifest_dir)  { Dir.mktmpdir }
   let(:manifest_file) { File.join(manifest_dir, 'manifest.yml') }
   let(:node_version) { '6.7.99'.freeze }
+  let(:node_preinstalled) { false }
 
   let(:manifest_contents) do
     <<-YAML
@@ -49,13 +52,15 @@ dependencies:
     allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:msbuild?).and_return(false)
     allow_any_instance_of(AspNetCoreBuildpack::ScriptsParser).to receive(:project_json?).and_return(true)
     File.write(manifest_file, manifest_contents)
+
+    allow(Open3).to receive(:capture2e).with('node -v').and_return([nil, double(:status, success?: node_preinstalled)])
   end
 
   after do
     FileUtils.rm_rf(manifest_dir)
   end
 
-  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, deps_dir, deps_idx, manifest_file, shell) }
 
   describe '#version' do
     it 'returns the default version' do
@@ -65,22 +70,23 @@ dependencies:
 
   describe '#path' do
     before do
-      FileUtils.mkdir_p(File.join(dir, '.node', "node-v#{node_version}-linux-x64", 'bin'))
+      FileUtils.mkdir_p(File.join(dir, 'node', "node-v#{node_version}-linux-x64", 'bin'))
       FileUtils.mkdir_p(File.join(dir, 'src', 'proj1', 'node_modules', '.bin'))
       File.open(File.join(dir, 'src', 'proj1', 'project.json'), 'w') { |f| f.write('a') }
+      FileUtils.mkdir_p(File.join(deps_dir, deps_idx, subject.cache_dir))
       allow_any_instance_of(AspNetCoreBuildpack::AppDir).to receive(:project_paths).and_return([File.join(dir, 'src', 'proj1')])
     end
 
     it 'includes locally and globally installed node_modules path' do
       node_modules_path = File.join(dir, 'src', 'proj1', 'node_modules', '.bin')
-      expect(subject.path).to match("$HOME/.node/node-v#{node_version}-linux-x64/bin:$HOME#{node_modules_path}")
+      expect(subject.path).to match("$HOME/node/node-v#{node_version}-linux-x64/bin:$HOME#{node_modules_path}")
     end
   end
 
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(cache_dir, '.node', "node-v#{node_version}-linux-x64", 'bin'))
+        FileUtils.mkdir_p(File.join(cache_dir, 'node', "node-v#{node_version}-linux-x64", 'bin'))
       end
 
       it 'returns true' do
@@ -109,7 +115,7 @@ dependencies:
 
     context 'another version of Node.js exists in cache' do
       before do
-        FileUtils.mkdir_p(File.join(dir, subject.cache_dir, 'other_version_of_node'))
+        FileUtils.mkdir_p(File.join(deps_dir, deps_idx, subject.cache_dir, 'other_version_of_node'))
       end
 
       it 'clears any old versions from the cache folder' do
@@ -118,11 +124,12 @@ dependencies:
         expect(shell).to receive(:exec) do |*args|
           cmd = args.first
           expect(cmd).to match(anything)
-          expect(cmd).to match(anything)
         end
+
+        expect(File.exist?(File.join(deps_dir, deps_idx, subject.cache_dir, 'other_version_of_node'))).to be_truthy
         subject.install(out)
 
-        expect(File.exist?(File.join(dir, subject.cache_dir, 'other_version_of_node'))).not_to be_truthy
+        expect(File.exist?(File.join(deps_dir, deps_idx, subject.cache_dir, 'other_version_of_node'))).not_to be_truthy
       end
     end
   end
@@ -151,6 +158,7 @@ dependencies:
 
     context 'app is not self-contained' do
       before do
+        allow(shell).to receive(:exec).and_return(0)
         FileUtils.mkdir_p(File.join(dir, 'src', 'project1'))
       end
 
@@ -178,6 +186,14 @@ dependencies:
 
           it 'returns true' do
             expect(subject.should_install(app_dir)).to be_truthy
+          end
+
+          context 'node is already installed' do
+            let(:node_preinstalled) { true }
+
+            it 'returns false' do
+              expect(subject.should_install(app_dir)).to be_falsey
+            end
           end
         end
 

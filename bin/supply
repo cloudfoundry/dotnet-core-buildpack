@@ -15,16 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
-set -euo pipefail
-
-BUILD_DIR=$1
-CACHE_DIR=$2
-export BUILDPACK_DIR=`dirname $(readlink -f ${BASH_SOURCE%/*})`
-export DEPS_DIR="$BUILD_DIR/.cloudfoundry"
-mkdir -p "$DEPS_DIR/0"
-mkdir -p "$BUILD_DIR/.profile.d"
-echo "export DEPS_DIR=\$HOME/.cloudfoundry" > "$BUILD_DIR/.profile.d/0000_set-deps-dir.sh"
-
-$BUILDPACK_DIR/bin/supply "$BUILD_DIR" "$CACHE_DIR" "$DEPS_DIR" 0
-$BUILDPACK_DIR/bin/finalize "$BUILD_DIR" "$CACHE_DIR" "$DEPS_DIR" 0
+`dirname $0`/supply.rb "$@" | tee -a staging_task.log
+exit_status=${PIPESTATUS[0]}
+if [ $exit_status -ne 0 ]; then
+  exit $exit_status
+fi
+mkdir -p $1/logs
+cp -f staging_task.log $1/logs/staging_task.log

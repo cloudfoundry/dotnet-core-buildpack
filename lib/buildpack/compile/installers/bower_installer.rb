@@ -22,15 +22,13 @@ module AspNetCoreBuildpack
   class BowerInstaller < Installer
     BOWER_COMMAND = 'bower'.freeze
 
-    def self.install_order
-      3
-    end
-
-    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
+    def initialize(build_dir, bp_cache_dir, deps_dir, deps_idx, manifest_file, shell)
       @bp_cache_dir = bp_cache_dir
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @manifest_file = manifest_file
-      @scripts_parser = ScriptsParser.new(build_dir)
+      @scripts_parser = ScriptsParser.new(@build_dir, @deps_dir, @deps_idx)
       @shell = shell
     end
 
@@ -43,7 +41,7 @@ module AspNetCoreBuildpack
 
     def install(out)
       # get latest npm version path
-      npm_path = Dir.glob(File.join(@build_dir, '.node', '*', 'bin')).last
+      npm_path = Dir.glob(File.join(dep_dir, 'node', '*', 'bin')).last
       # fail if NPM is not installed
       raise 'Could not find NPM' if npm_path.nil?
 
@@ -52,6 +50,10 @@ module AspNetCoreBuildpack
       @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
       @shell.exec("PATH=$PATH:#{npm_path} npm install -g /tmp/#{dependency_name}", out)
       write_version_file(version)
+    end
+
+    def create_links(out)
+      @shell.exec("mkdir -p #{File.join(@deps_dir, @deps_idx, 'bin')}; cd #{File.join(@deps_dir, @deps_idx, 'bin')}; ln -sfv ../node/node-*/bin/* $PWD", out)
     end
 
     def name
@@ -76,7 +78,7 @@ module AspNetCoreBuildpack
 
     def node_path(dir)
       nil if dir.nil?
-      Dir.glob(File.join(dir, '.node', '*')).last
+      Dir.glob(File.join(dir, 'node', '*')).last
     end
 
     def cached_version_file
@@ -86,7 +88,7 @@ module AspNetCoreBuildpack
     end
 
     def version_file
-      npm_path = File.join(node_path(@build_dir), 'lib', 'node_modules') unless node_path(@build_dir).nil?
+      npm_path = File.join(node_path(dep_dir), 'lib', 'node_modules') unless node_path(dep_dir).nil?
       bower_path = File.join(npm_path, 'bower') unless npm_path.nil?
       File.join(bower_path, VERSION_FILE) unless bower_path.nil? || !File.exist?(bower_path)
     end

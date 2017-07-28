@@ -23,9 +23,11 @@ require 'fileutils'
 describe AspNetCoreBuildpack::ScriptsParser do
   let(:out)              { double(:out) }
   let(:dir)              { Dir.mktmpdir }
+  let(:deps_dir)              { Dir.mktmpdir }
+  let(:deps_idx)              { '77' }
   let(:sdk_msbuild)      { 'override' }
   let(:sdk_project_json) { 'override' }
-  subject(:parser)       { described_class.new(dir) }
+  subject(:parser)       { described_class.new(dir, deps_dir, deps_idx) }
 
   before do
     allow(subject).to receive(:msbuild?).and_return(sdk_msbuild)
@@ -34,6 +36,7 @@ describe AspNetCoreBuildpack::ScriptsParser do
 
   after do
     FileUtils.rm_rf(dir)
+    FileUtils.rm_rf(deps_dir)
   end
 
   describe '#get_scripts_section' do

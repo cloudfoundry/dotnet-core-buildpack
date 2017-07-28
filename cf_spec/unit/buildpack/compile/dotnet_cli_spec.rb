@@ -9,16 +9,18 @@ describe AspNetCoreBuildpack::DotnetCli do
   let(:shell)             { AspNetCoreBuildpack.shell }
   let(:out)               { double(:out) }
   let(:build_dir)         { Dir.mktmpdir }
+  let(:deps_dir)          { Dir.mktmpdir }
+  let(:deps_idx)          { '0' }
   let(:project_paths)     { [] }
   let(:main_project_path) { 'override' }
   let(:app_dir)           { double(:app_dir, main_project_path: main_project_path,
                                              project_paths: project_paths) }
 
-  subject { described_class.new(build_dir, installers) }
+  subject { described_class.new(build_dir, deps_dir, deps_idx, installers) }
 
   before do
     allow(AspNetCoreBuildpack).to receive(:shell).and_return(shell)
-    allow(AspNetCoreBuildpack::AppDir).to receive(:new).with(build_dir).and_return(app_dir)
+    allow(AspNetCoreBuildpack::AppDir).to receive(:new).with(build_dir, deps_dir, deps_idx).and_return(app_dir)
     allow(shell).to receive(:exec)
   end
 
@@ -31,7 +33,7 @@ describe AspNetCoreBuildpack::DotnetCli do
       let(:project_paths) { %w(src/project1/project1.csproj src/project2/project2.csproj) }
 
       before do
-        allow(subject).to receive(:msbuild?).with(build_dir).and_return(true)
+        allow(subject).to receive(:msbuild?).and_return(true)
       end
 
       it 'sets up the environent and runs dotnet restore once for each project' do
@@ -46,10 +48,7 @@ describe AspNetCoreBuildpack::DotnetCli do
 
         subject.restore(out)
         expect(shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to eq "true"
-        expect(shell.env['HOME']).to eq build_dir
-        expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
-        path = "$PATH::#{build_dir}/src/project1/node_modules/.bin:#{build_dir}/src/project2/node_modules/.bin"
-        expect(shell.env['PATH']).to eq path
+        expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
       end
     end
 
@@ -57,7 +56,7 @@ describe AspNetCoreBuildpack::DotnetCli do
       let(:project_paths) { %w(src/project1 src/project2) }
 
       before do
-        allow(subject).to receive(:msbuild?).with(build_dir).and_return(false)
+        allow(subject).to receive(:msbuild?).and_return(false)
       end
 
       it 'sets up the environment and runs dotnet restore' do
@@ -67,10 +66,7 @@ describe AspNetCoreBuildpack::DotnetCli do
         end
 
         subject.restore(out)
-        expect(shell.env['HOME']).to eq build_dir
-        expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
-        path = "$PATH::#{build_dir}/src/project1/node_modules/.bin:#{build_dir}/src/project2/node_modules/.bin"
-        expect(shell.env['PATH']).to eq path
+        expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
       end
     end
   end
@@ -85,7 +81,7 @@ describe AspNetCoreBuildpack::DotnetCli do
         @old_env = ENV['PUBLISH_RELEASE_CONFIG']
         ENV['PUBLISH_RELEASE_CONFIG'] = publish_release_config
 
-        allow(subject).to receive(:msbuild?).with(build_dir).and_return(true)
+        allow(subject).to receive(:msbuild?).and_return(true)
       end
 
       after do
@@ -106,9 +102,7 @@ describe AspNetCoreBuildpack::DotnetCli do
 
           expect(File.exist? publish_dir).to be_truthy
           expect(shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to eq "true"
-          expect(shell.env['HOME']).to eq build_dir
-          expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
-          expect(shell.env['PATH']).to eq "$PATH::#{build_dir}/src/project1/node_modules/.bin"
+          expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
         end
       end
 
@@ -125,9 +119,7 @@ describe AspNetCoreBuildpack::DotnetCli do
           subject.publish(out)
 
           expect(File.exist? publish_dir).to be_truthy
-          expect(shell.env['HOME']).to eq build_dir
-          expect(shell.env['LD_LIBRARY_PATH']).to eq "$LD_LIBRARY_PATH:#{build_dir}/libunwind/lib"
-          expect(shell.env['PATH']).to eq "$PATH::#{build_dir}/src/project1/node_modules/.bin"
+          expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
         end
       end
     end

@@ -21,6 +21,8 @@ require 'rspec'
 describe AspNetCoreBuildpack::BowerInstaller do
   let(:dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
+  let(:deps_dir) { Dir.mktmpdir }
+  let(:deps_idx) { '8' }
   let(:shell) { double(:shell, env: {}) }
   let(:out) { double(:out) }
   let(:self_contained_app_dir) { double(:self_contained_app_dir, published_project: 'project1') }
@@ -52,7 +54,7 @@ dependencies:
     FileUtils.rm_rf(manifest_dir)
   end
 
-  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, deps_dir, deps_idx ,manifest_file, shell) }
 
   describe '#version' do
     it 'returns the default version' do
@@ -63,12 +65,12 @@ dependencies:
   describe '#cached?' do
     context 'cache directory exists in the buildpack cache' do
       before do
-        FileUtils.mkdir_p(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
+        FileUtils.mkdir_p(File.join(cache_dir, 'node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
       end
 
       context 'cached version is the same as the current version being installed' do
         before do
-          File.open(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, 'node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
             f.write '1.23.45'
           end
         end
@@ -80,7 +82,7 @@ dependencies:
 
       context 'cached version is different than the current version being installed' do
         before do
-          File.open(File.join(cache_dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
+          File.open(File.join(cache_dir, 'node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower', 'VERSION'), 'w') do |f|
             f.write '1.0.0-preview2-003131'
           end
         end
@@ -101,9 +103,9 @@ dependencies:
   describe '#install' do
     context 'NPM is already installed' do
       before do
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'bin'))
-        FileUtils.mkdir_p(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
-        File.open(File.join(dir, '.node', 'node-v99.99.99-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
+        FileUtils.mkdir_p(File.join(deps_dir, deps_idx, 'node', 'node-v99.99.99-linux-x64', 'bin'))
+        FileUtils.mkdir_p(File.join(deps_dir, deps_idx, 'node', 'node-v99.99.99-linux-x64', 'lib', 'node_modules', 'bower'))
+        File.open(File.join(deps_dir, deps_idx, 'node', 'node-v99.99.99-linux-x64', 'bin', 'bower'), 'w') { |a| a.write('a') }
       end
 
       it 'downloads file with compile-extensions and writes a version file' do

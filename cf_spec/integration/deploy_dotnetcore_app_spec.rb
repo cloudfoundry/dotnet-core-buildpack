@@ -26,7 +26,7 @@ describe 'CF ASP.NET Core Buildpack' do
       it 'logs dotnet run verbose output' do
         expect(app).to be_running
         expect(app).to have_logged(/Process ID:/)
-        expect(app).to have_logged(/Running \/home\/vcap\/app\/\.dotnet\/dotnet/)
+        expect(app).to have_logged(%r{Running .*/0/dotnet/dotnet})
       end
     end
   end
@@ -109,7 +109,7 @@ describe 'CF ASP.NET Core Buildpack' do
 
     it 'displays a simple text homepage' do
       expect(app).to be_running
-      expect(app).to have_logged(%r{Removing /tmp/app/\.dotnet})
+      expect(app).to have_logged(%r{Removing .*/0/dotnet})
       expect(app).to have_logged(%r{started using .* \./msbuild_self_contained })
 
       browser.visit_path('/')
