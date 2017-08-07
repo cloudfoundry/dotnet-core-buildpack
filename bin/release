@@ -17,10 +17,9 @@
 
 $stdout.sync = true
 $stderr.sync = true
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
-require 'buildpack'
+require 'pathname'
 
 build_dir = ARGV[0]
-
-puts AspNetCoreBuildpack.release(build_dir)
+release = Pathname.new(build_dir).join('tmp/dotnet-core-buildpack-release-step.yml')
+puts release.read if release.exist?

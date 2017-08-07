@@ -22,6 +22,8 @@ require 'fileutils'
 
 describe AspNetCoreBuildpack::DotnetSdkVersion do
   let(:dir)               { Dir.mktmpdir }
+  let(:deps_dir)               { Dir.mktmpdir }
+  let(:deps_idx)               {'88'}
   let(:manifest_file)     { File.join(dir, 'manifest.yml') }
   let(:dotnet_tools_file) { File.join(dir, 'dotnet-sdk-tools.yml') }
   let(:deprecation_warning) do
@@ -62,7 +64,7 @@ msbuild:
 
   let(:default_version) { 'sdk-version-2'.freeze }
 
-  subject { described_class.new(dir, manifest_file) }
+  subject { described_class.new(dir, deps_dir, deps_idx, manifest_file) }
 
   before do
     File.write(manifest_file, manifest_yml)

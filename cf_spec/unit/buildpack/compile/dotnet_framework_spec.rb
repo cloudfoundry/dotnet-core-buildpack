@@ -20,6 +20,8 @@ require 'rspec'
 
 describe AspNetCoreBuildpack::DotnetFramework do
   let(:build_dir)          { Dir.mktmpdir }
+  let(:deps_dir)          { Dir.mktmpdir }
+  let(:deps_idx)          { '55' }
   let(:nuget_cache_dir)    { Dir.mktmpdir }
   let(:dotnet_install_dir) { Dir.mktmpdir }
   let(:shell)              { double(:shell, env: {}) }
@@ -40,7 +42,7 @@ describe AspNetCoreBuildpack::DotnetFramework do
     FileUtils.rm_rf(dotnet_install_dir)
   end
 
-  subject(:installer) { described_class.new(build_dir, nuget_cache_dir, dotnet_install_dir, shell) }
+  subject(:installer) { described_class.new(build_dir, nuget_cache_dir, deps_dir, deps_idx, dotnet_install_dir, shell) }
 
   describe '#install' do
     context 'both required versions not installed' do

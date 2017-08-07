@@ -47,13 +47,5 @@ describe AspNetCoreBuildpack::Shell do
         subject.exec('echo $FOO', out)
       end
     end
-
-    context 'PATH set' do
-      it 'command uses PATH' do
-        expect(out).to receive(:print).with(match(/mono/))
-        subject.path << 'mono'
-        subject.exec('echo $PATH', out)
-      end
-    end
   end
 end

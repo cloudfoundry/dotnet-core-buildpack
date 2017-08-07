@@ -24,8 +24,10 @@ module AspNetCoreBuildpack
   class DotnetFrameworkVersion
     include SdkInfo
 
-    def initialize(build_dir, nuget_cache_dir)
+    def initialize(build_dir, nuget_cache_dir, deps_dir, deps_idx)
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @nuget_cache_dir = nuget_cache_dir
       @out = Out.new
     end
@@ -74,13 +76,13 @@ module AspNetCoreBuildpack
         v.sort_by { |a| gem_version_parse(a) }.last
       end
 
-      required_versions += runtime_framework_versions if msbuild?(@build_dir)
+      required_versions += runtime_framework_versions if msbuild?
 
       required_versions.sort_by { |a| gem_version_parse(a) }
     end
 
     def runtime_framework_versions
-      AppDir.new(@build_dir).msbuild_projects.map do |proj|
+      AppDir.new(@build_dir, @deps_dir, @deps_idx).msbuild_projects.map do |proj|
         doc = REXML::Document.new(File.read(File.join(@build_dir, proj), encoding: 'bom|utf-8'))
 
         runtime_version = doc.elements.to_a('Project/PropertyGroup/RuntimeFrameworkVersion').first
@@ -90,11 +92,13 @@ module AspNetCoreBuildpack
     end
 
     def restored_framework_versions
-      if project_json?(@build_dir)
+      if project_json?
         netcore_app_dir = 'Microsoft.NETCore.App'
-      elsif msbuild?(@build_dir)
+      elsif msbuild?
         netcore_app_dir = 'microsoft.netcore.app'
       end
+
+      puts File.join(@nuget_cache_dir, 'packages', netcore_app_dir, '*')
 
       Dir.glob(File.join(@nuget_cache_dir, 'packages', netcore_app_dir, '*')).sort.map do |path|
         File.basename(path)

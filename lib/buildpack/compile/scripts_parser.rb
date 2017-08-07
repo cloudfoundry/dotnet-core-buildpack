@@ -23,9 +23,12 @@ module AspNetCoreBuildpack
 
     SCRIPTS_KEY = 'scripts'.freeze
 
-    def initialize(build_dir)
+    def initialize(build_dir, deps_dir, deps_idx)
       @build_dir = build_dir
-      @app_dir = AppDir.new(@build_dir)
+      @build_dir_dir = deps_dir
+      @deps_idx = deps_idx
+      @deps_dir = deps_dir
+      @app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
     end
 
     def get_scripts_section(project_json)
@@ -95,9 +98,9 @@ module AspNetCoreBuildpack
     end
 
     def scripts_section_exists?(check_commands)
-      if msbuild?(@build_dir)
+      if msbuild?
         xml_scripts_section_exists?(check_commands)
-      elsif project_json?(@build_dir)
+      elsif project_json?
         json_scripts_section_exists?(check_commands)
       end
     end

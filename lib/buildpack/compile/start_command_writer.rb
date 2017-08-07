@@ -18,24 +18,28 @@ require_relative '../app_dir'
 require_relative '../sdk_info'
 
 module AspNetCoreBuildpack
-  class Releaser
+  class StartCommandWriter
     include SdkInfo
 
-    def release(build_dir)
+    def initialize(build_dir, deps_dir, deps_idx)
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
+    end
 
+    def run
       app_root_dir = if File.exist?(File.join(@build_dir, DotnetCli::PUBLISH_DIR))
                        DotnetCli::PUBLISH_DIR
                      else
                        '.'
                      end
 
-      app = AppDir.new(File.expand_path(File.join(@build_dir, app_root_dir)))
+      app = AppDir.new(File.expand_path(File.join(@build_dir, app_root_dir)), @deps_dir, @deps_idx)
       start_cmd = get_start_cmd(app)
 
       raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
-      write_startup_script(startup_script_path(build_dir), start_cmd)
+      write_startup_script(startup_script_path(@build_dir), start_cmd)
       generate_yml(start_cmd, app_root_dir)
     end
 
@@ -45,17 +49,7 @@ module AspNetCoreBuildpack
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
         f.write 'export HOME=/app;'
-        installers = AspNetCoreBuildpack::Installer.descendants
-
-        library_path = get_library_path(installers)
-        custom_library_path = ENV['LD_LIBRARY_PATH']
-        library_path = "#{library_path}:#{custom_library_path}" if custom_library_path
-        f.write "export LD_LIBRARY_PATH=#{library_path};"
         f.write 'export ASPNETCORE_URLS=http://0.0.0.0:${PORT};'
-
-        binary_path = get_binary_path(installers)
-        f.write "export PATH=#{binary_path};"
-
         f.write "export PID=`ps -C '#{start_cmd}' -o pid= | tr -d '[:space:]'`"
       end
     end
@@ -67,23 +61,6 @@ default_process_types:
   web: cd #{app_root_dir} && #{start_cmd} --server.urls http://0.0.0.0:${PORT}
 EOT
       yml
-    end
-
-    def get_binary_path(installers)
-      bin_paths = installers.map do |subclass|
-        subclass.new(@build_dir, @cache_dir, manifest_file, @shell).path
-      end
-      bin_paths.insert(0, '$PATH')
-      bin_paths.compact.join(':')
-    end
-
-    def get_library_path(installers)
-      library_paths = installers.map do |subclass|
-        subclass.new(@build_dir, @cache_dir, manifest_file, @shell).library_path
-      end
-      library_paths.insert(0, '$LD_LIBRARY_PATH')
-      library_paths.insert(1, '$HOME/ld_library_path')
-      library_paths.compact.join(':')
     end
 
     def get_source_start_cmd(project)
@@ -117,5 +94,7 @@ EOT
     end
 
     attr_reader :build_dir
+    attr_reader :deps_dir
+    attr_reader :deps_idx
   end
 end

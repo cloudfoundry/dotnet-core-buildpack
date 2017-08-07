@@ -22,17 +22,18 @@ module AspNetCoreBuildpack
     include SdkInfo
     PUBLISH_DIR = File.join('.cloudfoundry', 'dotnet_publish')
 
-    def initialize(build_dir, installers)
+    def initialize(build_dir, deps_dir, deps_idx, installers)
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @installers = installers
-      @app_dir = AppDir.new(@build_dir)
+      @app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
       @shell = AspNetCoreBuildpack.shell
     end
 
     def restore(out)
       setup_shell_environment
-
-      if msbuild?(@build_dir)
+      if msbuild?
         @app_dir.project_paths.each do |project|
           cmd = "bash -c 'cd #{@build_dir}; dotnet restore #{project}'"
           @shell.exec(cmd, out)
@@ -68,26 +69,25 @@ module AspNetCoreBuildpack
       end
     end
 
-    def setup_shell_environment
+    def node_modules_paths
       project_dirs = @app_dir.project_paths.map do |project|
-        if msbuild?(@build_dir)
+        if msbuild?
           File.join(@build_dir, File.dirname(project))
         else
           File.join(@build_dir, project)
         end
       end
 
-      node_modules_paths = project_dirs.map do |dir|
+      project_dirs.map do |dir|
         File.join(dir, 'node_modules', '.bin')
       end.compact.join(':')
+    end
 
-      if msbuild?(@build_dir)
-        @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true'
-      end
+    def setup_shell_environment
+      @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true' if msbuild?
 
-      @shell.env['HOME'] = @build_dir
-      @shell.env['LD_LIBRARY_PATH'] = "$LD_LIBRARY_PATH:#{@build_dir}/libunwind/lib"
-      @shell.env['PATH'] = "$PATH:#{@installers.map(&:path).compact.join(':')}:#{node_modules_paths}"
+      @shell.env['HOME'] = File.join(@deps_dir, @deps_idx)
+      @shell.env['PATH'] = "#{ENV['PATH']}:#{node_modules_paths}"
     end
   end
 end

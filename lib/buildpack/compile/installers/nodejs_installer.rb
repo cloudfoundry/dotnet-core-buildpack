@@ -24,21 +24,19 @@ module AspNetCoreBuildpack
   class NodeJsInstaller < Installer
     include SdkInfo
     BOWER_COMMAND = 'bower'.freeze
-    CACHE_DIR = '.node'.freeze
+    CACHE_DIR = 'node'.freeze
     NPM_COMMAND = 'npm'.freeze
-
-    def self.install_order
-      2
-    end
 
     def cache_dir
       CACHE_DIR
     end
 
-    def initialize(build_dir, bp_cache_dir, manifest_file, shell)
+    def initialize(build_dir, bp_cache_dir, deps_dir, deps_idx, manifest_file, shell)
       @build_dir = build_dir
+      @deps_dir = deps_dir
+      @deps_idx = deps_idx
       @bp_cache_dir = bp_cache_dir
-      @scripts_parser = ScriptsParser.new(build_dir)
+      @scripts_parser = ScriptsParser.new(@build_dir, @deps_dir, @deps_idx)
       @manifest_file = manifest_file
       @shell = shell
     end
@@ -48,7 +46,7 @@ module AspNetCoreBuildpack
     end
 
     def install(out)
-      dest_dir = File.join(@build_dir, CACHE_DIR)
+      dest_dir = File.join(@deps_dir, @deps_idx, CACHE_DIR)
 
       out.print("Node.js version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
@@ -57,19 +55,25 @@ module AspNetCoreBuildpack
       @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
     end
 
+    def create_links(out)
+      @shell.exec("mkdir -p #{File.join(@deps_dir, @deps_idx, 'bin')}; cd #{File.join(@deps_dir, @deps_idx, 'bin')}; ln -sfv ../node/node-*/bin/* $PWD", out)
+    end
+
     def name
       'Node.js'.freeze
     end
 
     def path
-      "#{bin_folder}:#{node_modules_folders}" if File.exist?(File.join(@build_dir, cache_dir))
+      "#{bin_folder}:#{node_modules_folders}" if File.exist?(File.join(@deps_dir, @deps_idx, cache_dir))
     end
 
     def should_install(app_dir)
-      return true if ENV['INSTALL_NODE'] == 'true'
+      return false if node_installed?
+
+      return true if ENV['INSTALL_NODE']
 
       published_project = app_dir.published_project
-      !(published_project || cached?) && @scripts_parser.scripts_section_exists?([BOWER_COMMAND, NPM_COMMAND])
+      !published_project && !cached? && @scripts_parser.scripts_section_exists?([BOWER_COMMAND, NPM_COMMAND])
     end
 
     def version
@@ -84,9 +88,9 @@ module AspNetCoreBuildpack
     end
 
     def node_modules_folders
-      app_dir = AppDir.new(@build_dir)
+      app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
       project_dirs = app_dir.project_paths.map do |project|
-        if msbuild?(@build_dir)
+        if msbuild?
           File.join(@build_dir, File.dirname(project))
         else
           File.join(@build_dir, project)
@@ -100,6 +104,13 @@ module AspNetCoreBuildpack
 
     def dependency_name
       "node-v#{version}-linux-x64.tar.gz"
+    end
+
+    def node_installed?
+      _, status = Open3.capture2e('node -v')
+      status.success?
+    rescue
+      false
     end
 
     attr_reader :scripts_parser

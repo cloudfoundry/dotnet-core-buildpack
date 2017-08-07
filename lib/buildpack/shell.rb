@@ -19,7 +19,7 @@ require 'open3'
 module AspNetCoreBuildpack
   class Shell
     def exec(cmd, out)
-      Open3.popen2e(expand(cmd)) do |_, oe, t|
+      Open3.popen2e(env, cmd) do |_, oe, t|
         oe.each do |line|
           out.print line.chomp
         end
@@ -28,22 +28,8 @@ module AspNetCoreBuildpack
       end
     end
 
-    def path
-      @path ||= []
-    end
-
     def env
       @env ||= {}
-    end
-
-    private
-
-    def expand(cmd)
-      (exports + [cmd]).join(';')
-    end
-
-    def exports
-      env.map { |k, v| "export #{k}=#{v}" } + ["export PATH=$PATH:#{path.join(':')}"]
     end
   end
 end

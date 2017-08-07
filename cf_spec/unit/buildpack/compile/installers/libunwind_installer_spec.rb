@@ -23,6 +23,8 @@ require 'tempfile'
 describe AspNetCoreBuildpack::LibunwindInstaller do
   let(:dir) { Dir.mktmpdir }
   let(:cache_dir) { Dir.mktmpdir }
+  let(:deps_dir) { Dir.mktmpdir }
+  let(:deps_idx) { '66' }
   let(:shell) { AspNetCoreBuildpack::Shell.new }
   let(:out) { double(:out) }
 
@@ -44,7 +46,7 @@ doesn't matter for these tests
     FileUtils.rm_rf(manifest_dir)
   end
 
-  subject(:installer) { described_class.new(dir, cache_dir, manifest_file, shell) }
+  subject(:installer) { described_class.new(dir, cache_dir, deps_dir, deps_idx, manifest_file, shell) }
 
   describe '#version' do
     it 'has a default version' do
@@ -101,6 +103,18 @@ doesn't matter for these tests
       expect(out).to receive(:print).with(/libunwind version/)
       expect(subject).to receive(:write_version_file).with(anything)
       subject.install(out)
+    end
+  end
+
+  describe '#create_links' do
+    it 'creates necessary links to deps_dir/deps_idx/lib' do
+      allow(shell).to receive(:exec).and_return(0)
+      expect(shell).to receive(:exec) do |*args|
+        cmd = args.first
+        expect(cmd).to match(/cd #{File.join(deps_dir,deps_idx,'lib')}/)
+        expect(cmd).to match(/ln -s ..\/libunwind\/lib\/\* ./)
+      end
+      subject.create_links(out)
     end
   end
 
