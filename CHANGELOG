@@ -1,3 +1,12 @@
+v1.0.24 Aug 07, 2017
+=====================
+
+* Add support for multi buildpack
+  (https://www.pivotaltracker.com/story/show/142852043)
+
+* Add node 6.11.2, remove node 6.11.1
+  (https://www.pivotaltracker.com/story/show/149837609)
+
 v1.0.23 Jul 21, 2017
 =====================
 
