@@ -248,5 +248,39 @@ describe AspNetCoreBuildpack::Detecter do
         end
       end
     end
+
+    context 'when *.vbproj exists in sub-directory' do
+      before do
+        FileUtils.mkdir_p(File.join(dir, 'src', 'proj'))
+        File.open(File.join(dir, 'src', 'proj', 'app.vbproj'), 'w') { |f| f.write('a') }
+      end
+
+      context 'and .vb file exists in the same directory' do
+        before do
+          File.open(File.join(dir, 'src', 'proj', 'Program.vb'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'and .vb file exists in a sub directory' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'proj', 'sub'))
+          File.open(File.join(dir, 'src', 'proj', 'sub', 'Program.vb'), 'w') { |f| f.write('a') }
+        end
+
+        it 'returns true' do
+          expect(subject.detect(dir)).to be_truthy
+        end
+      end
+
+      context 'but no .vb file exists in the directory or sub directories' do
+        it 'returns false' do
+          expect(subject.detect(dir)).not_to be_truthy
+        end
+      end
+    end
   end
 end
