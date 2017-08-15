@@ -55,8 +55,11 @@ module AspNetCoreBuildpack
       fs_projects = Dir.glob(File.join(@build_dir, '**', '*.fsproj')).map do |d|
         Pathname.new(d).relative_path_from(Pathname.new(@build_dir))
       end
+      vb_projects = Dir.glob(File.join(@build_dir, '**', '*.vbproj')).map do |d|
+        Pathname.new(d).relative_path_from(Pathname.new(@build_dir))
+      end
 
-      cs_projects + fs_projects
+      cs_projects + fs_projects + vb_projects
     end
 
     def project_paths
