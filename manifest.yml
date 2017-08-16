@@ -141,6 +141,12 @@ dependencies:
   md5: 7ca0512628a394ffe6152468a9bf12ca
   cf_stacks:
   - cflinuxfs2
+- name: dotnet-framework
+  version: 2.0.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.0.0.linux-amd64-020801f9.tar.gz
+  md5: 020801f94c35f481444e0d68aae90d68
+  cf_stacks:
+  - cflinuxfs2
 exclude_files:
 - ".git/"
 - ".gitignore"
