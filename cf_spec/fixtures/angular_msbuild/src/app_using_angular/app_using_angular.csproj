@@ -10,43 +10,43 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink.Loader">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
   </ItemGroup>
 

@@ -9,10 +9,10 @@
   <ItemGroup>
     <ProjectReference Include="../console_app/console_app.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine">
-      <Version>*</Version>
+      <Version>1.*</Version>
     </PackageReference>
   </ItemGroup>
 

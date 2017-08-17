@@ -4,12 +4,12 @@
     "debugType": "portable"
   },
   "dependencies" : {
-    "Microsoft.AspNetCore.Server.Kestrel": "*",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"
     },
-    "Microsoft.Extensions.Configuration.CommandLine": "*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.*",
     "console_app": {
       "target": "project"
     }
