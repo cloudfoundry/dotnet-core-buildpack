@@ -104,6 +104,20 @@ describe 'CF ASP.NET Core Buildpack' do
     end
   end
 
+  context 'deploying simple web app with missing sdk', :uncached do
+    let(:app_name) { 'missing_sdk' }
+
+    it 'logs a warning about using default SDK' do
+      expect(app).to be_running
+
+      expect(app).to have_logged('WARNING: SDK 2.0.0-preview-007 not available')
+      expect(app).to have_logged('using the default SDK')
+
+      browser.visit_path('/')
+      expect(browser).to have_body('Hello From Dotnet 2.0')
+    end
+  end
+
   context 'deploying an msbuild app with RuntimeIdentfier' do
     let(:app_name) { 'self_contained_msbuild' }
 

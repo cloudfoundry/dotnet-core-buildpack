@@ -50,7 +50,12 @@ module AspNetCoreBuildpack
     def sdk_version_to_install
       global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
       sdk_version = get_version_from_global_json(global_json_file)
-      return sdk_version unless sdk_version.nil?
+      if sdk_version && !sdk_version_exists(sdk_version)
+        warning = "SDK #{sdk_version} not available,\nusing the default SDK version(#{@default_sdk_version})"
+        out.warn(warning)
+        return @default_sdk_version
+      end
+      return sdk_version if sdk_version
 
       app_has_project_json = @app_dir.with_project_json.any?
       app_has_msbuild_projects = @app_dir.msbuild_projects.any?
@@ -92,6 +97,10 @@ module AspNetCoreBuildpack
         out.warn("File #{global_json_file} is not valid JSON")
       end
       nil
+    end
+
+    def sdk_version_exists(version)
+      msbuild_sdk_versions.include?(version) || project_json_sdk_versions.include?(version)
     end
 
     attr_reader :out

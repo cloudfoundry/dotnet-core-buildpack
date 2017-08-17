@@ -126,24 +126,52 @@ msbuild:
     end
 
     context 'global.json exists' do
-      before do
-        json = '{ "sdk": { "version": "1.0.0-beta1" } }'
-        IO.write(File.join(dir, 'global.json'), json)
+      context 'and version exists in dotnet_tools_yml' do
+        before do
+          json = '{ "sdk": { "version": "sdk-version-3" } }'
+          IO.write(File.join(dir, 'global.json'), json)
+        end
+
+        it 'resolves to the specified version' do
+          expect(subject.version).to eq('sdk-version-3')
+        end
       end
 
-      it 'resolves to the specified version' do
-        expect(subject.version).to eq('1.0.0-beta1')
+      context 'and version is missing in dotnet_tools_yml' do
+        before do
+          json = '{ "sdk": { "version": "1.0.0-beta1" } }'
+          IO.write(File.join(dir, 'global.json'), json)
+          expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:warn).with("SDK 1.0.0-beta1 not available,\nusing the default SDK version(sdk-version-4)")
+        end
+
+        it 'resolves to the default version' do
+          expect(subject.version).to eq('sdk-version-4')
+        end
       end
     end
 
     context 'global.json exists with a BOM from Visual Studio in it' do
-      before do
-        json = "\uFEFF{ \"sdk\": { \"version\": \"1.0.0-beta1\" } }"
-        IO.write(File.join(dir, 'global.json'), json)
+      context 'and version exists in dotnet_tools_yml' do
+        before do
+          json = "\uFEFF{ \"sdk\": { \"version\": \"sdk-version-3\" } }"
+          IO.write(File.join(dir, 'global.json'), json)
+        end
+
+        it 'resolves to the specified version' do
+          expect(subject.version).to eq('sdk-version-3')
+        end
       end
 
-      it 'resolves to the specified version' do
-        expect(subject.version).to eq('1.0.0-beta1')
+      context 'and version is missing in dotnet_tools_yml' do
+        before do
+          json = "\uFEFF{ \"sdk\": { \"version\": \"1.0.0-beta1\" } }"
+          IO.write(File.join(dir, 'global.json'), json)
+          expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:warn).with("SDK 1.0.0-beta1 not available,\nusing the default SDK version(sdk-version-4)")
+        end
+
+        it 'resolves to the default version' do
+          expect(subject.version).to eq('sdk-version-4')
+        end
       end
     end
 
