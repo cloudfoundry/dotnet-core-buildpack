@@ -21,14 +21,12 @@ require_relative '../app_dir'
 module AspNetCoreBuildpack
   class DotnetSdkVersion
     def initialize(build_dir, deps_dir, deps_idx, manifest_file)
-      buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
-
+      @manifest_file = manifest_file
       @build_dir = build_dir
       @deps_dir = deps_dir
       @deps_idx = deps_idx
       @global_json_file_name = 'global.json'
       @sdk_tools_file = File.join(File.dirname(manifest_file), 'dotnet-sdk-tools.yml')
-      @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{manifest_file} dotnet`
       @out = Out.new
       @app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
       @dotnet_sdk_tooling = ENV['DOTNET_SDK_TOOLING']
@@ -46,6 +44,20 @@ module AspNetCoreBuildpack
     end
 
     private
+
+    def fsharp_project?
+      Dir.glob(File.join(@build_dir, '**', '*.fsproj')).any?
+    end
+
+    def default_sdk_version
+      return @default_sdk_version if @default_sdk_version
+      if fsharp_project?
+        @default_sdk_version = '1.0.4'
+      else
+        buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
+        @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{@manifest_file} dotnet`
+      end
+    end
 
     def sdk_version_to_install
       sdk_version = version_from_global_json
@@ -68,15 +80,15 @@ module AspNetCoreBuildpack
       elsif app_has_project_json
         project_json_sdk_versions.last
       else
-        @default_sdk_version
+        default_sdk_version
       end
     end
 
     def convert_missing_sdk_version_to_default(sdk_version)
       if sdk_version && !sdk_version_exists(sdk_version)
-        warning = "SDK #{sdk_version} not available,\nusing the default SDK version(#{@default_sdk_version})"
+        warning = "SDK #{sdk_version} not available,\nusing the default SDK version(#{default_sdk_version})"
         out.warn(warning)
-        return @default_sdk_version
+        return default_sdk_version
       end
       sdk_version
     end

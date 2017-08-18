@@ -121,52 +121,6 @@ describe AspNetCoreBuildpack::Compiler do
       allow(subject).to receive(:should_clear_nuget_cache?).and_return(true)
     end
 
-    describe 'FSharp runtime warning' do
-      let(:warning) { "FSharp projects require runtime 1.0.x to publish" }
-      before { File.write(File.join(build_dir, proj_file_name), "") }
-
-      context 'fsharp project' do
-        let(:installer) { double(:installer, descendants: [dotnet_installer]) }
-        let(:dotnet_installer) do
-          double(:dotnet_installer,
-                 class: double(:class, name: "AspNetCoreBuildpack::DotnetSdkInstaller"),
-                 version: dotnet_sdk_version,
-                 cache_dir: cache_dir,
-                 should_install: false,
-                 create_links: nil,
-                 name: "")
-        end
-
-        let(:proj_file_name) { "hello.fsproj" }
-
-        context 'dotnet framework 1.0.x' do
-          let(:dotnet_sdk_version) { '1.0.5' }
-
-          it 'does not warn user about runtime' do
-            expect(out).to_not receive(:warn).with(warning)
-            subject.supply
-          end
-        end
-
-        context 'dotnet framework 2.x' do
-          let(:dotnet_sdk_version) { '2.0.0' }
-
-          it 'warns user about runtime' do
-            expect(out).to receive(:warn).with(warning)
-            subject.supply
-          end
-        end
-      end
-
-      context 'csharp project' do
-        let(:proj_file_name) { "hello.csproj" }
-        it 'do not warn' do
-          expect(out).to_not receive(:warn).with(warning)
-          subject.supply
-        end
-      end
-    end
-
     describe 'Restoring Cache' do
       it_behaves_like 'step', 'Restoring files from buildpack cache', :restore_cache
 
