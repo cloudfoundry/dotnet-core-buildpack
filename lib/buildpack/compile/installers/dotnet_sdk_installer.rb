@@ -58,7 +58,7 @@ module AspNetCoreBuildpack
 
     def create_links(out)
       @shell.exec("mkdir -p #{File.join(@deps_dir, @deps_idx, 'bin')}; cd #{File.join(@deps_dir, @deps_idx, 'bin')}; ln -s ../dotnet/dotnet dotnet", out)
-      @shell.exec("cd #{File.join(@deps_dir, @deps_idx)}; ln -s dotnet .dotnet; mkdir -p nuget; ln -s nuget .nuget; ls -la", out)
+      @shell.exec("cd #{File.join(@deps_dir, @deps_idx)}; ln -s dotnet .dotnet; mkdir -p nuget; ln -s nuget .nuget", out)
     end
 
     def name

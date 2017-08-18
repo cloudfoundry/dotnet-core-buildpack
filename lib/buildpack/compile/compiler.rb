@@ -105,7 +105,6 @@ module AspNetCoreBuildpack
     end
 
     def restore_cache(out)
-      puts installers
       @installers.map(&:cache_dir).compact.each do |installer_cache_dir|
         copier.cp(File.join(cache_dir, installer_cache_dir), File.join(@deps_dir, @deps_idx), out) if File.exist? File.join(cache_dir, installer_cache_dir)
       end
