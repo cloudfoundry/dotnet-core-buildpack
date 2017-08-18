@@ -6,7 +6,7 @@ default_versions:
 - name: node
   version: 6.11.2
 - name: dotnet
-  version: 1.0.4
+  version: 2.0.0
 url_to_dependency_map:
 - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
   name: dotnet

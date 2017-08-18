@@ -84,6 +84,10 @@ module AspNetCoreBuildpack
       !published_project
     end
 
+    def version
+      @version ||= DotnetSdkVersion.new(@build_dir, @deps_dir, @deps_idx, @manifest_file).version
+    end
+
     private
 
     def bin_folder
@@ -96,10 +100,6 @@ module AspNetCoreBuildpack
 
     def dependency_name
       "dotnet.#{version}.linux-amd64.tar.gz"
-    end
-
-    def version
-      @version ||= DotnetSdkVersion.new(@build_dir, @deps_dir, @deps_idx, @manifest_file).version
     end
 
     attr_reader :app_dir

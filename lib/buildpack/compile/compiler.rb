@@ -64,6 +64,8 @@ module AspNetCoreBuildpack
 
       run_installers
 
+      out.warn('FSharp projects require runtime 1.0.x to publish') if fsharp_project? && !fsharp_compat_runtime?
+
       step('Saving to buildpack cache', method(:save_cache))
       puts "ASP.NET Core buildpack is done creating the droplet\n"
       return true
@@ -73,6 +75,15 @@ module AspNetCoreBuildpack
     end
 
     private
+
+    def fsharp_project?
+      Dir.glob(File.join(@build_dir, '**', '*.fsproj')).any?
+    end
+
+    def fsharp_compat_runtime?
+      return false unless @dotnet_sdk
+      @dotnet_sdk.version =~ /^1\.0\./
+    end
 
     def should_restore?
       @dotnet_sdk.should_restore(@app_dir) unless @dotnet_sdk.nil?

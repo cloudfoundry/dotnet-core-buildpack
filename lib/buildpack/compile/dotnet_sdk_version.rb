@@ -48,13 +48,8 @@ module AspNetCoreBuildpack
     private
 
     def sdk_version_to_install
-      global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
-      sdk_version = get_version_from_global_json(global_json_file)
-      if sdk_version && !sdk_version_exists(sdk_version)
-        warning = "SDK #{sdk_version} not available,\nusing the default SDK version(#{@default_sdk_version})"
-        out.warn(warning)
-        return @default_sdk_version
-      end
+      sdk_version = version_from_global_json
+      sdk_version = convert_missing_sdk_version_to_default(sdk_version)
       return sdk_version if sdk_version
 
       app_has_project_json = @app_dir.with_project_json.any?
@@ -77,6 +72,15 @@ module AspNetCoreBuildpack
       end
     end
 
+    def convert_missing_sdk_version_to_default(sdk_version)
+      if sdk_version && !sdk_version_exists(sdk_version)
+        warning = "SDK #{sdk_version} not available,\nusing the default SDK version(#{@default_sdk_version})"
+        out.warn(warning)
+        return @default_sdk_version
+      end
+      sdk_version
+    end
+
     def msbuild_sdk_versions
       @msbuild_sdk_versions ||= YAML.load_file(@sdk_tools_file)['msbuild']
     end
@@ -85,7 +89,8 @@ module AspNetCoreBuildpack
       @project_sdk_versions ||= YAML.load_file(@sdk_tools_file)['project_json']
     end
 
-    def get_version_from_global_json(global_json_file)
+    def version_from_global_json
+      global_json_file = File.expand_path(File.join(@build_dir, @global_json_file_name))
       return nil unless File.exist?(global_json_file)
       begin
         global_props = JSON.parse(File.read(global_json_file, encoding: 'bom|utf-8'))
