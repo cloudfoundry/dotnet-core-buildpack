@@ -52,7 +52,7 @@ module AspNetCoreBuildpack
     def default_sdk_version
       return @default_sdk_version if @default_sdk_version
       if fsharp_project?
-        @default_sdk_version = '1.0.4'
+        @default_sdk_version = '1.1.0'
       else
         buildpack_root = File.join(File.dirname(__FILE__), '..', '..', '..')
         @default_sdk_version = `#{buildpack_root}/compile-extensions/bin/default_version_for #{@manifest_file} dotnet`
