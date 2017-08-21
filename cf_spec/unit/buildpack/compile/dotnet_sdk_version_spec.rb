@@ -123,6 +123,17 @@ msbuild:
           end
         end
       end
+
+      context 'a *.fsproj file exists' do
+        before do
+          FileUtils.mkdir_p(File.join(dir, 'src', 'app'))
+          File.write(File.join(dir, 'src', 'app', 'app.fsproj'), 'xxx')
+        end
+
+        it 'picks the latest version of the SDK with fsharp support' do
+          expect(subject.version).to eq('1.1.0')
+        end
+      end
     end
 
     context 'global.json exists' do
