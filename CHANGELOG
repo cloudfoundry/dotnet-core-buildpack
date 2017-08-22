@@ -1,3 +1,26 @@
+v1.0.25 Aug 22, 2017
+=====================
+
+* Define default SDK for F# as 1.1.0
+  (https://www.pivotaltracker.com/story/show/150408173)
+
+* Set Default SDK version to 2.0.0
+  (https://www.pivotaltracker.com/story/show/150343963)
+
+* Use default SDK version if requested SDK is missing
+  (https://www.pivotaltracker.com/story/show/150261814)
+
+* Add dotnet SDK 2.0.0, 1.1.0 and 1.0.4
+  Remove:
+   - 1.0.0-preview2-003131                                                                                                                                                     │·································································································
+   - 1.0.0-preview2-1-003177                                                                                                                                                   │·································································································
+   - 1.0.0-preview3-004056                                                                                                                                                     │·································································································
+   - 1.0.0-preview4-004233                                                                                                                                                     │·································································································
+  (https://www.pivotaltracker.com/story/show/150261585)
+
+* Support Visual Basic projects (#158)
+  (https://www.pivotaltracker.com/story/show/150132837)
+
 v1.0.24 Aug 07, 2017
 =====================
 
