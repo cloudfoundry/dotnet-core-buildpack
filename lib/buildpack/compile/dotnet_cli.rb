@@ -16,6 +16,7 @@
 
 require_relative '../sdk_info'
 require_relative '../app_dir'
+require 'open3'
 
 module AspNetCoreBuildpack
   class DotnetCli
@@ -54,9 +55,14 @@ module AspNetCoreBuildpack
       publish_dir = File.join(@build_dir, PUBLISH_DIR)
       FileUtils.mkdir_p(publish_dir)
 
-      cmd = "bash -c 'cd #{@build_dir}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"
+      Dir.mktmpdir do |tmpdir|
+        Open3.capture2e('cp', '-al', @build_dir, tmpdir)
+        tmpdir = File.join(tmpdir, File.basename(@build_dir))
+        FileUtils.rm_rf(File.join(tmpdir, '.cloudfoundry'))
 
-      @shell.exec(cmd, out)
+        cmd = "bash -c 'cd #{tmpdir}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"
+        @shell.exec(cmd, out)
+      end
     end
 
     private

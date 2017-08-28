@@ -104,6 +104,20 @@ describe AspNetCoreBuildpack::DotnetCli do
           expect(shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE']).to eq "true"
           expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
         end
+
+        it 'runs from a temp directory' do
+          Dir.mktmpdir do |tmpdir|
+            allow(Dir).to receive(:mktmpdir).and_yield(tmpdir)
+
+            publish_dir = File.join(build_dir, '.cloudfoundry', 'dotnet_publish')
+            expect(shell).to receive(:exec) do |*args|
+              cmd = args.first
+              expect(cmd).to match(/cd #{tmpdir}\/#{File.basename(build_dir)};/)
+            end
+
+            subject.publish(out)
+          end
+        end
       end
 
       context 'PUBLISH_RELEASE_CONFIG is not true' do
@@ -120,6 +134,20 @@ describe AspNetCoreBuildpack::DotnetCli do
 
           expect(File.exist? publish_dir).to be_truthy
           expect(shell.env['HOME']).to eq File.join(deps_dir, deps_idx)
+        end
+
+        it 'runs from a temp directory' do
+          Dir.mktmpdir do |tmpdir|
+            allow(Dir).to receive(:mktmpdir).and_yield(tmpdir)
+
+            publish_dir = File.join(build_dir, '.cloudfoundry', 'dotnet_publish')
+            expect(shell).to receive(:exec) do |*args|
+              cmd = args.first
+              expect(cmd).to match(/cd #{tmpdir}\/#{File.basename(build_dir)};/)
+            end
+
+            subject.publish(out)
+          end
         end
       end
     end

@@ -142,4 +142,15 @@ describe 'CF ASP.NET Core Buildpack' do
       expect(browser).to have_body('Hello World!')
     end
   end
+
+  context 'simple netcoreapp2 (dotnet new mvc --framework netcoreapp2.0)' do
+    let(:app_name) { 'netcoreapp2' }
+
+    it 'publishes and runs' do
+      expect(app).to be_running
+
+      browser.visit_path('/')
+      expect(browser).to have_body('Sample pages using ASP.NET Core MVC')
+    end
+  end
 end
