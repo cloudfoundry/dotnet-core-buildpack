@@ -85,6 +85,9 @@ module AspNetCoreBuildpack
 
     def setup_shell_environment
       @shell.env['DOTNET_SKIP_FIRST_TIME_EXPERIENCE'] = 'true' if msbuild?
+      exclude_paths = []
+      exclude_paths << File.join('.cloudfoundry', '**', '*.*')
+      @shell.env['DefaultItemExcludes'] = exclude_paths.join(';') if msbuild?
 
       @shell.env['HOME'] = File.join(@deps_dir, @deps_idx)
       @shell.env['PATH'] = "#{ENV['PATH']}:#{node_modules_paths}"
