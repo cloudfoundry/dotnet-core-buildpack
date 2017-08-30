@@ -30,6 +30,7 @@ module AspNetCoreBuildpack
       @deps_idx = deps_idx
       @nuget_cache_dir = nuget_cache_dir
       @out = Out.new
+      @manifest_file = File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
     def versions
@@ -58,6 +59,12 @@ module AspNetCoreBuildpack
       Gem::Version.new(v.split('-').first)
     end
 
+    def available_versions
+      return @available_versions if @available_versions
+      manifest = YAML.load_file(@manifest_file)
+      @available_versions = manifest['dependencies'].select { |x| x['name'] == 'dotnet-framework' }.map { |x| x['version'] }
+    end
+
     def needed_framework_versions
       version_hash = {}
 
@@ -66,9 +73,9 @@ module AspNetCoreBuildpack
         version_line = "#{major}.#{minor}"
 
         if version_hash[version_line].nil?
-          version_hash[version_line] = [ver]
+          version_hash[version_line] = available_versions.include?(ver) ? [ver] : [get_version_from_version_line(version_line)]
         else
-          version_hash[version_line].push ver
+          version_hash[version_line].push available_versions.include?(ver) ? ver : get_version_from_version_line(version_line)
         end
       end
 
@@ -79,6 +86,12 @@ module AspNetCoreBuildpack
       required_versions += runtime_framework_versions if msbuild?
 
       required_versions.sort_by { |a| gem_version_parse(a) }
+    end
+
+    def get_version_from_version_line(version_line)
+      latest_version = available_versions.select { |x| x.match(/#{version_line}/) }.last
+      raise "Could not find a .NET Core runtime version matching #{version_line}.*" if latest_version.nil?
+      latest_version
     end
 
     def runtime_framework_versions
