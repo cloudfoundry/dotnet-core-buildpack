@@ -170,7 +170,7 @@ module AspNetCoreBuildpack
     end
 
     def restore_nuget_cache(out)
-      copier.cp(File.join(cache_dir, NUGET_CACHE_DIR), build_dir, out) if nuget_cache_is_valid?
+      copier.cp(File.join(cache_dir, NUGET_CACHE_DIR), File.join(@deps_dir, @deps_idx), out) if nuget_cache_is_valid?
     end
 
     def save_cache(out)

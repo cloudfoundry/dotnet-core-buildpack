@@ -203,7 +203,7 @@ describe AspNetCoreBuildpack::Finalizer do
 
         it 'copies files from cache to build dir' do
           allow(subject).to receive(:nuget_cache_is_valid?).and_return(true)
-          expect(copier).to receive(:cp).with(File.join(cache_dir, 'nuget'), build_dir, anything)
+          expect(copier).to receive(:cp).with(File.join(cache_dir, 'nuget'), File.join(deps_dir, deps_idx), anything)
           subject.finalize
         end
       end
