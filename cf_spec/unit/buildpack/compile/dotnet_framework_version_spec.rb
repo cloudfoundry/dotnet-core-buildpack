@@ -91,6 +91,7 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
           end
 
           it 'returns the latest patch version for each restored major/minor line' do
+            allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[1.3.3 1.3.4 1.4.6 1.4.5])
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
               "Detected .NET Core runtime version(s) 1.3.4, 1.4.6 required according to 'dotnet restore'")
             expect(subject.versions).to eq( ['1.3.4', '1.4.6'] )
@@ -154,6 +155,7 @@ XML
           end
 
           it 'returns the latest patch version for each restored major/minor line + any specified as RuntimeFramworkVersion in .csproj files' do
+            allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[1.2.2 1.2.3 1.2.4 1.4.5 1.4.6 1.4.7])
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
               "Detected .NET Core runtime version(s) 1.2.3, 1.2.4, 1.4.5, 1.4.7 required according to 'dotnet restore'")
             expect(subject.versions).to eq( ['1.2.3', '1.2.4', '1.4.5', '1.4.7'] )
@@ -194,7 +196,32 @@ XML
             FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'microsoft.netcore.app', '2.2.3'))
           end
 
+          context 'a runtime version is restored that is not in the manifest.yml' do
+            context 'a newer patch version in the same version line is in the manifest.yml' do
+              before do
+                allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[1.1.3 1.1.4 2.2.4 2.2.5])
+              end
+
+              it 'returns the latest patch version in the version line' do
+                expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+                  "Detected .NET Core runtime version(s) 1.1.4, 2.2.5 required according to 'dotnet restore'")
+                expect(subject.versions).to eq( ['1.1.4', '2.2.5'] )
+              end
+            end
+
+            context 'no patch versions in the same version line are in the manifest.yml' do
+              before do
+                allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[2.2.2 2.2.3])
+              end
+
+              it 'raises an exception' do
+                expect { subject.versions }.to raise_error(RuntimeError, "Could not find a .NET Core runtime version matching 1.1.*")
+              end
+            end
+          end
+
           it 'returns the latest patch version for each restored major/minor line' do
+            allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[1.1.1 2.2.2 1.1.2 2.2.3])
             expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
               "Detected .NET Core runtime version(s) 1.1.2, 2.2.3 required according to 'dotnet restore'")
             expect(subject.versions).to eq( ['1.1.2', '2.2.3'] )
