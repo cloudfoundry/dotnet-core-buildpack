@@ -60,7 +60,7 @@ module AspNetCoreBuildpack
         tmpdir = File.join(tmpdir, File.basename(@build_dir))
         FileUtils.rm_rf(File.join(tmpdir, '.cloudfoundry'))
 
-        cmd = "bash -c 'cd #{tmpdir}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"
+        cmd = "bash -c 'cd #{tmpdir}; PATH=$PATH:#{node_modules_paths(tmpdir)}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"
         @shell.exec(cmd, out)
       end
     end
@@ -75,12 +75,12 @@ module AspNetCoreBuildpack
       end
     end
 
-    def node_modules_paths
+    def node_modules_paths(dir = @build_dir)
       project_dirs = @app_dir.project_paths.map do |project|
         if msbuild?
-          File.join(@build_dir, File.dirname(project))
+          File.join(dir, File.dirname(project))
         else
-          File.join(@build_dir, project)
+          File.join(dir, project)
         end
       end
 
