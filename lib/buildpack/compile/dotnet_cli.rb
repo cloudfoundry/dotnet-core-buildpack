@@ -84,8 +84,8 @@ module AspNetCoreBuildpack
         end
       end
 
-      project_dirs.map do |dir|
-        File.join(dir, 'node_modules', '.bin')
+      project_dirs.map do |project_dir|
+        File.join(project_dir, 'node_modules', '.bin')
       end.compact.join(':')
     end
 

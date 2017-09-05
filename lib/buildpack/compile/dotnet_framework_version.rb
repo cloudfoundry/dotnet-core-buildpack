@@ -72,15 +72,16 @@ module AspNetCoreBuildpack
         major, minor, = ver.split('.')
         version_line = "#{major}.#{minor}"
 
-        if version_hash[version_line].nil?
-          version_hash[version_line] = available_versions.include?(ver) ? [ver] : [get_version_from_version_line(version_line)]
-        else
-          version_hash[version_line].push available_versions.include?(ver) ? ver : get_version_from_version_line(version_line)
-        end
+        version_hash[version_line] ||= []
+        version_hash[version_line].push ver if available_versions.include?(ver)
       end
 
-      required_versions = version_hash.values.map do |v|
-        v.sort_by { |a| gem_version_parse(a) }.last
+      required_versions = version_hash.map do |version_line, versions|
+        if !versions.empty?
+          versions.sort_by { |a| gem_version_parse(a) }.last
+        else
+          get_version_from_version_line(version_line)
+        end
       end
 
       required_versions += runtime_framework_versions if msbuild?

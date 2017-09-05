@@ -98,6 +98,20 @@ describe AspNetCoreBuildpack::DotnetFrameworkVersion do
           end
         end
 
+        context 'dotnet restore detected frameworks that do and do not exist in available' do
+          before do
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.0.3'))
+            FileUtils.mkdir_p(File.join(nuget_cache_dir, 'packages', 'Microsoft.NETCore.App', '1.0.4'))
+          end
+
+          it 'returns the latest patch version for each restored major/minor line' do
+            allow_any_instance_of(AspNetCoreBuildpack::DotnetFrameworkVersion).to receive(:available_versions).and_return(%w[1.0.4 1.0.5])
+            expect_any_instance_of(AspNetCoreBuildpack::Out).to receive(:print).with(
+              "Detected .NET Core runtime version(s) 1.0.4 required according to 'dotnet restore'")
+            expect(subject.versions).to eq( ['1.0.4'] )
+          end
+        end
+
         context 'dotnet restore detected no framework versions' do
           it 'throws an exception with a helpful message' do
             expect { subject.versions }.to raise_error(RuntimeError, "Unable to determine .NET Core runtime version(s) to install")
