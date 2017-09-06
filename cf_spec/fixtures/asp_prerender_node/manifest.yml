@@ -2,6 +2,7 @@
   applications:
     - name: asp_prerender_node
       disk_quota: 1536M
+      timeout: 120
       env:
         CACHE_NUGET_PACKAGES: false
         INSTALL_NODE: true
