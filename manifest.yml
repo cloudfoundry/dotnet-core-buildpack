@@ -1,12 +1,12 @@
 ---
 language: dotnet-core
 default_versions:
-- name: bower
-  version: 1.8.0
 - name: dotnet
   version: 2.0.0
 - name: node
   version: 6.11.3
+- name: bower
+  version: 1.8.2
 url_to_dependency_map:
 - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
   name: dotnet
@@ -37,12 +37,6 @@ dependencies:
   version: 1.0.0-preview2-003156
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.0-preview2-003156.linux-amd64-0afc3d78.tar.gz
   md5: 0afc3d78c0d44e89b01b1eb333824ff5
-  cf_stacks:
-  - cflinuxfs2
-- name: bower
-  version: 1.8.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.0-b61dd4e9.tgz
-  md5: b61dd4e9685101f82dab8c13b5c085e1
   cf_stacks:
   - cflinuxfs2
 - name: dotnet-framework
@@ -103,6 +97,12 @@ dependencies:
   version: 6.11.3
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.11.3-linux-x64-ba51d463.tgz
   md5: ba51d463da63776d20582e07cb9b4d9d
+  cf_stacks:
+  - cflinuxfs2
+- name: bower
+  version: 1.8.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.2-eeb038c1.tgz
+  md5: eeb038c1405dbf880ddab9f0069bd97a
   cf_stacks:
   - cflinuxfs2
 exclude_files:
