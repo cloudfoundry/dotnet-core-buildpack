@@ -39,15 +39,18 @@ module AspNetCoreBuildpack
 
       raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
-      write_startup_script(startup_script_path(@build_dir), start_cmd)
+      write_startup_script(startup_script_path(@build_dir), start_cmd, app.main_project_path)
       generate_yml(start_cmd, app_root_dir)
     end
 
     private
 
-    def write_startup_script(startup_script, start_cmd)
+    def write_startup_script(startup_script, start_cmd, project)
       FileUtils.mkdir_p(File.dirname(startup_script))
       File.open(startup_script, 'w') do |f|
+        if project_json? && !project.nil?
+          f.write "export PATH=$PATH:$HOME/#{project}/node_modules/.bin;"
+        end
         f.write 'export HOME=/app;'
         f.write 'export ASPNETCORE_URLS=http://0.0.0.0:${PORT};'
         f.write "export PID=`ps -C '#{start_cmd}' -o pid= | tr -d '[:space:]'`"
