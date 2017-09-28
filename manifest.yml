@@ -6,7 +6,7 @@ default_versions:
 - name: bower
   version: 1.8.2
 - name: dotnet
-  version: 1.1.4
+  version: 2.0.0
 url_to_dependency_map:
 - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
   name: dotnet
