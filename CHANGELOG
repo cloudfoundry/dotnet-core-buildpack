@@ -1,3 +1,18 @@
+v1.0.28 Oct 10, 2017
+=====================
+
+* Add node 6.11.4, remove node 6.11.3
+  (https://www.pivotaltracker.com/story/show/151659499)
+
+* Add node_modules/.bin to PATH for project.json apps
+  (https://www.pivotaltracker.com/story/show/151134031)
+
+* Add dotnet-framework 1.0.7
+  (https://www.pivotaltracker.com/story/show/151009075)
+
+* Add dotnet, dotnet-framework 1.1.4
+  (https://www.pivotaltracker.com/story/show/151261739)
+
 v1.0.27 Sep 20, 2017
 =====================
 
