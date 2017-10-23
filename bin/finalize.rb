@@ -19,6 +19,7 @@ build_dir = ARGV[0]
 cache_dir = ARGV[1]
 deps_dir = ARGV[2]
 deps_idx = ARGV[3]
+profile_dir = ARGV[4]
 buildpack_dir = File.join(File.dirname(__FILE__), '..')
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
@@ -42,7 +43,7 @@ end
 if AspNetCoreBuildpack.finalize(build_dir, cache_dir, deps_dir, deps_idx)
   system("#{buildpack_dir}/compile-extensions/bin/store_buildpack_metadata #{buildpack_dir} #{cache_dir}")
   if deps_dir
-    stdout, stderr, status = Open3.capture3("#{buildpack_dir}/compile-extensions/bin/write_profiled_from_supply #{deps_dir} #{build_dir}")
+    stdout, stderr, status = Open3.capture3("#{buildpack_dir}/compile-extensions/bin/write_profiled_from_supply #{deps_dir} #{build_dir} #{profile_dir}")
     if status.exitstatus.nonzero?
       puts "write_profiled_from_supply failed: #{stdout} \n====\n #{stderr}"
       exit 1
