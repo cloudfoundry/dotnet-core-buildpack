@@ -6,7 +6,7 @@ default_versions:
 - name: dotnet
   version: 2.0.2
 - name: node
-  version: 6.11.5
+  version: 6.11.4
 url_to_dependency_map:
 - match: dotnet\.(.*)\.linux-amd64\.tar\.gz
   name: dotnet
@@ -124,9 +124,9 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
 - name: node
-  version: 6.11.5
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.11.5-linux-x64-d1e31dac.tgz
-  md5: d1e31dac7c75394d76dc56b4ce8e3ef2
+  version: 6.11.4
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.11.4-linux-x64-bf4a7598.tgz
+  md5: bf4a759844ad630e0f874f1cd13427e4
   cf_stacks:
   - cflinuxfs2
 exclude_files:
