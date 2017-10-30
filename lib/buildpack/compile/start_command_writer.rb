@@ -89,7 +89,7 @@ EOT
     end
 
     def startup_script_path(dir)
-      File.join(dir, '.profile.d', 'startup.sh')
+      File.join(@deps_dir, @deps_idx, 'profile.d', 'startup.sh')
     end
 
     def manifest_file
