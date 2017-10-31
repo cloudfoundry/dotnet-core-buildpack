@@ -68,7 +68,7 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.1.0.5.linux-amd64-9ef046d1.tar.gz
   cf_stacks:
   - cflinuxfs2
-  sha256: '0480662707c474bbcbd5fde1f6c7fc20c45483ffbb648d627ee9183f54178d7c'
+  sha256: 0480662707c474bbcbd5fde1f6c7fc20c45483ffbb648d627ee9183f54178d7c
 - name: dotnet-framework
   version: 2.0.0-preview2-25407-01
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.0.0-preview2-25407-01.linux-amd64-cf6b8fd5.tar.gz
