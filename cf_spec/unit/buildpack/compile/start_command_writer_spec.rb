@@ -125,7 +125,7 @@ doesn't matter for these tests
         allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
         allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
         subject.run
-        IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
+        IO.read(File.join(deps_dir, deps_idx, 'profile.d', 'startup.sh'))
       end
 
       let(:web_process) do
@@ -210,7 +210,7 @@ doesn't matter for these tests
         allow_any_instance_of(AspNetCoreBuildpack::DotnetSdkInstaller).to receive(:cached?).and_return(true)
         allow_any_instance_of(AspNetCoreBuildpack::LibunwindInstaller).to receive(:cached?).and_return(true)
         subject.run
-        IO.read(File.join(build_dir, '.profile.d', 'startup.sh'))
+        IO.read(File.join(deps_dir, deps_idx, 'profile.d', 'startup.sh'))
       end
 
       let(:web_process) do
