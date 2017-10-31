@@ -90,7 +90,7 @@ module AspNetCoreBuildpack
     def write_nuget_profile_d(_out)
       profile_dir = File.join(@deps_dir, @deps_idx, 'profile.d')
       FileUtils.mkdir_p(profile_dir)
-      open(File.join(profile_dir, 'nuget'), 'w') do |f|
+      open(File.join(profile_dir, 'nuget.sh'), 'w') do |f|
         f.write "export NUGET_PACKAGES=$DEPS_DIR/#{@deps_idx}/nuget/packages\n\n"
       end
     end
