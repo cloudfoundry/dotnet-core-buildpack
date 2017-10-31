@@ -39,7 +39,7 @@ module AspNetCoreBuildpack
 
       raise 'No project could be identified to run' if start_cmd.nil? || start_cmd.empty?
 
-      write_startup_script(startup_script_path(@build_dir), start_cmd, app.main_project_path)
+      write_startup_script(startup_script_path, start_cmd, app.main_project_path)
       generate_yml(start_cmd, app_root_dir)
     end
 
@@ -88,7 +88,7 @@ EOT
       return start_cmd unless start_cmd.nil?
     end
 
-    def startup_script_path(dir)
+    def startup_script_path
       File.join(@deps_dir, @deps_idx, 'profile.d', 'startup.sh')
     end
 
