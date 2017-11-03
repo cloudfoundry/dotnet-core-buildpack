@@ -125,10 +125,10 @@ dependencies:
   sha256: 3ebcbd894a00624d21e08b87b555975f99b4f408bcc839ba67eb245146b4a163
 - name: node
   version: 6.11.5
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.11.5-linux-x64-b640deb6.tgz
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.11.5-linux-x64-c7adcc32.tgz
+  sha256: c7adcc32173611c3493d255551a631bcea1570da8a2511d240d765fb37fa19a6
   cf_stacks:
   - cflinuxfs2
-  sha256: 6cb7483fe6e52e07048cabe5ba925f7e9d0a85f79c0f4107ad6befd230dffb6e
 exclude_files:
 - ".git/"
 - ".gitignore"
