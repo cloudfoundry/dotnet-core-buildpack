@@ -1,3 +1,12 @@
+v1.0.31 Nov 06, 2017
+=====================
+
+* Store profile.d dir outside app directory on recent BAL
+  (https://www.pivotaltracker.com/story/show/151381690)
+
+* Verify dependency downloads using sha256 instead of md5
+  (https://www.pivotaltracker.com/story/show/151913767)
+
 v1.0.30 Oct 25, 2017
 =====================
 
