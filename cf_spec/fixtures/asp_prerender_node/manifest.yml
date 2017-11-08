@@ -4,5 +4,6 @@
       disk_quota: 1536M
       timeout: 120
       env:
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
         CACHE_NUGET_PACKAGES: false
         INSTALL_NODE: true

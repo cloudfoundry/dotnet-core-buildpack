@@ -2,3 +2,5 @@
   applications:
     - name: asp_vendored
       disk_quota: 1536M
+      env:
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
