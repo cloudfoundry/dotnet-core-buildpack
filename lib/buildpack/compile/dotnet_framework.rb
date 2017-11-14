@@ -41,7 +41,7 @@ module AspNetCoreBuildpack
         out.print("Downloading and installing .NET Core runtime #{version}")
         @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name(version)} /tmp", out)
         @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name(version)} #{buildpack_root}/manifest.yml", out)
-        @shell.exec("mkdir -p #{@dotnet_install_dir}; tar xzf /tmp/#{dependency_name(version)} -C #{@dotnet_install_dir}", out)
+        @shell.exec("mkdir -p #{@dotnet_install_dir}; tar xf /tmp/#{dependency_name(version)} -C #{@dotnet_install_dir}", out)
       end
     end
 
@@ -66,7 +66,7 @@ module AspNetCoreBuildpack
     end
 
     def dependency_name(version)
-      "dotnet-framework.#{version}.linux-amd64.tar.gz"
+      "dotnet-framework.#{version}.linux-amd64.tar.xz"
     end
 
     def versions

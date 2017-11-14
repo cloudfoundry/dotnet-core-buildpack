@@ -52,7 +52,7 @@ module AspNetCoreBuildpack
       out.print(".NET SDK version: #{version}")
       @shell.exec("#{buildpack_root}/compile-extensions/bin/download_dependency #{dependency_name} /tmp", out)
       @shell.exec("#{buildpack_root}/compile-extensions/bin/warn_if_newer_patch #{dependency_name} #{buildpack_root}/manifest.yml", out)
-      @shell.exec("mkdir -p #{dest_dir}; tar xzf /tmp/#{dependency_name} -C #{dest_dir}", out)
+      @shell.exec("mkdir -p #{dest_dir}; tar xf /tmp/#{dependency_name} -C #{dest_dir}", out)
       write_version_file(version)
     end
 
@@ -99,7 +99,7 @@ module AspNetCoreBuildpack
     end
 
     def dependency_name
-      "dotnet.#{version}.linux-amd64.tar.gz"
+      "dotnet.#{version}.linux-amd64.tar.xz"
     end
 
     attr_reader :app_dir

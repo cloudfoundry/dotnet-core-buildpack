@@ -48,12 +48,12 @@ describe AspNetCoreBuildpack::DotnetFramework do
     context 'both required versions not installed' do
       it 'downloads both frameworks with with compile-extensions' do
         expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 4.4.4")
-        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.4.4.4.linux-amd64.tar.gz \/tmp/, out)
-        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.4.4.4.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
+        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.4.4.4.linux-amd64.tar.xz \/tmp/, out)
+        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xf /tmp/dotnet-framework.4.4.4.linux-amd64.tar.xz -C #{dotnet_install_dir}", out)
 
         expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
-        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
-        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
+        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.xz \/tmp/, out)
+        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.xz -C #{dotnet_install_dir}", out)
 
         subject.install(out)
       end
@@ -68,8 +68,8 @@ describe AspNetCoreBuildpack::DotnetFramework do
         expect(out).to receive(:print).with(".NET Core runtime 4.4.4 already installed")
 
         expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
-        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
-        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
+        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.xz \/tmp/, out)
+        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.xz -C #{dotnet_install_dir}", out)
 
         subject.install(out)
       end
@@ -80,8 +80,8 @@ describe AspNetCoreBuildpack::DotnetFramework do
 
       it 'installs the required version' do
         expect(out).to receive(:print).with("Downloading and installing .NET Core runtime 5.5.5")
-        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.gz \/tmp/, out)
-        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xzf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.gz -C #{dotnet_install_dir}", out)
+        expect(shell).to receive(:exec).with(/download_dependency dotnet-framework.5.5.5.linux-amd64.tar.xz \/tmp/, out)
+        expect(shell).to receive(:exec).with("mkdir -p #{dotnet_install_dir}; tar xf /tmp/dotnet-framework.5.5.5.linux-amd64.tar.xz -C #{dotnet_install_dir}", out)
 
         subject.install(out)
       end
