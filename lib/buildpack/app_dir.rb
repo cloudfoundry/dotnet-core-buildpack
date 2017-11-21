@@ -115,7 +115,11 @@ module AspNetCoreBuildpack
     def published_project
       config_files = Dir.glob(File.join(@build_dir, '*.runtimeconfig.json'))
       m = /(.*)[.]runtimeconfig[.]json/i.match(Pathname.new(config_files.first).basename.to_s) if config_files.one?
-      m[1].to_s unless m.nil?
+      return m[1].to_s if m
+
+      config_files = Dir.glob(File.join(@build_dir, '.cloudfoundry', 'dotnet_publish', '*.runtimeconfig.json'))
+      m = /(.*)[.]runtimeconfig[.]json/i.match(Pathname.new(config_files.first).basename.to_s) if config_files.one?
+      return m[1].to_s if m
     end
 
     private

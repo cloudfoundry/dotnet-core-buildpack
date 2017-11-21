@@ -15,12 +15,15 @@ describe AspNetCoreBuildpack::DotnetCli do
   let(:main_project_path) { 'override' }
   let(:app_dir)           { double(:app_dir, main_project_path: main_project_path,
                                              project_paths: project_paths) }
+  let(:sdk_version)       { double(:sdk_version, version: dotnet_sdk_version) }
+  let(:dotnet_sdk_version) { '2.0.0' }
 
   subject { described_class.new(build_dir, deps_dir, deps_idx, installers) }
 
   before do
     allow(AspNetCoreBuildpack).to receive(:shell).and_return(shell)
     allow(AspNetCoreBuildpack::AppDir).to receive(:new).with(build_dir, deps_dir, deps_idx).and_return(app_dir)
+    allow(AspNetCoreBuildpack::DotnetSdkVersion).to receive(:new).and_return(sdk_version)
     allow(shell).to receive(:exec)
   end
 

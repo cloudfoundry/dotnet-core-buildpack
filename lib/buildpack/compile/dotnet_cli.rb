@@ -30,6 +30,7 @@ module AspNetCoreBuildpack
       @installers = installers
       @app_dir = AppDir.new(@build_dir, @deps_dir, @deps_idx)
       @shell = AspNetCoreBuildpack.shell
+      @manifest_file = File.join(File.dirname(__FILE__), '..', '..', '..', 'manifest.yml')
     end
 
     def restore(out)
@@ -60,12 +61,24 @@ module AspNetCoreBuildpack
         tmpdir = File.join(tmpdir, File.basename(@build_dir))
         FileUtils.rm_rf(File.join(tmpdir, '.cloudfoundry'))
 
-        cmd = "bash -c 'cd #{tmpdir}; PATH=$PATH:#{node_modules_paths(tmpdir)}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config}'"
+        cmd = "bash -c 'cd #{tmpdir}; PATH=$PATH:#{node_modules_paths(tmpdir)}; dotnet publish #{main_project} -o #{publish_dir} -c #{publish_config} #{runtime_identifier}'"
         @shell.exec(cmd, out)
       end
     end
 
     private
+
+    def runtime_identifier
+      # rubocop:disable Style/RescueModifier
+      v = Gem::Version.new(sdk_version) rescue nil
+      return '' unless v && v >= Gem::Version.new('2.0.0')
+
+      '-r ubuntu.14.04-x64'
+    end
+
+    def sdk_version
+      @sdk_version ||= DotnetSdkVersion.new(@build_dir, @deps_dir, @deps_idx, @manifest_file).version
+    end
 
     def publish_config
       if ENV['PUBLISH_RELEASE_CONFIG'] == 'true'
