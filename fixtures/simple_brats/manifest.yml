@@ -1,0 +1,6 @@
+---
+  applications:
+    - name: asp_web_app
+      disk_quota: 2G
+      env:
+        CACHE_NUGET_PACKAGES: false

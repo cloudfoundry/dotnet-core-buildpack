@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <DebugType>portable</DebugType>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <AssemblyName>asp_prerender_node</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>asp_prerender_node</PackageId>
+    <RuntimeFrameworkVersion>1.1.2</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="Views; add_numbers.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.*" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="1.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.*" />
+  </ItemGroup>
+
+</Project>

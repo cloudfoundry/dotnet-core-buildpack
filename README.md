@@ -2,87 +2,93 @@
 
 [![CF Slack](https://www.google.com/s2/favicons?domain=www.slack.com) Join us on Slack](https://cloudfoundry.slack.com/messages/buildpacks/)
 
-A Cloud Foundry buildpack for .NET Core applications.
+A Cloud Foundry [buildpack](http://docs.cloudfoundry.org/buildpacks/) for .NET Core applications.
 
 For more information about ASP.NET Core see:
 
 * [ASP.NET Github](https://github.com/aspnet/home)
 * [Introduction to ASP.NET Core](http://docs.asp.net/en/latest/conceptual-overview/aspnet.html)
 
-## Usage
-
-```bash
-cf push my_app -b https://github.com/cloudfoundry/dotnet-core-buildpack.git
-```
-
-## Buildpack User Documentation
+### Buildpack User Documentation
 
 Official buildpack documentation can be found at <http://docs.cloudfoundry.org/buildpacks/dotnet-core/index.html>.
 
-## Building the Buildpack
+### Building the Buildpack
 
-These steps only apply to admins who wish to install the buildpack into their Cloud Foundry deployment. They are meant to be run in a Linux shell and assume that git, Ruby, and the bundler gem are already installed.
+To build this buildpack, run the following command from the buildpack's directory:
 
-1. Make sure you have fetched submodules
+1. Source the .envrc file in the buildpack directory.
 
-  ```bash
-  git submodule update --init
-  ```
+   ```bash
+   source .envrc
+   ```
+   To simplify the process in the future, install [direnv](https://direnv.net/) which will automatically source .envrc when you change directories.
 
-1. Get latest buildpack dependencies
+1. Install buildpack-packager
 
-  ```bash
-  BUNDLE_GEMFILE=cf.Gemfile bundle
-  ```
-
-1. Build the binary dependencies (optional)
-
-  If you need to rebuild these, to change a version for example, see the included Dockerfiles. They contain comments specifying the commands to run. Then update manifest.yml to point to your files.
+    ```bash
+    (cd src/*/vendor/github.com/cloudfoundry/libbuildpack/packager/buildpack-packager && go install)
+    ```
 
 1. Build the buildpack
 
-  `uncached` means the buildpack's binary dependencies will be downloaded the first time an application is staged, and `cached` means they will be packaged in the buildpack ZIP.
-
-  ```bash
-  BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-packager [ --uncached | --cached ]
-  ```
+    ```bash
+    buildpack-packager [ --cached ]
+    ```
 
 1. Use in Cloud Foundry
 
-  Upload the buildpack to your Cloud Foundry and optionally specify it by name
+   Upload the buildpack to your Cloud Foundry and optionally specify it by name
 
-  ```bash
-  cf create-buildpack custom_dotnet-core_buildpack dotnet-core_buildpack-cached-custom.zip 1
-  cf push my_app -b custom_dotnet-core_buildpack
-  ```
+    ```bash
+    cf create-buildpack [BUILDPACK_NAME] [BUILDPACK_ZIP_FILE_PATH] 1
+    cf push my_app [-b BUILDPACK_NAME]
+    ```
 
-## Unit Testing
+### Testing
 
-Having performed the steps from Building:
+Buildpacks use the [Cutlass](https://github.com/cloudfoundry/libbuildpack/cutlass) framework for running integration tests.
 
-```shell
-BUNDLE_GEMFILE=cf.Gemfile bundle exec rake spec
-```
+To test this buildpack, run the following command from the buildpack's directory:
 
-### Integration Testing
+1. Source the .envrc file in the buildpack directory.
 
-Integration tests are run using [Machete](https://github.com/cloudfoundry/machete).
+   ```bash
+   source .envrc
+   ```
+   To simplify the process in the future, install [direnv](https://direnv.net/) which will automatically source .envrc when you change directories.
 
-To run all the tests (unit and integration):
+1. Run unit tests
 
-```bash
-CF_PASSWORD=admin BUNDLE_GEMFILE=cf.Gemfile bundle exec buildpack-build --host=local.pcfdev.io
-```
+    ```bash
+    ./scripts/unit.sh
+    ```
+
+1. Run integration tests
+
+    ```bash
+    ./scripts/integration.sh
+    ```
+
+More information can be found on Github [cutlass](https://github.com/cloudfoundry/libbuildpack/cutlass).
+
+### Contributing
+
+Find our guidelines [here](./CONTRIBUTING.md).
+
+### Help and Support
+
+Join the #buildpacks channel in our [Slack community](http://slack.cloudfoundry.org/) if you need any further assistance.
 
 ## Contributing
 
 Find our guidelines [here](./CONTRIBUTING.md).
 
-## Reporting Issues
+### Reporting Issues
 
-Open an issue on this project.
+Please fill out the issue template fully if you'd like to start an issue for the buildpack.
 
-## Links
+### Links
 
 * [Hello World sample](https://github.com/IBM-Bluemix/aspnet-core-helloworld)
 * [ASP.NET Core 1.0.1](https://github.com/aspnet/Home/releases/tag/1.0.1)
