@@ -1,3 +1,31 @@
+v1.0.32 Nov 29, 2017
+=====================
+
+* Minimize droplet size
+  * Publish with runtime identifier (msbuild & dotnet >= 2)
+  * Remove more directories from droplet
+  (https://www.pivotaltracker.com/story/show/152900057)
+
+* Remove old patch versions of dotnet and dotnetcore
+  Dotnet: 1.1.0, 2.0.0
+  Dotnet Framework: 1.1.1, 1.1.2
+  (https://www.pivotaltracker.com/story/show/153218101)
+
+* Add dotnet 1.1.5
+  (https://www.pivotaltracker.com/story/show/152910108)
+
+* Add dotnet 2.0.3
+  (https://www.pivotaltracker.com/story/show/152897630)
+
+* Convert dotnet dependencies to xz compression
+  (https://www.pivotaltracker.com/story/show/150262247)
+
+* Add DOTNET_CLI_TELEMETRY_OPTOUT=1 to fixtures
+  (https://www.pivotaltracker.com/story/show/151816117)
+
+* Add node 6.12.0, remove node 6.11.5
+  (https://www.pivotaltracker.com/story/show/152648755)
+
 v1.0.31 Nov 06, 2017
 =====================
 
