@@ -131,7 +131,7 @@ msbuild:
         end
 
         it 'picks the latest version of the SDK with fsharp support' do
-          expect(subject.version).to eq('1.1.0')
+          expect(subject.version).to eq('1.1.5')
         end
       end
     end
