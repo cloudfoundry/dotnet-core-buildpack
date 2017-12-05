@@ -3,10 +3,10 @@ language: dotnet-core
 default_versions:
 - name: bower
   version: 1.8.2
-- name: node
-  version: 6.12.0
 - name: dotnet
   version: 1.1.6
+- name: node
+  version: 6.12.1
 url_to_dependency_map:
 - match: dotnet\.(.*)\.linux-amd64\.tar\.xz
   name: dotnet
@@ -99,12 +99,6 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
   sha256: 97f7d8c747de91e4a4438a5de419efa90d3df929f5193e62a6cd682fbc23fb3e
-- name: node
-  version: 6.12.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.12.0-linux-x64-87c5152f.tgz
-  sha256: 87c5152febdd9f4ffa0691e4630a45874c21b63d1b1a7a85cfb765f1da41c8a0
-  cf_stacks:
-  - cflinuxfs2
 - name: dotnet-framework
   version: 2.0.3
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.0.3.linux-amd64-d999854f.tar.xz
@@ -139,6 +133,12 @@ dependencies:
   version: 1.1.6
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.1.6.linux-amd64-ffe6d625.tar.xz
   sha256: ffe6d625405bc2bb4941e9011b6fe1b4435ad4030e7f4b3de641dec75a62cdfc
+  cf_stacks:
+  - cflinuxfs2
+- name: node
+  version: 6.12.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.12.1-linux-x64-234059d2.tgz
+  sha256: 234059d2358264d7e5d0c44ccd4065fe0513313af5ca60e4c951aae69eebff21
   cf_stacks:
   - cflinuxfs2
 exclude_files:
