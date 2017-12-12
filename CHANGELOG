@@ -1,3 +1,13 @@
+v1.0.33 Dec 12, 2017
+=====================
+
+* Add node 6.12.2, remove node 6.12.0
+  (https://www.pivotaltracker.com/story/show/153514063)
+  (https://www.pivotaltracker.com/story/show/153407348)
+
+* Add dotnet 1.1.6
+  (https://www.pivotaltracker.com/story/show/153369967)
+
 v1.0.32 Nov 29, 2017
 =====================
 
