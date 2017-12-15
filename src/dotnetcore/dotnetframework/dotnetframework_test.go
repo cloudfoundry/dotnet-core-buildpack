@@ -48,7 +48,7 @@ var _ = Describe("Dotnetframework", func() {
 		Expect(os.RemoveAll(buildDir)).To(Succeed())
 	})
 
-	FDescribe("Install", func() {
+	Describe("Install", func() {
 		Context("Versions installed == [1.2.3, 4.5.6]", func() {
 			BeforeEach(func() {
 				Expect(os.MkdirAll(filepath.Join(depDir, "shared", "Microsoft.NETCore.App", "1.2.3"), 0755)).To(Succeed())
