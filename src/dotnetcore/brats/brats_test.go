@@ -14,7 +14,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		Skip("No EOL dates in dotnet manifest")
 		return nil
 	})
-	bratshelper.StagingWithADepThatIsNotTheLatest("dotnet", func(v string) *cutlass.App { return CopyBratsWithFramework(v, "1.1.*") })
+	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", "1.1.5", func(v string) *cutlass.App { return CopyBratsWithFramework(v, "1.1.*") })
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-[\da-f]+\.tar.xz`, CopyBrats)
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet", CopyBrats)
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
