@@ -65,7 +65,7 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 
 	// agoutiDriver = agouti.PhantomJS()
 	// agoutiDriver = agouti.Selenium()
-	agoutiDriver = agouti.ChromeDriver(agouti.ChromeOptions("args", []string{"--headless", "--disable-gpu"}))
+	agoutiDriver = agouti.ChromeDriver(agouti.ChromeOptions("args", []string{"--headless", "--disable-gpu", "--no-sandbox"}))
 	Expect(agoutiDriver.Start()).To(Succeed())
 })
 
