@@ -63,9 +63,9 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	cutlass.SeedRandom()
 	cutlass.DefaultStdoutStderr = GinkgoWriter
 
-	agoutiDriver = agouti.PhantomJS()
+	// agoutiDriver = agouti.PhantomJS()
 	// agoutiDriver = agouti.Selenium()
-	// agoutiDriver = agouti.ChromeDriver()
+	agoutiDriver = agouti.ChromeDriver(agouti.ChromeOptions("args", []string{"--headless", "--disable-gpu"}))
 	Expect(agoutiDriver.Start()).To(Succeed())
 })
 
