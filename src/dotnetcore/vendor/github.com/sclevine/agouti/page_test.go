@@ -3,13 +3,16 @@ package agouti_test
 import (
 	"errors"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/sclevine/agouti"
 	"github.com/sclevine/agouti/api"
+	. "github.com/sclevine/agouti/internal/matchers"
 	"github.com/sclevine/agouti/internal/mocks"
 )
 
@@ -24,6 +27,20 @@ var _ = Describe("Page", func() {
 		page = NewTestPage(session)
 	})
 
+	Describe("#String", func() {
+		It("should return 'page'", func() {
+			Expect(page.String()).To(Equal("page"))
+		})
+	})
+
+	Describe("#Session", func() {
+		It("should return the unexported session as a *api.Session", func() {
+			apiSession := &api.Session{}
+			page = NewTestPage(apiSession)
+			Expect(page.Session()).To(ExactlyEqual(apiSession))
+		})
+	})
+
 	Describe("#Destroy", func() {
 		It("should successfully delete the session", func() {
 			Expect(page.Destroy()).To(Succeed())
@@ -34,6 +51,107 @@ var _ = Describe("Page", func() {
 			It("should return an error", func() {
 				session.DeleteCall.Err = errors.New("some error")
 				Expect(page.Destroy()).To(MatchError("failed to destroy session: some error"))
+			})
+		})
+	})
+
+	Describe("#Reset", func() {
+		It("should attempt to confirm a popup box, ignoring any error", func() {
+			session.AcceptAlertCall.Err = errors.New("some error")
+			Expect(page.Reset()).To(Succeed())
+			Expect(session.AcceptAlertCall.Called).To(BeTrue())
+		})
+
+		It("should clear all cookies for the current domain", func() {
+			Expect(page.Reset()).To(Succeed())
+			Expect(session.DeleteCookiesCall.Called).To(BeTrue())
+		})
+
+		It("should clear the local storage for the domain", func() {
+			Expect(page.Reset()).To(Succeed())
+			Expect(session.DeleteLocalStorageCall.Called).To(BeTrue())
+		})
+
+		It("should clear the session storage for the domain", func() {
+			Expect(page.Reset()).To(Succeed())
+			Expect(session.DeleteSessionStorageCall.Called).To(BeTrue())
+		})
+
+		It("should navigate to about:blank", func() {
+			Expect(page.Reset()).To(Succeed())
+			Expect(session.SetURLCall.URL).To(Equal("about:blank"))
+		})
+
+		Context("when the page is already about:blank", func() {
+			It("should confirm a possible popup and immediately return", func() {
+				session.GetURLCall.ReturnURL = "about:blank"
+				Expect(page.Reset()).To(Succeed())
+				Expect(session.AcceptAlertCall.Called).To(BeTrue())
+				Expect(session.DeleteCookiesCall.Called).To(BeFalse())
+				Expect(session.DeleteLocalStorageCall.Called).To(BeFalse())
+				Expect(session.SetURLCall.URL).To(BeEmpty())
+			})
+		})
+
+		Context("when checking the current URL fails", func() {
+			It("should return an error", func() {
+				session.GetURLCall.Err = errors.New("some error")
+				err := page.Reset()
+				Expect(err).To(MatchError("failed to retrieve URL: some error"))
+			})
+		})
+
+		Context("when clearing the cookies fails", func() {
+			It("should return an error", func() {
+				session.DeleteCookiesCall.Err = errors.New("some error")
+				err := page.Reset()
+				Expect(err).To(MatchError("failed to clear cookies: some error"))
+			})
+		})
+
+		Context("when deleting local storage fails", func() {
+			BeforeEach(func() {
+				session.DeleteLocalStorageCall.Err = errors.New("some error")
+			})
+
+			It("should successfully use JavaScript to delete the local storage", func() {
+				Expect(page.Reset()).To(Succeed())
+				Expect(session.ExecuteCall.Body).To(ContainSubstring("localStorage.clear()"))
+			})
+
+			Context("when the javascript fallback fails", func() {
+				It("should return an error", func() {
+					session.ExecuteCall.Err = errors.New("some error")
+					err := page.Reset()
+					Expect(err).To(MatchError("failed to run script: some error"))
+				})
+			})
+		})
+
+		Context("when deleting session storage fails", func() {
+			BeforeEach(func() {
+				session.DeleteSessionStorageCall.Err = errors.New("some error")
+			})
+
+			It("should successfully use JavaScript to delete the session storage", func() {
+				Expect(page.Reset()).To(Succeed())
+				Expect(session.ExecuteCall.Body).To(ContainSubstring("sessionStorage.clear()"))
+			})
+
+			Context("when the javascript fallback fails", func() {
+				It("should return an error", func() {
+					session.ExecuteCall.Err = errors.New("some error")
+					err := page.Reset()
+					Expect(err).To(MatchError("failed to run script: some error"))
+				})
+			})
+		})
+
+		Context("when navigating fails", func() {
+			It("should return an error", func() {
+				session.SetURLCall.Err = errors.New("some error")
+				err := page.Reset()
+				Expect(err).To(MatchError("failed to navigate: some error"))
 			})
 		})
 	})
@@ -52,17 +170,101 @@ var _ = Describe("Page", func() {
 		})
 	})
 
+	Describe("#GetCookies", func() {
+		It("should sucessfully retrieve all cookies from the session", func() {
+			session.GetCookiesCall.ReturnCookies = []*api.Cookie{
+				{
+					Name:     "some cookie",
+					Value:    "some value",
+					Path:     "/",
+					Domain:   "example.com",
+					Secure:   true,
+					HTTPOnly: true,
+					Expiry:   100,
+				},
+				{
+					Name:     "some other cookie",
+					Value:    "some other value",
+					Path:     "/other",
+					Domain:   "other.example.com",
+					Secure:   false,
+					HTTPOnly: false,
+					Expiry:   200,
+				},
+			}
+			Expect(page.GetCookies()).To(Equal([]*http.Cookie{
+				{
+					Name:     "some cookie",
+					Value:    "some value",
+					Path:     "/",
+					Domain:   "example.com",
+					Secure:   true,
+					HttpOnly: true,
+					Expires:  time.Unix(100, 0),
+				},
+				{
+					Name:     "some other cookie",
+					Value:    "some other value",
+					Path:     "/other",
+					Domain:   "other.example.com",
+					Secure:   false,
+					HttpOnly: false,
+					Expires:  time.Unix(200, 0),
+				},
+			}))
+		})
+
+		Context("when retrieving the cookies from the session fails", func() {
+			It("should return an error", func() {
+				session.GetCookiesCall.Err = errors.New("some error")
+				_, err := page.GetCookies()
+				Expect(err).To(MatchError("failed to get cookies: some error"))
+			})
+		})
+	})
+
 	Describe("#SetCookie", func() {
 		It("should successfully instruct the session to add the cookie to the session", func() {
-			Expect(page.SetCookie(Cookie{"name": "some cookie"})).To(Succeed())
-			Expect(session.SetCookieCall.Cookie).To(BeEquivalentTo(Cookie{"name": "some cookie"}))
+			cookie := &http.Cookie{
+				Name:     "some cookie",
+				Value:    "some value",
+				Path:     "/",
+				Domain:   "example.com",
+				Secure:   true,
+				HttpOnly: true,
+				Expires:  time.Unix(100, 0),
+			}
+			Expect(page.SetCookie(cookie)).To(Succeed())
+			Expect(session.SetCookieCall.Cookie).To(Equal(&api.Cookie{
+				Name:     "some cookie",
+				Value:    "some value",
+				Path:     "/",
+				Domain:   "example.com",
+				Secure:   true,
+				HTTPOnly: true,
+				Expiry:   100,
+			}))
+		})
+
+		Context("when the expiry is not provided", func() {
+			It("should default to zero", func() {
+				Expect(page.SetCookie(&http.Cookie{})).To(Succeed())
+				Expect(session.SetCookieCall.Cookie).To(Equal(&api.Cookie{}))
+			})
 		})
 
 		Context("when the session fails to set the cookie", func() {
 			It("should return an error", func() {
 				session.SetCookieCall.Err = errors.New("some error")
-				err := page.SetCookie(Cookie{})
+				err := page.SetCookie(&http.Cookie{})
 				Expect(err).To(MatchError("failed to set cookie: some error"))
+			})
+		})
+
+		Context("when the cookie is nil", func() {
+			It("should return an error", func() {
+				err := page.SetCookie(nil)
+				Expect(err).To(MatchError("nil cookie is invalid"))
 			})
 		})
 	})
@@ -98,9 +300,7 @@ var _ = Describe("Page", func() {
 	Describe("#URL", func() {
 		It("should successfully return the URL of the current page", func() {
 			session.GetURLCall.ReturnURL = "http://example.com"
-			url, err := page.URL()
-			Expect(url).To(Equal("http://example.com"))
-			Expect(err).ToNot(HaveOccurred())
+			Expect(page.URL()).To(Equal("http://example.com"))
 		})
 
 		Context("when the session fails to retrieve the URL", func() {
@@ -146,54 +346,27 @@ var _ = Describe("Page", func() {
 	})
 
 	Describe("#Screenshot", func() {
-		var filename string
-
-		BeforeEach(func() {
-			directory, _ := os.Getwd()
-			filename = filepath.Join(directory, ".test.screenshot.png")
+		It("should successfully saves the screenshot", func() {
+			session.GetScreenshotCall.ReturnImage = []byte("some-image")
+			filename, _ := filepath.Abs(".test.screenshot.png")
+			Expect(page.Screenshot(".test.screenshot.png")).To(Succeed())
+			defer os.Remove(filename)
+			result, _ := ioutil.ReadFile(filename)
+			Expect(string(result)).To(Equal("some-image"))
 		})
 
-		Context("when the file path cannot be constructed", func() {
-			It("should return an error", func() {
-				err := page.Screenshot("\000/a") // try NUL
-				Expect(err).To(MatchError("failed to create directory for screenshot: mkdir \x00: invalid argument"))
-			})
-		})
-
-		Context("when a new screenshot file cannot be created", func() {
+		Context("when a new screenshot file cannot be saved", func() {
 			It("should return an error", func() {
 				err := page.Screenshot("")
-				Expect(err).To(MatchError("failed to create file for screenshot: open : no such file or directory"))
+				Expect(err.Error()).To(ContainSubstring("failed to save screenshot: open"))
 			})
 		})
 
 		Context("when the session fails to retrieve a screenshot", func() {
-			BeforeEach(func() {
+			It("should return an error", func() {
 				session.GetScreenshotCall.Err = errors.New("some error")
-			})
-
-			It("should return an error indicating so", func() {
-				Expect(page.Screenshot(filename)).To(MatchError("failed to retrieve screenshot: some error"))
-			})
-
-			It("should remove the newly-created file", func() {
-				page.Screenshot(filename)
-				_, err := os.Stat(filename)
-				Expect(err).To(HaveOccurred())
-			})
-		})
-
-		Context("when the screenshot cannot be written to a file", func() {
-			// NOTE: would need to cause write-error to test
-		})
-
-		Context("when a screenshot is successfully written to a file", func() {
-			It("should successfully saves the screenshot", func() {
-				session.GetScreenshotCall.ReturnImage = []byte("some-image")
-				Expect(page.Screenshot(filename)).To(Succeed())
-				defer os.Remove(filename)
-				result, _ := ioutil.ReadFile(filename)
-				Expect(string(result)).To(Equal("some-image"))
+				err := page.Screenshot(".test.screenshot.png")
+				Expect(err).To(MatchError("failed to retrieve screenshot: some error"))
 			})
 		})
 	})
@@ -201,9 +374,7 @@ var _ = Describe("Page", func() {
 	Describe("#Title", func() {
 		It("should successfully return the title of the current page", func() {
 			session.GetTitleCall.ReturnTitle = "Some Title"
-			title, err := page.Title()
-			Expect(title).To(Equal("Some Title"))
-			Expect(err).ToNot(HaveOccurred())
+			Expect(page.Title()).To(Equal("Some Title"))
 		})
 
 		Context("when the session fails to retrieve the page title", func() {
@@ -218,9 +389,7 @@ var _ = Describe("Page", func() {
 	Describe("#HTML", func() {
 		It("should return the HTML of the current page", func() {
 			session.GetSourceCall.ReturnSource = "Some HTML"
-			html, err := page.HTML()
-			Expect(html).To(Equal("Some HTML"))
-			Expect(err).ToNot(HaveOccurred())
+			Expect(page.HTML()).To(Equal("Some HTML"))
 		})
 
 		Context("when the session fails to retrieve the page HTML", func() {
@@ -256,7 +425,7 @@ var _ = Describe("Page", func() {
 		})
 
 		It("should be successful", func() {
-			Expect(err).ToNot(HaveOccurred())
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		Context("when running the script fails", func() {
@@ -271,9 +440,7 @@ var _ = Describe("Page", func() {
 	Describe("#PopupText", func() {
 		It("should return the popup text of the popup and succeed", func() {
 			session.GetAlertTextCall.ReturnText = "some popup text"
-			text, err := page.PopupText()
-			Expect(text).To(Equal("some popup text"))
-			Expect(err).ToNot(HaveOccurred())
+			Expect(page.PopupText()).To(Equal("some popup text"))
 		})
 
 		Context("when the session fails to retrieve the page popup text", func() {
@@ -464,7 +631,7 @@ var _ = Describe("Page", func() {
 
 	Describe("#WindowCount", func() {
 		It("should successfully return the number of windows from the session", func() {
-			session.GetWindowsCall.ReturnWindows = []*api.Window{&api.Window{}, &api.Window{}}
+			session.GetWindowsCall.ReturnWindows = []*api.Window{{}, {}}
 			Expect(page.WindowCount()).To(Equal(2))
 		})
 
@@ -494,11 +661,13 @@ var _ = Describe("Page", func() {
 
 		Context("when only new logs are requested", func() {
 			It("should return only new logs with the correct time and code location", func() {
-				session.NewLogsCall.ReturnLogs = []api.Log{api.Log{"old log", "old level", 1418196096123}}
+				session.NewLogsCall.ReturnLogs = []api.Log{
+					{Message: "old log", Level: "old level", Timestamp: 1418196096123},
+				}
 				page.ReadNewLogs("some type")
 				session.NewLogsCall.ReturnLogs = []api.Log{
-					api.Log{"new log (1:22)", "new level", 1418196097543},
-					api.Log{"newer log (:)", "newer level", 1418196098376},
+					{Message: "new log (1:22)", Level: "new level", Timestamp: 1418196097543},
+					{Message: "newer log (:)", Level: "newer level", Timestamp: 1418196098376},
 				}
 
 				logs, err := page.ReadNewLogs("some type")
@@ -518,11 +687,13 @@ var _ = Describe("Page", func() {
 
 	Describe("#ReadAllLogs", func() {
 		It("should call ReadNewLogs and return previously read logs", func() {
-			session.NewLogsCall.ReturnLogs = []api.Log{api.Log{"old log", "old level", 1418196096123}}
+			session.NewLogsCall.ReturnLogs = []api.Log{
+				{Message: "old log", Level: "old level", Timestamp: 1418196096123},
+			}
 			page.ReadNewLogs("some type")
 			session.NewLogsCall.ReturnLogs = []api.Log{
-				api.Log{"new log (1:22)", "new level", 1418196097543},
-				api.Log{"newer log (:)", "newer level", 1418196098376},
+				{Message: "new log (1:22)", Level: "new level", Timestamp: 1418196097543},
+				{Message: "newer log (:)", Level: "newer level", Timestamp: 1418196098376},
 			}
 
 			logs, err := page.ReadAllLogs("some type")
@@ -534,7 +705,9 @@ var _ = Describe("Page", func() {
 		})
 
 		It("should return a copy of the stored logs", func() {
-			session.NewLogsCall.ReturnLogs = []api.Log{api.Log{"some log", "some level", 1418196096123}}
+			session.NewLogsCall.ReturnLogs = []api.Log{
+				{Message: "some log", Level: "some level", Timestamp: 1418196096123},
+			}
 			logs, _ := page.ReadAllLogs("some type")
 			logs[0].Message = "some changed log"
 			logs, _ = page.ReadAllLogs("some type")
@@ -544,7 +717,7 @@ var _ = Describe("Page", func() {
 		Context("when Page#ReadNewLogs fails", func() {
 			It("should return an error", func() {
 				session.NewLogsCall.Err = errors.New("some error")
-				_, err := page.ReadNewLogs("some type")
+				_, err := page.ReadAllLogs("some type")
 				Expect(err).To(MatchError("failed to retrieve logs: some error"))
 			})
 		})
@@ -561,6 +734,65 @@ var _ = Describe("Page", func() {
 				session.GetLogTypesCall.Err = errors.New("some error")
 				_, err := page.LogTypes()
 				Expect(err).To(MatchError("failed to retrieve log types: some error"))
+			})
+		})
+	})
+
+	Describe("#MoveMouseBy", func() {
+		It("should successfully instruct the session to move the mouse by the provided offset", func() {
+			Expect(page.MoveMouseBy(100, 200)).To(Succeed())
+			Expect(session.MoveToCall.Offset).To(Equal(api.XYOffset{X: 100, Y: 200}))
+		})
+
+		Context("when moving the mouse fails", func() {
+			It("should return an error", func() {
+				session.MoveToCall.Err = errors.New("some error")
+				Expect(page.MoveMouseBy(100, 200)).To(MatchError("failed to move mouse: some error"))
+			})
+		})
+	})
+
+	Describe("#DoubleClick", func() {
+		It("should successfully instruct the session to double click", func() {
+			Expect(page.DoubleClick()).To(Succeed())
+			Expect(session.DoubleClickCall.Called).To(BeTrue())
+		})
+
+		Context("when double clicking fails", func() {
+			It("should return an error", func() {
+				session.DoubleClickCall.Err = errors.New("some error")
+				Expect(page.DoubleClick()).To(MatchError("failed to double click: some error"))
+			})
+		})
+	})
+
+	Describe("#Click", func() {
+		It("should successfully instruct the session to click on the provided button for each event type", func() {
+			Expect(page.Click(SingleClick, LeftButton)).To(Succeed())
+			Expect(page.Click(HoldClick, RightButton)).To(Succeed())
+			Expect(page.Click(ReleaseClick, MiddleButton)).To(Succeed())
+
+			Expect(session.ClickCall.Button).To(Equal(api.LeftButton))
+			Expect(session.ButtonDownCall.Button).To(Equal(api.RightButton))
+			Expect(session.ButtonUpCall.Button).To(Equal(api.MiddleButton))
+		})
+
+		Context("when double clicking fails", func() {
+			It("should return an error of each event type", func() {
+				session.ClickCall.Err = errors.New("some click error")
+				session.ButtonDownCall.Err = errors.New("some button down error")
+				session.ButtonUpCall.Err = errors.New("some button up error")
+
+				Expect(page.Click(SingleClick, LeftButton)).To(MatchError("failed to single click left mouse button: some click error"))
+				Expect(page.Click(HoldClick, RightButton)).To(MatchError("failed to hold right mouse button: some button down error"))
+				Expect(page.Click(ReleaseClick, MiddleButton)).To(MatchError("failed to release middle mouse button: some button up error"))
+			})
+		})
+
+		Context("when the click event is invalid", func() {
+			It("should return an error", func() {
+				err := page.Click(-1, -1)
+				Expect(err).To(MatchError("failed to unknown unknown: invalid touch event"))
 			})
 		})
 	})

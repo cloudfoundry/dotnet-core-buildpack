@@ -59,8 +59,13 @@ type Session struct {
 		Err         error
 	}
 
+	GetCookiesCall struct {
+		ReturnCookies []*api.Cookie
+		Err           error
+	}
+
 	SetCookieCall struct {
-		Cookie map[string]interface{}
+		Cookie *api.Cookie
 		Err    error
 	}
 
@@ -92,11 +97,6 @@ type Session struct {
 	GetSourceCall struct {
 		ReturnSource string
 		Err          error
-	}
-
-	DoubleClickCall struct {
-		Called bool
-		Err    error
 	}
 
 	MoveToCall struct {
@@ -167,6 +167,97 @@ type Session struct {
 		ReturnTypes []string
 		Err         error
 	}
+
+	DoubleClickCall struct {
+		Called bool
+		Err    error
+	}
+
+	ClickCall struct {
+		Button api.Button
+		Err    error
+	}
+
+	ButtonDownCall struct {
+		Button api.Button
+		Err    error
+	}
+
+	ButtonUpCall struct {
+		Button api.Button
+		Err    error
+	}
+
+	TouchDownCall struct {
+		X   int
+		Y   int
+		Err error
+	}
+
+	TouchUpCall struct {
+		X   int
+		Y   int
+		Err error
+	}
+
+	TouchMoveCall struct {
+		X   int
+		Y   int
+		Err error
+	}
+
+	TouchScrollCall struct {
+		Element *api.Element
+		Offset  api.Offset
+		Err     error
+	}
+
+	TouchClickCall struct {
+		Element *api.Element
+		Err     error
+	}
+
+	TouchFlickCall struct {
+		Element *api.Element
+		Offset  api.Offset
+		Speed   api.Speed
+		Err     error
+	}
+
+	TouchDoubleClickCall struct {
+		Element *api.Element
+		Err     error
+	}
+
+	TouchLongClickCall struct {
+		Element *api.Element
+		Err     error
+	}
+
+	DeleteLocalStorageCall struct {
+		Called bool
+		Err    error
+	}
+
+	DeleteSessionStorageCall struct {
+		Called bool
+		Err    error
+	}
+
+	SetImplicitWaitCall struct {
+		Called bool
+		Err    error
+	}
+
+	SetPageLoadCall struct {
+		Called bool
+		Err    error
+	}
+
+	SetScriptTimeoutCall struct {
+		Called bool
+		Err    error
+	}
 }
 
 func (s *Session) Delete() error {
@@ -215,7 +306,11 @@ func (s *Session) GetScreenshot() ([]byte, error) {
 	return s.GetScreenshotCall.ReturnImage, s.GetScreenshotCall.Err
 }
 
-func (s *Session) SetCookie(cookie map[string]interface{}) error {
+func (s *Session) GetCookies() ([]*api.Cookie, error) {
+	return s.GetCookiesCall.ReturnCookies, s.GetCookiesCall.Err
+}
+
+func (s *Session) SetCookie(cookie *api.Cookie) error {
 	s.SetCookieCall.Cookie = cookie
 	return s.SetCookieCall.Err
 }
@@ -245,11 +340,6 @@ func (s *Session) GetTitle() (string, error) {
 
 func (s *Session) GetSource() (string, error) {
 	return s.GetSourceCall.ReturnSource, s.GetSourceCall.Err
-}
-
-func (s *Session) DoubleClick() error {
-	s.DoubleClickCall.Called = true
-	return s.DoubleClickCall.Err
 }
 
 func (s *Session) MoveTo(element *api.Element, offset api.Offset) error {
@@ -316,4 +406,95 @@ func (s *Session) NewLogs(logType string) ([]api.Log, error) {
 
 func (s *Session) GetLogTypes() ([]string, error) {
 	return s.GetLogTypesCall.ReturnTypes, s.GetLogTypesCall.Err
+}
+
+func (s *Session) DoubleClick() error {
+	s.DoubleClickCall.Called = true
+	return s.DoubleClickCall.Err
+}
+
+func (s *Session) Click(button api.Button) error {
+	s.ClickCall.Button = button
+	return s.ClickCall.Err
+}
+
+func (s *Session) ButtonDown(button api.Button) error {
+	s.ButtonDownCall.Button = button
+	return s.ButtonDownCall.Err
+}
+
+func (s *Session) ButtonUp(button api.Button) error {
+	s.ButtonUpCall.Button = button
+	return s.ButtonUpCall.Err
+}
+
+func (s *Session) TouchDown(x, y int) error {
+	s.TouchDownCall.X = x
+	s.TouchDownCall.Y = y
+	return s.TouchDownCall.Err
+}
+
+func (s *Session) TouchUp(x, y int) error {
+	s.TouchUpCall.X = x
+	s.TouchUpCall.Y = y
+	return s.TouchUpCall.Err
+}
+
+func (s *Session) TouchMove(x, y int) error {
+	s.TouchMoveCall.X = x
+	s.TouchMoveCall.Y = y
+	return s.TouchMoveCall.Err
+}
+
+func (s *Session) TouchClick(element *api.Element) error {
+	s.TouchClickCall.Element = element
+	return s.TouchClickCall.Err
+}
+
+func (s *Session) TouchDoubleClick(element *api.Element) error {
+	s.TouchDoubleClickCall.Element = element
+	return s.TouchDoubleClickCall.Err
+}
+
+func (s *Session) TouchLongClick(element *api.Element) error {
+	s.TouchLongClickCall.Element = element
+	return s.TouchLongClickCall.Err
+}
+
+func (s *Session) TouchFlick(element *api.Element, offset api.Offset, speed api.Speed) error {
+	s.TouchFlickCall.Element = element
+	s.TouchFlickCall.Offset = offset
+	s.TouchFlickCall.Speed = speed
+	return s.TouchFlickCall.Err
+}
+
+func (s *Session) TouchScroll(element *api.Element, offset api.Offset) error {
+	s.TouchScrollCall.Element = element
+	s.TouchScrollCall.Offset = offset
+	return s.TouchScrollCall.Err
+}
+
+func (s *Session) DeleteLocalStorage() error {
+	s.DeleteLocalStorageCall.Called = true
+	return s.DeleteLocalStorageCall.Err
+}
+
+func (s *Session) DeleteSessionStorage() error {
+	s.DeleteSessionStorageCall.Called = true
+	return s.DeleteSessionStorageCall.Err
+}
+
+func (s *Session) SetImplicitWait(timeout int) error {
+	s.SetImplicitWaitCall.Called = true
+	return s.SetImplicitWaitCall.Err
+}
+
+func (s *Session) SetPageLoad(timeout int) error {
+	s.SetPageLoadCall.Called = true
+	return s.SetPageLoadCall.Err
+}
+
+func (s *Session) SetScriptTimeout(timeout int) error {
+	s.SetScriptTimeoutCall.Called = true
+	return s.SetScriptTimeoutCall.Err
 }

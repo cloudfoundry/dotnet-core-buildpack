@@ -10,6 +10,10 @@
   branch = "master"
 
 [[constraint]]
+  name = "github.com/sclevine/agouti"
+  branch = "master"
+
+[[constraint]]
   name = "github.com/golang/mock"
   branch = "master"
 

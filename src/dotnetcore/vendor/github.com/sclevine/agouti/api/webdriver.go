@@ -2,22 +2,25 @@ package api
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
-	"github.com/sclevine/agouti/api/internal/bus"
 	"github.com/sclevine/agouti/api/internal/service"
 )
 
 type WebDriver struct {
-	Timeout  time.Duration
-	Service  driverService
-	sessions []*Session
+	Timeout    time.Duration
+	Debug      bool
+	HTTPClient *http.Client
+	service    driverService
+	sessions   []*Session
 }
 
 type driverService interface {
-	URL() (string, error)
-	Start(timeout time.Duration) error
+	URL() string
+	Start(debug bool) error
 	Stop() error
+	WaitForBoot(timeout time.Duration) error
 }
 
 func NewWebDriver(url string, command []string) *WebDriver {
@@ -27,30 +30,38 @@ func NewWebDriver(url string, command []string) *WebDriver {
 	}
 
 	return &WebDriver{
-		Timeout: 5 * time.Second,
-		Service: driverService,
+		Timeout: 10 * time.Second,
+		service: driverService,
 	}
 }
 
+func (w *WebDriver) URL() string {
+	return w.service.URL()
+}
+
 func (w *WebDriver) Open(desiredCapabilites map[string]interface{}) (*Session, error) {
-	url, err := w.Service.URL()
-	if err != nil {
-		return nil, fmt.Errorf("cannot retrieve URL: %s", err)
+	url := w.service.URL()
+	if url == "" {
+		return nil, fmt.Errorf("service not started")
 	}
 
-	busClient, err := bus.Connect(url, desiredCapabilites)
+	session, err := OpenWithClient(url, desiredCapabilites, w.HTTPClient)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect: %s", err)
+		return nil, err
 	}
 
-	session := &Session{busClient}
 	w.sessions = append(w.sessions, session)
 	return session, nil
 }
 
 func (w *WebDriver) Start() error {
-	if err := w.Service.Start(w.Timeout); err != nil {
+	if err := w.service.Start(w.Debug); err != nil {
 		return fmt.Errorf("failed to start service: %s", err)
+	}
+
+	if err := w.service.WaitForBoot(w.Timeout); err != nil {
+		w.service.Stop()
+		return err
 	}
 
 	return nil
@@ -61,7 +72,7 @@ func (w *WebDriver) Stop() error {
 		session.Delete()
 	}
 
-	if err := w.Service.Stop(); err != nil {
+	if err := w.service.Stop(); err != nil {
 		return fmt.Errorf("failed to stop service: %s", err)
 	}
 
