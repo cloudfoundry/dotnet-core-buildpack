@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"path/filepath"
+	"time"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -27,7 +28,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("compiles both apps", func() {
 			PushAppAndConfirm(app)
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello, I'm a string!"))
-			Expect(app.Stdout.String()).To(ContainSubstring("Hello from a secondary project!"))
+			Eventually(app.Stdout.String, 10*time.Second).Should(ContainSubstring("Hello from a secondary project!"))
 		})
 	})
 })
