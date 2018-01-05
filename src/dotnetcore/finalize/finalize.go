@@ -5,6 +5,7 @@ import (
 	"dotnetcore/project"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -96,6 +97,34 @@ func (f *Finalizer) CleanStagingArea() error {
 			f.Log.Info("Removing %s", dir)
 			if err := os.RemoveAll(filepath.Join(f.Stager.DepDir(), dir)); err != nil {
 				return err
+			}
+			if err := f.removeSymlinksTo(filepath.Join(f.Stager.DepDir(), dir)); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (f *Finalizer) removeSymlinksTo(dir string) error {
+	for _, name := range []string{"bin", "lib"} {
+		files, err := ioutil.ReadDir(filepath.Join(f.Stager.DepDir(), name))
+		if err != nil {
+			return err
+		}
+
+		for _, file := range files {
+			if (file.Mode() & os.ModeSymlink) != 0 {
+				source := filepath.Join(f.Stager.DepDir(), name, file.Name())
+				target, err := os.Readlink(source)
+				if err != nil {
+					return err
+				}
+				if strings.HasPrefix(target, dir) {
+					if err := os.Remove(source); err != nil {
+						return err
+					}
+				}
 			}
 		}
 	}

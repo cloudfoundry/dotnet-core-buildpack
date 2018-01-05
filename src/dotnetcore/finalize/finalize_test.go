@@ -116,4 +116,46 @@ var _ = Describe("Finalize", func() {
 			})
 		})
 	})
+
+	Describe("CleanStagingArea", func() {
+		Context(`The .nuget directory exists with a symlink to it`, func() {
+			BeforeEach(func() {
+				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "bin"), 0755)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "lib"), 0755)).To(Succeed())
+				for _, name := range []string{
+					".nuget/fileA.txt",
+					".nuget/fileB.txt",
+					"other/file.txt",
+				} {
+					Expect(os.MkdirAll(filepath.Dir(filepath.Join(depsDir, depsIdx, name)), 0755)).To(Succeed())
+					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, name), []byte(""), 0644)).To(Succeed())
+					Expect(os.Symlink(filepath.Join(depsDir, depsIdx, name), filepath.Join(depsDir, depsIdx, "bin", filepath.Base(name)))).To(Succeed())
+					Expect(os.Symlink(filepath.Join(depsDir, depsIdx, name), filepath.Join(depsDir, depsIdx, "lib", filepath.Base(name)))).To(Succeed())
+				}
+			})
+
+			It("deletes .nuget directory", func() {
+				Expect(finalizer.CleanStagingArea()).To(Succeed())
+
+				Expect(filepath.Join(depsDir, depsIdx, ".nuget")).ToNot(BeADirectory())
+				Expect(filepath.Join(depsDir, depsIdx, "other", "file.txt")).To(BeARegularFile())
+			})
+
+			It("deletes symlinks to .nuget directory from bin directory", func() {
+				Expect(finalizer.CleanStagingArea()).To(Succeed())
+
+				files, err := filepath.Glob(filepath.Join(depsDir, depsIdx, "bin", "*"))
+				Expect(err).ToNot(HaveOccurred())
+				Expect(files).To(Equal([]string{filepath.Join(depsDir, depsIdx, "bin", "file.txt")}))
+			})
+
+			It("deletes symlinks to .nuget directory from lib directory", func() {
+				Expect(finalizer.CleanStagingArea()).To(Succeed())
+
+				files, err := filepath.Glob(filepath.Join(depsDir, depsIdx, "lib", "*"))
+				Expect(err).ToNot(HaveOccurred())
+				Expect(files).To(Equal([]string{filepath.Join(depsDir, depsIdx, "lib", "file.txt")}))
+			})
+		})
+	})
 })
