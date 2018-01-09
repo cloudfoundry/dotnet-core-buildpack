@@ -50,6 +50,23 @@ func TestBrats(t *testing.T) {
 	RunSpecs(t, "Brats Suite")
 }
 
+func FirstOfVersionLine(line string) string {
+	bpDir, err := cutlass.FindRoot()
+	if err != nil {
+		panic(err)
+	}
+	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
+	if err != nil {
+		panic(err)
+	}
+	deps := manifest.AllDependencyVersions("dotnet")
+	versions, err := libbuildpack.FindMatchingVersions(line, deps)
+	if err != nil {
+		panic(err)
+	}
+	return versions[0]
+}
+
 func CopyBratsWithFramework(sdkVersion, frameworkVersion string) *cutlass.App {
 	manifest, err := libbuildpack.NewManifest(bratshelper.Data.BpDir, nil, time.Now())
 	Expect(err).ToNot(HaveOccurred())
