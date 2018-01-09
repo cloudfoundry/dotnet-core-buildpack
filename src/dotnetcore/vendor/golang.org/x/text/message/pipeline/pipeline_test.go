@@ -14,10 +14,16 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"golang.org/x/text/language"
 )
 
 var genFiles = flag.Bool("gen", false, "generate output files instead of comparing")
+
+// setHelper is testing.T.Helper on Go 1.9+, overridden by go19_test.go.
+var setHelper = func(t *testing.T) {}
 
 func TestFullCycle(t *testing.T) {
 	const path = "./testdata"
@@ -28,7 +34,7 @@ func TestFullCycle(t *testing.T) {
 	for _, f := range dirs {
 		t.Run(f.Name(), func(t *testing.T) {
 			chk := func(t *testing.T, err error) {
-				t.Helper()
+				setHelper(t)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -36,21 +42,22 @@ func TestFullCycle(t *testing.T) {
 			dir := filepath.Join(path, f.Name())
 			pkgPath := fmt.Sprintf("%s/%s", path, f.Name())
 			config := Config{
-				Packages:   []string{pkgPath},
-				Dir:        filepath.Join(dir, "locales"),
-				GenFile:    "catalog_gen.go",
-				GenPackage: pkgPath,
+				SourceLanguage: language.AmericanEnglish,
+				Packages:       []string{pkgPath},
+				Dir:            filepath.Join(dir, "locales"),
+				GenFile:        "catalog_gen.go",
+				GenPackage:     pkgPath,
 			}
 			// TODO: load config if available.
 			s, err := Extract(&config)
 			chk(t, err)
 			chk(t, s.Import())
-			// chk(t, s.Merge()) // TODO
+			chk(t, s.Merge())
 			// TODO:
 			//  for range s.Config.Actions {
 			//  	//  TODO: do the actions.
 			//  }
-			// chk(t, s.Export()) // TODO
+			chk(t, s.Export())
 			chk(t, s.Generate())
 
 			writeJSON(t, filepath.Join(dir, "extracted.gotext.json"), s.Extracted)
@@ -85,9 +92,15 @@ func checkOutput(t *testing.T, p string) {
 			scanGot := bufio.NewScanner(bytes.NewReader(got))
 			scanWant := bufio.NewScanner(bytes.NewReader(want))
 			line := 0
+			clean := func(s string) string {
+				if i := strings.LastIndex(s, "//"); i != -1 {
+					s = s[:i]
+				}
+				return path.Clean(filepath.ToSlash(s))
+			}
 			for scanGot.Scan() && scanWant.Scan() {
-				got := path.Clean(filepath.ToSlash(scanGot.Text()))
-				want := path.Clean(filepath.ToSlash(scanWant.Text()))
+				got := clean(scanGot.Text())
+				want := clean(scanWant.Text())
 				if got != want {
 					t.Errorf("file %q differs from .want file at line %d:\n\t%s\n\t%s", gotFile, line, got, want)
 					break
