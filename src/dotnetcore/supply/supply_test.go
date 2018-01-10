@@ -266,7 +266,9 @@ var _ = Describe("Supply", func() {
 			})
 
 			It("returns the fsharp compatible dotnet version", func() {
-				fSharpDep := libbuildpack.Dependency{Name: "dotnet", Version: "1.1.5"}
+				mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"1.0.4", "1.1.6", "1.1.7", "1.1.5", "2.0.0"})
+
+				fSharpDep := libbuildpack.Dependency{Name: "dotnet", Version: "1.1.7"}
 				mockManifest.EXPECT().InstallDependency(fSharpDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 				Expect(supplier.InstallDotnet()).To(Succeed())
