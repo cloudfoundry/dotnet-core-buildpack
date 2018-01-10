@@ -265,7 +265,7 @@ func (s *Supplier) InstallDotnet() error {
 		if found, err := s.Project.IsFsharp(); err != nil {
 			return err
 		} else if found {
-			installVersion = "1.1.5" // FIXME: Should it be 1.1.x ?
+			installVersion = "1.1.7" // FIXME: Should be 1.1.x, which requires a new manifest method
 		} else {
 			dep, err := s.Manifest.DefaultVersion("dotnet")
 			if err != nil {
