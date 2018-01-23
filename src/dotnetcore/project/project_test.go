@@ -135,7 +135,7 @@ var _ = Describe("Project", func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
 			})
 
-			It("returns the runtimeconfig file", func() {
+			It("returns the runtimeconfig file without extension", func() {
 				configFile, err := subject.MainPath()
 				Expect(err).To(BeNil())
 				Expect(configFile).To(Equal(filepath.Join(buildDir, "fred")))
@@ -153,7 +153,7 @@ var _ = Describe("Project", func() {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, "subdir", "first.csproj")), 0755)).To(Succeed())
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "first.csproj"), []byte(""), 0644)).To(Succeed())
 			})
-			It("returns that one path", func() {
+			It("returns that one path without extension", func() {
 				path, err := subject.MainPath()
 				Expect(err).To(BeNil())
 				Expect(path).To(Equal(filepath.Join("subdir", "first")))
@@ -179,7 +179,7 @@ var _ = Describe("Project", func() {
 				BeforeEach(func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, ".deployment"), []byte("[config]\nproject = ./a/b/first.vbproj"), 0644)).To(Succeed())
 				})
-				It("returns the path specified in the .deployment file.", func() {
+				It("returns the path specified in the .deployment file without extension", func() {
 					path, err := subject.MainPath()
 					Expect(err).To(BeNil())
 					Expect(path).To(Equal(filepath.Join(buildDir, "a", "b", "first")))
