@@ -76,7 +76,7 @@ func (p *Project) MainPath() (string, error) {
 	if runtimeConfigFile, err := p.RuntimeConfigFile(); err != nil {
 		return "", err
 	} else if runtimeConfigFile != "" {
-		return runtimeConfigFile, nil
+		return strings.Replace(runtimeConfigFile, ".runtimeconfig.json", "", 1), nil
 	}
 	paths, err := p.Paths()
 	if err != nil {
@@ -84,7 +84,7 @@ func (p *Project) MainPath() (string, error) {
 	}
 
 	if len(paths) == 1 {
-		return paths[0], nil
+		return paths[0][0: strings.LastIndex(paths[0], ".")], nil
 	} else if len(paths) > 1 {
 		if exists, err := libbuildpack.FileExists(filepath.Join(p.buildDir, ".deployment")); err != nil {
 			return "", err
@@ -101,7 +101,8 @@ func (p *Project) MainPath() (string, error) {
 			if err != nil {
 				return "", err
 			}
-			return filepath.Join(p.buildDir, strings.Trim(project.String(), ".")), nil
+			trim := strings.Trim(project.String(), ".")
+			return filepath.Join(p.buildDir, trim[0: strings.LastIndex(trim, ".")]), nil
 		}
 		return "", fmt.Errorf("Multiple paths: %v contain a project file, but no .deployment file was used", paths)
 	}
@@ -145,5 +146,5 @@ func (p *Project) StartCommand() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return p.PublishedStartCommand(strings.Split(filepath.Base(projectPath), ".")[0])
+	return p.PublishedStartCommand(filepath.Base(projectPath))
 }

@@ -138,7 +138,7 @@ var _ = Describe("Project", func() {
 			It("returns the runtimeconfig file", func() {
 				configFile, err := subject.MainPath()
 				Expect(err).To(BeNil())
-				Expect(configFile).To(Equal(filepath.Join(buildDir, "fred.runtimeconfig.json")))
+				Expect(configFile).To(Equal(filepath.Join(buildDir, "fred")))
 			})
 		})
 		Context("No project path in paths", func() {
@@ -156,7 +156,7 @@ var _ = Describe("Project", func() {
 			It("returns that one path", func() {
 				path, err := subject.MainPath()
 				Expect(err).To(BeNil())
-				Expect(path).To(Equal(filepath.Join("subdir", "first.csproj")))
+				Expect(path).To(Equal(filepath.Join("subdir", "first")))
 			})
 		})
 		Context("More than one project path in paths", func() {
@@ -182,7 +182,7 @@ var _ = Describe("Project", func() {
 				It("returns the path specified in the .deployment file.", func() {
 					path, err := subject.MainPath()
 					Expect(err).To(BeNil())
-					Expect(path).To(Equal(filepath.Join(buildDir, "a", "b", "first.vbproj")))
+					Expect(path).To(Equal(filepath.Join(buildDir, "a", "b", "first")))
 				})
 			})
 
