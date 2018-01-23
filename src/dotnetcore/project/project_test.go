@@ -179,7 +179,7 @@ var _ = Describe("Project", func() {
 				BeforeEach(func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, ".deployment"), []byte("[config]\nproject = ./a/b/first.vbproj"), 0644)).To(Succeed())
 				})
-				It("returns the path specified in the .deployment file.", func() {
+				It("returns the path specified in the .deployment file", func() {
 					path, err := subject.MainPath()
 					Expect(err).To(BeNil())
 					Expect(path).To(Equal(filepath.Join(buildDir, "a", "b", "first.vbproj")))
