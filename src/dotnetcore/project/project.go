@@ -76,7 +76,7 @@ func (p *Project) MainPath() (string, error) {
 	if runtimeConfigFile, err := p.RuntimeConfigFile(); err != nil {
 		return "", err
 	} else if runtimeConfigFile != "" {
-		return strings.Replace(runtimeConfigFile, ".runtimeconfig.json", "", 1), nil
+		return runtimeConfigFile, nil
 	}
 	paths, err := p.Paths()
 	if err != nil {
@@ -84,7 +84,7 @@ func (p *Project) MainPath() (string, error) {
 	}
 
 	if len(paths) == 1 {
-		return paths[0][0: strings.LastIndex(paths[0], ".")], nil
+		return paths[0], nil
 	} else if len(paths) > 1 {
 		if exists, err := libbuildpack.FileExists(filepath.Join(p.buildDir, ".deployment")); err != nil {
 			return "", err
@@ -101,8 +101,7 @@ func (p *Project) MainPath() (string, error) {
 			if err != nil {
 				return "", err
 			}
-			trim := strings.Trim(project.String(), ".")
-			return filepath.Join(p.buildDir, trim[0: strings.LastIndex(trim, ".")]), nil
+			return filepath.Join(p.buildDir, strings.Trim(project.String(), ".")), nil
 		}
 		return "", fmt.Errorf("Multiple paths: %v contain a project file, but no .deployment file was used", paths)
 	}
@@ -112,31 +111,35 @@ func (p *Project) MainPath() (string, error) {
 func (p *Project) PublishedStartCommand(projectPath string) (string, error) {
 	var publishedPath string
 	var runtimePath string
+	var command string
 
 	if published, err := p.IsPublished(); err != nil {
 		return "", err
 	} else if published {
 		publishedPath = p.buildDir
 		runtimePath = "${HOME}"
+		command = strings.Replace(projectPath, ".runtimeconfig.json", "", 1)
 	} else {
 		publishedPath = filepath.Join(p.depDir, "dotnet_publish")
 		runtimePath = filepath.Join("${DEPS_DIR}", p.depsIdx, "dotnet_publish")
+		trim := strings.Trim(projectPath, ".")
+		command = trim[0: strings.LastIndex(trim, ".")]
 	}
 
-	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, projectPath)); err != nil {
+	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, command)); err != nil {
 		return "", nil
 	} else if exists {
-		if err := os.Chmod(filepath.Join(filepath.Join(publishedPath, projectPath)), 0755); err != nil {
+		if err := os.Chmod(filepath.Join(filepath.Join(publishedPath, command)), 0755); err != nil {
 
 			return "", nil
 		}
-		return filepath.Join(runtimePath, projectPath), nil
+		return filepath.Join(runtimePath, command), nil
 	}
 
-	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, fmt.Sprintf("%s.dll", projectPath))); err != nil {
+	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, fmt.Sprintf("%s.dll", command))); err != nil {
 		return "", nil
 	} else if exists {
-		return fmt.Sprintf("%s.dll", filepath.Join(runtimePath, projectPath)), nil
+		return fmt.Sprintf("%s.dll", filepath.Join(runtimePath, command)), nil
 	}
 	return "", nil
 }
