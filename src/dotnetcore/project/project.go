@@ -124,7 +124,7 @@ func (p *Project) PublishedStartCommand(projectPath string) (string, error) {
 		runtimePath = filepath.Join("${DEPS_DIR}", p.depsIdx, "dotnet_publish")
 
 		trim := strings.Trim(projectPath, ".")
-		if (strings.Contains(projectPath, ".")) {
+		if (strings.Contains(trim, ".")) {
 			command = trim[0: strings.LastIndex(trim, ".")]
 		}
 		command = trim
