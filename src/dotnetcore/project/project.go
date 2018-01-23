@@ -122,8 +122,12 @@ func (p *Project) PublishedStartCommand(projectPath string) (string, error) {
 	} else {
 		publishedPath = filepath.Join(p.depDir, "dotnet_publish")
 		runtimePath = filepath.Join("${DEPS_DIR}", p.depsIdx, "dotnet_publish")
+
 		trim := strings.Trim(projectPath, ".")
-		command = trim[0: strings.LastIndex(trim, ".")]
+		if (strings.Contains(projectPath, ".")) {
+			command = trim[0: strings.LastIndex(trim, ".")]
+		}
+		command = trim
 	}
 
 	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, command)); err != nil {
