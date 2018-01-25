@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/cloudfoundry/libbuildpack"
@@ -108,7 +109,7 @@ func (p *Project) MainPath() (string, error) {
 	return "", nil
 }
 
-func (p *Project) PublishedStartCommand(projectPath string) (string, error) {
+func (p *Project) publishedStartCommand(projectPath string) (string, error) {
 	var publishedPath string
 	var runtimePath string
 
@@ -126,7 +127,6 @@ func (p *Project) PublishedStartCommand(projectPath string) (string, error) {
 		return "", nil
 	} else if exists {
 		if err := os.Chmod(filepath.Join(filepath.Join(publishedPath, projectPath)), 0755); err != nil {
-
 			return "", nil
 		}
 		return filepath.Join(runtimePath, projectPath), nil
@@ -144,6 +144,13 @@ func (p *Project) StartCommand() (string, error) {
 	projectPath, err := p.MainPath()
 	if err != nil {
 		return "", err
+	} else if projectPath == "" {
+		return "", nil
 	}
-	return p.PublishedStartCommand(strings.Split(filepath.Base(projectPath), ".")[0])
+
+	re := regexp.MustCompile(`\.(runtimeconfig\.json|[a-z]+proj)$`)
+	projectPath = re.ReplaceAllString(projectPath, "")
+	projectPath = filepath.Base(projectPath)
+
+	return p.publishedStartCommand(projectPath)
 }

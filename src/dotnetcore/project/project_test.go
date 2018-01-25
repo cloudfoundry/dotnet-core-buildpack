@@ -150,7 +150,7 @@ var _ = Describe("Project", func() {
 		})
 		Context("Exactly one project path in paths", func() {
 			BeforeEach(func() {
-				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, "subdir", "first.csproj")), 0755)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "first.csproj"), []byte(""), 0644)).To(Succeed())
 			})
 			It("returns that one path", func() {
@@ -195,7 +195,7 @@ var _ = Describe("Project", func() {
 			})
 		})
 	})
-	Describe("PublishedStartCommand", func() {
+	Describe("StartCommand", func() {
 		Context("The project is published", func() {
 			BeforeEach(func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
@@ -206,7 +206,7 @@ var _ = Describe("Project", func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred"), []byte(""), 0755)).To(Succeed())
 				})
 				It("returns ${HOME}/project", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(filepath.Join("${HOME}", "fred")))
 				})
@@ -216,14 +216,14 @@ var _ = Describe("Project", func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.dll"), []byte(""), 0755)).To(Succeed())
 				})
 				It("returns ${HOME}/project.dll", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(filepath.Join("${HOME}", "fred.dll")))
 				})
 			})
 			Context("An executable for the project does NOT exist, and neither does a dll", func() {
 				It("returns an empty string", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(""))
 				})
@@ -231,14 +231,16 @@ var _ = Describe("Project", func() {
 		})
 		Context("The project is NOT published", func() {
 			BeforeEach(func() {
-				Expect(os.MkdirAll(filepath.Dir(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred")), 0755)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
+				Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte(""), 0644)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
 			})
 			Context("An executable for the project exists", func() {
 				BeforeEach(func() {
 					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred"), []byte(""), 0755)).To(Succeed())
 				})
 				It("returns ${DEPS_DIR}/DepsIdx/project", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred")))
 				})
@@ -248,7 +250,7 @@ var _ = Describe("Project", func() {
 					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred.dll"), []byte(""), 0755)).To(Succeed())
 				})
 				It("returns ${DEPS_DIR}/DepsIdx/project.dll", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred.dll")))
 				})
@@ -256,10 +258,46 @@ var _ = Describe("Project", func() {
 			})
 			Context("An executable for the project does NOT exist, and neither does a dll", func() {
 				It("returns an empty string", func() {
-					startCmd, err := subject.PublishedStartCommand("fred")
+					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(""))
 				})
+			})
+		})
+		Context("The project has multiple dots in its name", func() {
+			Context("It is a published project", func() {
+				BeforeEach(func() {
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "f.red.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "f.red"), []byte(""), 0755)).To(Succeed())
+				})
+				It("returns ${HOME}/project", func() {
+					startCmd, err := subject.StartCommand()
+					Expect(err).To(BeNil())
+					Expect(startCmd).To(Equal(filepath.Join("${HOME}", "f.red")))
+				})
+			})
+			Context("It is not a published project", func() {
+				BeforeEach(func() {
+					Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "f.red.csproj"), []byte(""), 0644)).To(Succeed())
+					Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
+					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "f.red"), []byte(""), 0755)).To(Succeed())
+				})
+				It("returns ${DEPS_DIR}/DepsIdx/dotnet_publish/project", func() {
+					startCmd, err := subject.StartCommand()
+					Expect(err).To(BeNil())
+					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "f.red")))
+				})
+			})
+		})
+		Context("mainPath could be determined", func() {
+			BeforeEach(func() {
+				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
+			})
+			It("returns an empty string", func() {
+				startCmd, err := subject.StartCommand()
+				Expect(err).To(BeNil())
+				Expect(startCmd).To(Equal(""))
 			})
 		})
 	})
