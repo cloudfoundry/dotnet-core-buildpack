@@ -1,3 +1,10 @@
+v2.0.1 Jan 26, 2018
+====================
+
+* Allow dotnet project names with dots (e.g. web.api)
+  (https://www.pivotaltracker.com/story/show/154537266)
+  (https://www.pivotaltracker.com/story/show/154568103)
+
 v2.0.0 Jan 16, 2018
 =====================
 
