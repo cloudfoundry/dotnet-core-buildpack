@@ -251,34 +251,60 @@ func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 
 }
 
-func (s *Supplier) InstallDotnet() error {
+// Turn a semver string into major.minor.x
+// Will turn a.b.c into a.b.x
+// Will not modify strings that don't match a.b.c
+func majorMinorOnly(version string) string {
+	parts := strings.SplitN(version, ".", 3)
+	if len(parts) == 3 {
+		parts[2] = "x" // ignore patch version
+		return strings.Join(parts, ".")
+	}
+	return version
+}
+
+func (s *Supplier) pickVersionToInstall() (string, error) {
+	allVersions := s.Manifest.AllDependencyVersions("dotnet")
+
 	installVersion, err := s.globalJsonSdkVersion()
 	if err != nil {
-		return err
-	} else if installVersion != "" && !contains(s.Manifest.AllDependencyVersions("dotnet"), installVersion) {
-		s.Log.Warning("SDK %s not available", installVersion)
-		s.Log.Info("using the default SDK")
-		installVersion = ""
+		return "", err
 	}
 
-	if installVersion == "" {
-		if found, err := s.Project.IsFsharp(); err != nil {
-			return err
-		} else if found {
-			versions := s.Manifest.AllDependencyVersions("dotnet")
-			installVersion, err = libbuildpack.FindMatchingVersion("1.1.x", versions)
-			if err != nil {
-				return err
-			}
-		} else {
-			dep, err := s.Manifest.DefaultVersion("dotnet")
-			if err != nil {
-				return err
-			}
-			installVersion = dep.Version
+	if contains(allVersions, installVersion) {
+		return installVersion, nil
+	}
+
+	if installVersion != "" {
+		s.Log.Warning("SDK %s not available", installVersion)
+		installVersion = majorMinorOnly(installVersion)
+		installVersion, err = libbuildpack.FindMatchingVersion(installVersion, allVersions)
+		if err == nil {
+			s.Log.Info("using latest version in version line")
+			return installVersion, nil
 		}
 	}
 
+	if found, err := s.Project.IsFsharp(); err != nil {
+		return "", err
+	} else if found {
+		s.Log.Info("using the default FSharp SDK")
+		return libbuildpack.FindMatchingVersion("1.1.x", allVersions)
+	}
+
+	dep, err := s.Manifest.DefaultVersion("dotnet")
+	if err != nil {
+		return "", err
+	}
+	s.Log.Info("using the default SDK")
+	return dep.Version, nil
+}
+
+func (s *Supplier) InstallDotnet() error {
+	installVersion, err := s.pickVersionToInstall()
+	if err != nil {
+		return err
+	}
 	s.Config.DotnetSdkVersion = installVersion
 
 	if err := s.Manifest.InstallDependency(libbuildpack.Dependency{Name: "dotnet", Version: installVersion}, filepath.Join(s.Stager.DepDir(), "dotnet")); err != nil {

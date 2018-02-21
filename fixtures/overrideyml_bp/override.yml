@@ -1,7 +1,7 @@
 dotnet-core:
   dependencies:
   - name: dotnet
-    version: 2.0.99
+    version: 2.1.99
     uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.2.0.99-linux-x64-062d906c.tgz
     file: BUILDPACK_DIR/dotnet.tgz
     sha256: 062d906c87839d03b243e2821e10653c89b4c92878bfe2bf995dec231e117bfc

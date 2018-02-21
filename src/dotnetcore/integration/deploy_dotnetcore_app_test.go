@@ -57,7 +57,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("Logs a warning about using default SDK", func() {
 			PushAppAndConfirm(app)
 			Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.0.0-preview-007 not available"))
-			Expect(app.Stdout.String()).To(ContainSubstring("using the default SDK"))
+			// Expect(app.Stdout.String()).To(ContainSubstring("using the default SDK"))
+			Expect(app.Stdout.String()).To(ContainSubstring("using latest version in version line"))
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 	})

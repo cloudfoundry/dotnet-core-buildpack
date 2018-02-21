@@ -221,16 +221,46 @@ var _ = Describe("Supply", func() {
 
 		Context("global.json", func() {
 			Context("with sdk/version", func() {
-				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+				Context("that is in the buildpack", func() {
+					BeforeEach(func() {
+						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+						mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"6.7.8"})
+					})
+
+					It("installs the requested version", func() {
+						dep := libbuildpack.Dependency{Name: "dotnet", Version: "6.7.8"}
+						mockManifest.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
+
+						Expect(supplier.InstallDotnet()).To(Succeed())
+					})
 				})
 
-				It("returns the requested version", func() {
-					dep := libbuildpack.Dependency{Name: "dotnet", Version: "6.7.8"}
-					mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"6.7.8"})
-					mockManifest.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
+				Context("that is missing, but matches existing version lines", func() {
+					BeforeEach(func() {
+						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
+						mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"1.1.1", "1.2.5", "1.2.6", "1.3.7"})
+					})
 
-					Expect(supplier.InstallDotnet()).To(Succeed())
+					It("installs the latest of the same version line", func() {
+						dep := libbuildpack.Dependency{Name: "dotnet", Version: "1.2.6"}
+						mockManifest.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
+
+						Expect(supplier.InstallDotnet()).To(Succeed())
+					})
+				})
+
+				Context("that is missing, and does not match existing version lines", func() {
+					BeforeEach(func() {
+						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
+						mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"1.1.1", "1.3.7"})
+					})
+
+					It("installs the default version", func() {
+						mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
+						mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
+
+						Expect(supplier.InstallDotnet()).To(Succeed())
+					})
 				})
 			})
 
@@ -239,7 +269,8 @@ var _ = Describe("Supply", func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{}`), 0644)).To(Succeed())
 				})
 
-				It("returns the default version", func() {
+				It("installs the default version", func() {
+					mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{})
 					mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
 					mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
@@ -252,7 +283,8 @@ var _ = Describe("Supply", func() {
 					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`hi mom`), 0644)).To(Succeed())
 				})
 
-				It("returns an error", func() {
+				It("installs an error", func() {
+					mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{})
 					Expect(supplier.InstallDotnet()).ToNot(Succeed())
 				})
 			})
@@ -277,6 +309,7 @@ var _ = Describe("Supply", func() {
 
 		Context("no known version", func() {
 			It("returns the default version", func() {
+				mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{})
 				mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
 				mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
