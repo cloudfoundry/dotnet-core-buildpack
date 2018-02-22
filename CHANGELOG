@@ -1,3 +1,16 @@
+v2.0.3 Feb 22, 2018
+====================
+
+* Set default dotnet sdk to 2.x (previously 2.0.x)
+  If the requested sdk version in global.json is missing, the buildpack
+  will now attempt to find a version in the same major/minor line, before
+  using the default sdk version. (Previously the default sdk version was
+  immediately used)
+  (https://www.pivotaltracker.com/story/show/155288588)
+
+* Add node 6.13.0, remove node 6.12.3
+  (https://www.pivotaltracker.com/story/show/155196463)
+
 v2.0.2 Feb 09, 2018
 ====================
 
