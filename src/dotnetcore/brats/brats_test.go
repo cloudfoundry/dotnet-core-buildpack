@@ -10,10 +10,10 @@ import (
 var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.UnbuiltBuildpack("dotnet", CopyBrats)
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
-	bratshelper.StagingWithBuildpackThatSetsEOL("dotnet", func(_ string) *cutlass.App {
-		Skip("No EOL dates in dotnet manifest")
-		return nil
-	})
+	// bratshelper.StagingWithBuildpackThatSetsEOL("dotnet", func(_ string) *cutlass.App {
+	// 	Skip("No EOL dates in dotnet manifest")
+	// 	return nil
+	// })
 	oldVersion := FirstOfVersionLine("1.1.x")
 	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", oldVersion, func(v string) *cutlass.App { return CopyBratsWithFramework(v, v) })
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-[\da-f]+\.tar.xz`, CopyBrats)
