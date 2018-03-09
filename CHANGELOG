@@ -1,3 +1,15 @@
+v2.0.4 Mar 09, 2018
+====================
+
+* Use manifest cache downloads
+  (https://www.pivotaltracker.com/story/show/155405429)
+
+* Add node 6.13.1, remove node 6.13.0
+  (https://www.pivotaltracker.com/story/show/155758175)
+
+* Document new buildpack-packager build command
+  (https://www.pivotaltracker.com/story/show/155223266)
+
 v2.0.3 Feb 22, 2018
 ====================
 
