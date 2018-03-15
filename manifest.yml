@@ -2,7 +2,7 @@
 language: dotnet-core
 default_versions:
 - name: dotnet
-  version: 2.x
+  version: 2.1.101
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - match: 6\.\d+\.\d+
@@ -117,6 +117,12 @@ dependencies:
   version: 6.13.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.13.1-linux-x64-fc51b8dd.tgz
   sha256: fc51b8dd4a1ea3a3da203658e6c197232f7cb941d3dd90c45567b077bea092b7
+  cf_stacks:
+  - cflinuxfs2
+- name: dotnet
+  version: 2.1.101
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.2.1.101.linux-amd64-091a56fb.tar.xz
+  sha256: 091a56fb95c3e9fe133dc7bd175e752d24efb60d30f66b1725a6ab959fe6b05e
   cf_stacks:
   - cflinuxfs2
 exclude_files: []
