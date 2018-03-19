@@ -2,7 +2,7 @@
 language: dotnet-core
 default_versions:
 - name: dotnet
-  version: 2.1.101
+  version: 2.x
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - match: 6\.\d+\.\d+
