@@ -1,3 +1,9 @@
+v2.0.5 Mar 20, 2018
+====================
+
+* Add dotnet 2.1.101, dotnet-framework 2.0.6
+  (https://www.pivotaltracker.com/story/show/155961413)
+
 v2.0.4 Mar 09, 2018
 ====================
 
