@@ -4,7 +4,7 @@ default_versions:
 - name: dotnet
   version: 2.x
 - name: bower
-  version: 1.8.3
+  version: 1.8.4
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - match: 6\.\d+\.\d+
@@ -152,9 +152,9 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
 - name: bower
-  version: 1.8.3
-  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.3-b556160c.tgz
-  sha256: b556160c4ada83f1c9bb4f12d32b7f8a7a8609d75384e963f3d145eaef43b8a2
+  version: 1.8.4
+  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.4-e5071eca.tgz
+  sha256: e5071eca9d4b69aee04f8dc5cea0304b259b496e969c7e997e8b6fc3089857af
   cf_stacks:
   - cflinuxfs2
 exclude_files: []
