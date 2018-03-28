@@ -79,7 +79,7 @@ func (d *DotnetFramework) requiredVersions() ([]string, error) {
 	} else if !exists {
 		return []string{}, nil
 	}
-	files, err := ioutil.ReadDir(filepath.Join(d.depDir, ".nuget", "packages", "microsoft.netcore.app"))
+	files, err := ioutil.ReadDir(restoredVersionsDir)
 	if err != nil {
 		return []string{}, err
 	}
