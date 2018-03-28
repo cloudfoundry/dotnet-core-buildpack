@@ -3,6 +3,8 @@ language: dotnet-core
 default_versions:
 - name: dotnet
   version: 2.x
+- name: bower
+  version: 1.8.3
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - match: 6\.\d+\.\d+
@@ -11,12 +13,6 @@ dependency_deprecation_dates:
   date: 2019-04-18
   link: https://github.com/nodejs/LTS
 dependencies:
-- name: bower
-  version: 1.8.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.2-eeb038c1.tgz
-  sha256: 6bcf10e9c192fdbd6e89f98e431e095764c8571f66bcd6dd08fbcbd52e8dd722
-  cf_stacks:
-  - cflinuxfs2
 - name: dotnet
   version: 1.0.4
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.0.4.linux-amd64-3fc2cfdb.tar.xz
@@ -153,6 +149,12 @@ dependencies:
   version: 6.14.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.14.0-linux-x64-0017ce02.tgz
   sha256: 0017ce02f3f700a71ace5c572c106549cd81f779985fd8c9cd1ffd8003979596
+  cf_stacks:
+  - cflinuxfs2
+- name: bower
+  version: 1.8.3
+  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.3-b556160c.tgz
+  sha256: b556160c4ada83f1c9bb4f12d32b7f8a7a8609d75384e963f3d145eaef43b8a2
   cf_stacks:
   - cflinuxfs2
 exclude_files: []
