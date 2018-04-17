@@ -145,6 +145,12 @@ dependencies:
   sha256: ebc88a59cb35769b17391bef3c77eabc42d7d19f2702f9872973e2f9f9c0cd77
   cf_stacks:
   - cflinuxfs2
+- name: dotnet-framework
+  version: 1.1.8
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.1.1.8.linux-amd64-eaff1a4d.tar.xz
+  sha256: eaff1a4d04b876446a520d1a3378420f88d720bcff04d73ecd7da8fba16bd485
+  cf_stacks:
+  - cflinuxfs2
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
