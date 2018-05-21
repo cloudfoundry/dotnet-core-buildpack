@@ -17,6 +17,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("The app is portable", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored"))
+			app.Disk = "1536M"
 		})
 
 		It("displays a simple text homepage", func() {
