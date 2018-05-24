@@ -8,23 +8,23 @@ import (
 	"github.com/cloudfoundry/libbuildpack"
 )
 
-type Manifest interface {
+type Installer interface {
 	InstallDependency(libbuildpack.Dependency, string) error
 }
 
 type DotnetFramework struct {
-	depDir   string
-	manifest Manifest
-	logger   *libbuildpack.Logger
-	buildDir string
+	depDir    string
+	installer Installer
+	logger    *libbuildpack.Logger
+	buildDir  string
 }
 
-func New(depDir string, buildDir string, manifest Manifest, logger *libbuildpack.Logger) *DotnetFramework {
+func New(depDir string, buildDir string, installer Installer, logger *libbuildpack.Logger) *DotnetFramework {
 	return &DotnetFramework{
-		depDir:   depDir,
-		manifest: manifest,
-		logger:   logger,
-		buildDir: buildDir,
+		depDir:    depDir,
+		installer: installer,
+		logger:    logger,
+		buildDir:  buildDir,
 	}
 }
 
@@ -102,7 +102,7 @@ func (d *DotnetFramework) isInstalled(version string) (bool, error) {
 }
 
 func (d *DotnetFramework) installFramework(version string) error {
-	if err := d.manifest.InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
+	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
 		return err
 	}
 	return nil

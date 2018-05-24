@@ -21,19 +21,20 @@ import (
 
 var _ = Describe("Supply", func() {
 	var (
-		err          error
-		buildDir     string
-		cacheDir     string
-		depsDir      string
-		depsIdx      string
-		supplier     *supply.Supplier
-		logger       *libbuildpack.Logger
-		buffer       *bytes.Buffer
-		mockCtrl     *gomock.Controller
-		mockManifest *MockManifest
-		mockCommand  *MockCommand
-		installNode  func(string, string)
-		installBower func(string, string)
+		err           error
+		buildDir      string
+		cacheDir      string
+		depsDir       string
+		depsIdx       string
+		supplier      *supply.Supplier
+		logger        *libbuildpack.Logger
+		buffer        *bytes.Buffer
+		mockCtrl      *gomock.Controller
+		mockManifest  *MockManifest
+		mockInstaller *MockInstaller
+		mockCommand   *MockCommand
+		installNode   func(string, string)
+		installBower  func(string, string)
 	)
 
 	BeforeEach(func() {
@@ -55,6 +56,7 @@ var _ = Describe("Supply", func() {
 
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockManifest = NewMockManifest(mockCtrl)
+		mockInstaller = NewMockInstaller(mockCtrl)
 		mockCommand = NewMockCommand(mockCtrl)
 
 		args := []string{buildDir, cacheDir, depsDir, depsIdx}
@@ -63,12 +65,13 @@ var _ = Describe("Supply", func() {
 		cfg := &config.Config{}
 
 		supplier = &supply.Supplier{
-			Stager:   stager,
-			Manifest: mockManifest,
-			Log:      logger,
-			Command:  mockCommand,
-			Project:  project,
-			Config:   cfg,
+			Stager:    stager,
+			Manifest:  mockManifest,
+			Installer: mockInstaller,
+			Log:       logger,
+			Command:   mockCommand,
+			Project:   project,
+			Config:    cfg,
 		}
 
 		installNode = func(dep, nodeDir string) {
@@ -117,7 +120,7 @@ var _ = Describe("Supply", func() {
 				mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "-v").AnyTimes()
 			})
 			It("Installs bower", func() {
-				mockManifest.EXPECT().FetchDependency(libbuildpack.Dependency{Name: "bower", Version: "1.8.2"}, gomock.Any()).Return(nil)
+				mockInstaller.EXPECT().FetchDependency(libbuildpack.Dependency{Name: "bower", Version: "1.8.2"}, gomock.Any()).Return(nil)
 				mockManifest.EXPECT().AllDependencyVersions("bower").AnyTimes().Return([]string{"1.8.2"})
 				Expect(supplier.InstallBower()).To(Succeed())
 			})
@@ -174,7 +177,7 @@ var _ = Describe("Supply", func() {
 				})
 
 				It("Installs node", func() {
-					mockManifest.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
+					mockInstaller.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
 					mockManifest.EXPECT().AllDependencyVersions("node").Return([]string{"6.12.0"})
 					Expect(supplier.InstallNode()).To(Succeed())
 				})
@@ -186,7 +189,7 @@ var _ = Describe("Supply", func() {
 				})
 
 				It("Installs node", func() {
-					mockManifest.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
+					mockInstaller.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
 					mockManifest.EXPECT().AllDependencyVersions("node").AnyTimes().Return([]string{"6.12.0"})
 					Expect(supplier.InstallNode()).To(Succeed())
 				})
@@ -210,7 +213,7 @@ var _ = Describe("Supply", func() {
 			})
 
 			It("Does not re-install node", func() {
-				mockManifest.EXPECT().InstallOnlyVersion("node", nodeTmpDir).Times(0)
+				mockInstaller.EXPECT().InstallOnlyVersion("node", nodeTmpDir).Times(0)
 				Expect(supplier.InstallNode()).To(Succeed())
 			})
 		})
@@ -229,7 +232,7 @@ var _ = Describe("Supply", func() {
 
 					It("installs the requested version", func() {
 						dep := libbuildpack.Dependency{Name: "dotnet", Version: "6.7.8"}
-						mockManifest.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 						Expect(supplier.InstallDotnet()).To(Succeed())
 					})
@@ -243,7 +246,7 @@ var _ = Describe("Supply", func() {
 
 					It("installs the latest of the same version line", func() {
 						dep := libbuildpack.Dependency{Name: "dotnet", Version: "1.2.6"}
-						mockManifest.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 						Expect(supplier.InstallDotnet()).To(Succeed())
 					})
@@ -257,7 +260,7 @@ var _ = Describe("Supply", func() {
 
 					It("installs the default version", func() {
 						mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
-						mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 						Expect(supplier.InstallDotnet()).To(Succeed())
 					})
@@ -272,7 +275,7 @@ var _ = Describe("Supply", func() {
 				It("installs the default version", func() {
 					mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{})
 					mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
-					mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
+					mockInstaller.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 					Expect(supplier.InstallDotnet()).To(Succeed())
 				})
@@ -301,7 +304,7 @@ var _ = Describe("Supply", func() {
 				mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"1.0.4", "1.1.6", "1.1.7", "1.1.5", "2.0.0"})
 
 				fSharpDep := libbuildpack.Dependency{Name: "dotnet", Version: "1.1.7"}
-				mockManifest.EXPECT().InstallDependency(fSharpDep, filepath.Join(depsDir, depsIdx, "dotnet"))
+				mockInstaller.EXPECT().InstallDependency(fSharpDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 				Expect(supplier.InstallDotnet()).To(Succeed())
 			})
@@ -311,7 +314,7 @@ var _ = Describe("Supply", func() {
 			It("returns the default version", func() {
 				mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{})
 				mockManifest.EXPECT().DefaultVersion("dotnet").Return(defaultDep, nil)
-				mockManifest.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
+				mockInstaller.EXPECT().InstallDependency(defaultDep, filepath.Join(depsDir, depsIdx, "dotnet"))
 
 				Expect(supplier.InstallDotnet()).To(Succeed())
 			})

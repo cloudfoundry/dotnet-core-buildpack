@@ -18,14 +18,14 @@ import (
 
 var _ = Describe("Dotnetframework", func() {
 	var (
-		err          error
-		depDir       string
-		buildDir     string
-		subject      *dotnetframework.DotnetFramework
-		mockCtrl     *gomock.Controller
-		mockManifest *MockManifest
-		buffer       *bytes.Buffer
-		logger       *libbuildpack.Logger
+		err           error
+		depDir        string
+		buildDir      string
+		subject       *dotnetframework.DotnetFramework
+		mockCtrl      *gomock.Controller
+		mockInstaller *MockInstaller
+		buffer        *bytes.Buffer
+		logger        *libbuildpack.Logger
 	)
 
 	BeforeEach(func() {
@@ -34,12 +34,12 @@ var _ = Describe("Dotnetframework", func() {
 		Expect(err).To(BeNil())
 
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockManifest = NewMockManifest(mockCtrl)
+		mockInstaller = NewMockInstaller(mockCtrl)
 
 		buffer = new(bytes.Buffer)
 		logger = libbuildpack.NewLogger(ansicleaner.New(buffer))
 
-		subject = dotnetframework.New(depDir, buildDir, mockManifest, logger)
+		subject = dotnetframework.New(depDir, buildDir, mockInstaller, logger)
 	})
 
 	AfterEach(func() {
@@ -73,7 +73,7 @@ var _ = Describe("Dotnetframework", func() {
 					})
 
 					It("installs the additional framework", func() {
-						mockManifest.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
 						Expect(subject.Install()).To(Succeed())
 					})
 				})
@@ -96,7 +96,7 @@ var _ = Describe("Dotnetframework", func() {
 					})
 
 					It("installs the additional framework", func() {
-						mockManifest.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
 						Expect(subject.Install()).To(Succeed())
 					})
 				})

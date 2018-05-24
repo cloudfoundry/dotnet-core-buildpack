@@ -23,10 +23,13 @@ type Command interface {
 
 type Manifest interface {
 	AllDependencyVersions(string) []string
+	DefaultVersion(string) (libbuildpack.Dependency, error)
+}
+
+type Installer interface {
+	FetchDependency(libbuildpack.Dependency, string) error
 	InstallDependency(libbuildpack.Dependency, string) error
 	InstallOnlyVersion(string, string) error
-	DefaultVersion(string) (libbuildpack.Dependency, error)
-	FetchDependency(libbuildpack.Dependency, string) error
 }
 
 type Stager interface {
@@ -42,12 +45,13 @@ type Stager interface {
 }
 
 type Supplier struct {
-	Stager   Stager
-	Manifest Manifest
-	Log      *libbuildpack.Logger
-	Command  Command
-	Config   *config.Config
-	Project  *project.Project
+	Stager    Stager
+	Manifest  Manifest
+	Installer Installer
+	Log       *libbuildpack.Logger
+	Command   Command
+	Config    *config.Config
+	Project   *project.Project
 }
 
 func Run(s *Supplier) error {
@@ -99,7 +103,7 @@ func Run(s *Supplier) error {
 }
 
 func (s *Supplier) InstallLibunwind() error {
-	if err := s.Manifest.InstallOnlyVersion("libunwind", filepath.Join(s.Stager.DepDir(), "libunwind")); err != nil {
+	if err := s.Installer.InstallOnlyVersion("libunwind", filepath.Join(s.Stager.DepDir(), "libunwind")); err != nil {
 		return err
 	}
 
@@ -136,7 +140,7 @@ func (s *Supplier) bowerInstall() error {
 	}
 	defer os.RemoveAll(dir)
 
-	if err := s.Manifest.FetchDependency(dep, filepath.Join(dir, "bower.tar.gz")); err != nil {
+	if err := s.Installer.FetchDependency(dep, filepath.Join(dir, "bower.tar.gz")); err != nil {
 		return err
 	}
 
@@ -166,7 +170,7 @@ func (s *Supplier) InstallNode() error {
 		return err
 	}
 	if shouldInstallNode {
-		if err := s.Manifest.InstallOnlyVersion("node", s.Stager.DepDir()); err != nil {
+		if err := s.Installer.InstallOnlyVersion("node", s.Stager.DepDir()); err != nil {
 			return err
 		}
 		version := s.Manifest.AllDependencyVersions("node")[0]
@@ -307,7 +311,7 @@ func (s *Supplier) InstallDotnet() error {
 	}
 	s.Config.DotnetSdkVersion = installVersion
 
-	if err := s.Manifest.InstallDependency(libbuildpack.Dependency{Name: "dotnet", Version: installVersion}, filepath.Join(s.Stager.DepDir(), "dotnet")); err != nil {
+	if err := s.Installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet", Version: installVersion}, filepath.Join(s.Stager.DepDir(), "dotnet")); err != nil {
 		return err
 	}
 
