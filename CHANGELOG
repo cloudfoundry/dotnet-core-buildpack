@@ -1,3 +1,13 @@
+v2.0.7 Jun 05, 2018
+====================
+
+* Add dotnet 1.1.9, 2.1.201, dotnet-framework 1.0.11, 1.1.8, 2.0.7
+  Remove dotnet 1.1.7, 2.1.101, dotnet-framework 1.0.9, 1.1.6, 2.0.3, 2.0.6
+  (https://www.pivotaltracker.com/story/show/156864957)
+
+* Add node 6.14.2, remove node 6.14.1
+  (https://www.pivotaltracker.com/story/show/157199825)
+
 v2.0.6 Apr 12, 2018
 ====================
 
