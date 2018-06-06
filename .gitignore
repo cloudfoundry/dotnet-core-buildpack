@@ -3,3 +3,4 @@ dotnet-core_buildpack-*.zip
 log/
 /.bin/
 /pkg/
+.idea/
