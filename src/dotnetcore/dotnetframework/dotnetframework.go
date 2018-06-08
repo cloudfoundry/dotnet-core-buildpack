@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack"
+	"os"
+	"strings"
 )
 
 type Installer interface {
@@ -105,6 +107,23 @@ func (d *DotnetFramework) installFramework(version string) error {
 	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
 		return err
 	}
+
+	frameworkDir := filepath.Join(d.depDir, "dotnet", "shared", "Microsoft.NETCore.App")
+
+	files, err := ioutil.ReadDir(frameworkDir)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		if strings.Contains(f.Name(), "-") {
+			strippedName := strings.Split(f.Name(), "-")[0]
+			if err := os.Symlink(filepath.Join(frameworkDir, f.Name()), filepath.Join(frameworkDir, strippedName)); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 

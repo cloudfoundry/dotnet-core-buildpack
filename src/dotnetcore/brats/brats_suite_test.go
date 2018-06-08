@@ -16,6 +16,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"fmt"
 )
 
 func init() {
@@ -89,26 +90,20 @@ func CopyBratsWithFramework(sdkVersion, frameworkVersion string) *cutlass.App {
 		Expect(err).ToNot(HaveOccurred())
 	}
 
-	netCoreApp := "netcoreapp2.0"
-	if strings.HasPrefix(frameworkVersion, "1.1.") {
-		netCoreApp = "netcoreapp1.1"
-	} else if strings.HasPrefix(frameworkVersion, "1.0.") {
-		netCoreApp = "netcoreapp1.0"
-	}
+	versionParts := strings.Split(frameworkVersion, ".")
+	netCoreApp := fmt.Sprintf("netcoreapp%s.%s", versionParts[0], versionParts[1])
 
 	dir, err := cutlass.CopyFixture(filepath.Join(bratshelper.Data.BpDir, "fixtures", "simple_brats"))
 	Expect(err).ToNot(HaveOccurred())
 
-	data, err := ioutil.ReadFile(filepath.Join(dir, "simple_brats.csproj"))
-	Expect(err).ToNot(HaveOccurred())
-	data = bytes.Replace(data, []byte("<%= net_core_app %>"), []byte(netCoreApp), -1)
-	data = bytes.Replace(data, []byte("<%= framework_version %>"), []byte(frameworkVersion), -1)
-	Expect(ioutil.WriteFile(filepath.Join(dir, "simple_brats.csproj"), data, 0644)).To(Succeed())
-
-	data, err = ioutil.ReadFile(filepath.Join(dir, "global.json"))
-	Expect(err).ToNot(HaveOccurred())
-	data = bytes.Replace(data, []byte("<%= sdk_version %>"), []byte(sdkVersion), -1)
-	Expect(ioutil.WriteFile(filepath.Join(dir, "global.json"), data, 0644)).To(Succeed())
+	for _, file := range []string{"simple_brats.csproj", "global.json"} {
+		data, err := ioutil.ReadFile(filepath.Join(dir, file))
+		Expect(err).ToNot(HaveOccurred())
+		data = bytes.Replace(data, []byte("<%= net_core_app %>"), []byte(netCoreApp), -1)
+		data = bytes.Replace(data, []byte("<%= framework_version %>"), []byte(frameworkVersion), -1)
+		data = bytes.Replace(data, []byte("<%= sdk_version %>"), []byte(sdkVersion), -1)
+		Expect(ioutil.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
+	}
 
 	return cutlass.New(dir)
 }
