@@ -92,8 +92,12 @@ func (d *DotnetFramework) requiredVersions() ([]string, error) {
 	return versions, nil
 }
 
+func (d *DotnetFramework) getFrameworkDir() string {
+	return filepath.Join(d.depDir, "dotnet", "shared", "Microsoft.NETCore.App")
+}
+
 func (d *DotnetFramework) isInstalled(version string) (bool, error) {
-	frameworkPath := filepath.Join(d.depDir, "shared", "Microsoft.NETCore.App", version)
+	frameworkPath := filepath.Join(d.getFrameworkDir(), version)
 	if exists, err := libbuildpack.FileExists(frameworkPath); err != nil {
 		return false, err
 	} else if exists {
@@ -108,9 +112,7 @@ func (d *DotnetFramework) installFramework(version string) error {
 		return err
 	}
 
-	frameworkDir := filepath.Join(d.depDir, "dotnet", "shared", "Microsoft.NETCore.App")
-
-	files, err := ioutil.ReadDir(frameworkDir)
+	files, err := ioutil.ReadDir(d.getFrameworkDir())
 	if err != nil {
 		return err
 	}
@@ -118,7 +120,7 @@ func (d *DotnetFramework) installFramework(version string) error {
 	for _, f := range files {
 		if strings.Contains(f.Name(), "-") {
 			strippedName := strings.Split(f.Name(), "-")[0]
-			if err := os.Symlink(filepath.Join(frameworkDir, f.Name()), filepath.Join(frameworkDir, strippedName)); err != nil {
+			if err := os.Symlink(filepath.Join(d.getFrameworkDir(), f.Name()), filepath.Join(d.getFrameworkDir(), strippedName)); err != nil {
 				return err
 			}
 		}
