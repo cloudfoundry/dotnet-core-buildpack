@@ -28,8 +28,9 @@ var _ = Describe("Dotnet buildpack", func() {
 
 		By("installs the correct version of .NET SDK + .NET Framework", func() {
 			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet " + sdkVersion))
-			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-framework " + frameworkVersion))
+			Expect(app.Stdout.String()).To(MatchRegexp("Using dotnet framework installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/%s\\E", frameworkVersion))
 		})
+
 		By("runs a simple webserver", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
