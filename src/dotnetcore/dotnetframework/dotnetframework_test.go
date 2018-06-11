@@ -55,22 +55,6 @@ var _ = Describe("Dotnetframework", func() {
 				Expect(os.MkdirAll(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "4.5.6"), 0755)).To(Succeed())
 			})
 
-			Context("when installed version contains metadata in its semver", func() {
-				BeforeEach(func() {
-					Expect(os.MkdirAll(filepath.Join(depDir, ".nuget", "packages", "microsoft.netcore.app", "7.8.9"), 0755)).To(Succeed())
-				})
-
-				It("symlinks to plain semver", func() {
-					mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet")).Do(func(libbuildpack.Dependency, string) {
-						Expect(os.MkdirAll(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "7.8.9-rtm-foo"), 0755)).To(Succeed())
-					})
-					Expect(subject.Install()).To(Succeed())
-					dest, err := os.Readlink(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "7.8.9"))
-					Expect(err).To(BeNil())
-					Expect(dest).To(Equal(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "7.8.9-rtm-foo")))
-				})
-			})
-
 			Context("when required version is discovered via .runtimeconfig.json", func() {
 				Context("Versions required == [4.5.6]", func() {
 					BeforeEach(func() {
