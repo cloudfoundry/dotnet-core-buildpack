@@ -11,10 +11,6 @@ import (
 var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.UnbuiltBuildpack("dotnet", CopyBrats)
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
-	// bratshelper.StagingWithBuildpackThatSetsEOL("dotnet", func(_ string) *cutlass.App {
-	// 	Skip("No EOL dates in dotnet manifest")
-	// 	return nil
-	// })
 	oldVersion := FirstOfVersionLine("1.1.x")
 	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", oldVersion, func(v string) *cutlass.App { return CopyBratsWithFramework(v, v) })
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-[\da-f]+\.tar.xz`, CopyBrats)
@@ -32,14 +28,16 @@ var _ = Describe("Dotnet buildpack", func() {
 			panic(err)
 		}
 
+		ret := sdk.Major == framework.Major
+
 		sdk2_1_300, _ := semver.Parse("2.1.300")
 		framework2_1_0, _ := semver.Parse("2.1.0")
 
 		if framework.GTE(framework2_1_0) {
-			return sdk.GTE(sdk2_1_300)
+			ret = ret && sdk.GTE(sdk2_1_300)
 		}
 
-		return sdk.Major == framework.Major
+		return ret
 
 	}
 	bratshelper.ForAllSupportedVersions2("dotnet", "dotnet-framework", compatible, "with .NET SDK version: %s and .NET Framework version: %s", CopyBratsWithFramework, func(sdkVersion, frameworkVersion string, app *cutlass.App) {

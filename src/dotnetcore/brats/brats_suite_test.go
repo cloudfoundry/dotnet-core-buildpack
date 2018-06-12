@@ -14,9 +14,9 @@ import (
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
+	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"fmt"
 )
 
 func init() {
@@ -44,6 +44,7 @@ var _ = SynchronizedAfterSuite(func() {
 	Expect(cutlass.DeleteBuildpack(strings.Replace(bratshelper.Data.Cached, "_buildpack", "", 1))).To(Succeed())
 	Expect(cutlass.DeleteBuildpack(strings.Replace(bratshelper.Data.Uncached, "_buildpack", "", 1))).To(Succeed())
 	Expect(os.Remove(bratshelper.Data.CachedFile)).To(Succeed())
+	Expect(os.Remove(bratshelper.Data.UncachedFile)).To(Succeed())
 })
 
 func TestBrats(t *testing.T) {
