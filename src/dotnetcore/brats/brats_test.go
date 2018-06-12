@@ -1,6 +1,7 @@
 package brats_test
 
 import (
+	"github.com/blang/semver"
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
@@ -21,7 +22,25 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
 	compatible := func(sdkVersion, frameworkVersion string) bool {
-		return sdkVersion[0] == frameworkVersion[0]
+
+		var sdk, framework semver.Version
+		var err error
+		if sdk, err = semver.Parse(sdkVersion); err != nil {
+			panic(err)
+		}
+		if framework, err = semver.Parse(frameworkVersion); err != nil {
+			panic(err)
+		}
+
+		sdk2_1_300, _ := semver.Parse("2.1.300")
+		framework2_1_0, _ := semver.Parse("2.1.0")
+
+		if framework.GTE(framework2_1_0) {
+			return sdk.GTE(sdk2_1_300)
+		}
+
+		return sdk.Major == framework.Major
+
 	}
 	bratshelper.ForAllSupportedVersions2("dotnet", "dotnet-framework", compatible, "with .NET SDK version: %s and .NET Framework version: %s", CopyBratsWithFramework, func(sdkVersion, frameworkVersion string, app *cutlass.App) {
 		PushApp(app)
