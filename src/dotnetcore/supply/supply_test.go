@@ -115,6 +115,7 @@ var _ = Describe("Supply", func() {
 			mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "bower", "-v").AnyTimes().Return(fmt.Errorf("error"))
 			mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "install", "-g", gomock.Any()).AnyTimes().Return(nil)
 		})
+
 		Context("Not a published project and bower command necessary", func() {
 			BeforeEach(func() {
 				mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "-v").AnyTimes()
@@ -125,6 +126,7 @@ var _ = Describe("Supply", func() {
 				Expect(supplier.InstallBower()).To(Succeed())
 			})
 		})
+
 		Context("It is a published project and bower command necessary", func() {
 			BeforeEach(func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
@@ -134,6 +136,7 @@ var _ = Describe("Supply", func() {
 				Expect(supplier.InstallBower()).To(Succeed())
 			})
 		})
+
 		Context("NPM is NOT installed and bower command necessary", func() {
 			It("Does not install bower", func() {
 				mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "-v").AnyTimes().Return(fmt.Errorf("error"))
