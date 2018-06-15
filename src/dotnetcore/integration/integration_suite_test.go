@@ -1,9 +1,11 @@
 package integration_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -192,4 +194,26 @@ func AssertNoInternetTraffic(fixtureName string) {
 		Expect(err).To(BeNil())
 		Expect(traffic).To(BeEmpty())
 	})
+}
+
+func GetLatestPatchVersion(dep, constraint, bpDir string) string {
+	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
+	Expect(err).ToNot(HaveOccurred())
+	deps := manifest.AllDependencyVersions(dep)
+	frameworkVersion, err := libbuildpack.FindMatchingVersion(constraint, deps)
+	Expect(err).ToNot(HaveOccurred())
+
+	return frameworkVersion
+}
+
+func ReplaceFileTemplate(bpDir, fixture, file, templateVar, replaceVal string) *cutlass.App {
+	dir, err := cutlass.CopyFixture(filepath.Join(bpDir, "fixtures", fixture))
+	Expect(err).ToNot(HaveOccurred())
+
+	data, err := ioutil.ReadFile(filepath.Join(dir, file))
+	Expect(err).ToNot(HaveOccurred())
+	data = bytes.Replace(data, []byte(fmt.Sprintf("<%%= %s %%>", templateVar)), []byte(replaceVal), -1)
+	Expect(ioutil.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
+
+	return cutlass.New(dir)
 }

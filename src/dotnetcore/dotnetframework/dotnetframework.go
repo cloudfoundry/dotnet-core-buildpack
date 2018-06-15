@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 
 	"github.com/cloudfoundry/libbuildpack"
 )
@@ -15,14 +16,16 @@ type Installer interface {
 type DotnetFramework struct {
 	depDir    string
 	installer Installer
+	manifest  *libbuildpack.Manifest
 	logger    *libbuildpack.Logger
 	buildDir  string
 }
 
-func New(depDir string, buildDir string, installer Installer, logger *libbuildpack.Logger) *DotnetFramework {
+func New(depDir string, buildDir string, installer Installer, manifest *libbuildpack.Manifest, logger *libbuildpack.Logger) *DotnetFramework {
 	return &DotnetFramework{
 		depDir:    depDir,
 		installer: installer,
+		manifest:  manifest,
 		logger:    logger,
 		buildDir:  buildDir,
 	}
@@ -62,14 +65,25 @@ func (d *DotnetFramework) requiredVersions() ([]string, error) {
 					Name    string `json:"name"`
 					Version string `json:"version"`
 				} `json:"framework"`
+				ApplyPatches *bool `json:"applyPatches"`
 			} `json:"runtimeOptions"`
 		}{}
 
 		if err := libbuildpack.NewJSON().Load(runtimeFile, &obj); err != nil {
 			return []string{}, err
 		}
-		if obj.RuntimeOptions.Framework.Version != "" {
-			return []string{obj.RuntimeOptions.Framework.Version}, nil
+		version := obj.RuntimeOptions.Framework.Version
+		if version != "" {
+			if obj.RuntimeOptions.ApplyPatches == nil || *obj.RuntimeOptions.ApplyPatches {
+				v := strings.Split(version, ".")
+				v[2] = "x"
+				versions := d.manifest.AllDependencyVersions("dotnet-framework")
+				version, err = libbuildpack.FindMatchingVersion(strings.Join(v, "."), versions)
+				if err != nil {
+					return []string{}, err
+				}
+			}
+			return []string{version}, nil
 		}
 		return []string{}, nil
 	}

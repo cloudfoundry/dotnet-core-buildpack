@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/ansicleaner"
@@ -24,6 +25,7 @@ var _ = Describe("Dotnetframework", func() {
 		subject       *dotnetframework.DotnetFramework
 		mockCtrl      *gomock.Controller
 		mockInstaller *MockInstaller
+		manifest      *libbuildpack.Manifest
 		buffer        *bytes.Buffer
 		logger        *libbuildpack.Logger
 	)
@@ -39,7 +41,11 @@ var _ = Describe("Dotnetframework", func() {
 		buffer = new(bytes.Buffer)
 		logger = libbuildpack.NewLogger(ansicleaner.New(buffer))
 
-		subject = dotnetframework.New(depDir, buildDir, mockInstaller, logger)
+		Expect(ioutil.WriteFile(filepath.Join(buildDir, "manifest.yml"), []byte("---"), 0644)).To(Succeed())
+		manifest, err = libbuildpack.NewManifest(buildDir, logger, time.Now())
+		Expect(err).To(BeNil())
+
+		subject = dotnetframework.New(depDir, buildDir, mockInstaller, manifest, logger)
 	})
 
 	AfterEach(func() {
@@ -59,7 +65,7 @@ var _ = Describe("Dotnetframework", func() {
 				Context("Versions required == [4.5.6]", func() {
 					BeforeEach(func() {
 						Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.runtimeconfig.json"),
-							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "4.5.6" } } }`), 0644)).To(Succeed())
+							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "4.5.6" }, "applyPatches": false } }`), 0644)).To(Succeed())
 					})
 
 					It("does not install the framework again", func() {
@@ -71,7 +77,7 @@ var _ = Describe("Dotnetframework", func() {
 				Context("Versions required == [7.8.9]", func() {
 					BeforeEach(func() {
 						Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.runtimeconfig.json"),
-							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "7.8.9" } } }`), 0644)).To(Succeed())
+							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "7.8.9" }, "applyPatches": false } }`), 0644)).To(Succeed())
 					})
 
 					It("installs the additional framework", func() {

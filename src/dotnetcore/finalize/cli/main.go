@@ -59,7 +59,7 @@ func main() {
 		os.Exit(15)
 	}
 
-	dotnetframework := dotnetframework.New(stager.DepDir(), stager.BuildDir(), libbuildpack.NewInstaller(manifest), logger)
+	dotnetframework := dotnetframework.New(stager.DepDir(), stager.BuildDir(), libbuildpack.NewInstaller(manifest), manifest, logger)
 	f := finalize.Finalizer{
 		Stager:          stager,
 		Log:             logger,
