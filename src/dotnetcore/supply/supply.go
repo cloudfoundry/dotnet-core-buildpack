@@ -270,21 +270,31 @@ func majorMinorOnly(version string) string {
 func (s *Supplier) pickVersionToInstall() (string, error) {
 	allVersions := s.Manifest.AllDependencyVersions("dotnet")
 
-	installVersion, err := s.globalJsonSdkVersion()
+	buildpackVersion, err := s.buildpackYamlSdkVersion()
 	if err != nil {
 		return "", err
 	}
-
-	if contains(allVersions, installVersion) {
-		return installVersion, nil
+	if buildpackVersion != "" {
+		version, err := libbuildpack.FindMatchingVersion(buildpackVersion, allVersions)
+		if err != nil {
+			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
+			return "", err
+		}
+		return version, err
 	}
 
-	if installVersion != "" {
-		s.Log.Warning("SDK %s not available", installVersion)
-		installVersion = majorMinorOnly(installVersion)
-		installVersion, err = libbuildpack.FindMatchingVersion(installVersion, allVersions)
+	globalJSONVersion, err := s.globalJsonSdkVersion()
+	if err != nil {
+		return "", err
+	}
+	if globalJSONVersion != "" {
+		if contains(allVersions, globalJSONVersion) {
+			return globalJSONVersion, nil
+		}
+		s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
+		installVersion, err := libbuildpack.FindMatchingVersion(majorMinorOnly(globalJSONVersion), allVersions)
 		if err == nil {
-			s.Log.Info("using latest version in version line")
+			s.Log.Info("falling back to latest version in version line")
 			return installVersion, nil
 		}
 	}
@@ -316,6 +326,57 @@ func (s *Supplier) InstallDotnet() error {
 	}
 
 	return s.Stager.AddBinDependencyLink(filepath.Join(s.Stager.DepDir(), "dotnet", "dotnet"), "dotnet")
+}
+
+func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
+	buildpackVersion, err := s.buildpackYamlSdkVersion()
+	if err != nil {
+		return "", err
+	}
+
+	if buildpackVersion != "" {
+		version, err := libbuildpack.FindMatchingVersion(buildpackVersion, allVersions)
+		if err != nil {
+			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
+		}
+		return version, err
+	}
+
+	globalJSONVersion, err := s.globalJsonSdkVersion()
+	if err != nil {
+		return "", err
+	}
+	if globalJSONVersion == "" {
+		return "", nil
+	}
+
+	if contains(allVersions, globalJSONVersion) {
+		return globalJSONVersion, nil
+	}
+	s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
+	installVersion, err := libbuildpack.FindMatchingVersion(majorMinorOnly(globalJSONVersion), allVersions)
+	if err != nil {
+		return "", nil
+	}
+	s.Log.Info("falling back to latest version in version line")
+	return installVersion, nil
+}
+
+func (s *Supplier) buildpackYamlSdkVersion() (string, error) {
+	if found, err := libbuildpack.FileExists(filepath.Join(s.Stager.BuildDir(), "buildpack.yml")); err != nil || !found {
+		return "", err
+	}
+
+	obj := struct {
+		DotnetCore struct {
+			Version string `yaml:"sdk"`
+		} `yaml:"dotnet-core"`
+	}{}
+	if err := libbuildpack.NewYAML().Load(filepath.Join(s.Stager.BuildDir(), "buildpack.yml"), &obj); err != nil {
+		return "", err
+	}
+
+	return obj.DotnetCore.Version, nil
 }
 
 func (s *Supplier) globalJsonSdkVersion() (string, error) {

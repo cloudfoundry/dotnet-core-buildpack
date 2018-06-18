@@ -42,6 +42,52 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 	})
+
+	Context("deploying with a buildpack.yml and global.json files", func() {
+		Context("when SDK versions match/overlap", func() {
+			var sdkVersion string
+			BeforeEach(func() {
+				sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.0.x")
+			})
+
+			It("buildpacks.yml sdk version overrides global.json and floats on patch", func() {
+				PushAppAndConfirm(app)
+
+				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
+				Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
+			})
+		})
+
+		Context("when SDK versions don't match", func() {
+			var sdkVersion string
+			BeforeEach(func() {
+				sdkVersion = GetLatestPatchVersion("dotnet", "1.0.x", bpDir)
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "1.0.x")
+			})
+
+			It("the buildpack installs the version from buildpack.yml and dotnet complains", func() {
+				Expect(app.Push()).ToNot(Succeed())
+
+				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
+				Eventually(app.Stdout.String).Should(ContainSubstring("The specified SDK version [2.0.1] from global.json [/tmp/app/global.json] not found"))
+			})
+		})
+
+		Context("when SDK version from buildpack.yml is not available", func() {
+			BeforeEach(func() {
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.0.0-preview7")
+			})
+
+			It("fails due to missing SDK", func() {
+				Expect(app.Push()).ToNot(Succeed())
+
+				Eventually(app.Stdout.String).Should(ContainSubstring("SDK 2.0.0-preview7 in buildpack.yml is not available"))
+				Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet: no match found for 2.0.0-preview7"))
+			})
+		})
+	})
+
 	Context("deploying an mvc app with node prerendering", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_prerender_node"))
@@ -59,8 +105,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("Logs a warning about using default SDK", func() {
 			PushAppAndConfirm(app)
-			Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.0.0-preview-007 not available"))
-			Expect(app.Stdout.String()).To(ContainSubstring("using latest version in version line"))
+			Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.0.0-preview-007 in global.json is not available"))
+			Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 	})
