@@ -1,11 +1,11 @@
 package brats_test
 
 import (
+	"github.com/blang/semver"
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
-	// . "github.com/onsi/gomega"
-	"github.com/blang/semver"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Dotnet buildpack", func() {
