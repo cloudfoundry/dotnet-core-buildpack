@@ -1,18 +1,18 @@
 package brats_test
 
 import (
-	"github.com/blang/semver"
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	// . "github.com/onsi/gomega"
+	"github.com/blang/semver"
 )
 
 var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.UnbuiltBuildpack("dotnet", CopyBrats)
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
-	oldVersion := FirstOfVersionLine("1.1.x")
-	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", oldVersion, func(v string) *cutlass.App { return CopyBratsWithFramework(v, v) })
+	oldDotnetVersion := FirstOfVersionLine("dotnet", "2.0.x")
+	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", oldDotnetVersion, func(v string) *cutlass.App { return CopyBratsWithFramework(v, "2.0.x") })
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-[\da-f]+\.tar.xz`, CopyBrats)
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet", CopyBrats)
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)

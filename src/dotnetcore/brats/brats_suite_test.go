@@ -52,7 +52,7 @@ func TestBrats(t *testing.T) {
 	RunSpecs(t, "Brats Suite")
 }
 
-func FirstOfVersionLine(line string) string {
+func FirstOfVersionLine(dependency, line string) string {
 	bpDir, err := cutlass.FindRoot()
 	if err != nil {
 		panic(err)
@@ -61,7 +61,7 @@ func FirstOfVersionLine(line string) string {
 	if err != nil {
 		panic(err)
 	}
-	deps := manifest.AllDependencyVersions("dotnet")
+	deps := manifest.AllDependencyVersions(dependency)
 	versions, err := libbuildpack.FindMatchingVersions(line, deps)
 	if err != nil {
 		panic(err)
