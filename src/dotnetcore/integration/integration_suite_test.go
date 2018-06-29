@@ -42,6 +42,12 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 		packagedBuildpack, err := cutlass.PackageUniquelyVersionedBuildpack(os.Getenv("CF_STACK"))
 		Expect(err).NotTo(HaveOccurred())
 
+		buildpackFile, err := os.Open(packagedBuildpack.File) // For read access.
+		Expect(err).NotTo(HaveOccurred())
+		buildpackFileStat, err := buildpackFile.Stat()
+		Expect(err).NotTo(HaveOccurred())
+		Expect(buildpackFileStat.Size() < 1024*1024*1024).To(BeTrue(), "Buildpack file size must be less than 1G")
+
 		data, err := json.Marshal(packagedBuildpack)
 		Expect(err).NotTo(HaveOccurred())
 		return data
