@@ -1,7 +1,9 @@
 package project
 
 import (
+	"encoding/xml"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -29,7 +31,7 @@ func (p *Project) IsPublished() (bool, error) {
 	}
 }
 
-func (p *Project) Paths() ([]string, error) {
+func (p *Project) ProjFilePaths() ([]string, error) {
 	paths := []string{}
 	if err := filepath.Walk(p.buildDir, func(path string, _ os.FileInfo, err error) error {
 		if strings.Contains(path, "/.cloudfoundry/") {
@@ -50,7 +52,7 @@ func (p *Project) Paths() ([]string, error) {
 }
 
 func (p *Project) IsFsharp() (bool, error) {
-	if paths, err := p.Paths(); err != nil {
+	if paths, err := p.ProjFilePaths(); err != nil {
 		return false, err
 	} else {
 		for _, path := range paths {
@@ -79,7 +81,7 @@ func (p *Project) MainPath() (string, error) {
 	} else if runtimeConfigFile != "" {
 		return runtimeConfigFile, nil
 	}
-	paths, err := p.Paths()
+	paths, err := p.ProjFilePaths()
 	if err != nil {
 		return "", err
 	}
@@ -124,20 +126,43 @@ func (p *Project) publishedStartCommand(projectPath string) (string, error) {
 	}
 
 	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, projectPath)); err != nil {
-		return "", nil
+		return "", err
 	} else if exists {
 		if err := os.Chmod(filepath.Join(filepath.Join(publishedPath, projectPath)), 0755); err != nil {
-			return "", nil
+			return "", err
 		}
 		return filepath.Join(runtimePath, projectPath), nil
 	}
 
 	if exists, err := libbuildpack.FileExists(filepath.Join(publishedPath, fmt.Sprintf("%s.dll", projectPath))); err != nil {
-		return "", nil
+		return "", fmt.Errorf("checking if a %s.dll file exists: %v", projectPath, err)
 	} else if exists {
 		return fmt.Sprintf("%s.dll", filepath.Join(runtimePath, projectPath)), nil
 	}
 	return "", nil
+}
+
+func (p *Project) getAssemblyName(projectPath string) (string, error) {
+	projFile, err := os.Open(filepath.Join(p.buildDir, projectPath))
+	if err != nil {
+		return "", err
+	}
+	defer projFile.Close()
+	projBytes, err := ioutil.ReadAll(projFile)
+	if err != nil {
+		return "", err
+	}
+
+	proj := struct {
+		PropertyGroup struct {
+			AssemblyName string
+		}
+	}{}
+	err = xml.Unmarshal(projBytes, &proj)
+	if err != nil {
+		return "", err
+	}
+	return proj.PropertyGroup.AssemblyName, nil
 }
 
 func (p *Project) StartCommand() (string, error) {
@@ -147,10 +172,24 @@ func (p *Project) StartCommand() (string, error) {
 	} else if projectPath == "" {
 		return "", nil
 	}
+	runtimeConfigRe := regexp.MustCompile(`\.(runtimeconfig\.json)$`)
+	projRe := regexp.MustCompile(`\.([a-z]+proj)$`)
 
-	re := regexp.MustCompile(`\.(runtimeconfig\.json|[a-z]+proj)$`)
-	projectPath = re.ReplaceAllString(projectPath, "")
-	projectPath = filepath.Base(projectPath)
+	if runtimeConfigRe.MatchString(projectPath) {
+		projectPath = runtimeConfigRe.ReplaceAllString(projectPath, "")
+		projectPath = filepath.Base(projectPath)
+	} else if projRe.MatchString(projectPath) {
+		assemblyName, err := p.getAssemblyName(projectPath)
+		if err != nil {
+			return "", err
+		}
+		if assemblyName != "" {
+			projectPath = projRe.ReplaceAllString(assemblyName, "")
+		} else {
+			projectPath = projRe.ReplaceAllString(projectPath, "")
+			projectPath = filepath.Base(projectPath)
+		}
+	}
 
 	return p.publishedStartCommand(projectPath)
 }

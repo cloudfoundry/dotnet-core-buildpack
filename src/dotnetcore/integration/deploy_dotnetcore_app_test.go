@@ -154,4 +154,14 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-framework 2.0.0"))
 		})
 	})
+
+	Context("for a non-published app", func() {
+		BeforeEach(func() {
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
+		})
+
+		It("successfully pushes an app with an AssemblyName", func() {
+			PushAppAndConfirm(app)
+		})
+	})
 })

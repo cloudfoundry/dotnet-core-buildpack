@@ -230,66 +230,62 @@ var _ = Describe("Project", func() {
 			})
 		})
 		Context("The project is NOT published", func() {
-			BeforeEach(func() {
-				Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte(""), 0644)).To(Succeed())
-				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
-			})
-			Context("An executable for the project exists", func() {
-				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred"), []byte(""), 0755)).To(Succeed())
-				})
-				It("returns ${DEPS_DIR}/DepsIdx/project", func() {
-					startCmd, err := subject.StartCommand()
-					Expect(err).To(BeNil())
-					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred")))
-				})
-			})
-			Context("An executable for the project does NOT exist, but a dll does", func() {
-				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred.dll"), []byte(""), 0755)).To(Succeed())
-				})
-				It("returns ${DEPS_DIR}/DepsIdx/project.dll", func() {
-					startCmd, err := subject.StartCommand()
-					Expect(err).To(BeNil())
-					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred.dll")))
-				})
-
-			})
-			Context("An executable for the project does NOT exist, and neither does a dll", func() {
-				It("returns an empty string", func() {
-					startCmd, err := subject.StartCommand()
-					Expect(err).To(BeNil())
-					Expect(startCmd).To(Equal(""))
-				})
-			})
-		})
-		Context("The project has multiple dots in its name", func() {
-			Context("It is a published project", func() {
-				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "f.red.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "f.red"), []byte(""), 0755)).To(Succeed())
-				})
-				It("returns ${HOME}/project", func() {
-					startCmd, err := subject.StartCommand()
-					Expect(err).To(BeNil())
-					Expect(startCmd).To(Equal(filepath.Join("${HOME}", "f.red")))
-				})
-			})
-			Context("It is not a published project", func() {
+			Context("The csproj file does not have an AssemblyName tag", func() {
 				BeforeEach(func() {
 					Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "f.red.csproj"), []byte(""), 0644)).To(Succeed())
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte("<Project></Project>"), 0644)).To(Succeed())
+					Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
+				})
+				Context("An executable for the project exists", func() {
+					BeforeEach(func() {
+						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred"), []byte(""), 0755)).To(Succeed())
+					})
+					It("returns ${DEPS_DIR}/DepsIdx/project", func() {
+						startCmd, err := subject.StartCommand()
+						Expect(err).To(BeNil())
+						Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred")))
+					})
+				})
+				Context("An executable for the project does NOT exist, but a dll does", func() {
+					BeforeEach(func() {
+						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred.dll"), []byte(""), 0755)).To(Succeed())
+					})
+					It("returns ${DEPS_DIR}/DepsIdx/project.dll", func() {
+						startCmd, err := subject.StartCommand()
+						Expect(err).To(BeNil())
+						Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "fred.dll")))
+					})
+
+				})
+				Context("An executable for the project does NOT exist, and neither does a dll", func() {
+					It("returns an empty string", func() {
+						startCmd, err := subject.StartCommand()
+						Expect(err).To(BeNil())
+						Expect(startCmd).To(Equal(""))
+					})
+				})
+			})
+			Context("The csproj file has an AssemblyName tag", func() {
+				BeforeEach(func() {
+					Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
+					csprojContents := `
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<AssemblyName>f.red.csproj</AssemblyName>
+	</PropertyGroup>
+</Project>`
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte(csprojContents), 0644)).To(Succeed())
 					Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
 					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "f.red"), []byte(""), 0755)).To(Succeed())
 				})
-				It("returns ${DEPS_DIR}/DepsIdx/dotnet_publish/project", func() {
+				It("returns a start command with the AssemblyName instead of filename", func() {
 					startCmd, err := subject.StartCommand()
 					Expect(err).To(BeNil())
 					Expect(startCmd).To(Equal(filepath.Join("${DEPS_DIR}", depsIdx, "dotnet_publish", "f.red")))
 				})
 			})
 		})
+
 		Context("mainPath could be determined", func() {
 			BeforeEach(func() {
 				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
