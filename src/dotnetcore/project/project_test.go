@@ -37,7 +37,7 @@ var _ = Describe("Project", func() {
 		Expect(err).To(BeNil())
 	})
 
-	Describe("Paths", func() {
+	Describe("ProjFilePaths", func() {
 		BeforeEach(func() {
 			for _, name := range []string{
 				"first.csproj",
@@ -55,11 +55,11 @@ var _ = Describe("Project", func() {
 		})
 
 		It("returns csproj, fsproj and vbproj files (excluding .cloudfoundry)", func() {
-			Expect(subject.Paths()).To(ConsistOf([]string{
-				"first.csproj",
-				"dir/second.csproj",
-				"a/b/first.vbproj",
-				"b/c/first.fsproj",
+			Expect(subject.ProjFilePaths()).To(ConsistOf([]string{
+				filepath.Join(buildDir, "first.csproj"),
+				filepath.Join(buildDir, "dir", "second.csproj"),
+				filepath.Join(buildDir, "a", "b", "first.vbproj"),
+				filepath.Join(buildDir, "b", "c", "first.fsproj"),
 			}))
 		})
 	})
@@ -156,7 +156,7 @@ var _ = Describe("Project", func() {
 			It("returns that one path", func() {
 				path, err := subject.MainPath()
 				Expect(err).To(BeNil())
-				Expect(path).To(Equal(filepath.Join("subdir", "first.csproj")))
+				Expect(path).To(Equal(filepath.Join(buildDir, "subdir", "first.csproj")))
 			})
 		})
 		Context("More than one project path in paths", func() {

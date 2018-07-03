@@ -202,13 +202,12 @@ func (s *Supplier) shouldInstallNode() (bool, error) {
 }
 
 func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
-	projFiles, err := s.Project.Paths()
+	projFiles, err := s.Project.ProjFilePaths()
 	if err != nil {
 		return false, err
 	}
 
 	for _, projFile := range projFiles {
-		projFile = filepath.Join(s.Stager.BuildDir(), projFile)
 		obj := struct {
 			Sdk    string `xml:"Sdk,attr"`
 			Target struct {

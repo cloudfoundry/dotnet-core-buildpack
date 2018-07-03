@@ -160,7 +160,7 @@ func (f *Finalizer) DotnetRestore() error {
 	}
 	f.Log.BeginStep("Restore dotnet dependencies")
 	env := f.shellEnvironment()
-	paths, err := f.Project.Paths()
+	paths, err := f.Project.ProjFilePaths()
 	if err != nil {
 		return err
 	}
@@ -191,7 +191,7 @@ func (f *Finalizer) DotnetPublish() error {
 	}
 
 	env := f.shellEnvironment()
-	env = append(env, "PATH="+filepath.Join(f.Stager.BuildDir(), filepath.Dir(mainProject), "node_modules", ".bin")+":"+os.Getenv("PATH"))
+	env = append(env, "PATH="+filepath.Join(filepath.Dir(mainProject), "node_modules", ".bin")+":"+os.Getenv("PATH"))
 
 	publishPath := filepath.Join(f.Stager.DepDir(), "dotnet_publish")
 	if err := os.MkdirAll(publishPath, 0755); err != nil {

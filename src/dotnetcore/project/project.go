@@ -38,11 +38,7 @@ func (p *Project) ProjFilePaths() ([]string, error) {
 			return filepath.SkipDir
 		}
 		if strings.HasSuffix(path, ".csproj") || strings.HasSuffix(path, ".vbproj") || strings.HasSuffix(path, ".fsproj") {
-			if path, err := filepath.Rel(p.buildDir, path); err != nil {
-				return err
-			} else {
-				paths = append(paths, path)
-			}
+			paths = append(paths, path)
 		}
 		return nil
 	}); err != nil {
@@ -143,7 +139,7 @@ func (p *Project) publishedStartCommand(projectPath string) (string, error) {
 }
 
 func (p *Project) getAssemblyName(projectPath string) (string, error) {
-	projFile, err := os.Open(filepath.Join(p.buildDir, projectPath))
+	projFile, err := os.Open(projectPath)
 	if err != nil {
 		return "", err
 	}
