@@ -32,6 +32,12 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
 - name: dotnet
+  version: 1.1.10
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.1.1.10.linux-amd64-ca727dbf.tar.xz
+  sha256: ca727dbf492f14ef2375c71033390c542eb806d57ec0382cbe87284f53a17c0c
+  cf_stacks:
+  - cflinuxfs2
+- name: dotnet
   version: 2.0.2
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet/dotnet.2.0.2.linux-amd64-97f7d8c7.tar.xz
   sha256: 97f7d8c747de91e4a4438a5de419efa90d3df929f5193e62a6cd682fbc23fb3e
