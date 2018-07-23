@@ -25,7 +25,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 
-		AssertUsesProxyDuringStagingIfPresent("dotnet2")
+		//AssertUsesProxyDuringStagingIfPresent("dotnet2")
 	})
 
 	Context("deploying simple web app with dotnet 2.0 using dotnet 2.0 sdk", func() {
@@ -123,14 +123,36 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 	})
-	Context("simple netcoreapp2 (dotnet new mvc --framework netcoreapp2.0)", func() {
-		BeforeEach(func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2"))
+	Context("simple netcoreapp2", func() {
+		Context("runtime version explicitly defined in csproj", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_explicit_runtime_csproj"))
+			})
+			It("publishes and runs, using exact runtime", func() {
+				PushAppAndConfirm(app)
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.1]"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
+			})
 		})
-
-		It("publishes and runs", func() {
-			PushAppAndConfirm(app)
-			Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
+		Context("runtime version floated in csproj", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_float_runtime_csproj"))
+			})
+			It("publishes and runs, using latest patch runtime", func() {
+				PushAppAndConfirm(app)
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.2]"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
+			})
+		})
+		Context("runtime version not defined in csproj", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_no_runtime_csproj"))
+			})
+			It("publishes and runs, using latest patch runtime", func() {
+				PushAppAndConfirm(app)
+				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetframework versions: \[(2\.0\.9|2\.1\.2) (2\.0\.9|2\.1\.2)\]`))
+				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
+			})
 		})
 	})
 	Context("with runtimeconfig.json", func() {
@@ -155,7 +177,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
-	Context("for a non-published app", func() {
+	FContext("for a non-published app", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
 		})

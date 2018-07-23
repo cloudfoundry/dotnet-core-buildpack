@@ -25,6 +25,7 @@ var _ = Describe("Dotnetframework", func() {
 		subject       *dotnetframework.DotnetFramework
 		mockCtrl      *gomock.Controller
 		mockInstaller *MockInstaller
+		mockManifest  *MockManifest
 		manifest      *libbuildpack.Manifest
 		buffer        *bytes.Buffer
 		logger        *libbuildpack.Logger
@@ -37,6 +38,7 @@ var _ = Describe("Dotnetframework", func() {
 
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockInstaller = NewMockInstaller(mockCtrl)
+		mockManifest = NewMockManifest(mockCtrl)
 
 		buffer = new(bytes.Buffer)
 		logger = libbuildpack.NewLogger(ansicleaner.New(buffer))
@@ -44,8 +46,9 @@ var _ = Describe("Dotnetframework", func() {
 		Expect(ioutil.WriteFile(filepath.Join(buildDir, "manifest.yml"), []byte("---"), 0644)).To(Succeed())
 		manifest, err = libbuildpack.NewManifest(buildDir, logger, time.Now())
 		Expect(err).To(BeNil())
+		Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("---"), 0644)).To(Succeed())
 
-		subject = dotnetframework.New(depDir, buildDir, mockInstaller, manifest, logger)
+		subject = dotnetframework.New(depDir, buildDir, mockInstaller, mockManifest, logger)
 	})
 
 	AfterEach(func() {
@@ -70,7 +73,7 @@ var _ = Describe("Dotnetframework", func() {
 
 					It("does not install the framework again", func() {
 						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "4.5.6"}, gomock.Any()).Times(0)
-						Expect(subject.Install()).To(Succeed())
+						Expect(subject.Install(filepath.Join(buildDir, "foo"))).To(Succeed())
 					})
 				})
 
@@ -82,7 +85,7 @@ var _ = Describe("Dotnetframework", func() {
 
 					It("installs the additional framework", func() {
 						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
-						Expect(subject.Install()).To(Succeed())
+						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
 			})
@@ -94,8 +97,9 @@ var _ = Describe("Dotnetframework", func() {
 					})
 
 					It("does not install the framework again", func() {
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-framework").Return([]string{"4.5.6"})
 						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "4.5.6"}, gomock.Any()).Times(0)
-						Expect(subject.Install()).To(Succeed())
+						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
 
@@ -105,8 +109,9 @@ var _ = Describe("Dotnetframework", func() {
 					})
 
 					It("installs the additional framework", func() {
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-framework").Return([]string{"7.8.9"})
 						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
-						Expect(subject.Install()).To(Succeed())
+						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
 			})

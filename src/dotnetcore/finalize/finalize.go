@@ -27,7 +27,7 @@ type Command interface {
 }
 
 type DotnetFramework interface {
-	Install() error
+	Install(string) error
 }
 
 type Finalizer struct {
@@ -47,7 +47,11 @@ func Run(f *Finalizer) error {
 		return err
 	}
 
-	if err := f.DotnetFramework.Install(); err != nil {
+	mainPath, err := f.Project.MainPath()
+	if err != nil {
+		return err
+	}
+	if err := f.DotnetFramework.Install(mainPath); err != nil {
 		f.Log.Error("Unable to install required dotnet frameworks: %s", err.Error())
 		return err
 	}
