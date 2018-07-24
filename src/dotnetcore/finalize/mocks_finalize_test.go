@@ -140,13 +140,13 @@ func (m *MockDotnetFramework) EXPECT() *MockDotnetFrameworkMockRecorder {
 }
 
 // Install mocks base method
-func (m *MockDotnetFramework) Install() error {
-	ret := m.ctrl.Call(m, "Install")
+func (m *MockDotnetFramework) Install(arg0 string) error {
+	ret := m.ctrl.Call(m, "Install", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Install indicates an expected call of Install
-func (mr *MockDotnetFrameworkMockRecorder) Install() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Install", reflect.TypeOf((*MockDotnetFramework)(nil).Install))
+func (mr *MockDotnetFrameworkMockRecorder) Install(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Install", reflect.TypeOf((*MockDotnetFramework)(nil).Install), arg0)
 }
