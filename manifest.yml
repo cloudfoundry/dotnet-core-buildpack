@@ -142,14 +142,14 @@ dependencies:
   - cflinuxfs2
 - name: libunwind
   version: 1.2.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.2.1-cflinuxfs2-e830bfe6.tar.gz
-  sha256: e830bfe6c12e2a9583396b4b36e1f2837424474b517e4d125f5a3453413dfb46
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.2.1-cflinuxfs2-07ff2a09.tar.gz
+  sha256: 07ff2a09da7d2a50f10455bcda5c0a36d687dc0505a53a4ec27fa707c58f7cf2
   cf_stacks:
   - cflinuxfs2
 - name: libunwind
   version: 1.2.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.2.1-cflinuxfs3-c2a6e71f.tar.gz
-  sha256: c2a6e71f2b24ef77e3f2cc74248541c3183585e870089dd08489c8b688f99112
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.2.1-cflinuxfs3-39450e01.tar.gz
+  sha256: 39450e01194b9042865d4dbcbca8e6c520d24c07824fe390af98388cc2c75e68
   cf_stacks:
   - cflinuxfs3
 - name: node
