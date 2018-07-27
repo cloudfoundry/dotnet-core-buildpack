@@ -13,7 +13,7 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
 	oldDotnetVersion := FirstOfVersionLine("dotnet", "2.1.301")
 	bratshelper.StagingWithADepThatIsNotTheLatestConstrained("dotnet", oldDotnetVersion, func(v string) *cutlass.App { return CopyBratsWithFramework(v, "2.1.x") })
-	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-\[redacted CF_STACK\]\-[\da-f]+\.tar.xz`, CopyBrats)
+	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(`dotnet\.[\d\.]+\.linux\-amd64\-.*\-[\da-f]+\.tar.xz`, CopyBrats)
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet", CopyBrats)
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
