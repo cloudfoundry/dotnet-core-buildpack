@@ -10,7 +10,7 @@ namespace HelloWeb
         {
             app.Run(context =>
             {
-                return context.Response.WriteAsync("Hello From Dotnet 2.0");
+                return context.Response.WriteAsync("Hello From Dotnet 2.1");
             });
         }
     }

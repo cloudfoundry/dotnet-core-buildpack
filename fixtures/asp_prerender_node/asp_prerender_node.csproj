@@ -7,7 +7,7 @@
     <AssemblyName>asp_prerender_node</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>asp_prerender_node</PackageId>
-    <RuntimeFrameworkVersion>1.1.2</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>1.1.9</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

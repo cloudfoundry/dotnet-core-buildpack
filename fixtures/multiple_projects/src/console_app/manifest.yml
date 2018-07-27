@@ -1,5 +1,0 @@
----
-  applications:
-    - name: console_app
-      env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1

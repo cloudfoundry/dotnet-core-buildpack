@@ -1,8 +1,0 @@
----
-  applications:
-    - name: angular
-      disk_quota: 1536M
-      memory: 1G
-      env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
-        CACHE_NUGET_PACKAGES: false

@@ -15,6 +15,12 @@ import (
 	"github.com/kr/text"
 )
 
+var cfStackToOS = map[string]string{
+	"cflinuxfs2": "ubuntu.14.04-x64",
+	"cflinuxfs3": "ubuntu.18.04-x64",
+	"cflinuxfs3m": "ubuntu.18.04-x64",
+}
+
 type Stager interface {
 	BuildDir() string
 	DepsIdx() string
@@ -203,7 +209,7 @@ func (f *Finalizer) DotnetPublish() error {
 	}
 	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
 	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") {
-		args = append(args, "-r", "ubuntu.14.04-x64")
+		args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
 	}
 	cmd := exec.Command("dotnet", args...)
 	cmd.Dir = f.Stager.BuildDir()

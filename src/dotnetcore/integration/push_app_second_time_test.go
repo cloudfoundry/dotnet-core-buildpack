@@ -16,7 +16,7 @@ var _ = Describe("pushing an app a second time", func() {
 	BeforeEach(func() {
 		SkipUnlessUncached()
 
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", "fsharp_msbuild"))
+		app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet2"))
 		app.SetEnv("BP_DEBUG", "true")
 	})
 

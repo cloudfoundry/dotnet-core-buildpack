@@ -1,0 +1,13 @@
+namespace nancy_kestrel_msbuild_dotnet2
+{
+    using Microsoft.AspNetCore.Builder;
+    using Nancy.Owin;
+
+    public class Startup
+    {
+        public void Configure(IApplicationBuilder app)
+        {
+            app.UseOwin(x => x.UseNancy());
+        }
+    }
+}

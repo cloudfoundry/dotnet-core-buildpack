@@ -3,6 +3,7 @@ package integration_test
 import (
 	"fmt"
 	"path/filepath"
+	"os"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -13,6 +14,19 @@ import (
 var _ = Describe("CF Dotnet Buildpack", func() {
 	var app *cutlass.App
 	AfterEach(func() { app = DestroyApp(app) })
+
+	Context("deploying simple web app with dotnet 1.0", func() {
+		BeforeEach(func() {
+			if os.Getenv("CF_STACK") == "cflinuxfs3" {
+				Skip("dotnet 1.0.x SDK and Framework are not supported on cflinuxfs3")
+			}
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet1.0"))
+		})
+
+		It("displays a simple text homepage", func() {
+			PushAppAndConfirm(app)
+		})
+	})
 
 	Context("deploying simple web app with dotnet 2.0", func() {
 		BeforeEach(func() {
@@ -30,6 +44,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying simple web app with dotnet 2.0 using dotnet 2.0 sdk", func() {
 		var sdkVersion string
+
 		BeforeEach(func() {
 			sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
 			app = ReplaceFileTemplate(bpDir, "dotnet2_with_global_json", "global.json", "sdk_version", sdkVersion)
@@ -46,31 +61,33 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("deploying with a buildpack.yml and global.json files", func() {
 		Context("when SDK versions match/overlap", func() {
 			var sdkVersion string
+
 			BeforeEach(func() {
-				sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
-				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.0.x")
+				sdkVersion = GetLatestPatchVersion("dotnet", "2.1.x", bpDir)
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.1.x")
 			})
 
 			It("buildpacks.yml sdk version overrides global.json and floats on patch", func() {
 				PushAppAndConfirm(app)
 
 				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.1"))
 			})
 		})
 
 		Context("when SDK versions don't match", func() {
 			var sdkVersion string
+
 			BeforeEach(func() {
-				sdkVersion = GetLatestPatchVersion("dotnet", "1.0.x", bpDir)
-				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "1.0.x")
+				sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.0.x")
 			})
 
 			It("the buildpack installs the version from buildpack.yml and dotnet complains", func() {
 				Expect(app.Push()).ToNot(Succeed())
 
 				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
-				Eventually(app.Stdout.String).Should(ContainSubstring("The specified SDK version [2.0.1] from global.json [/tmp/app/global.json] not found"))
+				Eventually(app.Stdout.String).Should(ContainSubstring("The specified SDK version [2.1.301] from global.json [/tmp/app/global.json] not found"))
 			})
 		})
 
@@ -98,6 +115,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("1 + 2 = 3"))
 		})
 	})
+
 	Context("deploying simple web app with missing sdk", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "missing_sdk"))
@@ -110,6 +128,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 	})
+
 	Context("deploying an msbuild app with RuntimeIdentfier", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_msbuild"))
@@ -123,31 +142,37 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 	})
+
 	Context("simple netcoreapp2", func() {
 		Context("runtime version explicitly defined in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_explicit_runtime_csproj"))
 			})
+
 			It("publishes and runs, using exact runtime", func() {
 				PushAppAndConfirm(app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.1]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
+
 		Context("runtime version floated in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_float_runtime_csproj"))
 			})
+
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.2]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
+
 		Context("runtime version not defined in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_no_runtime_csproj"))
 			})
+
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
 				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetframework versions: \[(2\.0\.9|2\.1\.2) (2\.0\.9|2\.1\.2)\]`))
@@ -155,6 +180,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 		})
 	})
+
 	Context("with runtimeconfig.json", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "float_runtimeconfig"))
@@ -166,6 +192,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Required dotnetframework versions: [%s]", latestPatch)))
 		})
 	})
+
 	Context("with runtimeconfig.json and applyPatches false", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "apply_patches_false"))
@@ -177,9 +204,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
-	FContext("for a non-published app", func() {
+	Context("for a non-published app", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
+			app.Memory = "512M"
 		})
 
 		It("successfully pushes an app with an AssemblyName", func() {

@@ -7,6 +7,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"os"
 )
 
 var _ = Describe("CF Dotnet Buildpack", func() {
@@ -15,6 +16,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying a simple webapp written in F#", func() {
 		BeforeEach(func() {
+			if os.Getenv("CF_STACK") == "cflinuxfs3" {
+				Skip("dotnet 1.0.x SDK and Framework are not supported on cflinuxfs3")
+			}
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "fsharp_msbuild"))
 		})
 

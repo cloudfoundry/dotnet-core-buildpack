@@ -1,6 +1,0 @@
----
-  applications:
-    - name: multiple_projects
-      disk_quota: 1536M
-      env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
