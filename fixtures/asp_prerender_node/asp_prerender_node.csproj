@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>portable</DebugType>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <AssemblyName>asp_prerender_node</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>asp_prerender_node</PackageId>
-    <RuntimeFrameworkVersion>1.1.9</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion>2.1.*</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

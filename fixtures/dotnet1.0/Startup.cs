@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using console_app;
 
 namespace HelloWeb
 {
@@ -11,13 +10,8 @@ namespace HelloWeb
         {
             app.Run(context =>
             {
-                return context.Response.WriteAsync(UseProjectTwo());
+                return context.Response.WriteAsync("Hello From Dotnet 1.0");
             });
-        }
-        
-        public string UseProjectTwo()
-        {
-            return ProjectTwo.GetAString();
         }
     }
 }
