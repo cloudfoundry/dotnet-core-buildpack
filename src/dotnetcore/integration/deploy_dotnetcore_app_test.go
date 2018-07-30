@@ -2,8 +2,8 @@ package integration_test
 
 import (
 	"fmt"
-	"path/filepath"
 	"os"
+	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -200,7 +200,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("installs the exact version of dotnet runtime framework from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-framework 2.0.0"))
+			Eventually(app.Stdout.String()).Should(MatchRegexp(`Using dotnet framework installed in .*/deps/0/dotnet/shared/Microsoft.NETCore.App/2.0.9`))
 		})
 	})
 
