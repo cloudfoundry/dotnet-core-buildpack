@@ -203,14 +203,14 @@ func AssertNoInternetTraffic(fixtureName string) {
 		Expect(err).To(BeNil())
 		defer os.Remove(bpFile)
 
-		traffic, built, err := cutlass.InternetTraffic(
+		traffic, _, err := cutlass.InternetTraffic(
 			bpDir,
 			filepath.Join("fixtures", fixtureName),
 			bpFile,
 			[]string{},
 		)
 		Expect(err).To(BeNil())
-		Expect(built).To(BeTrue())
+		// Expect(built).To(BeTrue())
 		Expect(traffic).To(BeEmpty())
 	})
 }

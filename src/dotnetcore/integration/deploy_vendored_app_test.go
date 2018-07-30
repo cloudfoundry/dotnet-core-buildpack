@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"os"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
@@ -16,7 +17,11 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("The app is portable", func() {
 		BeforeEach(func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored"))
+			if os.Getenv("CF_STACK") == "cflinuxfs2" {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored"))
+			} else {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored_dotnet2"))
+			}
 			app.Disk = "1536M"
 		})
 
@@ -31,7 +36,11 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("The app is self contained", func() {
 		BeforeEach(func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained"))
+			if os.Getenv("CF_STACK") == "cflinuxfs2" {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained"))
+			} else {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_dotnet2"))
+			}
 		})
 
 		It("displays a simple text homepage", func() {
