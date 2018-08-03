@@ -2,7 +2,6 @@ package integration_test
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
@@ -17,9 +16,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying simple web app with dotnet 1.0", func() {
 		BeforeEach(func() {
-			if os.Getenv("CF_STACK") == "cflinuxfs3" {
-				Skip("dotnet 1.0.x SDK and Framework are not supported on cflinuxfs3")
-			}
+			SkipUnlessStack("cflinuxfs2")
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet1.0"))
 		})
 

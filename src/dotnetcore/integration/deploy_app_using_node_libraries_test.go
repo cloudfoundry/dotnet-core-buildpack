@@ -9,7 +9,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"os"
 )
 
 var _ = Describe("CF Dotnet Buildpack", func() {
@@ -29,9 +28,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("Deploying an angular app using msbuild and dotnet 1.X", func() {
 		BeforeEach(func() {
-			if os.Getenv("CF_STACK") != "cflinuxfs2" {
-				Skip("will not run an angular app for dotnet core 1.X on unsupported stacks")
-			}
+			SkipUnlessStack("cflinuxfs2")
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet1"))
 		})
 
@@ -48,9 +45,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("Deploying an angular app using msbuild and dotnet 2.X", func() {
 		BeforeEach(func() {
-			if os.Getenv("CF_STACK") != "cflinuxfs3" {
-				Skip("will not run an angular app for dotnet core 2.X on unsupported stacks")
-			}
+			SkipUnlessStack("cflinuxfs3")
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet2"))
 		})
 

@@ -142,6 +142,13 @@ func SkipUnlessCached() {
 	}
 }
 
+func SkipUnlessStack(requiredStack string) {
+	currentStack := os.Getenv("CF_STACK")
+	if currentStack != requiredStack {
+		Skip(fmt.Sprintf("Skipping because the stack \"%s\" is not supported", currentStack))
+	}
+}
+
 func DestroyApp(app *cutlass.App) *cutlass.App {
 	if app != nil {
 		app.Destroy()

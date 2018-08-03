@@ -286,6 +286,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	if globalJSONVersion != "" {
 		if contains(allVersions, globalJSONVersion) {
 			return globalJSONVersion, nil
@@ -296,13 +297,6 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 			s.Log.Info("falling back to latest version in version line")
 			return installVersion, nil
 		}
-	}
-
-	if found, err := s.Project.IsFsharp(); err != nil {
-		return "", err
-	} else if found {
-		s.Log.Info("using the default FSharp SDK")
-		return libbuildpack.FindMatchingVersion("1.1.x", allVersions)
 	}
 
 	dep, err := s.Manifest.DefaultVersion("dotnet")

@@ -1,18 +1,25 @@
-﻿open System
-open Microsoft.AspNetCore.Builder
+namespace fsharp_msbuild
+
+open System
+open System.Collections.Generic
+open System.IO
+open System.Linq
+open System.Threading.Tasks
+open Microsoft.AspNetCore
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Configuration
+open Microsoft.Extensions.Logging
 
-type Startup() =
-    member this.Configure(app: IApplicationBuilder) = 
-      app.UseDefaultFiles() |>ignore
-      app.UseStaticFiles() |>ignore
+module Program =
+    let exitCode = 0
 
+    let CreateWebHostBuilder args =
+        WebHost
+            .CreateDefaultBuilder(args)
+            .UseStartup<Startup>();            
 
-[<EntryPoint>]
-let main argv = 
-    let config = ConfigurationBuilder().AddCommandLine(argv).Build()
+    [<EntryPoint>]
+    let main args =
+        CreateWebHostBuilder(args).Build().Run()
 
-    let host = WebHostBuilder().UseKestrel().UseConfiguration(config).UseStartup<Startup>().Build()
-    host.Run()
-    0
+        exitCode

@@ -446,15 +446,6 @@ var _ = Describe("Supply", func() {
 				Expect(os.Mkdir(filepath.Join(buildDir, "inner"), 0755)).To(Succeed())
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "inner", "example.fsproj"), []byte(""), 0644)).To(Succeed())
 			})
-
-			It("returns the fsharp compatible dotnet version", func() {
-				mockManifest.EXPECT().AllDependencyVersions("dotnet").Return([]string{"1.0.4", "1.1.6", "1.1.7", "1.1.5", "2.0.0"})
-
-				fSharpDep := libbuildpack.Dependency{Name: "dotnet", Version: "1.1.7"}
-				mockInstaller.EXPECT().InstallDependency(fSharpDep, filepath.Join(depsDir, depsIdx, "dotnet"))
-
-				Expect(supplier.InstallDotnet()).To(Succeed())
-			})
 		})
 
 		Context("no known version", func() {

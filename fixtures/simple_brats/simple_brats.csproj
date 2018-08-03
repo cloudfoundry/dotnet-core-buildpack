@@ -6,6 +6,7 @@
     <OutputType>Exe</OutputType>
     <RuntimeFrameworkVersion><%= framework_version %></RuntimeFrameworkVersion>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Server.IISIntegration">
       <Version>1.*</Version>
@@ -17,6 +18,7 @@
       <Version>1.*</Version>
     </PackageReference>
   </ItemGroup>
+
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>
