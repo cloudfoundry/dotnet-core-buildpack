@@ -7,6 +7,9 @@ What version of the buildpack you are using?
 If you were attempting to accomplish a task, what was it you were attempting to do?
 
 
+Is your dotnet app unpublished, platform-dependant, or self-contained?
+
+
 What did you expect to happen?
 
 
