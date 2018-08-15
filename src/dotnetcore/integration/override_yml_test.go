@@ -31,13 +31,13 @@ var _ = Describe("override yml", func() {
 		app.Buildpacks = []string{buildpackName + "_buildpack", "dotnet-core_buildpack"}
 	})
 
-	It("Forces dotnet from override buildpack", func() {
+	It("Forces dotnet-sdk from override buildpack", func() {
 		Expect(app.Push()).ToNot(Succeed())
 		Eventually(app.Stdout.String).Should(ContainSubstring("-----> OverrideYML Buildpack"))
 		Expect(app.ConfirmBuildpack(buildpackVersion)).To(Succeed())
 
-		Eventually(app.Stdout.String).Should(ContainSubstring("-----> Installing dotnet"))
+		Eventually(app.Stdout.String).Should(ContainSubstring("-----> Installing dotnet-sdk"))
 		Eventually(app.Stdout.String).Should(MatchRegexp("Copy .*/dotnet.tgz"))
-		Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet: dependency sha256 mismatch: expected sha256 062d906c87839d03b243e2821e10653c89b4c92878bfe2bf995dec231e117bfc"))
+		Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet SDK: dependency sha256 mismatch: expected sha256 062d906c87839d03b243e2821e10653c89b4c92878bfe2bf995dec231e117bfc"))
 	})
 })

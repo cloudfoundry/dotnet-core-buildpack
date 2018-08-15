@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework><%= net_core_app %></TargetFramework>
-    <RuntimeFrameworkVersion><%= framework_version %></RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion><%= runtime_version %></RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

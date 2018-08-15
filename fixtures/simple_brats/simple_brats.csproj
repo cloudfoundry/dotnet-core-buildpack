@@ -4,7 +4,7 @@
     <DebugType>portable</DebugType>
     <AssemblyName>simple_brats</AssemblyName>
     <OutputType>Exe</OutputType>
-    <RuntimeFrameworkVersion><%= framework_version %></RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion><%= runtime_version %></RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

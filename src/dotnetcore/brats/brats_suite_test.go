@@ -79,7 +79,7 @@ func copyBratsWithRuntime(sdkVersion, runtimeVersion, fixture string) *cutlass.A
 	}
 
 	if strings.Contains(sdkVersion, "x") {
-		deps := manifest.AllDependencyVersions("dotnet")
+		deps := manifest.AllDependencyVersions("dotnet-sdk")
 		sdkVersion, err = libbuildpack.FindMatchingVersion(sdkVersion, deps)
 		Expect(err).ToNot(HaveOccurred())
 	}

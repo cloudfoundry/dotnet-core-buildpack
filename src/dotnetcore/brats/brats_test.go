@@ -14,8 +14,8 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
 
 	bratshelper.StagingWithADepThatIsNotTheLatestConstrained(
-		"dotnet",
-		FirstOfVersionLine("dotnet", "2.1.301"),
+		"dotnet-sdk",
+		FirstOfVersionLine("dotnet-sdk", "2.1.301"),
 		func(v string) *cutlass.App { return CopyCSharpBratsWithRuntime(v, "2.1.x") },
 	)
 

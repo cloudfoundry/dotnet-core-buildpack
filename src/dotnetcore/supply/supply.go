@@ -167,15 +167,17 @@ func (s *Supplier) InstallBower() error {
 func (s *Supplier) InstallNode() error {
 	shouldInstallNode, err := s.shouldInstallNode()
 	if err != nil {
-		return err
+		return fmt.Errorf("Could not decide whether to install node: %v", err)
 	}
 	if shouldInstallNode {
 		if err := s.Installer.InstallOnlyVersion("node", s.Stager.DepDir()); err != nil {
-			return err
+			return fmt.Errorf("Attempted to install node, but failed: %v", err)
 		}
 		version := s.Manifest.AllDependencyVersions("node")[0]
-		if err := os.Rename(filepath.Join(s.Stager.DepDir(), fmt.Sprintf("node-v%s-linux-x64", version)), filepath.Join(s.Stager.DepDir(), "node")); err != nil {
-			return err
+		oldfilename := filepath.Join(s.Stager.DepDir(), fmt.Sprintf("node-v%s-linux-x64", version))
+		newfilename := filepath.Join(s.Stager.DepDir(), "node")
+		if err := os.Rename(oldfilename, newfilename); err != nil {
+			return fmt.Errorf("Could not rename '%s' to '%s': %v", oldfilename, newfilename, err)
 		}
 		return s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "node", "bin"), "bin")
 	}
@@ -193,7 +195,7 @@ func (s *Supplier) shouldInstallNode() (bool, error) {
 	}
 
 	if isPublished, err := s.Project.IsPublished(); err != nil {
-		return false, err
+		return false, fmt.Errorf("Could not determine if project is published: %v", err)
 	} else if isPublished {
 		return false, nil
 	}
@@ -204,7 +206,7 @@ func (s *Supplier) shouldInstallNode() (bool, error) {
 func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 	projFiles, err := s.Project.ProjFilePaths()
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Could not get project file paths: %v", err)
 	}
 
 	for _, projFile := range projFiles {
@@ -222,10 +224,10 @@ func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 
 		projFileContent, err := ioutil.ReadFile(projFile)
 		if err != nil {
-			return false, err
+			return false, fmt.Errorf("Could not read project file: %v", err)
 		}
 		if err := xml.Unmarshal(projFileContent, &obj); err != nil {
-			return false, err
+			return false, fmt.Errorf("Could not unmarshal project file: %v", err)
 		}
 
 		targetNames := []string{"BeforeBuild", "BeforeCompile", "BeforePublish", "AfterBuild", "AfterCompile", "AfterPublish"}
