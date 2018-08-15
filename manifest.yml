@@ -149,6 +149,18 @@ dependencies:
   sha256: 015453d275fd85632035d5f6c73ceb0e17f33a879281fc3891e7435442794f7c
   cf_stacks:
   - cflinuxfs3
+- name: dotnet-sdk
+  version: 2.1.400
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.400.linux-amd64-cflinuxfs2-88279cd3.tar.xz
+  sha256: 88279cd3d0d13dad73faaaba7333ef523f62ce3ee444fc31bb00f0a1c6693508
+  cf_stacks:
+  - cflinuxfs2
+- name: dotnet-sdk
+  version: 2.1.400
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.400.linux-amd64-cflinuxfs3-700f560a.tar.xz
+  sha256: 700f560a1ba94cc075ea3c138b895da1eb7cc00d5707a3e2bfe5c0d63327333f
+  cf_stacks:
+  - cflinuxfs3
 - name: libunwind
   version: 1.2.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.2.1-cflinuxfs2-db7f7257.tar.gz
