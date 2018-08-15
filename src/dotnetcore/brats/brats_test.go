@@ -16,7 +16,7 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.StagingWithADepThatIsNotTheLatestConstrained(
 		"dotnet",
 		FirstOfVersionLine("dotnet", "2.1.301"),
-		func(v string) *cutlass.App { return CopyCSharpBratsWithFramework(v, "2.1.x") },
+		func(v string) *cutlass.App { return CopyCSharpBratsWithRuntime(v, "2.1.x") },
 	)
 
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(
@@ -76,7 +76,7 @@ var _ = Describe("Dotnet buildpack", func() {
 			"dotnet-runtime",
 			compatible,
 			"with .NET SDK version: %s and .NET Runtime version: %s",
-			CopyCSharpBratsWithFramework,
+			CopyCSharpBratsWithRuntime,
 			ensureAppWorks,
 		)
 	})
@@ -87,7 +87,7 @@ var _ = Describe("Dotnet buildpack", func() {
 			"dotnet-runtime",
 			compatibleWithFSharp,
 			"with .NET SDK version: %s and .NET Runtime version: %s",
-			CopyFSharpBratsWithFramework,
+			CopyFSharpBratsWithRuntime,
 			ensureAppWorks,
 		)
 	})
