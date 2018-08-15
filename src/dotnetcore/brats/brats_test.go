@@ -28,15 +28,15 @@ var _ = Describe("Dotnet buildpack", func() {
 
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
-	compatible := func(sdkVersion, frameworkVersion string) bool {
+	compatible := func(sdkVersion, runtimeVersion string) bool {
 		sdk := semver.MustParse(sdkVersion)
 
-		framework := semver.MustParse(frameworkVersion)
+		runtime := semver.MustParse(runtimeVersion)
 
-		isCompatible := sdk.Major == framework.Major
+		isCompatible := sdk.Major == runtime.Major
 
-		framework210 := semver.MustParse("2.1.0")
-		if framework.GTE(framework210) {
+		runtime210 := semver.MustParse("2.1.0")
+		if runtime.GTE(runtime210) {
 			sdk21300 := semver.MustParse("2.1.300")
 			isCompatible = isCompatible && sdk.GTE(sdk21300)
 		}
@@ -45,23 +45,23 @@ var _ = Describe("Dotnet buildpack", func() {
 	}
 
 	// Skip 1.0.X versions of the SDK when testing F# apps
-	compatibleWithFSharp := func(sdkVersion, frameworkVersion string) bool {
+	compatibleWithFSharp := func(sdkVersion, runtimeVersion string) bool {
 		sdk := semver.MustParse(sdkVersion)
 		if sdk.Major <= 1 && sdk.Minor < 1 {
 			return false
 		}
-		return compatible(sdkVersion, frameworkVersion)
+		return compatible(sdkVersion, runtimeVersion)
 	}
 
-	ensureAppWorks := func(sdkVersion, frameworkVersion string, app *cutlass.App) {
+	ensureAppWorks := func(sdkVersion, runtimeVersion string, app *cutlass.App) {
 		PushApp(app)
 
-		By("installs the correct version of .NET SDK + .NET Framework", func() {
+		By("installs the correct version of .NET SDK + .NET Runtime", func() {
 			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet " + sdkVersion))
 			Expect(app.Stdout.String()).To(MatchRegexp(
-				"(Using dotnet framework installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/%s\\E|\\QInstalling dotnet-framework %s\\E)",
-				frameworkVersion,
-				frameworkVersion,
+				"(Using dotnet runtime installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/%s\\E|\\QInstalling dotnet-runtime %s\\E)",
+				runtimeVersion,
+				runtimeVersion,
 			))
 		})
 
@@ -73,9 +73,9 @@ var _ = Describe("Dotnet buildpack", func() {
 	Context("for C# apps", func() {
 		bratshelper.ForAllSupportedVersions2(
 			"dotnet",
-			"dotnet-framework",
+			"dotnet-runtime",
 			compatible,
-			"with .NET SDK version: %s and .NET Framework version: %s",
+			"with .NET SDK version: %s and .NET Runtime version: %s",
 			CopyCSharpBratsWithFramework,
 			ensureAppWorks,
 		)
@@ -84,9 +84,9 @@ var _ = Describe("Dotnet buildpack", func() {
 	Context("for F# apps", func() {
 		bratshelper.ForAllSupportedVersions2(
 			"dotnet",
-			"dotnet-framework",
+			"dotnet-runtime",
 			compatibleWithFSharp,
-			"with .NET SDK version: %s and .NET Framework version: %s",
+			"with .NET SDK version: %s and .NET Runtime version: %s",
 			CopyFSharpBratsWithFramework,
 			ensureAppWorks,
 		)

@@ -148,7 +148,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using exact runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.1]"))
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.1]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -160,7 +160,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetframework versions: [2.1.2]"))
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.2]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -172,7 +172,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetframework versions: \[(2\.0\.9|2\.1\.2) (2\.0\.9|2\.1\.2)\]`))
+				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetruntime versions: \[(2\.0\.9|2\.1\.2) (2\.0\.9|2\.1\.2)\]`))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -183,10 +183,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "float_runtimeconfig"))
 		})
 
-		It("installs the latest patch of dotnet runtime framework from the runtimeconfig.json", func() {
-			latestPatch := GetLatestPatchVersion("dotnet-framework", "2.0.x", bpDir)
+		It("installs the latest patch of dotnet runtime from the runtimeconfig.json", func() {
+			latestPatch := GetLatestPatchVersion("dotnet-runtime", "2.0.x", bpDir)
 			PushAppAndConfirm(app)
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Required dotnetframework versions: [%s]", latestPatch)))
+			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Required dotnetruntime versions: [%s]", latestPatch)))
 		})
 	})
 
@@ -195,9 +195,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "apply_patches_false"))
 		})
 
-		It("installs the exact version of dotnet runtime framework from the runtimeconfig.json", func() {
+		It("installs the exact version of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Eventually(app.Stdout.String()).Should(MatchRegexp(`Using dotnet framework installed in .*/dotnet/shared/Microsoft.NETCore.App/2.0.9`))
+			Eventually(app.Stdout.String()).Should(MatchRegexp(`Using dotnet runtime installed in .*/dotnet/shared/Microsoft.NETCore.App/2.0.9`))
 		})
 	})
 

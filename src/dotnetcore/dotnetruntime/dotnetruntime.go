@@ -1,4 +1,4 @@
-package dotnetframework
+package dotnetruntime
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ type Manifest interface {
 	AllDependencyVersions(string) []string
 }
 
-type DotnetFramework struct {
+type DotnetRuntime struct {
 	depDir    string
 	installer Installer
 	manifest  Manifest
@@ -26,8 +26,8 @@ type DotnetFramework struct {
 	buildDir  string
 }
 
-func New(depDir string, buildDir string, installer Installer, manifest Manifest, logger *libbuildpack.Logger) *DotnetFramework {
-	return &DotnetFramework{
+func New(depDir string, buildDir string, installer Installer, manifest Manifest, logger *libbuildpack.Logger) *DotnetRuntime {
+	return &DotnetRuntime{
 		depDir:    depDir,
 		installer: installer,
 		manifest:  manifest,
@@ -36,7 +36,7 @@ func New(depDir string, buildDir string, installer Installer, manifest Manifest,
 	}
 }
 
-func (d *DotnetFramework) Install(mainProjectFile string) error {
+func (d *DotnetRuntime) Install(mainProjectFile string) error {
 	versions, err := d.requiredVersions(mainProjectFile)
 	if err != nil {
 		return err
@@ -44,13 +44,13 @@ func (d *DotnetFramework) Install(mainProjectFile string) error {
 	if len(versions) == 0 {
 		return nil
 	}
-	d.logger.Info("Required dotnetframework versions: %v", versions)
+	d.logger.Info("Required dotnetruntime versions: %v", versions)
 
 	for _, v := range versions {
 		if found, err := d.isInstalled(v); err != nil {
 			return err
 		} else if !found {
-			if err := d.installFramework(v); err != nil {
+			if err := d.installRuntime(v); err != nil {
 				return err
 			}
 		}
@@ -58,7 +58,7 @@ func (d *DotnetFramework) Install(mainProjectFile string) error {
 	return nil
 }
 
-func (d *DotnetFramework) requiredVersions(mainProjectFile string) ([]string, error) {
+func (d *DotnetRuntime) requiredVersions(mainProjectFile string) ([]string, error) {
 	if runtimeFile, err := d.runtimeConfigFile(); err != nil {
 		return nil, err
 	} else {
@@ -84,7 +84,7 @@ func (d *DotnetFramework) requiredVersions(mainProjectFile string) ([]string, er
 	}
 }
 
-func (d *DotnetFramework) versionFromProj(mainProjectFile string) (string, error) {
+func (d *DotnetRuntime) versionFromProj(mainProjectFile string) (string, error) {
 	proj, err := ioutil.ReadFile(mainProjectFile)
 	if err != nil {
 		return "", err
@@ -102,10 +102,10 @@ func (d *DotnetFramework) versionFromProj(mainProjectFile string) (string, error
 	return version, nil
 }
 
-func (d *DotnetFramework) versionsFromRuntimeConfig(runtimeConfig string) ([]string, error) {
+func (d *DotnetRuntime) versionsFromRuntimeConfig(runtimeConfig string) ([]string, error) {
 	obj := struct {
 		RuntimeOptions struct {
-			Framework struct {
+			Runtime struct {
 				Name    string `json:"name"`
 				Version string `json:"version"`
 			} `json:"framework"`
@@ -117,7 +117,7 @@ func (d *DotnetFramework) versionsFromRuntimeConfig(runtimeConfig string) ([]str
 		return []string{}, err
 	}
 
-	version := obj.RuntimeOptions.Framework.Version
+	version := obj.RuntimeOptions.Runtime.Version
 	var err error
 	if version != "" {
 		if obj.RuntimeOptions.ApplyPatches == nil || *obj.RuntimeOptions.ApplyPatches {
@@ -131,7 +131,7 @@ func (d *DotnetFramework) versionsFromRuntimeConfig(runtimeConfig string) ([]str
 	return []string{}, nil
 }
 
-func (d *DotnetFramework) versionsFromNugetPackages() ([]string, error) {
+func (d *DotnetRuntime) versionsFromNugetPackages() ([]string, error) {
 	restoredVersionsDir := filepath.Join(d.depDir, ".nuget", "packages", "microsoft.netcore.app")
 	if exists, err := libbuildpack.FileExists(restoredVersionsDir); err != nil {
 		return []string{}, err
@@ -160,10 +160,10 @@ func (d *DotnetFramework) versionsFromNugetPackages() ([]string, error) {
 	return distinctVersions, nil
 }
 
-func (d *DotnetFramework) getLatestPatch(version string) (string, error) {
+func (d *DotnetRuntime) getLatestPatch(version string) (string, error) {
 	v := strings.Split(version, ".")
 	v[2] = "x"
-	versions := d.manifest.AllDependencyVersions("dotnet-framework")
+	versions := d.manifest.AllDependencyVersions("dotnet-runtime")
 	latestPatch, err := libbuildpack.FindMatchingVersion(strings.Join(v, "."), versions)
 	if err != nil {
 		return "", err
@@ -171,29 +171,29 @@ func (d *DotnetFramework) getLatestPatch(version string) (string, error) {
 	return latestPatch, nil
 }
 
-func (d *DotnetFramework) getFrameworkDir() string {
+func (d *DotnetRuntime) getRuntimeDir() string {
 	return filepath.Join(d.depDir, "dotnet", "shared", "Microsoft.NETCore.App")
 }
 
-func (d *DotnetFramework) isInstalled(version string) (bool, error) {
-	frameworkPath := filepath.Join(d.getFrameworkDir(), version)
-	if exists, err := libbuildpack.FileExists(frameworkPath); err != nil {
+func (d *DotnetRuntime) isInstalled(version string) (bool, error) {
+	runtimePath := filepath.Join(d.getRuntimeDir(), version)
+	if exists, err := libbuildpack.FileExists(runtimePath); err != nil {
 		return false, err
 	} else if exists {
-		d.logger.Info("Using dotnet framework installed in %s", frameworkPath)
+		d.logger.Info("Using dotnet runtime installed in %s", runtimePath)
 		return true, nil
 	}
 	return false, nil
 }
 
-func (d *DotnetFramework) installFramework(version string) error {
-	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
+func (d *DotnetRuntime) installRuntime(version string) error {
+	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *DotnetFramework) runtimeConfigFile() (string, error) {
+func (d *DotnetRuntime) runtimeConfigFile() (string, error) {
 	if configFiles, err := filepath.Glob(filepath.Join(d.buildDir, "*.runtimeconfig.json")); err != nil {
 		return "", err
 	} else if len(configFiles) == 1 {

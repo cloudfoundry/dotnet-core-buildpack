@@ -1,4 +1,4 @@
-package dotnetframework_test
+package dotnetruntime_test
 
 import (
 	. "github.com/onsi/ginkgo"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDotnetframework(t *testing.T) {
+func TestDotnetruntime(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Dotnetframework Suite")
+	RunSpecs(t, "Dotnetruntime Suite")
 }

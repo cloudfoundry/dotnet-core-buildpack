@@ -16,8 +16,8 @@ import (
 )
 
 var cfStackToOS = map[string]string{
-	"cflinuxfs2": "ubuntu.14.04-x64",
-	"cflinuxfs3": "ubuntu.18.04-x64",
+	"cflinuxfs2":  "ubuntu.14.04-x64",
+	"cflinuxfs3":  "ubuntu.18.04-x64",
 	"cflinuxfs3m": "ubuntu.18.04-x64",
 }
 
@@ -32,17 +32,17 @@ type Command interface {
 	Run(*exec.Cmd) error
 }
 
-type DotnetFramework interface {
+type DotnetRuntime interface {
 	Install(string) error
 }
 
 type Finalizer struct {
-	Stager          Stager
-	Log             *libbuildpack.Logger
-	Command         Command
-	DotnetFramework DotnetFramework
-	Config          *config.Config
-	Project         *project.Project
+	Stager        Stager
+	Log           *libbuildpack.Logger
+	Command       Command
+	DotnetRuntime DotnetRuntime
+	Config        *config.Config
+	Project       *project.Project
 }
 
 func Run(f *Finalizer) error {
@@ -57,8 +57,8 @@ func Run(f *Finalizer) error {
 	if err != nil {
 		return err
 	}
-	if err := f.DotnetFramework.Install(mainPath); err != nil {
-		f.Log.Error("Unable to install required dotnet frameworks: %s", err.Error())
+	if err := f.DotnetRuntime.Install(mainPath); err != nil {
+		f.Log.Error("Unable to install required dotnet runtimes: %s", err.Error())
 		return err
 	}
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"dotnetcore/config"
-	"dotnetcore/dotnetframework"
+	"dotnetcore/dotnetruntime"
 	"dotnetcore/finalize"
 	"dotnetcore/project"
 	"io"
@@ -59,14 +59,14 @@ func main() {
 		os.Exit(15)
 	}
 
-	dotnetframework := dotnetframework.New(stager.DepDir(), stager.BuildDir(), libbuildpack.NewInstaller(manifest), manifest, logger)
+	dotnetruntime := dotnetruntime.New(stager.DepDir(), stager.BuildDir(), libbuildpack.NewInstaller(manifest), manifest, logger)
 	f := finalize.Finalizer{
-		Stager:          stager,
-		Log:             logger,
-		Command:         &libbuildpack.Command{},
-		DotnetFramework: dotnetframework,
-		Config:          &configYml.Config,
-		Project:         project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx()),
+		Stager:        stager,
+		Log:           logger,
+		Command:       &libbuildpack.Command{},
+		DotnetRuntime: dotnetruntime,
+		Config:        &configYml.Config,
+		Project:       project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx()),
 	}
 
 	if err := finalize.Run(&f); err != nil {

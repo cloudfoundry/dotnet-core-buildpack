@@ -226,10 +226,10 @@ func GetLatestPatchVersion(dep, constraint, bpDir string) string {
 	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
 	Expect(err).ToNot(HaveOccurred())
 	deps := manifest.AllDependencyVersions(dep)
-	frameworkVersion, err := libbuildpack.FindMatchingVersion(constraint, deps)
+	runtimeVersion, err := libbuildpack.FindMatchingVersion(constraint, deps)
 	Expect(err).ToNot(HaveOccurred())
 
-	return frameworkVersion
+	return runtimeVersion
 }
 
 func ReplaceFileTemplate(bpDir, fixture, file, templateVar, replaceVal string) *cutlass.App {

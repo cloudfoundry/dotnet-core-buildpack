@@ -1,8 +1,8 @@
-package dotnetframework_test
+package dotnetruntime_test
 
 import (
 	"bytes"
-	"dotnetcore/dotnetframework"
+	"dotnetcore/dotnetruntime"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -15,14 +15,14 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-//go:generate mockgen -source=dotnetframework.go --destination=mocks_dotnetframework_test.go --package=dotnetframework_test
+//go:generate mockgen -source=dotnetruntime.go --destination=mocks_dotnetruntime_test.go --package=dotnetruntime_test
 
-var _ = Describe("Dotnetframework", func() {
+var _ = Describe("Dotnetruntime", func() {
 	var (
 		err           error
 		depDir        string
 		buildDir      string
-		subject       *dotnetframework.DotnetFramework
+		subject       *dotnetruntime.DotnetRuntime
 		mockCtrl      *gomock.Controller
 		mockInstaller *MockInstaller
 		mockManifest  *MockManifest
@@ -48,7 +48,7 @@ var _ = Describe("Dotnetframework", func() {
 		Expect(err).To(BeNil())
 		Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("---"), 0644)).To(Succeed())
 
-		subject = dotnetframework.New(depDir, buildDir, mockInstaller, mockManifest, logger)
+		subject = dotnetruntime.New(depDir, buildDir, mockInstaller, mockManifest, logger)
 	})
 
 	AfterEach(func() {
@@ -71,8 +71,8 @@ var _ = Describe("Dotnetframework", func() {
 							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "4.5.6" }, "applyPatches": false } }`), 0644)).To(Succeed())
 					})
 
-					It("does not install the framework again", func() {
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "4.5.6"}, gomock.Any()).Times(0)
+					It("does not install the runtime again", func() {
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "4.5.6"}, gomock.Any()).Times(0)
 						Expect(subject.Install(filepath.Join(buildDir, "foo"))).To(Succeed())
 					})
 				})
@@ -83,8 +83,8 @@ var _ = Describe("Dotnetframework", func() {
 							[]byte(`{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "7.8.9" }, "applyPatches": false } }`), 0644)).To(Succeed())
 					})
 
-					It("installs the additional framework", func() {
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+					It("installs the additional runtime", func() {
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
 						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
@@ -96,9 +96,9 @@ var _ = Describe("Dotnetframework", func() {
 						Expect(os.MkdirAll(filepath.Join(depDir, ".nuget", "packages", "microsoft.netcore.app", "4.5.6"), 0755)).To(Succeed())
 					})
 
-					It("does not install the framework again", func() {
-						mockManifest.EXPECT().AllDependencyVersions("dotnet-framework").Return([]string{"4.5.6"})
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "4.5.6"}, gomock.Any()).Times(0)
+					It("does not install the runtime again", func() {
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6"})
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "4.5.6"}, gomock.Any()).Times(0)
 						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
@@ -108,9 +108,9 @@ var _ = Describe("Dotnetframework", func() {
 						Expect(os.MkdirAll(filepath.Join(depDir, ".nuget", "packages", "microsoft.netcore.app", "7.8.9"), 0755)).To(Succeed())
 					})
 
-					It("installs the additional framework", func() {
-						mockManifest.EXPECT().AllDependencyVersions("dotnet-framework").Return([]string{"7.8.9"})
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-framework", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+					It("installs the additional runtime", func() {
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"7.8.9"})
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
 						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})

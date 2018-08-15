@@ -116,37 +116,37 @@ func (mr *MockCommandMockRecorder) Run(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockCommand)(nil).Run), arg0)
 }
 
-// MockDotnetFramework is a mock of DotnetFramework interface
-type MockDotnetFramework struct {
+// MockDotnetRuntime is a mock of DotnetRuntime interface
+type MockDotnetRuntime struct {
 	ctrl     *gomock.Controller
-	recorder *MockDotnetFrameworkMockRecorder
+	recorder *MockDotnetRuntimeMockRecorder
 }
 
-// MockDotnetFrameworkMockRecorder is the mock recorder for MockDotnetFramework
-type MockDotnetFrameworkMockRecorder struct {
-	mock *MockDotnetFramework
+// MockDotnetRuntimeMockRecorder is the mock recorder for MockDotnetRuntime
+type MockDotnetRuntimeMockRecorder struct {
+	mock *MockDotnetRuntime
 }
 
-// NewMockDotnetFramework creates a new mock instance
-func NewMockDotnetFramework(ctrl *gomock.Controller) *MockDotnetFramework {
-	mock := &MockDotnetFramework{ctrl: ctrl}
-	mock.recorder = &MockDotnetFrameworkMockRecorder{mock}
+// NewMockDotnetRuntime creates a new mock instance
+func NewMockDotnetRuntime(ctrl *gomock.Controller) *MockDotnetRuntime {
+	mock := &MockDotnetRuntime{ctrl: ctrl}
+	mock.recorder = &MockDotnetRuntimeMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockDotnetFramework) EXPECT() *MockDotnetFrameworkMockRecorder {
+func (m *MockDotnetRuntime) EXPECT() *MockDotnetRuntimeMockRecorder {
 	return m.recorder
 }
 
 // Install mocks base method
-func (m *MockDotnetFramework) Install(arg0 string) error {
+func (m *MockDotnetRuntime) Install(arg0 string) error {
 	ret := m.ctrl.Call(m, "Install", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Install indicates an expected call of Install
-func (mr *MockDotnetFrameworkMockRecorder) Install(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Install", reflect.TypeOf((*MockDotnetFramework)(nil).Install), arg0)
+func (mr *MockDotnetRuntimeMockRecorder) Install(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Install", reflect.TypeOf((*MockDotnetRuntime)(nil).Install), arg0)
 }

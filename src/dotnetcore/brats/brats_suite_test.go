@@ -15,6 +15,7 @@ import (
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
 	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -69,7 +70,7 @@ func FirstOfVersionLine(dependency, line string) string {
 	return versions[0]
 }
 
-func copyBratsWithFramework(sdkVersion, frameworkVersion, fixture string,) *cutlass.App {
+func copyBratsWithRuntime(sdkVersion, runtimeVersion, fixture string) *cutlass.App {
 	manifest, err := libbuildpack.NewManifest(bratshelper.Data.BpDir, nil, time.Now())
 	Expect(err).ToNot(HaveOccurred())
 
@@ -83,23 +84,23 @@ func copyBratsWithFramework(sdkVersion, frameworkVersion, fixture string,) *cutl
 		Expect(err).ToNot(HaveOccurred())
 	}
 
-	if frameworkVersion == "" {
-		frameworkVersion = "x"
+	if runtimeVersion == "" {
+		runtimeVersion = "x"
 	}
 
-	if strings.Contains(frameworkVersion, "x") {
-		deps := manifest.AllDependencyVersions("dotnet-framework")
-		frameworkVersion, err = libbuildpack.FindMatchingVersion(frameworkVersion, deps)
+	if strings.Contains(runtimeVersion, "x") {
+		deps := manifest.AllDependencyVersions("dotnet-runtime")
+		runtimeVersion, err = libbuildpack.FindMatchingVersion(runtimeVersion, deps)
 		Expect(err).ToNot(HaveOccurred())
 	}
 
-	versionParts := strings.Split(frameworkVersion, ".")
+	versionParts := strings.Split(runtimeVersion, ".")
 	netCoreApp := fmt.Sprintf("netcoreapp%s.%s", versionParts[0], versionParts[1])
 
 	dir, err := cutlass.CopyFixture(filepath.Join(bratshelper.Data.BpDir, "fixtures", fixture))
 	Expect(err).ToNot(HaveOccurred())
 
-	projectFile, err := filepath.Glob(filepath.Join(dir, fixture + ".*sproj"))
+	projectFile, err := filepath.Glob(filepath.Join(dir, fixture+".*sproj"))
 	Expect(err).NotTo(HaveOccurred())
 	Expect(len(projectFile)).To(Equal(1))
 
@@ -108,7 +109,7 @@ func copyBratsWithFramework(sdkVersion, frameworkVersion, fixture string,) *cutl
 		Expect(err).ToNot(HaveOccurred())
 
 		data = bytes.Replace(data, []byte("<%= net_core_app %>"), []byte(netCoreApp), -1)
-		data = bytes.Replace(data, []byte("<%= framework_version %>"), []byte(frameworkVersion), -1)
+		data = bytes.Replace(data, []byte("<%= runtime_version %>"), []byte(runtimeVersion), -1)
 		data = bytes.Replace(data, []byte("<%= sdk_version %>"), []byte(sdkVersion), -1)
 		Expect(ioutil.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
 	}
@@ -116,16 +117,16 @@ func copyBratsWithFramework(sdkVersion, frameworkVersion, fixture string,) *cutl
 	return cutlass.New(dir)
 }
 
-func CopyCSharpBratsWithFramework(sdkVersion, frameworkVersion string) *cutlass.App {
-	return copyBratsWithFramework(sdkVersion, frameworkVersion, "simple_brats")
+func CopyCSharpBratsWithRuntime(sdkVersion, runtimeVersion string) *cutlass.App {
+	return copyBratsWithRuntime(sdkVersion, runtimeVersion, "simple_brats")
 }
 
-func CopyFSharpBratsWithFramework(sdkVersion, frameworkVersion string) *cutlass.App {
-	return copyBratsWithFramework(sdkVersion, frameworkVersion, "simple_fsharp_brats")
+func CopyFSharpBratsWithRuntime(sdkVersion, runtimeVersion string) *cutlass.App {
+	return copyBratsWithRuntime(sdkVersion, runtimeVersion, "simple_fsharp_brats")
 }
 
 func CopyBrats(sdkVersion string) *cutlass.App {
-	return CopyCSharpBratsWithFramework(sdkVersion, "")
+	return CopyCSharpBratsWithRuntime(sdkVersion, "")
 }
 
 func PushApp(app *cutlass.App) {
