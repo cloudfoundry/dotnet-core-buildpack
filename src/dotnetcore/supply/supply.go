@@ -70,8 +70,8 @@ func Run(s *Supplier) error {
 		s.Log.Error("Unable to install Libunwind: %s", err.Error())
 		return err
 	}
-	if err := s.InstallDotnet(); err != nil {
-		s.Log.Error("Unable to install Dotnet: %s", err.Error())
+	if err := s.InstallDotnetSdk(); err != nil {
+		s.Log.Error("Unable to install Dotnet SDK: %s", err.Error())
 		return err
 	}
 
@@ -267,7 +267,7 @@ func majorMinorOnly(version string) string {
 }
 
 func (s *Supplier) pickVersionToInstall() (string, error) {
-	allVersions := s.Manifest.AllDependencyVersions("dotnet")
+	allVersions := s.Manifest.AllDependencyVersions("dotnet-sdk")
 
 	buildpackVersion, err := s.buildpackYamlSdkVersion()
 	if err != nil {
@@ -299,7 +299,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 		}
 	}
 
-	dep, err := s.Manifest.DefaultVersion("dotnet")
+	dep, err := s.Manifest.DefaultVersion("dotnet-sdk")
 	if err != nil {
 		return "", err
 	}
@@ -307,18 +307,18 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 	return dep.Version, nil
 }
 
-func (s *Supplier) InstallDotnet() error {
+func (s *Supplier) InstallDotnetSdk() error {
 	installVersion, err := s.pickVersionToInstall()
 	if err != nil {
 		return err
 	}
 	s.Config.DotnetSdkVersion = installVersion
 
-	if err := s.Installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet", Version: installVersion}, filepath.Join(s.Stager.DepDir(), "dotnet")); err != nil {
+	if err := s.Installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-sdk", Version: installVersion}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk")); err != nil {
 		return err
 	}
 
-	return s.Stager.AddBinDependencyLink(filepath.Join(s.Stager.DepDir(), "dotnet", "dotnet"), "dotnet")
+	return s.Stager.AddBinDependencyLink(filepath.Join(s.Stager.DepDir(), "dotnet-sdk", "dotnet"), "dotnet")
 }
 
 func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
