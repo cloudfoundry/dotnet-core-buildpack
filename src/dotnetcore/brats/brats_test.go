@@ -24,7 +24,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		CopyBrats,
 	)
 
-	bratshelper.DeployAppWithExecutableProfileScript("dotnet", CopyBrats)
+	bratshelper.DeployAppWithExecutableProfileScript("dotnet-sdk", CopyBrats)
 
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
@@ -57,7 +57,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		PushApp(app)
 
 		By("installs the correct version of .NET SDK + .NET Runtime", func() {
-			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet " + sdkVersion))
+			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-sdk " + sdkVersion))
 			Expect(app.Stdout.String()).To(MatchRegexp(
 				"(Using dotnet runtime installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/%s\\E|\\QInstalling dotnet-runtime %s\\E)",
 				runtimeVersion,
@@ -72,7 +72,7 @@ var _ = Describe("Dotnet buildpack", func() {
 
 	Context("for C# apps", func() {
 		bratshelper.ForAllSupportedVersions2(
-			"dotnet",
+			"dotnet-sdk",
 			"dotnet-runtime",
 			compatible,
 			"with .NET SDK version: %s and .NET Runtime version: %s",
@@ -83,7 +83,7 @@ var _ = Describe("Dotnet buildpack", func() {
 
 	Context("for F# apps", func() {
 		bratshelper.ForAllSupportedVersions2(
-			"dotnet",
+			"dotnet-sdk",
 			"dotnet-runtime",
 			compatibleWithFSharp,
 			"with .NET SDK version: %s and .NET Runtime version: %s",
