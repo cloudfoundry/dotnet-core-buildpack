@@ -37,7 +37,7 @@ var _ = Describe("override yml", func() {
 		Expect(app.ConfirmBuildpack(buildpackVersion)).To(Succeed())
 
 		Eventually(app.Stdout.String).Should(ContainSubstring("-----> Installing dotnet-sdk"))
-		Eventually(app.Stdout.String).Should(MatchRegexp("Copy .*/dotnet.tgz"))
+		Eventually(app.Stdout.String).Should(MatchRegexp("Copy .*/dotnet-sdk.tgz"))
 		Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet SDK: dependency sha256 mismatch: expected sha256 062d906c87839d03b243e2821e10653c89b4c92878bfe2bf995dec231e117bfc"))
 	})
 })

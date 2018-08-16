@@ -43,7 +43,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		var sdkVersion string
 
 		BeforeEach(func() {
-			sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
+			sdkVersion = GetLatestPatchVersion("dotnet-sdk", "2.0.x", bpDir)
 			app = ReplaceFileTemplate(bpDir, "dotnet2_with_global_json", "global.json", "sdk_version", sdkVersion)
 		})
 
@@ -60,7 +60,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			var sdkVersion string
 
 			BeforeEach(func() {
-				sdkVersion = GetLatestPatchVersion("dotnet", "2.1.x", bpDir)
+				sdkVersion = GetLatestPatchVersion("dotnet-sdk", "2.1.x", bpDir)
 				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.1.x")
 			})
 
@@ -76,7 +76,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			var sdkVersion string
 
 			BeforeEach(func() {
-				sdkVersion = GetLatestPatchVersion("dotnet", "2.0.x", bpDir)
+				sdkVersion = GetLatestPatchVersion("dotnet-sdk", "2.0.x", bpDir)
 				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.0.x")
 			})
 
@@ -97,7 +97,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				Expect(app.Push()).ToNot(Succeed())
 
 				Eventually(app.Stdout.String).Should(ContainSubstring("SDK 2.0.0-preview7 in buildpack.yml is not available"))
-				Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet: no match found for 2.0.0-preview7"))
+				Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet SDK: no match found for 2.0.0-preview7"))
 			})
 		})
 	})

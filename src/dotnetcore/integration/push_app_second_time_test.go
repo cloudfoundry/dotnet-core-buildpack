@@ -20,8 +20,8 @@ var _ = Describe("pushing an app a second time", func() {
 		app.SetEnv("BP_DEBUG", "true")
 	})
 
-	DownloadRegexp := `Download \[.*/dotnet\..*\.tar\.xz\]`
-	CopyRegexp := `Copy \[.*/dotnet\..*\.tar\.xz\]`
+	DownloadRegexp := `Download \[.*/dotnet-sdk\..*\.tar\.xz\]`
+	CopyRegexp := `Copy \[.*/dotnet-sdk\..*\.tar\.xz\]`
 
 	It("uses the cache for manifest dependencies", func() {
 		PushAppAndConfirm(app)

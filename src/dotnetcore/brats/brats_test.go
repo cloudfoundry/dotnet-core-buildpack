@@ -20,7 +20,7 @@ var _ = Describe("Dotnet buildpack", func() {
 	)
 
 	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(
-		`dotnet\.[\d\.]+\.linux\-amd64\-.*\-[\da-f]+\.tar.xz`,
+		`dotnet-sdk\.[\d\.]+\.linux\-amd64\-.*\-[\da-f]+\.tar.xz`,
 		CopyBrats,
 	)
 
