@@ -14,7 +14,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	var app *cutlass.App
 	AfterEach(func() { app = DestroyApp(app) })
 
-	Context("deploying simple web app with dotnet 1.0", func() {
+	Context("deploying simple web app with dotnet-runtime 1.0", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs2")
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet1.0"))
@@ -25,7 +25,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
-	Context("deploying simple web app with dotnet 2.0", func() {
+	Context("deploying simple web app with dotnet-runtime 2.0", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet2"))
 		})
@@ -50,24 +50,21 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("displays a simple text homepage", func() {
 			PushAppAndConfirm(app)
 
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
+			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", sdkVersion)))
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
 		})
 	})
 
 	Context("deploying with a buildpack.yml and global.json files", func() {
 		Context("when SDK versions match/overlap", func() {
-			var sdkVersion string
-
 			BeforeEach(func() {
-				sdkVersion = GetLatestPatchVersion("dotnet-sdk", "2.1.x", bpDir)
-				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.1.x")
+				app = ReplaceFileTemplate(bpDir, "with_buildpack_yml", "buildpack.yml", "sdk_version", "2.1.302")
 			})
 
 			It("buildpacks.yml sdk version overrides global.json and floats on patch", func() {
 				PushAppAndConfirm(app)
 
-				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
+				Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-sdk 2.1.302"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.1"))
 			})
 		})
@@ -83,7 +80,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			It("the buildpack installs the version from buildpack.yml and dotnet complains", func() {
 				Expect(app.Push()).ToNot(Succeed())
 
-				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet %s", sdkVersion)))
+				Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", sdkVersion)))
 				Eventually(app.Stdout.String).Should(ContainSubstring("The specified SDK version [2.1.301] from global.json [/tmp/app/global.json] not found"))
 			})
 		})
@@ -197,7 +194,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("installs the exact version of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Eventually(app.Stdout.String()).Should(MatchRegexp(`Using dotnet runtime installed in .*/dotnet/shared/Microsoft.NETCore.App/2.0.9`))
+			Eventually(app.Stdout.String()).Should(MatchRegexp(
+				"(Using dotnet runtime installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/2.0.9\\E|\\QInstalling dotnet-runtime 2.0.9\\E)"))
 		})
 	})
 
