@@ -30,7 +30,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs2")
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet1"))
-			app, Disk = "2G"
+			app.Disk = "2G"
 			app.Memory = "2G"
 		})
 
