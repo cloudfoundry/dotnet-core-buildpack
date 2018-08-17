@@ -1,7 +1,7 @@
 ---
   applications:
     - name: asp_mvc
-      disk_quota: 1536M
+      disk_quota: 2G
       env:
         CACHE_NUGET_PACKAGES: false
         DOTNET_CLI_TELEMETRY_OPTOUT: 1

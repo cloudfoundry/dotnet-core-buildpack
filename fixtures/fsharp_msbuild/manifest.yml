@@ -1,0 +1,4 @@
+---
+  applications:
+    - name: fsharp_msbuild
+      disk_quota: 2G

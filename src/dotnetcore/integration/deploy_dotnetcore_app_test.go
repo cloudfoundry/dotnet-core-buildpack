@@ -202,7 +202,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("for a non-published app", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
-			app.Memory = "512M"
+			app.Memory = "1G"
+			app.Disk = "2G"
 		})
 
 		It("successfully pushes an app with an AssemblyName", func() {

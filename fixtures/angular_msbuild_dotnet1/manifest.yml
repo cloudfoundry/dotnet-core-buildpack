@@ -1,7 +1,7 @@
 ---
   applications:
     - name: angular_msbuild
-      disk_quota: 1536M
+      disk_quota: 2G
       memory: 1G
       env:
         DOTNET_CLI_TELEMETRY_OPTOUT: 1
