@@ -102,6 +102,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("deploying an mvc app with node prerendering", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_prerender_node"))
+			app.Disk = "2G"
+			app.Memory = "2G"
 		})
 
 		It("displays a simple text homepage", func() {
@@ -141,6 +143,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("runtime version explicitly defined in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_explicit_runtime_csproj"))
+				app.Disk = "2G"
+				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using exact runtime", func() {
@@ -153,6 +157,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("runtime version floated in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_float_runtime_csproj"))
+				app.Disk = "2G"
+				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using latest patch runtime", func() {
@@ -165,6 +171,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("runtime version not defined in csproj", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "netcoreapp2_no_runtime_csproj"))
+				app.Disk = "2G"
+				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using latest patch runtime", func() {
