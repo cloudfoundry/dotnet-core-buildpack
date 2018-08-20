@@ -22,6 +22,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	})
 
 	AfterEach(func() {
+		PrintFailureLogs(app.Name)
 		app = DestroyApp(app)
 		Expect(page.Destroy()).To(Succeed())
 	})

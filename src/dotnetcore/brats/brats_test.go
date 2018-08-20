@@ -59,7 +59,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		By("installs the correct version of .NET SDK + .NET Runtime", func() {
 			Expect(app.Stdout.String()).To(ContainSubstring("Installing dotnet-sdk " + sdkVersion))
 			Expect(app.Stdout.String()).To(MatchRegexp(
-				"(Using dotnet runtime installed in .*\\Q/dotnet/shared/Microsoft.NETCore.App/%s\\E|\\QInstalling dotnet-runtime %s\\E)",
+				"(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/%s\\E|\\QInstalling dotnet-runtime %s\\E)",
 				runtimeVersion,
 				runtimeVersion,
 			))

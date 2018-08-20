@@ -11,7 +11,11 @@ import (
 
 var _ = Describe("CF Dotnet Buildpack", func() {
 	var app *cutlass.App
-	AfterEach(func() { app = DestroyApp(app) })
+
+	AfterEach(func() {
+		PrintFailureLogs(app.Name)
+		app = DestroyApp(app)
+	})
 
 	Context("deploying a simple webapp written in F#", func() {
 		BeforeEach(func() {

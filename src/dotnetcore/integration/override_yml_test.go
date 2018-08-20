@@ -10,12 +10,16 @@ import (
 )
 
 var _ = Describe("override yml", func() {
-	var app *cutlass.App
-	var buildpackName string
+	var (
+		app           *cutlass.App
+		buildpackName string
+	)
+
 	AfterEach(func() {
 		if buildpackName != "" {
 			cutlass.DeleteBuildpack(buildpackName)
 		}
+		PrintFailureLogs(app.Name)
 		app = DestroyApp(app)
 	})
 

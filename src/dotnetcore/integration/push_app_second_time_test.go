@@ -10,8 +10,12 @@ import (
 )
 
 var _ = Describe("pushing an app a second time", func() {
+	const (
+		DownloadRegexp = `Download \[.*/dotnet-sdk\..*\.tar\.xz\]`
+		CopyRegexp     = `Copy \[.*/dotnet-sdk\..*\.tar\.xz\]`
+	)
+
 	var app *cutlass.App
-	AfterEach(func() { app = DestroyApp(app) })
 
 	BeforeEach(func() {
 		SkipUnlessUncached()
@@ -20,8 +24,10 @@ var _ = Describe("pushing an app a second time", func() {
 		app.SetEnv("BP_DEBUG", "true")
 	})
 
-	DownloadRegexp := `Download \[.*/dotnet-sdk\..*\.tar\.xz\]`
-	CopyRegexp := `Copy \[.*/dotnet-sdk\..*\.tar\.xz\]`
+	AfterEach(func() {
+		PrintFailureLogs(app.Name)
+		app = DestroyApp(app)
+	})
 
 	It("uses the cache for manifest dependencies", func() {
 		PushAppAndConfirm(app)

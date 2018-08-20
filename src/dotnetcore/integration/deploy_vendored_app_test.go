@@ -16,6 +16,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	BeforeEach(SkipUnlessCached)
 
 	AfterEach(func() {
+		PrintFailureLogs(app.Name)
 		app = DestroyApp(app)
 	})
 

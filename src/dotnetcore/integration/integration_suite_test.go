@@ -243,3 +243,13 @@ func ReplaceFileTemplate(bpDir, fixture, file, templateVar, replaceVal string) *
 
 	return cutlass.New(dir)
 }
+
+func PrintFailureLogs(appName string) error {
+	if !CurrentGinkgoTestDescription().Failed {
+		return nil
+	}
+	command := exec.Command("cf", "logs", appName, "--recent")
+	command.Stdout = GinkgoWriter
+	command.Stderr = GinkgoWriter
+	return command.Run()
+}
