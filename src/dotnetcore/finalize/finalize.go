@@ -94,7 +94,7 @@ func (f *Finalizer) CleanStagingArea() error {
 	if startCmd, err := f.Project.StartCommand(); err != nil {
 		return err
 	} else if !strings.HasSuffix(startCmd, ".dll") {
-		dirsToRemove = append(dirsToRemove, "dotnet")
+		dirsToRemove = append(dirsToRemove, "dotnet-sdk")
 	}
 	if os.Getenv("INSTALL_NODE") != "true" {
 		dirsToRemove = append(dirsToRemove, "node")

@@ -137,7 +137,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("displays a simple text homepage", func() {
 			PushAppAndConfirm(app)
 
-			Expect(app.Stdout.String()).To(MatchRegexp("Removing dotnet"))
+			Expect(app.Stdout.String()).To(MatchRegexp("Removing dotnet-sdk"))
 
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
