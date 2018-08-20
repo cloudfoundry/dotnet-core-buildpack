@@ -172,7 +172,7 @@ func (d *DotnetRuntime) getLatestPatch(version string) (string, error) {
 }
 
 func (d *DotnetRuntime) getRuntimeDir() string {
-	return filepath.Join(d.depDir, "dotnet", "shared", "Microsoft.NETCore.App")
+	return filepath.Join(d.depDir, "dotnet-sdk", "shared", "Microsoft.NETCore.App")
 }
 
 func (d *DotnetRuntime) isInstalled(version string) (bool, error) {
@@ -187,7 +187,7 @@ func (d *DotnetRuntime) isInstalled(version string) (bool, error) {
 }
 
 func (d *DotnetRuntime) installRuntime(version string) error {
-	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: version}, filepath.Join(d.depDir, "dotnet")); err != nil {
+	if err := d.installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: version}, filepath.Join(d.depDir, "dotnet-sdk")); err != nil {
 		return err
 	}
 	return nil

@@ -60,8 +60,8 @@ var _ = Describe("Dotnetruntime", func() {
 	Describe("Install", func() {
 		Context("Versions installed == [1.2.3, 4.5.6]", func() {
 			BeforeEach(func() {
-				Expect(os.MkdirAll(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "1.2.3"), 0755)).To(Succeed())
-				Expect(os.MkdirAll(filepath.Join(depDir, "dotnet", "shared", "Microsoft.NETCore.App", "4.5.6"), 0755)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(depDir, "dotnet-sdk", "shared", "Microsoft.NETCore.App", "1.2.3"), 0755)).To(Succeed())
+				Expect(os.MkdirAll(filepath.Join(depDir, "dotnet-sdk", "shared", "Microsoft.NETCore.App", "4.5.6"), 0755)).To(Succeed())
 			})
 
 			Context("when required version is discovered via .runtimeconfig.json", func() {
@@ -84,7 +84,7 @@ var _ = Describe("Dotnetruntime", func() {
 					})
 
 					It("installs the additional runtime", func() {
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet-sdk"))
 						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})
@@ -110,7 +110,7 @@ var _ = Describe("Dotnetruntime", func() {
 
 					It("installs the additional runtime", func() {
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"7.8.9"})
-						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet"))
+						mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, filepath.Join(depDir, "dotnet-sdk"))
 						Expect(subject.Install(filepath.Join(buildDir, "foo.csproj"))).To(Succeed())
 					})
 				})

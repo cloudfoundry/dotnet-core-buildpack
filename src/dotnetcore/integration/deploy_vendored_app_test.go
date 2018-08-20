@@ -12,8 +12,12 @@ import (
 
 var _ = Describe("CF Dotnet Buildpack", func() {
 	var app *cutlass.App
-	AfterEach(func() { app = DestroyApp(app) })
+
 	BeforeEach(SkipUnlessCached)
+
+	AfterEach(func() {
+		app = DestroyApp(app)
+	})
 
 	Context("The app is portable", func() {
 		BeforeEach(func() {
@@ -22,7 +26,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			} else {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored_dotnet2"))
 			}
-			app.Disk = "1536M"
+			app.Disk = "2G"
 		})
 
 		It("displays a simple text homepage", func() {
@@ -41,6 +45,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			} else {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_dotnet2"))
 			}
+			app.Disk = "2G"
 		})
 
 		It("displays a simple text homepage", func() {
