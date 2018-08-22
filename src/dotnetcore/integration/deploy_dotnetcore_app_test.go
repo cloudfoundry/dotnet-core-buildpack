@@ -193,7 +193,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 
 		It("installs the latest patch of dotnet runtime from the runtimeconfig.json", func() {
-			latestPatch := GetLatestPatchVersion("dotnet-runtime", "2.0.x", bpDir)
+			latestPatch := GetLatestPatchVersion("dotnet-runtime", "2.1.x", bpDir)
 			PushAppAndConfirm(app)
 			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Required dotnetruntime versions: [%s]", latestPatch)))
 		})
@@ -207,7 +207,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("installs the exact version of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
 			Eventually(app.Stdout.String()).Should(MatchRegexp(
-				"(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/2.0.9\\E|\\QInstalling dotnet-runtime 2.0.9\\E)"))
+				"(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/2.1.1\\E|\\QInstalling dotnet-runtime 2.1.1\\E)"))
 		})
 	})
 
