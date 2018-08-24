@@ -310,6 +310,19 @@ var _ = Describe("Supply", func() {
 		})
 
 		Context("with global.json", func() {
+			Context("utf-8 encoded", func() {
+				BeforeEach(func() {
+					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte("\uFEFF"+`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+					mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
+				})
+
+				It("installs the requested version", func() {
+					dep := libbuildpack.Dependency{Name: "dotnet-sdk", Version: "6.7.8"}
+					mockInstaller.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet-sdk"))
+
+					Expect(supplier.InstallDotnetSdk()).To(Succeed())
+				})
+			})
 			Context("with sdk/version", func() {
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
