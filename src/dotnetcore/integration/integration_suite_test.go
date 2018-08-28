@@ -74,12 +74,14 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	// agoutiDriver = agouti.PhantomJS()
 	// agoutiDriver = agouti.Selenium()
 	agoutiDriver = agouti.ChromeDriver(agouti.ChromeOptions("args", []string{"--headless", "--disable-gpu", "--no-sandbox"}))
-	Expect(agoutiDriver.Start()).To(Succeed())
+	err = agoutiDriver.Start()
+	Expect(err).To(BeNil())
 })
 
 var _ = SynchronizedAfterSuite(func() {
 	// Run on all nodes
-	Expect(agoutiDriver.Stop()).To(Succeed())
+	err := agoutiDriver.Stop()
+	Expect(err).To(BeNil())
 }, func() {
 	// Run once
 	cutlass.RemovePackagedBuildpack(packagedBuildpack)
