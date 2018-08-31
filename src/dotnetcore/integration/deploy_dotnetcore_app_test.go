@@ -153,7 +153,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using exact runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.1]"))
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.3]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -207,7 +207,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		It("installs the exact version of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
 			Eventually(app.Stdout.String()).Should(MatchRegexp(
-				"(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/2.1.1\\E|\\QInstalling dotnet-runtime 2.1.1\\E)"))
+				"(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/2.1.3\\E|\\QInstalling dotnet-runtime 2.1.3\\E)"))
 		})
 	})
 
