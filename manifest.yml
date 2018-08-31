@@ -65,13 +65,6 @@ dependencies:
   - cflinuxfs2
   - cflinuxfs3
 - name: dotnet-runtime
-  version: 2.1.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.1.1.linux-amd64-a1c0f261.tar.xz
-  sha256: a1c0f2617967bcb0b62820c2656b07816bbd30756d5f5ad04cf2c35c82fac82f
-  cf_stacks:
-  - cflinuxfs2
-  - cflinuxfs3
-- name: dotnet-runtime
   version: 2.1.2
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.1.2.linux-amd64-33b024bf.tar.xz
   sha256: 33b024bfbd637a7d1ae29b5a6de63800b624b4b85f3819d262ce642597f64671
@@ -125,18 +118,6 @@ dependencies:
   version: 2.1.302
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.302.linux-amd64-cflinuxfs3-015453d2.tar.xz
   sha256: 015453d275fd85632035d5f6c73ceb0e17f33a879281fc3891e7435442794f7c
-  cf_stacks:
-  - cflinuxfs3
-- name: dotnet-sdk
-  version: 2.1.400
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.400.linux-amd64-cflinuxfs2-88279cd3.tar.xz
-  sha256: 88279cd3d0d13dad73faaaba7333ef523f62ce3ee444fc31bb00f0a1c6693508
-  cf_stacks:
-  - cflinuxfs2
-- name: dotnet-sdk
-  version: 2.1.400
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.400.linux-amd64-cflinuxfs3-700f560a.tar.xz
-  sha256: 700f560a1ba94cc075ea3c138b895da1eb7cc00d5707a3e2bfe5c0d63327333f
   cf_stacks:
   - cflinuxfs3
 - name: dotnet-sdk
