@@ -167,7 +167,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.2]"))
+				Eventually(app.Stdout.String()).Should(ContainSubstring("Required dotnetruntime versions: [2.1.3]"))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -181,7 +181,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetruntime versions: \[(2\.0\.9|2\.1\.2) (2\.0\.9|2\.1\.2)\]`))
+				Eventually(app.Stdout.String()).Should(MatchRegexp(`Required dotnetruntime versions: \[(2\.0\.9|2\.1\.3) (2\.0\.9|2\.1\.3)\]`))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
