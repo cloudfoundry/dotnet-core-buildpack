@@ -32,7 +32,7 @@ var _ = Describe("override yml", func() {
 		Expect(cutlass.CreateOrUpdateBuildpack(buildpackName, filepath.Join(bpDir, "fixtures", "overrideyml_bp"), "")).To(Succeed())
 
 		app = cutlass.New(filepath.Join(bpDir, "fixtures", "console_app"))
-		app.Buildpacks = []string{buildpackName + "_buildpack", "dotnet-core_buildpack"}
+		app.Buildpacks = []string{buildpackName + "_buildpack", "dotnet_core_buildpack"}
 	})
 
 	It("Forces dotnet-sdk from override buildpack", func() {
