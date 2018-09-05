@@ -22,14 +22,14 @@ dependencies:
   - cflinuxfs3
 - name: dotnet-aspnetcore
   version: 2.1.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.2.linux-amd64-cflinuxfs2-3f0bde07.tar.xz
-  sha256: 3f0bde070ac4995b8e3d4539ea1506518175309599376f6c247b18f47154dfec
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.2.linux-amd64-cflinuxfs2-dbde4dc5.tar.xz
+  sha256: dbde4dc52679e1268052fad1e818be90cc09497ff57d4213992b572f137a0ecc
   cf_stacks:
   - cflinuxfs2
 - name: dotnet-aspnetcore
   version: 2.1.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.2.linux-amd64-cflinuxfs3-b02e3768.tar.xz
-  sha256: b02e3768da98a12961ab0e8e3aa3f9c4167142e13d46ce9736050300c90ac452
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.2.linux-amd64-cflinuxfs3-9c3e347c.tar.xz
+  sha256: 9c3e347cd371c8fd849400754a7ccce37fc3fb8062f8c6e496ed1f90eef56cb2
   cf_stacks:
   - cflinuxfs3
 - name: dotnet-aspnetcore
