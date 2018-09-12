@@ -224,7 +224,7 @@ func AssertNoInternetTraffic(fixtureName string) {
 	})
 }
 
-func GetLatestPatchVersion(dep, constraint, bpDir string) string {
+func GetLatestDepVersion(dep, constraint, bpDir string) string {
 	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
 	Expect(err).ToNot(HaveOccurred())
 	deps := manifest.AllDependencyVersions(dep)
@@ -234,8 +234,8 @@ func GetLatestPatchVersion(dep, constraint, bpDir string) string {
 	return runtimeVersion
 }
 
-func ReplaceFileTemplate(bpDir, fixture, file, templateVar, replaceVal string) *cutlass.App {
-	dir, err := cutlass.CopyFixture(filepath.Join(bpDir, "fixtures", fixture))
+func ReplaceFileTemplate(pathToFixture, file, templateVar, replaceVal string) *cutlass.App {
+	dir, err := cutlass.CopyFixture(pathToFixture)
 	Expect(err).ToNot(HaveOccurred())
 
 	data, err := ioutil.ReadFile(filepath.Join(dir, file))

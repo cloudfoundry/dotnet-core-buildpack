@@ -1,6 +1,6 @@
 {
       "sdk": {
-            "version": "2.1.301"
+            "version": "<%= sdk_version %>"
       }
 }
 
