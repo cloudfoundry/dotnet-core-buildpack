@@ -1,3 +1,36 @@
+v2.1.5 Sep 13, 2018
+====================
+
+* AspNetCore runtime will be added to the buildpack in the next release
+
+* Update dotnet-sdk versions
+
+  - Added 2.1.402, removed 2.1.400 for stacks cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160435346)
+  (https://www.pivotaltracker.com/story/show/160141823)
+
+* Update dotnet-runtime versions
+
+  - Added 2.1.4, removed 2.1.1 for stacks cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160435346)
+  (https://www.pivotaltracker.com/story/show/160141823)
+
+* Clean up old dotnet-sdk and dotnet-runtime versions
+  Removed:
+  - dotnet-sdk: 2.1.301
+  - dotnet-runtimes: 2.1.0, 2.0.0, 1.1.2, 1.0.5
+  (https://www.pivotaltracker.com/story/show/160141823)
+  (https://www.pivotaltracker.com/story/show/159809271)
+
+* Test for BOM at the beginning of global.json
+  (https://www.pivotaltracker.com/story/show/159041833)
+
+* Ensure that the runtime is installed to the linked dotnet-sdk location during finalize
+  (https://www.pivotaltracker.com/story/show/157522566)
+
+* Allow F# apps to be run with all versions of dotnet core
+  (https://www.pivotaltracker.com/story/show/157569422)
+
 v2.1.4 Jul 31, 2018
 ====================
 
