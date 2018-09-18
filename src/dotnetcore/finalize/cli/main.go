@@ -2,13 +2,13 @@ package main
 
 import (
 	"dotnetcore/config"
-	"dotnetcore/dotnetruntime"
 	"dotnetcore/finalize"
 	"dotnetcore/project"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
 	// _ "dotnetcore/hooks"
 	"time"
 
@@ -59,14 +59,13 @@ func main() {
 		os.Exit(15)
 	}
 
-	dotnetruntime := dotnetruntime.New(stager.DepDir(), stager.BuildDir(), libbuildpack.NewInstaller(manifest), manifest, logger)
+	installer := libbuildpack.NewInstaller(manifest)
 	f := finalize.Finalizer{
-		Stager:        stager,
-		Log:           logger,
-		Command:       &libbuildpack.Command{},
-		DotnetRuntime: dotnetruntime,
-		Config:        &configYml.Config,
-		Project:       project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx()),
+		Stager:  stager,
+		Log:     logger,
+		Command: &libbuildpack.Command{},
+		Config:  &configYml.Config,
+		Project: project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx(), manifest, installer, logger),
 	}
 
 	if err := finalize.Run(&f); err != nil {

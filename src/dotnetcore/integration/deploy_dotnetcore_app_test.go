@@ -15,15 +15,22 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	var (
 		latest20RuntimeVersion                           string
 		latest21RuntimeVersion, previous21RuntimeVersion string
+		latest21ASPNetVersion, previous21ASPNetVersion   string
 		latest20SDKVersion                               string
 		latest21SDKVersion, previous21SDKVersion         string
 	)
 
 	BeforeEach(func() {
 		latest20RuntimeVersion = GetLatestDepVersion("dotnet-runtime", "2.0.x", bpDir)
+
 		latest21RuntimeVersion = GetLatestDepVersion("dotnet-runtime", "2.1.x", bpDir)
 		previous21RuntimeVersion = GetLatestDepVersion("dotnet-runtime", fmt.Sprintf("<%s", latest21RuntimeVersion), bpDir)
+
+		latest21ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", "2.1.x", bpDir)
+		previous21ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", fmt.Sprintf("<%s", latest21ASPNetVersion), bpDir)
+
 		latest20SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.0.x", bpDir)
+
 		latest21SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.1.x", bpDir)
 		previous21SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest21SDKVersion), bpDir)
 	})
@@ -146,7 +153,23 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
-	Context("simple netcoreapp2", func() {
+	Context("ASP.Netcore App 2.1 source based app", func() {
+		BeforeEach(func() {
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "aspnetcore21_source"))
+
+			app.Disk = "2G"
+			app.Memory = "2G"
+		})
+
+		It("publishes and runs, using the correct runtime and aspnetcore versions", func() {
+			PushAppAndConfirm(app)
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest21ASPNetVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
+			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+		})
+	})
+
+	Context("simple source-based netcoreapp2", func() {
 		Context("runtime version explicitly defined in csproj", func() {
 			BeforeEach(func() {
 				app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "netcoreapp2_explicit_runtime_csproj"), "netcoreapp2.csproj", "runtime_version", previous21RuntimeVersion)
@@ -157,7 +180,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using exact runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Required dotnetruntime versions: [%s]", previous21RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", previous21RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -171,7 +194,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtime", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Required dotnetruntime versions: [%s]", latest21RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -183,9 +206,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				app.Memory = "2G"
 			})
 
-			It("publishes and runs, using latest patch runtime", func() {
+			It("publishes and runs, using latest patch runtimes in the nuget cache", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(MatchRegexp(fmt.Sprintf(`Required dotnetruntime versions: \[\Q%[1]s %[2]s\E\]|\[\Q%[2]s %[1]s\E\]`, latest20RuntimeVersion, latest21RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest20RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("dotnet-runtime %s is already installed", latest21RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -198,19 +222,18 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("installs the latest patch of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Required dotnetruntime versions: [%s]", latest21RuntimeVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("dotnet-runtime %s is already installed", latest21RuntimeVersion)))
 		})
 	})
 
 	Context("with runtimeconfig.json and applyPatches false", func() {
 		BeforeEach(func() {
-			app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "apply_patches_false"), "dotnet.runtimeconfig.json", "runtime_version", previous21RuntimeVersion)
+			app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "apply_patches_false"), "dotnet.runtimeconfig.json", "framework_version", previous21ASPNetVersion)
 		})
 
-		It("installs the exact version of dotnet runtime from the runtimeconfig.json", func() {
+		It("installs the exact version of dotnet aspnetcore from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Eventually(app.Stdout.String()).Should(MatchRegexp(
-				fmt.Sprintf("(Using dotnet runtime installed in .*\\Q/dotnet-sdk/shared/Microsoft.NETCore.App/%[1]s\\E|\\QInstalling dotnet-runtime %[1]s\\E)", previous21RuntimeVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", previous21ASPNetVersion)))
 		})
 	})
 

@@ -61,7 +61,7 @@ var _ = Describe("Supply", func() {
 
 		args := []string{buildDir, cacheDir, depsDir, depsIdx}
 		stager := libbuildpack.NewStager(args, logger, &libbuildpack.Manifest{})
-		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx)
+		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx, &libbuildpack.Manifest{}, &libbuildpack.Installer{}, logger)
 		cfg := &config.Config{}
 
 		supplier = &supply.Supplier{
@@ -454,6 +454,7 @@ var _ = Describe("Supply", func() {
 				})
 			})
 		})
+
 		Context("fsproj", func() {
 			BeforeEach(func() {
 				Expect(os.Mkdir(filepath.Join(buildDir, "inner"), 0755)).To(Succeed())

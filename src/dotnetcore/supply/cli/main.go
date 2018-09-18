@@ -69,7 +69,7 @@ func main() {
 		Log:       logger,
 		Command:   &libbuildpack.Command{},
 		Config:    cfg,
-		Project:   project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx()),
+		Project:   project.New(stager.BuildDir(), stager.DepDir(), stager.DepsIdx(), manifest, installer, logger),
 	}
 
 	err = supply.Run(&s)

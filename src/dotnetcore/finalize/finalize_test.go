@@ -50,7 +50,7 @@ var _ = Describe("Finalize", func() {
 
 		args := []string{buildDir, "", depsDir, depsIdx}
 		stager := libbuildpack.NewStager(args, logger, &libbuildpack.Manifest{})
-		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx)
+		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx, &libbuildpack.Manifest{}, libbuildpack.NewInstaller(&libbuildpack.Manifest{}), logger)
 		cfg := &config.Config{}
 
 		finalizer = &finalize.Finalizer{

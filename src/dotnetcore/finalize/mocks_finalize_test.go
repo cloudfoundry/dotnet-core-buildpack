@@ -10,6 +10,129 @@ import (
 	reflect "reflect"
 )
 
+// MockDeploymentType is a mock of DeploymentType interface
+type MockDeploymentType struct {
+	ctrl     *gomock.Controller
+	recorder *MockDeploymentTypeMockRecorder
+}
+
+// MockDeploymentTypeMockRecorder is the mock recorder for MockDeploymentType
+type MockDeploymentTypeMockRecorder struct {
+	mock *MockDeploymentType
+}
+
+// NewMockDeploymentType creates a new mock instance
+func NewMockDeploymentType(ctrl *gomock.Controller) *MockDeploymentType {
+	mock := &MockDeploymentType{ctrl: ctrl}
+	mock.recorder = &MockDeploymentTypeMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockDeploymentType) EXPECT() *MockDeploymentTypeMockRecorder {
+	return m.recorder
+}
+
+// InstallFrameworks mocks base method
+func (m *MockDeploymentType) InstallFrameworks() error {
+	ret := m.ctrl.Call(m, "InstallFrameworks")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// InstallFrameworks indicates an expected call of InstallFrameworks
+func (mr *MockDeploymentTypeMockRecorder) InstallFrameworks() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InstallFrameworks", reflect.TypeOf((*MockDeploymentType)(nil).InstallFrameworks))
+}
+
+// MockProject is a mock of Project interface
+type MockProject struct {
+	ctrl     *gomock.Controller
+	recorder *MockProjectMockRecorder
+}
+
+// MockProjectMockRecorder is the mock recorder for MockProject
+type MockProjectMockRecorder struct {
+	mock *MockProject
+}
+
+// NewMockProject creates a new mock instance
+func NewMockProject(ctrl *gomock.Controller) *MockProject {
+	mock := &MockProject{ctrl: ctrl}
+	mock.recorder = &MockProjectMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockProject) EXPECT() *MockProjectMockRecorder {
+	return m.recorder
+}
+
+// IsPublished mocks base method
+func (m *MockProject) IsPublished() (bool, error) {
+	ret := m.ctrl.Call(m, "IsPublished")
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsPublished indicates an expected call of IsPublished
+func (mr *MockProjectMockRecorder) IsPublished() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsPublished", reflect.TypeOf((*MockProject)(nil).IsPublished))
+}
+
+// StartCommand mocks base method
+func (m *MockProject) StartCommand() (string, error) {
+	ret := m.ctrl.Call(m, "StartCommand")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartCommand indicates an expected call of StartCommand
+func (mr *MockProjectMockRecorder) StartCommand() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartCommand", reflect.TypeOf((*MockProject)(nil).StartCommand))
+}
+
+// DeploymentType mocks base method
+func (m *MockProject) DeploymentType() (interface{}, error) {
+	ret := m.ctrl.Call(m, "DeploymentType")
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeploymentType indicates an expected call of DeploymentType
+func (mr *MockProjectMockRecorder) DeploymentType() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeploymentType", reflect.TypeOf((*MockProject)(nil).DeploymentType))
+}
+
+// ProjectFilePaths mocks base method
+func (m *MockProject) ProjFilePaths() ([]string, error) {
+	ret := m.ctrl.Call(m, "ProjectFilePaths")
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ProjectFilePaths indicates an expected call of ProjectFilePaths
+func (mr *MockProjectMockRecorder) ProjFilePaths() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProjectFilePaths", reflect.TypeOf((*MockProject)(nil).ProjFilePaths))
+}
+
+// MainPath mocks base method
+func (m *MockProject) MainPath() (string, error) {
+	ret := m.ctrl.Call(m, "MainPath")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MainPath indicates an expected call of MainPath
+func (mr *MockProjectMockRecorder) MainPath() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MainPath", reflect.TypeOf((*MockProject)(nil).MainPath))
+}
+
 // MockStager is a mock of Stager interface
 type MockStager struct {
 	ctrl     *gomock.Controller
@@ -114,39 +237,4 @@ func (m *MockCommand) Run(arg0 *exec.Cmd) error {
 // Run indicates an expected call of Run
 func (mr *MockCommandMockRecorder) Run(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockCommand)(nil).Run), arg0)
-}
-
-// MockDotnetRuntime is a mock of DotnetRuntime interface
-type MockDotnetRuntime struct {
-	ctrl     *gomock.Controller
-	recorder *MockDotnetRuntimeMockRecorder
-}
-
-// MockDotnetRuntimeMockRecorder is the mock recorder for MockDotnetRuntime
-type MockDotnetRuntimeMockRecorder struct {
-	mock *MockDotnetRuntime
-}
-
-// NewMockDotnetRuntime creates a new mock instance
-func NewMockDotnetRuntime(ctrl *gomock.Controller) *MockDotnetRuntime {
-	mock := &MockDotnetRuntime{ctrl: ctrl}
-	mock.recorder = &MockDotnetRuntimeMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockDotnetRuntime) EXPECT() *MockDotnetRuntimeMockRecorder {
-	return m.recorder
-}
-
-// Install mocks base method
-func (m *MockDotnetRuntime) Install(arg0 string) error {
-	ret := m.ctrl.Call(m, "Install", arg0)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Install indicates an expected call of Install
-func (mr *MockDotnetRuntimeMockRecorder) Install(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Install", reflect.TypeOf((*MockDotnetRuntime)(nil).Install), arg0)
 }

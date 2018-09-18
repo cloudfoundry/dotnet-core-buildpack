@@ -204,7 +204,7 @@ func (s *Supplier) shouldInstallNode() (bool, error) {
 }
 
 func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
-	projFiles, err := s.Project.ProjFilePaths()
+	projFiles, err := s.Project.ProjectFilePaths()
 	if err != nil {
 		return false, fmt.Errorf("Could not get project file paths: %v", err)
 	}
