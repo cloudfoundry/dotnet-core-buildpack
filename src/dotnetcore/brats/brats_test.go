@@ -19,10 +19,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		func(v string) *cutlass.App { return CopyCSharpBratsWithRuntime(v, "2.1.x") },
 	)
 
-	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(
-		`dotnet-sdk\.[\d\.]+\.linux\-amd64\-.*\-[\da-f]+\.tar.xz`,
-		CopyBrats,
-	)
+	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(CopyBrats)
 
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet-sdk", CopyBrats)
 
