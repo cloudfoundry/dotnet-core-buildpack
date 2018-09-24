@@ -53,7 +53,7 @@ func New(buildDir, depDir, depsIdx string, manifest Manifest, installer Installe
 }
 
 func (p *Project) IsPublished() (bool, error) {
-	path, err := p.RuntimeConfigFile()
+	path, err := p.RuntimeConfigPath()
 	if err != nil {
 		return false, err
 	}
@@ -242,7 +242,7 @@ func (p *Project) IsFsharp() (bool, error) {
 	return false, nil
 }
 
-func (p *Project) RuntimeConfigFile() (string, error) {
+func (p *Project) RuntimeConfigPath() (string, error) {
 	if configFiles, err := filepath.Glob(filepath.Join(p.buildDir, "*.runtimeconfig.json")); err != nil {
 		return "", err
 	} else if len(configFiles) == 1 {
@@ -254,7 +254,7 @@ func (p *Project) RuntimeConfigFile() (string, error) {
 }
 
 func (p *Project) MainPath() (string, error) {
-	runtimeConfigFile, err := p.RuntimeConfigFile()
+	runtimeConfigFile, err := p.RuntimeConfigPath()
 	if err != nil {
 		return "", err
 	} else if runtimeConfigFile != "" {
@@ -296,29 +296,45 @@ func (p *Project) MainPath() (string, error) {
 	return "", nil
 }
 
-func (p *Project) InstallFrameworks() error {
-	path, err := p.RuntimeConfigFile()
+func (p *Project) IsFDD() (bool, error) {
+	path, err := p.RuntimeConfigPath()
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	if path != "" {
 		runtimeJSON, err := ParseRuntimeConfig(path)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		if runtimeJSON.RuntimeOptions.Framework.Name != "" {
-			return p.fddInstallFrameworks(runtimeJSON)
+			return true, nil
 		}
-
-		return nil
 	}
-
-	return p.sourceInstallFrameworks()
+	return false, nil
 }
 
-func (p *Project) fddInstallFrameworks(runtimeConfig ConfigJSON) error {
+func (p *Project) IsSourceBased() (bool, error) {
+	path, err := p.RuntimeConfigPath()
+	if err != nil {
+		return false, err
+	}
+
+	return path == "", nil
+}
+
+func (p *Project) FDDInstallFrameworks() error {
+	path, err := p.RuntimeConfigPath()
+	if err != nil {
+		return err
+	}
+
+	runtimeConfig, err := ParseRuntimeConfig(path)
+	if err != nil {
+		return err
+	}
+
 	frameworkName := runtimeConfig.RuntimeOptions.Framework.Name
 	frameworkVersion := runtimeConfig.RuntimeOptions.Framework.Version
 	applyPatches := runtimeConfig.RuntimeOptions.ApplyPatches
@@ -415,11 +431,7 @@ func (p *Project) installFrameworksAspNetCoreApp(frameworkName, frameworkVersion
 	)
 }
 
-func (p *Project) scdInstallFrameworks() error {
-	return nil
-}
-
-func (p *Project) sourceInstallFrameworks() error {
+func (p *Project) SourceInstallDotnetRuntime() error {
 	mainPath, err := p.MainPath()
 	if err != nil {
 		return err
@@ -464,6 +476,14 @@ func (p *Project) sourceInstallFrameworks() error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (p *Project) SourceInstallDotnetAspNetCore() error {
+	mainPath, err := p.MainPath()
+	if err != nil {
+		return err
 	}
 
 	aspnetcoreRegex := `"Microsoft.AspNetCore.App" Version="(.*)"`

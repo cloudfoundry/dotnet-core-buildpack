@@ -222,7 +222,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("installs the latest patch of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("dotnet-runtime %s is already installed", latest21RuntimeVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
 		})
 	})
 

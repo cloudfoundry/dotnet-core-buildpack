@@ -50,15 +50,38 @@ type Finalizer struct {
 
 func Run(f *Finalizer) error {
 	f.Log.BeginStep("Finalizing Dotnet Core")
-
-	if err := f.DotnetRestore(); err != nil {
-		f.Log.Error("Unable to run dotnet restore: %s", err.Error())
+	isFrameworkDependent, err := f.Project.IsFDD()
+	if err != nil {
 		return err
 	}
 
-	if err := f.Project.InstallFrameworks(); err != nil {
-		f.Log.Error("Unable to install frameworks: %s", err.Error())
+	isSourceBased, err := f.Project.IsSourceBased()
+	if err != nil {
 		return err
+	}
+
+	if isSourceBased {
+		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
+			f.Log.Error("Unable to install frameworks: %s", err.Error())
+			return err
+		}
+
+		if err := f.DotnetRestore(); err != nil {
+			f.Log.Error("Unable to run dotnet restore: %s", err.Error())
+			return err
+		}
+
+		if err := f.Project.SourceInstallDotnetAspNetCore(); err != nil {
+			f.Log.Error("Unable to install frameworks: %s", err.Error())
+			return err
+		}
+	}
+
+	if isFrameworkDependent {
+		if err := f.Project.FDDInstallFrameworks(); err != nil {
+			f.Log.Error("Unable to install frameworks: %s", err.Error())
+			return err
+		}
 	}
 
 	if err := f.DotnetPublish(); err != nil {
@@ -163,12 +186,6 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 }
 
 func (f *Finalizer) DotnetRestore() error {
-	if published, err := f.Project.IsPublished(); err != nil {
-		return err
-	} else if published {
-		return nil
-	}
-
 	f.Log.BeginStep("Restore dotnet dependencies")
 
 	paths, err := f.Project.ProjectFilePaths()
