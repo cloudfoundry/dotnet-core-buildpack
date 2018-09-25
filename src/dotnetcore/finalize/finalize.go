@@ -61,13 +61,13 @@ func Run(f *Finalizer) error {
 	}
 
 	if isSourceBased {
-		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
-			f.Log.Error("Unable to install frameworks: %s", err.Error())
+		if err := f.DotnetRestore(); err != nil {
+			f.Log.Error("Unable to run dotnet restore: %s", err.Error())
 			return err
 		}
 
-		if err := f.DotnetRestore(); err != nil {
-			f.Log.Error("Unable to run dotnet restore: %s", err.Error())
+		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
+			f.Log.Error("Unable to install frameworks: %s", err.Error())
 			return err
 		}
 
@@ -181,7 +181,7 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 		startCmd = "dotnet " + startCmd
 	}
 	return map[string]map[string]string{
-		"default_process_types": {"web": fmt.Sprintf("cd %s && %s --server.urls http://0.0.0.0:${PORT}", directory, startCmd)},
+		"default_process_types": {"web": fmt.Sprintf("cd %s && exec %s --server.urls http://0.0.0.0:${PORT}", directory, startCmd)},
 	}, nil
 }
 

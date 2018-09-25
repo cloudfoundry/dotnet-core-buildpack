@@ -542,7 +542,7 @@ var _ = Describe("Project", func() {
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "4.5.6"}, gomock.Any()).
 						Times(0)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
 			})
 
@@ -557,7 +557,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
 			})
 		})
@@ -574,7 +574,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "6.7.8"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
 				})
 			})
 		})
@@ -595,7 +595,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "6.7.9"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
 				})
 			})
 		})
@@ -618,7 +618,7 @@ var _ = Describe("Project", func() {
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "4.5.6"}, gomock.Any()).
 						Times(0)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
 				})
 			})
 
@@ -637,7 +637,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
 				})
 			})
 		})
@@ -674,7 +674,7 @@ var _ = Describe("Project", func() {
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "1.2.3"}, gomock.Any()).
 						Times(0)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
 			})
 		})
@@ -697,7 +697,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "1.2.3"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
 			})
 
@@ -718,7 +718,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "1.2.3"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
 			})
 		})
@@ -732,7 +732,7 @@ var _ = Describe("Project", func() {
 
 				It("installs the aspnetcore", func() {
 					mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "6.7.8"}, depsPath)
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
 				})
 			})
 		})
@@ -746,7 +746,7 @@ var _ = Describe("Project", func() {
 
 				It("installs the aspnetcore", func() {
 					mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "7.8.9"}, depsPath)
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
 				})
 			})
 		})
@@ -767,7 +767,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "7.8.9"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
 				})
 			})
 
@@ -786,7 +786,7 @@ var _ = Describe("Project", func() {
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "1.5.9"}, depsPath)
 
-					Expect(subject.InstallFrameworks()).To(Succeed())
+					Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
 				})
 			})
 		})
