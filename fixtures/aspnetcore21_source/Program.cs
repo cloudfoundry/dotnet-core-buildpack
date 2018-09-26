@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace aspnetcore21_source
     {
         public static void Main(string[] args)
         {
+             Console.WriteLine("Hello, world!");
+             AppDomain.CurrentDomain.ProcessExit +=
+                 (sender, eventArgs) => {
+                     Console.WriteLine("Goodbye, cruel world!");
+                 };
             CreateWebHostBuilder(args).Build().Run();
         }
 

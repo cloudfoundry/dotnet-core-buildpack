@@ -6,6 +6,8 @@ import (
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
+	"time"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -166,6 +168,11 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest21ASPNetVersion)))
 			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+
+			By("accepts SIGTERM and exits gracefully")
+			Expect(app.Stop()).ToNot(HaveOccurred())
+			time.Sleep(1 * time.Second) // Wait here to flush the log process buffer ¯\_(ツ)_/¯
+			Eventually(app.Stdout.String(), 30*time.Second, time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
 		})
 	})
 
@@ -222,7 +229,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		It("installs the latest patch of dotnet runtime from the runtimeconfig.json", func() {
 			PushAppAndConfirm(app)
-			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
+			Eventually(app.Stdout.String()).Should(MatchRegexp(fmt.Sprintf("Installing dotnet-runtime %[1]s|dotnet-runtime %[1]s is already installed", latest21RuntimeVersion)))
 		})
 	})
 
