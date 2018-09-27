@@ -141,15 +141,16 @@ var _ = Describe("Supply", func() {
 	Describe("InstallNode", func() {
 		var nodeTmpDir string
 		var csprojXml string
+
 		BeforeEach(func() {
 			nodeTmpDir, err = ioutil.TempDir("", "dotnetcore-buildpack.tmp")
 			Expect(err).To(BeNil())
 			csprojXml = `<Project Sdk="Microsoft.NET.Sdk.Web">
-												<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-													<Exec Command="npm install" />
-													<Exec Command="bower install" />
-												</Target>
-											</Project>`
+						   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+						     <Exec Command="npm install" />
+							 <Exec Command="bower install" />
+						   </Target>
+						 </Project>`
 		})
 
 		AfterEach(func() {

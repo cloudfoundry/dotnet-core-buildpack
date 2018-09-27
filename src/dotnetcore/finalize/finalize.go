@@ -61,18 +61,18 @@ func Run(f *Finalizer) error {
 	}
 
 	if isSourceBased {
+		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
+			f.Log.Error("Unable to install dotnet-runtime: %s", err.Error())
+			return err
+		}
+
 		if err := f.DotnetRestore(); err != nil {
 			f.Log.Error("Unable to run dotnet restore: %s", err.Error())
 			return err
 		}
 
-		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
-			f.Log.Error("Unable to install frameworks: %s", err.Error())
-			return err
-		}
-
 		if err := f.Project.SourceInstallDotnetAspNetCore(); err != nil {
-			f.Log.Error("Unable to install frameworks: %s", err.Error())
+			f.Log.Error("Unable to install dotnet-aspnetcore: %s", err.Error())
 			return err
 		}
 	}

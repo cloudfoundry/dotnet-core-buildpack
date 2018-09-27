@@ -215,8 +215,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, using latest patch runtimes in the nuget cache", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest20RuntimeVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("dotnet-runtime %s is already installed", latest21RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
