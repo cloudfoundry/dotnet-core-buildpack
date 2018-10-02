@@ -27,10 +27,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Expect(page.Destroy()).To(Succeed())
 	})
 
-	Context("Deploying an angular app using msbuild and dotnet 1.X", func() {
+	Context("Deploying an angular app using msbuild and dotnet core 1.0", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs2")
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet1"))
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet_1.0"))
 			app.Disk = "2G"
 			app.Memory = "2G"
 		})
@@ -46,10 +46,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
-	Context("Deploying an angular app using msbuild and dotnet 2.X", func() {
+	Context("Deploying an angular app using msbuild and dotnet core 2.1", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs3")
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet2"))
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet_2.1"))
 			app.Disk = "2G"
 			app.Memory = "2G"
 		})

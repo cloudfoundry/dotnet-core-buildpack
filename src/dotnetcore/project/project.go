@@ -416,7 +416,7 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 	}
 
 	runtimeVersion := proj.PropertyGroup.RuntimeFrameworkVersion
-
+	p.Log.Error("RUNTIME: %s", runtimeVersion)
 	if runtimeVersion != "" {
 		matches := regexp.MustCompile(`\d\.\d\.\d`).FindStringSubmatch(runtimeVersion)
 		if len(matches) != 1 {
@@ -437,6 +437,17 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 			return errors.New("could not find a version of dotnet-runtime to install")
 		}
 	}
+
+	fmt.Printf("========================================: %s", p.depDir)
+	fmt.Printf("p.depDir: %s", p.depDir)
+	p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
+		filepath.Join(p.depDir, "dotnet-sdk"),
+	)
+	files1, _ := filepath.Glob(filepath.Join(p.depDir, "dotnet-sdk", "shared", "*"))
+	files2, _ := filepath.Glob(filepath.Join(p.depDir, "dotnet-sdk", "shared", "Microsoft.NETCore.App", "*"))
+	fmt.Printf("RUNTIME DIR==============: %v", files1)
+	fmt.Printf("RUNTIME DIR==============: %v", files2)
 	return nil
 }
 

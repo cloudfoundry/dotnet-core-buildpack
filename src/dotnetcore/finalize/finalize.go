@@ -61,6 +61,7 @@ func Run(f *Finalizer) error {
 	}
 
 	if isSourceBased {
+		f.Log.Error("---------------- SOURCE BASED")
 		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
 			f.Log.Error("Unable to install dotnet-runtime: %s", err.Error())
 			return err
@@ -75,6 +76,11 @@ func Run(f *Finalizer) error {
 			f.Log.Error("Unable to install dotnet-aspnetcore: %s", err.Error())
 			return err
 		}
+
+		if err := f.DotnetPublish(); err != nil {
+			f.Log.Error("Unable to run dotnet publish: %s", err.Error())
+			return err
+		}
 	}
 
 	if isFrameworkDependent {
@@ -82,11 +88,6 @@ func Run(f *Finalizer) error {
 			f.Log.Error("Unable to install frameworks: %s", err.Error())
 			return err
 		}
-	}
-
-	if err := f.DotnetPublish(); err != nil {
-		f.Log.Error("Unable to run dotnet publish: %s", err.Error())
-		return err
 	}
 
 	if err := f.CleanStagingArea(); err != nil {
@@ -200,6 +201,11 @@ func (f *Finalizer) DotnetRestore() error {
 		cmd.Stdout = indentWriter(os.Stdout)
 		cmd.Stderr = indentWriter(os.Stderr)
 		if err := f.Command.Run(cmd); err != nil {
+			fmt.Printf("===========================================================")
+			fmt.Printf("\n\n")
+			fmt.Printf("err from cmd run cmd: %v#\n", cmd)
+			fmt.Printf("\n\n")
+			fmt.Printf("===========================================================")
 			return err
 		}
 	}

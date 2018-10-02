@@ -21,12 +21,14 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	})
 
 	Context("The app is portable", func() {
+		var fixture string
 		BeforeEach(func() {
 			if os.Getenv("CF_STACK") == "cflinuxfs2" {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored"))
+				fixture = "fdd_asp_vendored_1.0"
 			} else {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "asp_vendored_dotnet2"))
+				fixture = "fdd_asp_vendored_2.1"
 			}
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
 			app.Disk = "2G"
 		})
 
@@ -36,16 +38,18 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 
-		AssertNoInternetTraffic("asp_vendored")
+		AssertNoInternetTraffic(fixture)
 	})
 
 	Context("The app is self contained", func() {
+		var fixture string
 		BeforeEach(func() {
 			if os.Getenv("CF_STACK") == "cflinuxfs2" {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained"))
+				fixture = "self_contained_1.0"
 			} else {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_dotnet2"))
+				fixture = "self_contained_2.1"
 			}
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
 			app.Disk = "2G"
 		})
 
@@ -54,6 +58,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 
-		AssertNoInternetTraffic("self_contained")
+		AssertNoInternetTraffic(fixture)
 	})
 })
