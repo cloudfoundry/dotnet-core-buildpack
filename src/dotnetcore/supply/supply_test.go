@@ -463,5 +463,27 @@ var _ = Describe("Supply", func() {
 				Expect(supplier.InstallDotnetSdk()).To(Succeed())
 			})
 		})
+
+		Context("when runtimes were extracted completely", func() {
+			BeforeEach(func() {
+				Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
+				fmt.Printf("Wrote RuntimeVersion.txt to %s\n", filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"))
+				mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
+				mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-sdk", Version: "6.7.8"}, gomock.Any()).
+					DoAndReturn(func(_ libbuildpack.Dependency, _ string) error {
+						Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet-sdk"), 0744)).To(Succeed())
+						ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"), []byte("3.1.4"), 0644)
+						return nil
+					})
+			})
+
+			It("Installs runtime specifed in RuntimeVersion.txt", func() {
+				mockInstaller.EXPECT().InstallDependency(
+					libbuildpack.Dependency{Name: "dotnet-runtime", Version: "3.1.4"},
+					filepath.Join(depsDir, depsIdx, "dotnet-sdk"),
+				)
+				Expect(supplier.InstallDotnetSdk()).To(Succeed())
+			})
+		})
 	})
 })

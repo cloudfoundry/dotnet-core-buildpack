@@ -201,11 +201,6 @@ func (f *Finalizer) DotnetRestore() error {
 		cmd.Stdout = indentWriter(os.Stdout)
 		cmd.Stderr = indentWriter(os.Stderr)
 		if err := f.Command.Run(cmd); err != nil {
-			fmt.Printf("===========================================================")
-			fmt.Printf("\n\n")
-			fmt.Printf("err from cmd run cmd: %v#\n", cmd)
-			fmt.Printf("\n\n")
-			fmt.Printf("===========================================================")
 			return err
 		}
 	}

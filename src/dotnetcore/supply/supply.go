@@ -320,7 +320,27 @@ func (s *Supplier) InstallDotnetSdk() error {
 		return err
 	}
 
-	return s.Stager.AddBinDependencyLink(filepath.Join(s.Stager.DepDir(), "dotnet-sdk", "dotnet"), "dotnet")
+	if err := s.Stager.AddBinDependencyLink(filepath.Join(s.Stager.DepDir(), "dotnet-sdk", "dotnet"), "dotnet"); err != nil {
+		return err
+	}
+
+	return s.installRuntimeIfNeeded()
+}
+
+func (s *Supplier) installRuntimeIfNeeded() error {
+	runtimeVersionPath := filepath.Join(s.Stager.DepDir(), "dotnet-sdk", "RuntimeVersion.txt")
+
+	exists, err := libbuildpack.FileExists(runtimeVersionPath)
+	if err != nil {
+		return err
+	} else if exists {
+		version, err := ioutil.ReadFile(runtimeVersionPath)
+		if err != nil {
+			return err
+		}
+		return s.Installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: string(version)}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk"))
+	}
+	return nil
 }
 
 func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
