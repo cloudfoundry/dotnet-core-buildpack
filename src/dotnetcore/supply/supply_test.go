@@ -34,7 +34,6 @@ var _ = Describe("Supply", func() {
 		mockInstaller *MockInstaller
 		mockCommand   *MockCommand
 		installNode   func(string, string)
-		installBower  func(string, string)
 	)
 
 	BeforeEach(func() {
@@ -77,12 +76,6 @@ var _ = Describe("Supply", func() {
 		installNode = func(dep, nodeDir string) {
 			subDir := fmt.Sprintf("node-v%s-linux-x64", "6.12.0")
 			err := os.MkdirAll(filepath.Join(nodeDir, subDir, "bin"), 0755)
-			Expect(err).To(BeNil())
-		}
-
-		installBower = func(dep, bowerDir string) {
-			subDir := fmt.Sprintf("bower-v%s-linux-x64", "1.8.2")
-			err := os.MkdirAll(filepath.Join(bowerDir, subDir, "bin"), 0755)
 			Expect(err).To(BeNil())
 		}
 	})
@@ -146,11 +139,9 @@ var _ = Describe("Supply", func() {
 	})
 
 	Describe("InstallNode", func() {
-		var nodeInstallDir string
 		var nodeTmpDir string
 		var csprojXml string
 		BeforeEach(func() {
-			nodeInstallDir = filepath.Join(depsDir, depsIdx, "node")
 			nodeTmpDir, err = ioutil.TempDir("", "dotnetcore-buildpack.tmp")
 			Expect(err).To(BeNil())
 			csprojXml = `<Project Sdk="Microsoft.NET.Sdk.Web">
