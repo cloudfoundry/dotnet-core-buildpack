@@ -7,12 +7,12 @@ source .envrc
 
 GINKGO_NODES=${GINKGO_NODES:-3}
 GINKGO_ATTEMPTS=${GINKGO_ATTEMPTS:-1}
-export CF_STACK=${CF_STACK:-cflinuxfs2}
+export CF_STACK=${CF_STACK:-cflinuxfs3}
 
 cd src/*/integration
 
-# echo "Run Uncached Buildpack"
-# ginkgo -r --flakeAttempts=$GINKGO_ATTEMPTS -nodes $GINKGO_NODES --slowSpecThreshold=60 -- --cached=false
+echo "Run Uncached Buildpack"
+ginkgo -r --flakeAttempts=$GINKGO_ATTEMPTS -nodes $GINKGO_NODES --slowSpecThreshold=60 -- --cached=false
 
 echo "Run Cached Buildpack"
 ginkgo -r --flakeAttempts=$GINKGO_ATTEMPTS -nodes $GINKGO_NODES --slowSpecThreshold=60 -- --cached
