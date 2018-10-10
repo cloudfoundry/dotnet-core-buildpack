@@ -20,7 +20,7 @@ var _ = Describe("pushing an app a second time", func() {
 	BeforeEach(func() {
 		SkipUnlessUncached()
 
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", "dotnet2"))
+		app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_source_web_2.0"))
 		app.SetEnv("BP_DEBUG", "true")
 	})
 
