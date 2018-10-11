@@ -467,7 +467,6 @@ var _ = Describe("Supply", func() {
 		Context("when runtimes were extracted completely", func() {
 			BeforeEach(func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
-				fmt.Printf("Wrote RuntimeVersion.txt to %s\n", filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"))
 				mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
 				mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-sdk", Version: "6.7.8"}, gomock.Any()).
 					DoAndReturn(func(_ libbuildpack.Dependency, _ string) error {

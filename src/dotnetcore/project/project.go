@@ -410,9 +410,6 @@ func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVers
 }
 
 func (p *Project) SourceInstallDotnetRuntime() error {
-	fmt.Println("++++++++++++++++++++++++++++++++++++++++++")
-	netcoreappDir, _ := filepath.Glob(filepath.Join(p.depDir, "dotnet-sdk", "shared", "Microsoft.NETCore.App", "*"))
-	fmt.Printf("dotnet-sdk/shared/MSNetCoreApp contents before installing runtime: %v", netcoreappDir)
 	proj, err := p.parseProj()
 	if err != nil {
 		return err
@@ -439,8 +436,6 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 			return errors.New("could not find a version of dotnet-runtime to install")
 		}
 	}
-
-	p.Log.Error("Runtime Version from TFrameworkV: %s", runtimeVersion)
 
 	p.installer.InstallDependency(
 		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},

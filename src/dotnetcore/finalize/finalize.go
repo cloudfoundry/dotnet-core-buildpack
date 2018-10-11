@@ -61,7 +61,6 @@ func Run(f *Finalizer) error {
 	}
 
 	if isSourceBased {
-		f.Log.Error("---------------- SOURCE BASED")
 		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
 			f.Log.Error("Unable to install dotnet-runtime: %s", err.Error())
 			return err
