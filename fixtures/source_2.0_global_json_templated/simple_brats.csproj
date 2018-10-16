@@ -5,6 +5,7 @@
     <DebugType>portable</DebugType>
     <AssemblyName>simple_brats</AssemblyName>
     <OutputType>Exe</OutputType>
+    <RuntimeFrameworkVersion>2.0.*</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>
