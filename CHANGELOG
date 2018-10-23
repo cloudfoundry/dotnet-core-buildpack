@@ -1,3 +1,43 @@
+v2.2.0 Oct 23, 2018
+====================
+
+* Add dotnet-runtime 1.1.10
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/161105512)
+
+* Add dotnet-runtime 2.1.5
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160928053)
+
+* Remove old dotnet-runtime 2.1.2
+  (https://www.pivotaltracker.com/story/show/161285646)
+
+* Add dotnet-sdk 1.1.11
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/161105512)
+
+* Add dotnet-sdk 2.1.403
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160928053)
+
+* Add dotnet-aspnetcore 2.1.5
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160928053)
+
+* Add dotnet-aspnetcore 2.1.4
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/160435346)
+
+* Add start command for graceful shutdown
+  (https://www.pivotaltracker.com/story/show/160480483)
+
+* Install dotnet-aspnetcore for aspnetcore apps
+  - Install dotnet-aspnetcore for FDD when it is in runtimeconfig.json
+  - Install dotnet-aspnetcore for source-based when it is in .csproj or in the nuget cache
+  - Do not install dotnet-runtime if it is already installed
+  (https://www.pivotaltracker.com/story/show/159044086)
+
+
 v2.1.5 Sep 13, 2018
 ====================
 
