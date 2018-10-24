@@ -1,0 +1,6 @@
+---
+  applications:
+    - name: self_contained
+      env:
+        DOTNET_CLI_TELEMETRY_OPTOUT: 1
+        CACHE_NUGET_PACKAGES: false
