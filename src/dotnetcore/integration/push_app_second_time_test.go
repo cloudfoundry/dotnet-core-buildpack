@@ -22,6 +22,7 @@ var _ = Describe("pushing an app a second time", func() {
 
 		app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_source_web_2.0"))
 		app.SetEnv("BP_DEBUG", "true")
+		app.Buildpacks = []string{"dotnet_core_buildpack"}
 	})
 
 	AfterEach(func() {
