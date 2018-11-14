@@ -202,9 +202,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 
 				By("accepts SIGTERM and exits gracefully")
-				Expect(app.Stop()).ToNot(HaveOccurred())
-				time.Sleep(1 * time.Second) // Wait here to flush the log process buffer ¯\_(ツ)_/¯
-				Eventually(app.Stdout.String(), 30*time.Second, time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
+				Expect(app.Stop()).To(Succeed())
+				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
 			})
 		})
 
@@ -237,8 +236,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 				By("accepts SIGTERM and exits gracefully")
 				Expect(app.Stop()).ToNot(HaveOccurred())
-				time.Sleep(1 * time.Second) // Wait here to flush the log process buffer ¯\_(ツ)_/¯
-				Eventually(app.Stdout.String(), 30*time.Second, time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
+				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
 			})
 		})
 
