@@ -11,6 +11,7 @@ import (
 
 var _ = Describe("running supply buildpacks before the dotnet-core buildpack", func() {
 	var app *cutlass.App
+
 	AfterEach(func() {
 		if app != nil {
 			app.Destroy()
