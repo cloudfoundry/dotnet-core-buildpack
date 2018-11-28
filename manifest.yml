@@ -210,18 +210,6 @@ dependencies:
   cf_stacks:
   - cflinuxfs3
 - name: node
-  version: 6.14.4
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.14.4-linux-x64-cflinuxfs2-48a4a12d.tgz
-  sha256: 48a4a12d08dd067dedd8bf440e259dd853b77298e78fe80f702627c1ca4a54b6
-  cf_stacks:
-  - cflinuxfs2
-- name: node
-  version: 6.14.4
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.14.4-linux-x64-cflinuxfs3-b1f0f41f.tgz
-  sha256: b1f0f41f51c1153defc8d15fd260782d5df3108882591887953747dce8183819
-  cf_stacks:
-  - cflinuxfs3
-- name: node
   version: 6.15.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.15.0-linux-x64-cflinuxfs2-0f7773d9.tgz
   sha256: 0f7773d9d19865132c4eb47e0b2dc3f72cb3c69cfda5133fad0843da9e8ff483
