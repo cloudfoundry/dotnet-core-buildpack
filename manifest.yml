@@ -23,7 +23,7 @@ dependencies:
 - name: dotnet-aspnetcore
   version: 2.1.2
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.2.linux-amd64-cflinuxfs2-08a94535.tar.xz
-  sha256: 08a9453522a43237eb4048b47eac2fa5308091d13edcffaff9fc081f0c181c70
+  sha256: '08a9453522a43237eb4048b47eac2fa5308091d13edcffaff9fc081f0c181c70'
   cf_stacks:
   - cflinuxfs2
 - name: dotnet-aspnetcore
@@ -176,7 +176,7 @@ dependencies:
 - name: dotnet-sdk
   version: 2.1.302
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.302.linux-amd64-cflinuxfs2-039d093b.tar.xz
-  sha256: 039d093ba5df5a9cbbe73ea288ab554616fa190ab24ea9a79151c3be51a81b91
+  sha256: '039d093ba5df5a9cbbe73ea288ab554616fa190ab24ea9a79151c3be51a81b91'
   cf_stacks:
   - cflinuxfs2
 - name: dotnet-sdk
@@ -221,6 +221,20 @@ dependencies:
   sha256: b1f0f41f51c1153defc8d15fd260782d5df3108882591887953747dce8183819
   cf_stacks:
   - cflinuxfs3
+- name: node
+  version: 6.15.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.15.0-linux-x64-cflinuxfs2-0f7773d9.tgz
+  sha256: 0f7773d9d19865132c4eb47e0b2dc3f72cb3c69cfda5133fad0843da9e8ff483
+  cf_stacks:
+  - cflinuxfs2
+  source: https://nodejs.org/dist/v6.15.0/node-v6.15.0.tar.gz
+- name: node
+  version: 6.15.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.15.0-linux-x64-cflinuxfs3-ac1fb364.tgz
+  sha256: ac1fb36492172a1af1bbc7a907c6fde059e6c838e301fbaf4e79fe5fc889321c
+  cf_stacks:
+  - cflinuxfs3
+  source: https://nodejs.org/dist/v6.15.0/node-v6.15.0.tar.gz
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
