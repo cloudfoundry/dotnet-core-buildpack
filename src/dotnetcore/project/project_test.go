@@ -1,16 +1,14 @@
 package project_test
 
 import (
-	"dotnetcore/project"
+	"bytes"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
-	"fmt"
-
-	"bytes"
-	"errors"
-
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/ansicleaner"
 	"github.com/golang/mock/gomock"

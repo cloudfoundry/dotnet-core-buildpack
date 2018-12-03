@@ -1,8 +1,6 @@
 package finalize
 
 import (
-	"dotnetcore/config"
-	"dotnetcore/project"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/kr/text"
 )

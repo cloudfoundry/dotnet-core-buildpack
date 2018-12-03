@@ -2,13 +2,14 @@ package supply_test
 
 import (
 	"bytes"
-	"dotnetcore/config"
-	"dotnetcore/project"
-	"dotnetcore/supply"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/supply"
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/ansicleaner"

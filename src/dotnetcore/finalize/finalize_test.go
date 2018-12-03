@@ -2,13 +2,13 @@ package finalize_test
 
 import (
 	"bytes"
-	"dotnetcore/config"
-	"dotnetcore/finalize"
-	"dotnetcore/project"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/finalize"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/ansicleaner"
 	"github.com/golang/mock/gomock"

@@ -1,17 +1,15 @@
 package main
 
 import (
-	"dotnetcore/config"
-	"dotnetcore/finalize"
-	"dotnetcore/project"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	// _ "dotnetcore/hooks"
 	"time"
 
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/finalize"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
 )
 

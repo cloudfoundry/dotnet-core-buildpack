@@ -5,9 +5,10 @@
 package finalize_test
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	exec "os/exec"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockProject is a mock of Project interface

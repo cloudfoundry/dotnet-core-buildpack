@@ -2,8 +2,6 @@ package supply
 
 import (
 	"crypto/md5"
-	"dotnetcore/config"
-	"dotnetcore/project"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -12,6 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 
 	"github.com/cloudfoundry/libbuildpack"
 )

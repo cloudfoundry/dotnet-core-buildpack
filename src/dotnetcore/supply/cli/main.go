@@ -1,14 +1,13 @@
 package main
 
 import (
-
-	// _ "dotnetcore/hooks"
-	"dotnetcore/config"
-	"dotnetcore/project"
-	"dotnetcore/supply"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
+	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/supply"
 
 	"github.com/cloudfoundry/libbuildpack"
 )
