@@ -20,6 +20,8 @@ github.com/bradfitz/go-smtpd v0.0.0-20170404230938-deb6d6237625/go.mod h1:HYsPBT
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudfoundry/libbuildpack v0.0.0-20181130221911-df2259c35386 h1:sLM67PMaiifowDTbZIwA1HguE/JqAloOjtiqlt0Rd2Y=
 github.com/cloudfoundry/libbuildpack v0.0.0-20181130221911-df2259c35386/go.mod h1:japFdv9g1jWFQEcb/V8fljrTzZY5GmpH3GS3kGg61FM=
+github.com/cloudfoundry/libbuildpack v0.0.0-20181203192608-40fcf6231d2e h1:n5B4kVCmuOwi7Q98xvHqEDYwpKBBB96lmlN/zaS7+bc=
+github.com/cloudfoundry/libbuildpack v0.0.0-20181203192608-40fcf6231d2e/go.mod h1:japFdv9g1jWFQEcb/V8fljrTzZY5GmpH3GS3kGg61FM=
 github.com/coreos/go-systemd v0.0.0-20181012123002-c6f51f82210d/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
