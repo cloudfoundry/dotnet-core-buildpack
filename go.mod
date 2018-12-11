@@ -5,10 +5,10 @@ require (
 	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c
 	github.com/Masterminds/semver v1.4.2
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20181203192608-40fcf6231d2e
+	github.com/cloudfoundry/libbuildpack v0.0.0-20181211154449-49acf76fd9c6
 	github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a
 	github.com/go-ini/ini v1.39.1
-	github.com/golang/mock v1.1.1
+	github.com/golang/mock v1.2.0
 	github.com/google/subcommands v0.0.0-20181012225330-46f0354f6315
 	github.com/inconshreveable/go-vhost v0.0.0-20160627193104-06d84117953b
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
