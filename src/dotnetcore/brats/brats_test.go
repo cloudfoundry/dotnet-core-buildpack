@@ -30,13 +30,7 @@ var _ = Describe("Dotnet buildpack", func() {
 
 		runtime := semver.MustParse(runtimeVersion)
 
-		isCompatible := sdk.Major == runtime.Major
-
-		runtime210 := semver.MustParse("2.1.0")
-		if runtime.GTE(runtime210) {
-			sdk21300 := semver.MustParse("2.1.300")
-			isCompatible = isCompatible && sdk.GTE(sdk21300)
-		}
+		isCompatible := (sdk.Major == runtime.Major) && (sdk.Minor >= runtime.Minor)
 
 		return isCompatible
 	}
