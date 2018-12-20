@@ -26,6 +26,8 @@ github.com/cloudfoundry/libbuildpack v0.0.0-20181211154449-49acf76fd9c6 h1:jdQ7/
 github.com/cloudfoundry/libbuildpack v0.0.0-20181211154449-49acf76fd9c6/go.mod h1:japFdv9g1jWFQEcb/V8fljrTzZY5GmpH3GS3kGg61FM=
 github.com/cloudfoundry/libbuildpack v0.0.0-20181220194100-ab9ad86e0dc5 h1:iADUvvVT7RTVfORRx4WsAdgwKhyAM84WmyJfiua7oKM=
 github.com/cloudfoundry/libbuildpack v0.0.0-20181220194100-ab9ad86e0dc5/go.mod h1:daUHK81Pp1aPZOtsr6zlRImunba2LOt6WlyBy3GAEe4=
+github.com/cloudfoundry/libbuildpack v0.0.0-20181220195223-554de5dbaa2f h1:HPGHyrvXu/CvwdivQGjeArbmF56C80M18vDyaUae7k8=
+github.com/cloudfoundry/libbuildpack v0.0.0-20181220195223-554de5dbaa2f/go.mod h1:daUHK81Pp1aPZOtsr6zlRImunba2LOt6WlyBy3GAEe4=
 github.com/coreos/go-systemd v0.0.0-20181012123002-c6f51f82210d/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
