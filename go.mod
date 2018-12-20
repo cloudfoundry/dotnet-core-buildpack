@@ -5,7 +5,7 @@ require (
 	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c
 	github.com/Masterminds/semver v1.4.2
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20181211154449-49acf76fd9c6
+	github.com/cloudfoundry/libbuildpack v0.0.0-20181220194100-ab9ad86e0dc5
 	github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a
 	github.com/go-ini/ini v1.39.1
 	github.com/golang/mock v1.2.0
@@ -20,7 +20,7 @@ require (
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c
 	github.com/tidwall/gjson v1.1.3
-	github.com/tidwall/match v1.0.0
+	github.com/tidwall/match v1.0.1
 	go4.org v0.0.0-20181109185143-00e24f1b2599
 	golang.org/x/build v0.0.0-20181121152522-2b0e3d65700e
 	golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9
