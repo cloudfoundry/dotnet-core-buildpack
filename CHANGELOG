@@ -1,3 +1,18 @@
+v2.2.2 Dec 21, 2018
+====================
+
+* Add dotnet-aspnetcore 2.2.0
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/162580717)
+
+* Add dotnet-runtime 2.2.0
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/162580717)
+
+* Add dotnet-sdk 2.2.100
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/162580717)
+
 v2.2.1 Dec 05, 2018
 ====================
 
