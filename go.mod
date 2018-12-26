@@ -2,7 +2,6 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 
 require (
 	cloud.google.com/go v0.33.1
-	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c
 	github.com/Masterminds/semver v1.4.2
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20181220195223-554de5dbaa2f
