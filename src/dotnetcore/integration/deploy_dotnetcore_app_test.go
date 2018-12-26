@@ -266,4 +266,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		})
 	})
 
+	Context("deploying an app with comments in the runtimeconfig.json", func() {
+		It("should deploy", func() {
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "runtimeconfig_with_comments"))
+			PushAppAndConfirm(app)
+		})
+	})
 })

@@ -1,6 +1,7 @@
 package project
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -10,6 +11,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/gravityblast/go-jsmin"
 
 	"github.com/blang/semver"
 	"github.com/cloudfoundry/libbuildpack"
@@ -558,11 +561,33 @@ func (p *Project) getLatestPatch(name, version string) (string, error) {
 	return latestPatch, nil
 }
 
+func sanitizeJsonConfig(runtimeConfigPath string) ([]byte, error) {
+	input, err := os.Open(runtimeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+	defer input.Close()
+
+	output := &bytes.Buffer{}
+	if err := jsmin.Min(input, output); err != nil {
+		return nil, err
+	}
+
+	return output.Bytes(), nil
+}
+
 func parseRuntimeConfig(runtimeConfigPath string) (ConfigJSON, error) {
 	obj := ConfigJSON{}
-	if err := libbuildpack.NewJSON().Load(runtimeConfigPath, &obj); err != nil {
-		return ConfigJSON{}, err
+
+	buf, err := sanitizeJsonConfig(runtimeConfigPath)
+	if err != nil {
+		return obj, err
 	}
+
+	if err := json.Unmarshal(buf, &obj); err != nil {
+		return obj, err
+	}
+
 	return obj, nil
 }
 

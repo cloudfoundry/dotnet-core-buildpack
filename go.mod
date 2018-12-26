@@ -9,6 +9,7 @@ require (
 	github.com/go-ini/ini v1.39.1
 	github.com/golang/mock v1.2.0
 	github.com/google/subcommands v0.0.0-20181012225330-46f0354f6315
+	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595 // indirect
 	github.com/inconshreveable/go-vhost v0.0.0-20160627193104-06d84117953b
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
 	github.com/kr/text v0.1.0
