@@ -1,3 +1,13 @@
+v2.2.3 Jan 02, 2019
+====================
+
+* Handle runtimeconfig.json files with comments
+  (https://www.pivotaltracker.com/story/show/158009692)
+
+* Add node 6.16.0, remove node 6.15.1
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/162848357)
+
 v2.2.2 Dec 21, 2018
 ====================
 
