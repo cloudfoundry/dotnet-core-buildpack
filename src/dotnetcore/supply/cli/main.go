@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
+	_ "github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/hooks"
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/supply"
 
