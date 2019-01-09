@@ -282,19 +282,19 @@ dependencies:
   - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/29ae5ac2c246e7545fee6e8586a086edf910a2c3.tar.gz
 - name: libunwind
-  version: 1.3.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.0-cflinuxfs2-fe25e153.tar.gz
-  sha256: fe25e153ffb21d10f82c41a7857dd40c4b7af4f73930f93a0c3c9be3c27420c7
+  version: 1.3.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.1-cflinuxfs2-ac0d0c62.tar.gz
+  sha256: ac0d0c6299c7f4f4780910c030e814ab9c92029309fd58d93b53749aaaf67b81
   cf_stacks:
   - cflinuxfs2
-  source: https://github.com/libunwind/libunwind/releases/download/v1.3.0/libunwind-1.3.0.tar.gz
+  source: https://github.com/libunwind/libunwind/releases/download/v1.3.1/libunwind-1.3.1.tar.gz
 - name: libunwind
-  version: 1.3.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.0-cflinuxfs3-bd6631c2.tar.gz
-  sha256: bd6631c27042a473dffa35940f651bff4536a8ce3cdc88fe4da6ed07487716aa
+  version: 1.3.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.1-cflinuxfs3-5e3a50f6.tar.gz
+  sha256: 5e3a50f6158270d5a5dd651fb6a7dc223a42f413a64584fcb722847221592a66
   cf_stacks:
   - cflinuxfs3
-  source: https://github.com/libunwind/libunwind/releases/download/v1.3.0/libunwind-1.3.0.tar.gz
+  source: https://github.com/libunwind/libunwind/releases/download/v1.3.1/libunwind-1.3.1.tar.gz
 - name: node
   version: 6.16.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-6.16.0-linux-x64-cflinuxfs2-fa3b7202.tgz
