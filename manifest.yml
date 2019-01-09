@@ -239,6 +239,20 @@ dependencies:
   cf_stacks:
   - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/51868761f2d5506b64166cf787ef2d25217d675c.tar.gz
+- name: dotnet-sdk
+  version: 2.2.102
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.2.102.linux-amd64-cflinuxfs2-9d25d632.tar.xz
+  sha256: 9d25d6323ea72baaff38f1f6b780f26093271660bf7569f2e7d3f691e116c4f1
+  cf_stacks:
+  - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/29ae5ac2c246e7545fee6e8586a086edf910a2c3.tar.gz
+- name: dotnet-sdk
+  version: 2.2.102
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.2.102.linux-amd64-cflinuxfs3-7b58d68f.tar.xz
+  sha256: 7b58d68f6882c51ca4c7c202c423e0389b21f4a0de5735d43319822f61b0012d
+  cf_stacks:
+  - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/29ae5ac2c246e7545fee6e8586a086edf910a2c3.tar.gz
 - name: libunwind
   version: 1.3.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.0-cflinuxfs2-fe25e153.tar.gz
