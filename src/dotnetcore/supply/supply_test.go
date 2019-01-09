@@ -61,7 +61,7 @@ var _ = Describe("Supply", func() {
 
 		args := []string{buildDir, cacheDir, depsDir, depsIdx}
 		stager := libbuildpack.NewStager(args, logger, &libbuildpack.Manifest{})
-		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx, &libbuildpack.Manifest{}, &libbuildpack.Installer{}, logger)
+		project := project.New(stager.BuildDir(), filepath.Join(depsDir, depsIdx), depsIdx, mockManifest, &libbuildpack.Installer{}, logger)
 		cfg := &config.Config{}
 
 		supplier = &supply.Supplier{
@@ -469,17 +469,18 @@ var _ = Describe("Supply", func() {
 			BeforeEach(func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
 				mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
+				mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"3.1.4", "3.1.5"})
 				mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-sdk", Version: "6.7.8"}, gomock.Any()).
 					DoAndReturn(func(_ libbuildpack.Dependency, _ string) error {
 						Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet-sdk"), 0744)).To(Succeed())
-						ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"), []byte("3.1.4"), 0644)
+						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"), []byte("3.1.4"), 0644)).To(Succeed())
 						return nil
 					})
 			})
 
-			It("Installs runtime specifed in RuntimeVersion.txt", func() {
+			It("Installs latest patch of runtime specified in RuntimeVersion.txt", func() {
 				mockInstaller.EXPECT().InstallDependency(
-					libbuildpack.Dependency{Name: "dotnet-runtime", Version: "3.1.4"},
+					libbuildpack.Dependency{Name: "dotnet-runtime", Version: "3.1.5"},
 					filepath.Join(depsDir, depsIdx, "dotnet-sdk"),
 				)
 				Expect(supplier.InstallDotnetSdk()).To(Succeed())

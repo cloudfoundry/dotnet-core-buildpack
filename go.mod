@@ -16,6 +16,7 @@ require (
 	github.com/kr/text v0.1.0
 	github.com/onsi/ginkgo v1.7.0
 	github.com/onsi/gomega v1.4.3
+	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/rogpeppe/go-charset v0.0.0-20180617210344-2471d30d28b4
 	github.com/sclevine/agouti v3.0.0+incompatible
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect

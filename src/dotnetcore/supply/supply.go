@@ -339,7 +339,12 @@ func (s *Supplier) installRuntimeIfNeeded() error {
 		if err != nil {
 			return err
 		}
-		return s.Installer.InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: string(version)}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk"))
+		name := "dotnet-runtime"
+		runtimeVersion, err := s.Project.FindMatchingFrameworkVersion(name, string(version), nil)
+		if err != nil {
+			return err
+		}
+		return s.Installer.InstallDependency(libbuildpack.Dependency{Name: name, Version: runtimeVersion}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk"))
 	}
 	return nil
 }
