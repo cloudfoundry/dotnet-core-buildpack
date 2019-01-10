@@ -186,6 +186,10 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 }
 
 func (f *Finalizer) DotnetRestore() error {
+	if !strings.HasPrefix(f.Config.DotnetSdkVersion, "1.") {
+		return nil
+	}
+
 	f.Log.BeginStep("Restore dotnet dependencies")
 
 	paths, err := f.Project.ProjectFilePaths()
