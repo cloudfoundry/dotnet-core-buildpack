@@ -71,7 +71,6 @@ func Run(s *Supplier) error {
 		s.Log.Error("Unable to install Libunwind: %s", err.Error())
 		return err
 	}
-
 	if err := s.InstallDotnetSdk(); err != nil {
 		s.Log.Error("Unable to install Dotnet SDK: %s", err.Error())
 		return err
