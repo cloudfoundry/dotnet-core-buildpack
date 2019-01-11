@@ -110,8 +110,15 @@ var _ = Describe("Finalize", func() {
 				}
 
 			})
-			It("Runs dotnet publish", func() {
+
+			It("Runs dotnet publish when the SDK is 1.X", func() {
+				finalizer.Config.DotnetSdkVersion = "1.0.0"
 				mockCommand.EXPECT().Run(gomock.Any()).Times(3).Return(nil)
+				Expect(finalizer.DotnetRestore()).To(Succeed())
+			})
+
+			It("Does not run dotnet publish when SDK is 2.X", func() {
+				finalizer.Config.DotnetSdkVersion = "2.0.0"
 				Expect(finalizer.DotnetRestore()).To(Succeed())
 			})
 		})
