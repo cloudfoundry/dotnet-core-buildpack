@@ -1,3 +1,24 @@
+v2.2.4 Jan 11, 2019
+====================
+
+* Add libunwind 1.3.1, remove libunwind 1.2.1
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163095517)
+  (https://www.pivotaltracker.com/story/show/163036223)
+
+* Add dotnet-aspnetcore 2.2.1, 2.1.7, remove dotnet-aspnetcore 2.1.2
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163078854)
+
+* Add dotnet-runtime 2.1.7, remove dotnet-runtime 2.1.4, 2.1.2
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163121803)
+
+* Add dotnet-sdk 2.2.102, 2.1.503, remove dotnet-sdk 2.1.302
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163078854)
+  (https://www.pivotaltracker.com/story/show/163121803)
+
 v2.2.3 Jan 02, 2019
 ====================
 
