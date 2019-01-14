@@ -37,6 +37,7 @@ func main() {
 		logger.Error("Unable to setup appcache: %s", err)
 		os.Exit(18)
 	}
+
 	if err = manifest.ApplyOverride(stager.DepsDir()); err != nil {
 		logger.Error("Unable to apply override.yml files: %s", err)
 		os.Exit(17)
