@@ -4,7 +4,7 @@ require (
 	cloud.google.com/go v0.34.0 // indirect
 	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c // indirect
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20190110200243-27d5cb5e3702
+	github.com/cloudfoundry/libbuildpack v0.0.0-20190115190946-c10a4cd29881
 	github.com/go-ini/ini v1.41.0
 	github.com/golang/mock v1.2.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
