@@ -262,6 +262,20 @@ dependencies:
   cf_stacks:
   - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/29ae5ac2c246e7545fee6e8586a086edf910a2c3.tar.gz
+- name: libgdiplus
+  version: '5.6'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-5.6-cflinuxfs2-8428730a.tar.gz
+  sha256: 8428730a919101bdb964fb007606ed1f3c1090f875ef04a8f4901088e7ae1997
+  cf_stacks:
+  - cflinuxfs2
+  source: https://github.com/mono/libgdiplus
+- name: libgdiplus
+  version: '5.6'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-5.6-cflinuxfs3-83674fd4.tar.gz
+  sha256: 83674fd40a4944cce08241c0f1435f740d281eac0bf355f810b314ebe03f8961
+  cf_stacks:
+  - cflinuxfs3
+  source: https://github.com/mono/libgdiplus
 - name: libunwind
   version: 1.3.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.1-cflinuxfs2-ac0d0c62.tar.gz
