@@ -218,6 +218,28 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				PushAppAndConfirm(app)
 			})
 		})
+
+		Context("with libgdiplus", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "uses_libgdiplus"))
+			})
+
+			It("displays a simple text homepage", func() {
+				PushAppAndConfirm(app)
+				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
+			})
+		})
+
+		Context("without libgdiplus", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_app_2.1"))
+			})
+
+			It("displays a simple text homepage", func() {
+				PushAppAndConfirm(app)
+				Expect(app.Stdout.String()).NotTo(ContainSubstring("Installing libgdiplus"))
+			})
+		})
 	})
 
 	Context("deploying an FDD app", func() {
@@ -248,6 +270,17 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			It("installs the exact version of dotnet-aspnetcore from the runtimeconfig.json", func() {
 				PushAppAndConfirm(app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", previous21ASPNetVersion)))
+			})
+		})
+
+		Context("with libgdiplus", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "uses_libgdiplus", "bin", "Debug", "netcoreapp2.2", "publish"))
+			})
+
+			It("displays a simple text homepage", func() {
+				PushAppAndConfirm(app)
+				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
 			})
 		})
 	})

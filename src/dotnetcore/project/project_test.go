@@ -765,4 +765,46 @@ var _ = Describe("Project", func() {
 			})
 		})
 	})
+
+	Describe("UsesLibrary", func() {
+		Context("when the app uses System.Drawing.Common", func() {
+			It("should return true for a source based app", func() {
+				contents := []byte(`<Project Sdk="Microsoft.NET.Sdk.Web"> <ItemGroup> <PackageReference Include="System.Drawing.Common" Version="4.5.1" /> </ItemGroup> </Project>`)
+				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
+
+				exists, err := subject.UsesLibrary("System.Drawing.Common")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(exists).To(BeTrue())
+			})
+
+			It("should return true for a published app", func() {
+				createRuntimeConfig("", "")
+				createDepsJSON("System.Drawing.Common", "4.5.1", false)
+
+				exists, err := subject.UsesLibrary("System.Drawing.Common")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(exists).To(BeTrue())
+			})
+		})
+
+		Context("when the app does not use System.Drawing.Common", func() {
+			It("should return false for a source based app", func() {
+				contents := []byte(`<Project Sdk="Microsoft.NET.Sdk.Web"> <ItemGroup> <PackageReference Include="Other.Dependency" Version="1.2.3" /> </ItemGroup> </Project>`)
+				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
+
+				exists, err := subject.UsesLibrary("System.Drawing.Common")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(exists).To(BeFalse())
+			})
+
+			It("should return false for a published app", func() {
+				createRuntimeConfig("", "")
+				createDepsJSON("", "", true)
+
+				exists, err := subject.UsesLibrary("System.Drawing.Common")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(exists).To(BeFalse())
+			})
+		})
+	})
 })

@@ -133,79 +133,36 @@ func (p *Project) GetVersionFromDepsJSON(library string) (string, error) {
 	return "", fmt.Errorf("multiple or no *.deps.json files present")
 }
 
-type libraryMissingError struct {
-	s string
-}
-
-func (e *libraryMissingError) Error() string {
-	return e.s
-}
-
-func (p *Project) getVersionFromAssetFile(path, library string) (string, error) {
-	depsBytes, err := ioutil.ReadFile(path)
+func (p *Project) UsesLibrary(library string) (bool, error) {
+	published, err := p.IsPublished()
 	if err != nil {
-		return "", err
+		return false, err
 	}
 
-	var result map[string]interface{}
-	if err = json.Unmarshal(depsBytes, &result); err != nil {
-		return "", err
-	}
-
-	if _, ok := result["libraries"]; !ok {
-		return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
-	}
-
-	libraries := result["libraries"].(map[string]interface{})
-	for key := range libraries {
-		re := regexp.MustCompile(fmt.Sprintf(`(%s)\/(\d\.\d\.\d)`, library))
-		matchedString := re.FindStringSubmatch(key)
-		if matchedString != nil {
-			return matchedString[2], nil
+	if published {
+		_, err := p.GetVersionFromDepsJSON(library)
+		if _, libMissing := err.(*libraryMissingError); err != nil && !libMissing {
+			return false, err
+		} else if libMissing {
+			return false, nil
 		}
-	}
+		return true, nil
+	} else {
+		proj, err := p.parseProj()
+		if err != nil {
+			return false, err
+		}
 
-	return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
-}
-
-func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool) ([]string, error) {
-	depToAssembly := map[string]string{
-		"dotnet-runtime":    "microsoft.netcore.app",
-		"dotnet-aspnetcore": "microsoft.aspnetcore.app",
-	}
-
-	restoredVersionsDir := filepath.Join(p.depDir, ".nuget", "packages", depToAssembly[dependency])
-	if exists, err := libbuildpack.FileExists(restoredVersionsDir); err != nil {
-		return []string{}, err
-	} else if !exists {
-		return []string{}, nil
-	}
-
-	files, err := ioutil.ReadDir(restoredVersionsDir)
-	if err != nil {
-		return []string{}, err
-	}
-
-	// Use this map as a set for de-duplication later on
-	versions := map[string]interface{}{}
-	for _, f := range files {
-		if rollForward {
-			version, err := p.getLatestPatch(dependency, f.Name())
-			if err != nil {
-				return []string{}, nil
+		for _, ig := range proj.ItemGroups {
+			for _, pr := range ig.PackageReferences {
+				if pr.Include == library {
+					return true, nil
+				}
 			}
-			versions[version] = nil
-		} else {
-			versions[f.Name()] = nil
 		}
 	}
 
-	var distinctVersions []string
-	for v := range versions {
-		distinctVersions = append(distinctVersions, v)
-	}
-
-	return distinctVersions, nil
+	return false, nil
 }
 
 func (p *Project) ProjectFilePaths() ([]string, error) {
@@ -349,69 +306,6 @@ func (p *Project) FDDInstallFrameworks() error {
 	return fmt.Errorf("invalid framework [%s] specified in application runtime config file", frameworkName)
 }
 
-func (p *Project) fddInstallFrameworksNETCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
-	runtimeVersion, err := p.FindMatchingFrameworkVersion("dotnet-runtime", frameworkVersion, applyPatches)
-	if err != nil {
-		return err
-	}
-
-	if err = p.installer.InstallDependency(
-		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
-		filepath.Join(p.depDir, "dotnet-sdk"),
-	); err != nil {
-		return err
-	}
-
-	aspNetCoreVersion, err := p.GetVersionFromDepsJSON("Microsoft.AspNetCore.App")
-	if _, ok := err.(*libraryMissingError); err != nil && !ok {
-		return err
-	} else if ok {
-		return nil
-	}
-
-	return p.installAspNetCoreDependency(aspNetCoreVersion, false)
-}
-
-func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
-	aspNetCoreVersion, err := p.FindMatchingFrameworkVersion("dotnet-aspnetcore", frameworkVersion, applyPatches)
-	if err != nil {
-		return err
-	}
-
-	if err = p.installer.InstallDependency(
-		libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: aspNetCoreVersion},
-		filepath.Join(p.depDir, "dotnet-sdk"),
-	); err != nil {
-		return err
-	}
-
-	aspNetCoreConfigJSON, err := parseRuntimeConfig(filepath.Join(
-		p.depDir,
-		"dotnet-sdk",
-		"shared",
-		frameworkName,
-		aspNetCoreVersion,
-		fmt.Sprintf("%s.runtimeconfig.json", frameworkName),
-	))
-	if err != nil {
-		return err
-	}
-
-	runtimeVersion, err := p.FindMatchingFrameworkVersion(
-		"dotnet-runtime",
-		aspNetCoreConfigJSON.RuntimeOptions.Framework.Version,
-		aspNetCoreConfigJSON.RuntimeOptions.ApplyPatches,
-	)
-	if err != nil {
-		return err
-	}
-
-	return p.installer.InstallDependency(
-		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
-		filepath.Join(p.depDir, "dotnet-sdk"),
-	)
-}
-
 func (p *Project) SourceInstallDotnetRuntime() error {
 	proj, err := p.parseProj()
 	if err != nil {
@@ -482,6 +376,73 @@ func (p *Project) SourceInstallDotnetAspNetCore() error {
 	}
 
 	return nil
+}
+
+func (p *Project) getVersionFromAssetFile(path, library string) (string, error) {
+	depsBytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+
+	var result map[string]interface{}
+	if err = json.Unmarshal(depsBytes, &result); err != nil {
+		return "", err
+	}
+
+	if _, ok := result["libraries"]; !ok {
+		return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
+	}
+
+	libraries := result["libraries"].(map[string]interface{})
+	for key := range libraries {
+		re := regexp.MustCompile(fmt.Sprintf(`(%s)\/(\d\.\d\.\d)`, library))
+		matchedString := re.FindStringSubmatch(key)
+		if matchedString != nil {
+			return matchedString[2], nil
+		}
+	}
+
+	return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
+}
+
+func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool) ([]string, error) {
+	depToAssembly := map[string]string{
+		"dotnet-runtime":    "microsoft.netcore.app",
+		"dotnet-aspnetcore": "microsoft.aspnetcore.app",
+	}
+
+	restoredVersionsDir := filepath.Join(p.depDir, ".nuget", "packages", depToAssembly[dependency])
+	if exists, err := libbuildpack.FileExists(restoredVersionsDir); err != nil {
+		return []string{}, err
+	} else if !exists {
+		return []string{}, nil
+	}
+
+	files, err := ioutil.ReadDir(restoredVersionsDir)
+	if err != nil {
+		return []string{}, err
+	}
+
+	// Use this map as a set for de-duplication later on
+	versions := map[string]interface{}{}
+	for _, f := range files {
+		if rollForward {
+			version, err := p.getLatestPatch(dependency, f.Name())
+			if err != nil {
+				return []string{}, nil
+			}
+			versions[version] = nil
+		} else {
+			versions[f.Name()] = nil
+		}
+	}
+
+	var distinctVersions []string
+	for v := range versions {
+		distinctVersions = append(distinctVersions, v)
+	}
+
+	return distinctVersions, nil
 }
 
 func (p *Project) installAspNetCoreDependency(version string, latestPatch bool) error {
@@ -561,6 +522,92 @@ func (p *Project) getLatestPatch(name, version string) (string, error) {
 	return latestPatch, nil
 }
 
+func (p *Project) fddInstallFrameworksNETCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
+	runtimeVersion, err := p.FindMatchingFrameworkVersion("dotnet-runtime", frameworkVersion, applyPatches)
+	if err != nil {
+		return err
+	}
+
+	if err = p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
+		filepath.Join(p.depDir, "dotnet-sdk"),
+	); err != nil {
+		return err
+	}
+
+	aspNetCoreVersion, err := p.GetVersionFromDepsJSON("Microsoft.AspNetCore.App")
+	if _, ok := err.(*libraryMissingError); err != nil && !ok {
+		return err
+	} else if ok {
+		return nil
+	}
+
+	return p.installAspNetCoreDependency(aspNetCoreVersion, false)
+}
+
+func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
+	aspNetCoreVersion, err := p.FindMatchingFrameworkVersion("dotnet-aspnetcore", frameworkVersion, applyPatches)
+	if err != nil {
+		return err
+	}
+
+	if err = p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: aspNetCoreVersion},
+		filepath.Join(p.depDir, "dotnet-sdk"),
+	); err != nil {
+		return err
+	}
+
+	aspNetCoreConfigJSON, err := parseRuntimeConfig(filepath.Join(
+		p.depDir,
+		"dotnet-sdk",
+		"shared",
+		frameworkName,
+		aspNetCoreVersion,
+		fmt.Sprintf("%s.runtimeconfig.json", frameworkName),
+	))
+	if err != nil {
+		return err
+	}
+
+	runtimeVersion, err := p.FindMatchingFrameworkVersion(
+		"dotnet-runtime",
+		aspNetCoreConfigJSON.RuntimeOptions.Framework.Version,
+		aspNetCoreConfigJSON.RuntimeOptions.ApplyPatches,
+	)
+	if err != nil {
+		return err
+	}
+
+	return p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
+		filepath.Join(p.depDir, "dotnet-sdk"),
+	)
+}
+
+func (p *Project) parseProj() (CSProj, error) {
+	mainPath, err := p.MainPath()
+	if err != nil {
+		return CSProj{}, err
+	}
+
+	projFile, err := os.Open(mainPath)
+	if err != nil {
+		return CSProj{}, err
+	}
+	defer projFile.Close()
+	projBytes, err := ioutil.ReadAll(projFile)
+	if err != nil {
+		return CSProj{}, err
+	}
+	obj := CSProj{}
+
+	if err := xml.Unmarshal(projBytes, &obj); err != nil {
+		return CSProj{}, err
+	}
+	return obj, nil
+}
+
 func sanitizeJsonConfig(runtimeConfigPath string) ([]byte, error) {
 	input, err := os.Open(runtimeConfigPath)
 	if err != nil {
@@ -591,25 +638,10 @@ func parseRuntimeConfig(runtimeConfigPath string) (ConfigJSON, error) {
 	return obj, nil
 }
 
-func (p *Project) parseProj() (CSProj, error) {
-	mainPath, err := p.MainPath()
-	if err != nil {
-		return CSProj{}, err
-	}
+type libraryMissingError struct {
+	s string
+}
 
-	projFile, err := os.Open(mainPath)
-	if err != nil {
-		return CSProj{}, err
-	}
-	defer projFile.Close()
-	projBytes, err := ioutil.ReadAll(projFile)
-	if err != nil {
-		return CSProj{}, err
-	}
-	obj := CSProj{}
-
-	if err := xml.Unmarshal(projBytes, &obj); err != nil {
-		return CSProj{}, err
-	}
-	return obj, nil
+func (e *libraryMissingError) Error() string {
+	return e.s
 }
