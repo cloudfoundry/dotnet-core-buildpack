@@ -4,7 +4,7 @@ default_versions:
 - name: dotnet-sdk
   version: 2.x
 - name: bower
-  version: 1.8.7
+  version: 1.8.8
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - match: 6\.\d+\.\d+
@@ -14,13 +14,13 @@ dependency_deprecation_dates:
   link: https://github.com/nodejs/LTS
 dependencies:
 - name: bower
-  version: 1.8.7
-  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.7-any-stack-3216e0bc.tgz
-  sha256: 3216e0bc8a03bbc553695247ff32fde745bab1a4b86c21bc75778a4d3fa55519
+  version: 1.8.8
+  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower-1.8.8-any-stack-5ae421c7.tgz
+  sha256: 5ae421c71b093475fbe8e074d5336b156842852fc88f9f5a694cfebe583da49e
   cf_stacks:
   - cflinuxfs2
   - cflinuxfs3
-  source: https://registry.npmjs.org/bower/-/bower-1.8.7.tgz
+  source: https://registry.npmjs.org/bower/-/bower-1.8.8.tgz
 - name: dotnet-aspnetcore
   version: 2.1.4
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.4.linux-amd64-cflinuxfs2-27b5b10d.tar.xz
