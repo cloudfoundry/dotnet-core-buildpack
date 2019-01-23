@@ -334,11 +334,10 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 		}
 	}
 
-	p.installer.InstallDependency(
+	return p.installer.InstallDependency(
 		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
 		filepath.Join(p.depDir, "dotnet-sdk"),
 	)
-	return nil
 }
 
 func (p *Project) SourceInstallDotnetAspNetCore() error {
@@ -591,6 +590,9 @@ func (p *Project) parseProj() (CSProj, error) {
 		return CSProj{}, err
 	}
 
+	if _, err = os.Stat(mainPath); os.IsNotExist(err) {
+		return CSProj{}, nil
+	}
 	projFile, err := os.Open(mainPath)
 	if err != nil {
 		return CSProj{}, err
