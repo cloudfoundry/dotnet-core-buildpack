@@ -1,3 +1,29 @@
+v2.2.5 Jan 23, 2019
+====================
+
+* Allows for project with no csproj file
+  (https://www.pivotaltracker.com/story/show/163200644)
+
+* Use built version of go 1.11.4 in online unbuilt/URL buildpack
+  (https://www.pivotaltracker.com/story/show/163089977)
+
+* Add libgdiplus so that users can use System.Drawing.Common
+  (https://www.pivotaltracker.com/story/show/163200644)
+
+* Add bower 1.8.7, remove bower 1.8.4
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163311740)
+  (https://www.pivotaltracker.com/story/show/163295218)
+  (https://www.pivotaltracker.com/story/show/163292729)
+
+* Add libgdiplus 5.6
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/163305702)
+
+* Do not dotnet restore unless the app uses dotnet sdk <= 1
+  (https://www.pivotaltracker.com/story/show/159412906)
+
+
 v2.2.4 Jan 11, 2019
 ====================
 
