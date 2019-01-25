@@ -27,7 +27,7 @@ To build this buildpack, run the following commands from the buildpack's directo
 1. Install buildpack-packager
 
     ```bash
-    (cd src/*/vendor/github.com/cloudfoundry/libbuildpack/packager/buildpack-packager && go install)
+    go install github.com/cloudfoundry/libbuildpack/packager/buildpack-packager
     ```
 
 1. Build the buildpack
