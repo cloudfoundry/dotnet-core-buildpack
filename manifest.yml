@@ -21,6 +21,7 @@ dependencies:
   - cflinuxfs2
   - cflinuxfs3
   source: https://registry.npmjs.org/bower/-/bower-1.8.8.tgz
+  source_sha256: 5ae421c71b093475fbe8e074d5336b156842852fc88f9f5a694cfebe583da49e
 - name: dotnet-aspnetcore
   version: 2.1.4
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.4.linux-amd64-cflinuxfs2-27b5b10d.tar.xz
