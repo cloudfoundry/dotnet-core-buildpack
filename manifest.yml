@@ -47,13 +47,6 @@ dependencies:
   source: https://github.com/dotnet/cli/archive/03be46649c7a9e41fd61d5907cf31dd72fd4bcd2.tar.gz
   source_sha256: d93182960ec440238535738f3cb066dd067cc883aed56ee50b5a27f1eb6eb12e
 - name: dotnet-aspnetcore
-  version: 2.1.8
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.8.linux-amd64-cflinuxfs3-203467e5.tar.xz
-  sha256: 203467e5cdbb1f1a33c00a4832688ed8f0b17875cd38f64a4ed74890e43fa92a
-  cf_stacks:
-  - cflinuxfs3
-  source: https://github.com/dotnet/cli/archive/03be46649c7a9e41fd61d5907cf31dd72fd4bcd2.tar.gz
-  source_sha256: d93182960ec440238535738f3cb066dd067cc883aed56ee50b5a27f1eb6eb12e
   version: 2.2.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.2.1.linux-amd64-cflinuxfs2-639c6ebc.tar.xz
   sha256: 639c6ebcd274d970b2f8d03109126f52818b8eb127cbd51864942306d0070004
@@ -161,10 +154,18 @@ dependencies:
   source_sha256: 15766556ac96aea180caa5e513bf013b7ceea5dd3ce122928cff922a1ad031a1
 - name: dotnet-runtime
   version: 2.1.8
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.8.linux-amd64-cflinuxfs2-e4383b4d.tar.xz
-  sha256: e4383b4d874ca3f9b55bcb457f4c69b669383f421edcefaa1264d3b85034ba35
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.8.linux-amd64-cflinuxfs2-ab052871.tar.xz
+  sha256: ab052871df1307037330329e8ca220922a52c7f8ea4fcbaea46291ba64687061
   cf_stacks:
   - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/03be46649c7a9e41fd61d5907cf31dd72fd4bcd2.tar.gz
+  source_sha256: d93182960ec440238535738f3cb066dd067cc883aed56ee50b5a27f1eb6eb12e
+- name: dotnet-runtime
+  version: 2.1.8
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.8.linux-amd64-cflinuxfs3-74715a78.tar.xz
+  sha256: 74715a7874050f252cb06c4c9214622f3722d1490508b314d6b2fe3ff934d6b4
+  cf_stacks:
+  - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/03be46649c7a9e41fd61d5907cf31dd72fd4bcd2.tar.gz
   source_sha256: d93182960ec440238535738f3cb066dd067cc883aed56ee50b5a27f1eb6eb12e
 - name: dotnet-runtime
