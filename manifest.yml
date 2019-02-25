@@ -92,12 +92,16 @@ dependencies:
   sha256: 775e853dfdf0cb1dd257f8462ff193ef08101407312feaf05a3190dd18bde711
   cf_stacks:
   - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/v1.1.9.tar.gz
+  source_sha256: 5474b1a449e9aee0437fdfe430606927a32b1611ff64656e5f9bb02b93e5cf47
 - name: dotnet-runtime
   version: 1.0.12
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.1.0.12.linux-amd64-4d0b0c55.tar.xz
   sha256: 4d0b0c55555496a37895473d6ebcd8180af12461f427a4b096e6e5bb52bc3284
   cf_stacks:
   - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/c4440029cdaec508ad2db560d492ceb014d80a84.tar.gz
+  source_sha256: e362ff24acb6050f7c5035e76d17e96c9aff2bc6ea12d832b548628c8d35905b
 - name: dotnet-runtime
   version: 1.1.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.1.1.10.linux-amd64-cflinuxfs2-ec2f5b57.tar.xz
@@ -137,6 +141,8 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
   - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/v2.1.200.tar.gz
+  source_sha256: fcd3bef288500aa240ba81e7dbdc0bcac27206c9cdd1de4944e124975d490d8e
 - name: dotnet-runtime
   version: 2.0.9
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-framework/dotnet-framework.2.0.9.linux-amd64-e814e747.tar.xz
@@ -144,6 +150,8 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
   - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/v2.1.202.tar.gz
+  source_sha256: a2dc8598fbf1cabb818385693275db7547e291ead3c113f3f333cc89d1b9a0a3
 - name: dotnet-runtime
   version: 2.1.7
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.7.linux-amd64-cflinuxfs2-5431ae55.tar.xz
@@ -255,6 +263,8 @@ dependencies:
   cf_stacks:
   - cflinuxfs2
   - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/v2.0.3.tar.gz
+  source_sha256: 51cad00cc35b51f610fe8f902acf8fe4efe49ff58fe9fb1aa8c80167c4d54afe
 - name: dotnet-sdk
   version: 2.1.403
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.1.403.linux-amd64-cflinuxfs2-084b4eeb.tar.xz
