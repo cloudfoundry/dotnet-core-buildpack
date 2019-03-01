@@ -1,3 +1,13 @@
+v2.2.7 Mar 01, 2019
+====================
+
+* Add node 6.17.0, remove node 6.16.0
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164301707)
+
+* Add source and source_sha256 to buildpack
+  (https://www.pivotaltracker.com/story/show/163711928)
+
 v2.2.6 Feb 20, 2019
 ====================
 
