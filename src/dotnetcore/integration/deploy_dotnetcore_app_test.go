@@ -17,8 +17,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	var (
 		latest21RuntimeVersion, previous21RuntimeVersion string
 		latest21ASPNetVersion, previous21ASPNetVersion   string
-		latest20SDKVersion                               string
 		latest21SDKVersion, previous21SDKVersion         string
+		latest22SDKVersion, previous22SDKVersion         string
 	)
 
 	BeforeEach(func() {
@@ -28,10 +28,11 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		latest21ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", "2.1.x", bpDir)
 		previous21ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", fmt.Sprintf("<%s", latest21ASPNetVersion), bpDir)
 
-		latest20SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.0.x", bpDir)
-
 		latest21SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.1.x", bpDir)
 		previous21SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest21SDKVersion), bpDir)
+
+		latest22SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.2.x", bpDir)
+		previous22SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest22SDKVersion), bpDir)
 	})
 
 	AfterEach(func() {
@@ -51,43 +52,43 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 		})
 
-		Context("with dotnet-runtime 2.0", func() {
+		Context("with dotnet-runtime 2.2", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_source_web_2.0"))
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_2.2_source"))
 			})
 
 			It("displays a simple text homepage", func() {
 				PushAppAndConfirm(app)
 
-				Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 			})
 		})
 
-		Context("with dotnet sdk 2.0 in global json", func() {
+		Context("with dotnet sdk 2.1 in global json", func() {
 			Context("when the sdk exists", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.0_global_json_templated"), "global.json", "sdk_version", latest20SDKVersion)
+					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", latest21SDKVersion)
 				})
 
 				It("displays a simple text homepage", func() {
 					PushAppAndConfirm(app)
 
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest20SDKVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest21SDKVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.1"))
 				})
 
 			})
 
 			Context("when the sdk is missing", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.0_global_json_templated"), "global.json", "sdk_version", "2.0.0-preview-007")
+					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", "2.1.500")
 				})
 
 				It("Logs a warning about using default SDK", func() {
 					PushAppAndConfirm(app)
-					Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.0.0-preview-007 in global.json is not available"))
+					Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.1.500 in global.json is not available"))
 					Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.0"))
+					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.1"))
 				})
 			})
 		})
@@ -95,21 +96,21 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("with buildpack.yml and global.json files", func() {
 			Context("when SDK versions don't match", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "with_buildpack_yml_templated"), "global.json", "sdk_version", latest20SDKVersion)
+					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "with_buildpack_yml_templated"), "global.json", "sdk_version", previous21SDKVersion)
 				})
 
 				It("installs the specific version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous21SDKVersion)
+					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous22SDKVersion)
 					app.Push()
 
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", previous21SDKVersion)))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", previous22SDKVersion)))
 				})
 
 				It("installs the floated version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", "2.1.x")
+					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", "2.2.x")
 					app.Push()
 
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest21SDKVersion)))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest22SDKVersion)))
 				})
 			})
 
