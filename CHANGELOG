@@ -1,3 +1,44 @@
+v2.2.8 Mar 20, 2019
+====================
+
+* Add dotnet-aspnetcore 2.1.9
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452842)
+
+* Add dotnet-runtime 2.1.9
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452842)
+
+* Add dotnet-runtime 1.1.12
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164586171)
+
+* Add dotnet-sdk 1.1.13
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164586171)
+
+* Add dotnet-runtime 2.2.3
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452837)
+
+* Add dotnet-aspnetcore 2.2.3
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452837)
+
+* Add dotnet-sdk 2.1.505
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452842)
+
+* Add dotnet-sdk 2.2.105
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/164452837)
+
+* Remove dotnet core 2.0
+  - Remove dotnet-runtime 2.0.7, 2.0.9
+  - Remove dotnet-sdk 2.0.3
+  - Add 2.2 simple app fixture
+  (https://www.pivotaltracker.com/story/show/163160081)
+
 v2.2.7 Mar 01, 2019
 ====================
 
