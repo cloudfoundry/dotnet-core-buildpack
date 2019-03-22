@@ -3,4 +3,6 @@ language: go
 go:
 - 1.12
 install: []
-script: export GO11MODULE=on && ./scripts/unit.sh
+env:
+- GO11MODULE=on
+script: export GO11MODULE=on | ./scripts/unit.sh
