@@ -9,6 +9,7 @@ import (
 
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/finalize"
+	_ "github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/hooks"
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
 )
