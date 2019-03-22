@@ -3,6 +3,8 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 require (
 	cloud.google.com/go v0.37.0
 	github.com/Masterminds/semver v1.4.2
+	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c // indirect
+	github.com/Dynatrace/libbuildpack-dynatrace v1.1.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20190307214535-cd9ee704eaa2
 	github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a
