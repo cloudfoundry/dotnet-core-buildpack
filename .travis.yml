@@ -1,7 +1,7 @@
 ---
 language: go
 go:
-- 1.12
+- '1.12'
 install: []
 env:
 - GO11MODULE=on
