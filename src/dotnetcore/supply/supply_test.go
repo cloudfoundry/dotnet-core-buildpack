@@ -13,7 +13,7 @@ import (
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/ansicleaner"
-	gomock "github.com/golang/mock/gomock"
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -34,7 +34,7 @@ var _ = Describe("Supply", func() {
 		mockManifest  *MockManifest
 		mockInstaller *MockInstaller
 		mockCommand   *MockCommand
-		installNode   func(string, string)
+		installNode   func(libbuildpack.Dependency, string)
 	)
 
 	BeforeEach(func() {
@@ -74,9 +74,12 @@ var _ = Describe("Supply", func() {
 			Config:    cfg,
 		}
 
-		installNode = func(dep, nodeDir string) {
+		installNode = func(dep libbuildpack.Dependency, installDir string) {
+			Expect(dep.Name).To(Equal("node"))
+			Expect(dep.Version).To(Equal("6.12.0"))
+
 			subDir := fmt.Sprintf("node-v%s-linux-x64", "6.12.0")
-			err := os.MkdirAll(filepath.Join(nodeDir, subDir, "bin"), 0755)
+			err := os.MkdirAll(filepath.Join(installDir, subDir, "bin"), 0755)
 			Expect(err).To(BeNil())
 		}
 	})
@@ -173,8 +176,8 @@ var _ = Describe("Supply", func() {
 				})
 
 				It("Installs node", func() {
-					mockInstaller.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
 					mockManifest.EXPECT().AllDependencyVersions("node").Return([]string{"6.12.0"})
+					mockInstaller.EXPECT().InstallDependency(gomock.Any(), gomock.Any()).Do(installNode).Return(nil)
 					Expect(supplier.InstallNode()).To(Succeed())
 				})
 			})
@@ -185,8 +188,8 @@ var _ = Describe("Supply", func() {
 				})
 
 				It("Installs node", func() {
-					mockInstaller.EXPECT().InstallOnlyVersion("node", gomock.Any()).Do(installNode).Return(nil)
 					mockManifest.EXPECT().AllDependencyVersions("node").AnyTimes().Return([]string{"6.12.0"})
+					mockInstaller.EXPECT().InstallDependency(gomock.Any(), gomock.Any()).Do(installNode).Return(nil)
 					Expect(supplier.InstallNode()).To(Succeed())
 				})
 			})
