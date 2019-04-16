@@ -3,7 +3,7 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.1.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20190405154814-5050d4f28264
+	github.com/cloudfoundry/libbuildpack v0.0.0-20190416180621-e7ae8806c8cc
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.2.0
