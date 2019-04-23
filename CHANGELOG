@@ -1,3 +1,34 @@
+v2.2.10 Apr 23, 2019
+=====================
+
+* Remove warning logs causing bosh cli error
+
+* Enable multiple node dependencies
+  - Defaults to version 6
+  - Parses version from package.json
+  (https://www.pivotaltracker.com/story/show/165216936)
+
+* Add nodejs 10.15.2
+  for stack(s) cflinuxfs3
+
+* Add dotnet-runtime 2.1.10
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/165257374)
+
+* Add dotnet-aspnetcore 2.1.10, 2.2.4
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/165257374)
+  (https://www.pivotaltracker.com/story/show/165232583)
+
+* Add dotnet-sdk 2.1.506, 2.2.106, remove 2.1.505, 2.2.105
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/165257374)
+  (https://www.pivotaltracker.com/story/show/165232583)
+
+* Add dotnet-runtime 2.2.4
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/165232583)
+
 v2.2.9 Apr 08, 2019
 ====================
 
