@@ -3,10 +3,10 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.1.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20190430223250-ff7a186ed9a2
+	github.com/cloudfoundry/libbuildpack v0.0.0-20190503154657-c91e8ad35626
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-ini/ini v1.42.0
-	github.com/golang/mock v1.2.0
+	github.com/golang/mock v1.3.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 	github.com/kr/text v0.1.0
 	github.com/onsi/ginkgo v1.8.0
@@ -18,8 +18,6 @@ require (
 	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/tidwall/gjson v1.2.1 // indirect
 	github.com/tidwall/pretty v0.0.0-20180105212114-65a9db5fad51 // indirect
-	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
-	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
 )
