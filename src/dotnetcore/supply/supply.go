@@ -11,8 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/package_json"
-
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 
@@ -195,16 +193,7 @@ func (s *Supplier) InstallNode() error {
 		return fmt.Errorf("Could not decide whether to install node: %v", err)
 	}
 	if shouldInstallNode {
-		constraint := package_json.DefaultNodeVersion
-		pkgJSONPath := filepath.Join(s.Stager.BuildDir(), package_json.PackageJson)
-		if _, err := os.Stat(pkgJSONPath); err == nil {
-			constraint, err = package_json.GetNodeFromPackageJSON(pkgJSONPath, s.Log)
-			if err != nil {
-				return err
-			}
-		}
-
-		version, err := libbuildpack.FindMatchingVersion(constraint, s.Manifest.AllDependencyVersions("node"))
+		version, err := libbuildpack.FindMatchingVersion("x", s.Manifest.AllDependencyVersions("node"))
 		if err != nil {
 			return err
 		}
