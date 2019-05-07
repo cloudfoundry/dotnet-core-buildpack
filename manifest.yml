@@ -454,6 +454,14 @@ dependencies:
   - cflinuxfs3
   source: https://nodejs.org/dist/v10.15.2/node-v10.15.2.tar.gz
   source_sha256: 3b81ea6b0ae1c887ed4215d6a0b9349284c811bd98c8ddd7a0370f6cc9eb8182
+- name: node
+  version: 10.15.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-10.15.0-linux-x64-cflinuxfs2-d1a7fed0.tgz
+  sha256: d1a7fed0e8d379dbd588f67cba937ab87021360e43d8960466f73ece91f6ea41
+  cf_stacks:
+   - cflinuxfs2
+  source: https://nodejs.org/dist/v10.15.0/node-v10.15.0.tar.gz
+  source_sha256: dbe467e3dabb6854fcb0cd96e04082268cb1e313ce97a4b7100b2ed152b0a0ab
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
