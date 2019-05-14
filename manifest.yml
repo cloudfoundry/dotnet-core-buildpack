@@ -247,6 +247,22 @@ dependencies:
   source: https://github.com/dotnet/cli/archive/a841b246eaf092b8f33ea6f95d836de631d3f2cc.tar.gz
   source_sha256: f720a5486f7370551afebd926b6dfae676714687b30b5e5826eb5e486101fda0
 - name: dotnet-runtime
+  version: 2.1.11
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.11.linux-amd64-cflinuxfs2-643a7e72.tar.xz
+  sha256: 643a7e726baaa8b79e6e50c24c0a057a10370cec9e4512a88756af48718fba3e
+  cf_stacks:
+  - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/3b68731de3b8b25dfba5685f6ae5bc428cebbbe2.tar.gz
+  source_sha256: d0a7532a6a7c3cd39caf9924ae510d6b865b53cd36bed7e6a03f6d6d9a09020a
+- name: dotnet-runtime
+  version: 2.1.11
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.1.11.linux-amd64-cflinuxfs3-7fa0bed4.tar.xz
+  sha256: 7fa0bed402e12338f984827b1d2c8de73ea713ad4a468b63d77656aa1bb57146
+  cf_stacks:
+  - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/3b68731de3b8b25dfba5685f6ae5bc428cebbbe2.tar.gz
+  source_sha256: d0a7532a6a7c3cd39caf9924ae510d6b865b53cd36bed7e6a03f6d6d9a09020a
+- name: dotnet-runtime
   version: 2.2.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.2.2.1.linux-amd64-cflinuxfs2-867c2cdb.tar.xz
   sha256: 867c2cdb1ffe26a5fbc0bccb9d066b2aee25eeed64f75594de34caaab8000528
