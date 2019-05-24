@@ -1,3 +1,76 @@
+v2.2.12 May 24, 2019
+=====================
+
+* Add dotnet-sdk 2.2.204
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166040258)
+
+* Update manifest.yml to remove unnecessary dep Updat manifendencies
+	Removes the following dated dependencies
+
+	Remove dotnet-aspnetcore 2.1.7 for stacks cflinuxfs2, cflinuxfs3
+	Remove dotnet-aspnetcore 2.1.8 for stacks cflinuxfs2, cflinuxfs3
+	Remove dotnet-aspnetcore 2.1.9 for stacks cflinuxfs2, cflinuxfs3
+	Remove dotnet-aspnetcore 2.2.2 for stacks cflinuxfs2, cflinuxfs3
+	Remove dotnet-aspnetcore 2.2.3 for stacks cflinuxfs2, cflinuxfs3
+
+
+	Remove dotnet-sdk 1.1.11 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-sdk 1.1.12 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-sdk 2.1.506 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-sdk 2.2.106 for stack(s) cflinuxfs2, cflinuxfs3
+
+
+	Remove dotnet-runtime  1.0.12 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  1.1.11 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.1.7 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.1.8 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.1.9 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.2.1 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.2.2 for stack(s) cflinuxfs2, cflinuxfs3
+	Remove dotnet-runtime  2.2.3 for stack(s) cflinuxfs2, cflinuxfs3
+	(https://www.pivotaltracker.com/story/show/164990982)
+
+* Add dotnet-runtime 2.2.5
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166023300)
+
+* Add dotnet-aspnetcore 2.2.5
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166023300)
+
+* Add dotnet-sdk 2.2.107
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166023300)
+
+* Add dotnet-runtime 1.1.13
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166021837)
+
+* Add dotnet-sdk 1.1.14
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166021837)
+
+* Add dotnet-aspnetcore 2.1.11
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166018701)
+
+* Add dotnet-runtime 2.1.11
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166018701)
+
+* Add dotnet-sdk 2.1.507
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166018701)
+
+* add node 10.x for cflinuxfs2
+  (https://www.pivotaltracker.com/story/show/164990982)
+
+* Remove Node 6.x support
+  (https://www.pivotaltracker.com/story/show/164990982)
+
+* update install_go.sh script to use go 1.12.4
+
 v2.2.11 Apr 30, 2019
 =====================
 
