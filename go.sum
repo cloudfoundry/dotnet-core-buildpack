@@ -6,8 +6,8 @@ github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF0
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/cloudfoundry/libbuildpack v0.0.0-20181224210246-78d931650f60/go.mod h1:KeoPc96Iq+nQVhfgjoVN3tNHT0P2NjGCYzCezJi5OW4=
-github.com/cloudfoundry/libbuildpack v0.0.0-20190605191309-e4dbd4d0503e h1:hORncyXM5D7LQEKdcy0U08bWSTs0Lxpjtll8IH6X+j4=
-github.com/cloudfoundry/libbuildpack v0.0.0-20190605191309-e4dbd4d0503e/go.mod h1:zVEhWdkC6FtLcu3Z6INIBmbTH8JjVRpjlwnDADuQDoQ=
+github.com/cloudfoundry/libbuildpack v0.0.0-20190606141245-8119571fa48b h1:Yh4gKhTRqFGJqQ78kDc8063f0rvCjG8GcTUgyX0f+qk=
+github.com/cloudfoundry/libbuildpack v0.0.0-20190606141245-8119571fa48b/go.mod h1:9dmLtgQ6GrLr2ryO9ioYGpbc5eYL+8JBWtPj0r7HaZY=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a h1:A4wNiqeKqU56ZhtnzJCTyPZ1+cyu8jKtIchQ3TtxHgw=
@@ -59,7 +59,6 @@ github.com/smartystreets/goconvey v0.0.0-20190306220146-200a235640ff h1:86HlEv0y
 github.com/smartystreets/goconvey v0.0.0-20190306220146-200a235640ff/go.mod h1:KSQcGKpxUMHk3nbYzs/tIBAM2iDooCn0BmttHOJEbLs=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
-github.com/termie/go-shutil v0.0.0-20140729215957-bcacb06fecae/go.mod h1:quDq6Se6jlGwiIKia/itDZxqC5rj6/8OdFyMMAwTxCs=
 github.com/tidwall/gjson v1.1.3/go.mod h1:c/nTNbUr0E0OrXEhq1pwa8iEgc2DOt4ZZqAt1HtCkPA=
 github.com/tidwall/gjson v1.2.1 h1:j0efZLrZUvNerEf6xqoi0NjWMK5YlLrR7Guo/dxY174=
 github.com/tidwall/gjson v1.2.1/go.mod h1:c/nTNbUr0E0OrXEhq1pwa8iEgc2DOt4ZZqAt1HtCkPA=
