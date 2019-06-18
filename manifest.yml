@@ -12,6 +12,22 @@ dependency_deprecation_dates:
   name: node
   date: 2021-04-30
   link: https://github.com/nodejs/LTS
+- version_line: '1.0.x'
+  name: dotnet-runtime
+  date: 2019-06-27
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: '1.1.x'
+  name: dotnet-runtime
+  date: 2019-06-27
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: '2.1.x'
+  name: dotnet-runtime
+  date: 2021-08-21
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: '2.2.x'
+  name: dotnet-runtime
+  date: 2019-12-23
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 dependencies:
 - name: bower
   version: 1.8.8
