@@ -7,27 +7,31 @@ default_versions:
   version: 1.8.8
 url_to_dependency_map: []
 dependency_deprecation_dates:
+- version_line: 1.0.x
+  name: dotnet-runtime
+  date: 2019-06-27
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 1.1.x
+  name: dotnet-runtime
+  date: 2019-06-27
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 2.1.x
+  name: dotnet-runtime
+  date: 2021-08-21
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 2.2.x
+  name: dotnet-runtime
+  date: 2019-12-23
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 3.0.x
+  name: dotnet-runtime
+  date: 2019-09-01
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - match: 10\.\d+\.\d+
   version_line: '10'
   name: node
   date: 2021-04-30
   link: https://github.com/nodejs/LTS
-- version_line: '1.0.x'
-  name: dotnet-runtime
-  date: 2019-06-27
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: '1.1.x'
-  name: dotnet-runtime
-  date: 2019-06-27
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: '2.1.x'
-  name: dotnet-runtime
-  date: 2021-08-21
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: '2.2.x'
-  name: dotnet-runtime
-  date: 2019-12-23
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 dependencies:
 - name: bower
   version: 1.8.8
@@ -238,6 +242,22 @@ dependencies:
   - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/e24d27359a61fbcf9349b0024a5492201ae49484.tar.gz
   source_sha256: 02656e78a7c4b2a92566848bf31f84ccfa2ed8bc8f09f9ff31563a7c845c58a7
+- name: dotnet-runtime
+  version: 3.0.0-preview6-27720-01
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.3.0.0-preview6-27720-01.linux-amd64-cflinuxfs2-0d855c43.tar.xz
+  sha256: 0d855c43a8ef1a8b7e51d6a51ffc6ad9c83d4c86afe9ebf2f02cb39d6af94ba7
+  cf_stacks:
+  - cflinuxfs2
+  source: https://github.com/dotnet/cli/archive/99151dfa08364242d93c861568abaf044e134d8c.tar.gz
+  source_sha256: '09c12c43466f7e6ee501c426daa1b27c86f18db6af67b5bd88de375e2823c1e6'
+- name: dotnet-runtime
+  version: 3.0.0-preview6-27720-01
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.3.0.0-preview6-27720-01.linux-amd64-cflinuxfs3-b5f191b9.tar.xz
+  sha256: b5f191b9bdb00cf571ca8803064bb6591844618e3144f2dfec9750b7e1b4f731
+  cf_stacks:
+  - cflinuxfs3
+  source: https://github.com/dotnet/cli/archive/99151dfa08364242d93c861568abaf044e134d8c.tar.gz
+  source_sha256: '09c12c43466f7e6ee501c426daa1b27c86f18db6af67b5bd88de375e2823c1e6'
 - name: dotnet-sdk
   version: 1.1.13
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.1.1.13.linux-amd64-cflinuxfs2-778eebb5.tar.xz
