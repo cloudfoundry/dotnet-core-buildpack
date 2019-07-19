@@ -156,16 +156,16 @@ dependencies:
   source_sha256: 05c12bc3668b9ea40f29a47ee10e80de80ce39ed40612637045202b96163e34a
 - name: dotnet-aspnetcore
   version: 3.0.0-preview6-19265-03
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0-preview6-19265-03.linux-amd64-cflinuxfs2-fa50baa8.tar.xz
-  sha256: fa50baa8d5502274e57b3fcebec9314a1f867ffcd902c3fbea4443496e955639
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0-preview6-19265-03.linux-amd64-cflinuxfs2-9492b224.tar.xz
+  sha256: 9492b224de4a4dd1ab5572df8a156813c47e86130e5d62eeae1d5aefa1bb0739
   cf_stacks:
   - cflinuxfs2
   source: https://github.com/dotnet/cli/archive/99151dfa08364242d93c861568abaf044e134d8c.tar.gz
   source_sha256: '09c12c43466f7e6ee501c426daa1b27c86f18db6af67b5bd88de375e2823c1e6'
 - name: dotnet-aspnetcore
   version: 3.0.0-preview6-19265-03
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0-preview6-19265-03.linux-amd64-cflinuxfs3-00e4a988.tar.xz
-  sha256: 00e4a9885b275781644a88f8706547e0e28a67e0fbf58f825c5920666a13ace7
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0-preview6-19265-03.linux-amd64-cflinuxfs3-0de90c6b.tar.xz
+  sha256: 0de90c6bf717b66252abbc2faf61a924bc3dfb07755bda3d641580f4f5f9e2c6
   cf_stacks:
   - cflinuxfs3
   source: https://github.com/dotnet/cli/archive/99151dfa08364242d93c861568abaf044e134d8c.tar.gz
