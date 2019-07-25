@@ -1,29 +1,73 @@
+# cloud.google.com/go v0.43.0
+cloud.google.com/go/storage
+cloud.google.com/go/iam
+cloud.google.com/go/internal
+cloud.google.com/go/internal/optional
+cloud.google.com/go/internal/trace
+cloud.google.com/go/internal/version
+cloud.google.com/go/compute/metadata
+# code.cloudfoundry.org/bytefmt v0.0.0-20190710193110-1eb035ffe2b6
+code.cloudfoundry.org/bytefmt
 # github.com/Dynatrace/libbuildpack-dynatrace v1.2.1
 github.com/Dynatrace/libbuildpack-dynatrace
 # github.com/Masterminds/semver v1.4.2
 github.com/Masterminds/semver
 # github.com/blang/semver v3.5.1+incompatible
 github.com/blang/semver
-# github.com/cloudfoundry/libbuildpack v0.0.0-20190724153911-afcbb4418ec3
+# github.com/cloudfoundry/libbuildpack v0.0.0-20190708161550-16cf920add31 => /Users/pivotal/workspace/libbuildpack
 github.com/cloudfoundry/libbuildpack
-github.com/cloudfoundry/libbuildpack/bratshelper
 github.com/cloudfoundry/libbuildpack/cutlass
-github.com/cloudfoundry/libbuildpack/ansicleaner
 github.com/cloudfoundry/libbuildpack/packager
+github.com/cloudfoundry/libbuildpack/ansicleaner
+github.com/cloudfoundry/libbuildpack/checksum
+github.com/cloudfoundry/libbuildpack/snapshot
+github.com/cloudfoundry/libbuildpack/bratshelper
 # github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a
 github.com/elazarl/goproxy
+github.com/elazarl/goproxy/transport
+github.com/elazarl/goproxy/ext/html
+github.com/elazarl/goproxy/ext/image
+github.com/elazarl/goproxy/regretable
+github.com/elazarl/goproxy/ext/auth
 # github.com/go-ini/ini v1.42.0
 github.com/go-ini/ini
 # github.com/golang/mock v1.3.1
 github.com/golang/mock/gomock
+github.com/golang/mock/mockgen/model
+github.com/golang/mock/sample/imp1
+github.com/golang/mock/sample/imp2
+github.com/golang/mock/sample/imp3
+github.com/golang/mock/sample/imp4
+github.com/golang/mock/sample
+github.com/golang/mock/sample/mock_user
+github.com/golang/mock/sample/concurrent/mock
+# github.com/golang/protobuf v1.3.2
+github.com/golang/protobuf/proto
+github.com/golang/protobuf/ptypes
+github.com/golang/protobuf/protoc-gen-go/descriptor
+github.com/golang/protobuf/ptypes/any
+github.com/golang/protobuf/ptypes/duration
+github.com/golang/protobuf/ptypes/timestamp
+# github.com/google/subcommands v0.0.0-20181012225330-46f0354f6315
+github.com/google/subcommands
+# github.com/googleapis/gax-go/v2 v2.0.5
+github.com/googleapis/gax-go/v2
+# github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1
+github.com/gopherjs/gopherjs/js
 # github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 github.com/gravityblast/go-jsmin
+# github.com/hashicorp/golang-lru v0.5.1
+github.com/hashicorp/golang-lru/simplelru
 # github.com/hpcloud/tail v1.0.0
 github.com/hpcloud/tail
 github.com/hpcloud/tail/ratelimiter
 github.com/hpcloud/tail/util
 github.com/hpcloud/tail/watch
 github.com/hpcloud/tail/winfile
+# github.com/inconshreveable/go-vhost v0.0.0-20160627193104-06d84117953b
+github.com/inconshreveable/go-vhost
+# github.com/jtolds/gls v4.20.0+incompatible
+github.com/jtolds/gls
 # github.com/kr/text v0.1.0
 github.com/kr/text
 # github.com/onsi/ginkgo v1.8.0
@@ -37,14 +81,21 @@ github.com/onsi/ginkgo/internal/testingtproxy
 github.com/onsi/ginkgo/internal/writer
 github.com/onsi/ginkgo/reporters
 github.com/onsi/ginkgo/reporters/stenographer
-github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/types
+github.com/onsi/ginkgo/ginkgo/convert
+github.com/onsi/ginkgo/ginkgo/interrupthandler
+github.com/onsi/ginkgo/ginkgo/nodot
+github.com/onsi/ginkgo/ginkgo/testrunner
+github.com/onsi/ginkgo/ginkgo/testsuite
+github.com/onsi/ginkgo/ginkgo/watch
+github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
+github.com/onsi/ginkgo/internal/leafnodes
 github.com/onsi/ginkgo/internal/spec_iterator
 github.com/onsi/ginkgo/internal/containernode
-github.com/onsi/ginkgo/internal/leafnodes
 github.com/onsi/ginkgo/internal/spec
 github.com/onsi/ginkgo/internal/specrunner
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
+github.com/onsi/ginkgo/extensions/table
 # github.com/onsi/gomega v1.5.0
 github.com/onsi/gomega
 github.com/onsi/gomega/internal/assertion
@@ -52,6 +103,9 @@ github.com/onsi/gomega/internal/asyncassertion
 github.com/onsi/gomega/internal/testingtsupport
 github.com/onsi/gomega/matchers
 github.com/onsi/gomega/types
+github.com/onsi/gomega/gexec
+github.com/onsi/gomega/gbytes
+github.com/onsi/gomega/ghttp
 github.com/onsi/gomega/internal/oraclematcher
 github.com/onsi/gomega/format
 github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
@@ -60,6 +114,9 @@ github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
+# github.com/rogpeppe/go-charset v0.0.0-20190617161244-0dc95cdf6f31
+github.com/rogpeppe/go-charset/charset
+github.com/rogpeppe/go-charset/data
 # github.com/sclevine/agouti v3.0.0+incompatible
 github.com/sclevine/agouti
 github.com/sclevine/agouti/api
@@ -67,23 +124,105 @@ github.com/sclevine/agouti/internal/element
 github.com/sclevine/agouti/internal/target
 github.com/sclevine/agouti/api/internal/bus
 github.com/sclevine/agouti/api/internal/service
+# github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d
+github.com/smartystreets/assertions
+github.com/smartystreets/assertions/internal/go-render/render
+github.com/smartystreets/assertions/internal/oglematchers
+# github.com/smartystreets/goconvey v0.0.0-20190306220146-200a235640ff
+github.com/smartystreets/goconvey/convey
+github.com/smartystreets/goconvey/convey/reporting
+github.com/smartystreets/goconvey/convey/gotest
 # github.com/tidwall/gjson v1.2.1
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.0.1
 github.com/tidwall/match
 # github.com/tidwall/pretty v0.0.0-20180105212114-65a9db5fad51
 github.com/tidwall/pretty
-# golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6
-golang.org/x/net/html/charset
-golang.org/x/net/html
+# go.opencensus.io v0.22.0
+go.opencensus.io/trace
+go.opencensus.io/plugin/ochttp
+go.opencensus.io/internal
+go.opencensus.io/trace/internal
+go.opencensus.io/trace/tracestate
+go.opencensus.io/plugin/ochttp/propagation/b3
+go.opencensus.io/stats
+go.opencensus.io/stats/view
+go.opencensus.io/tag
+go.opencensus.io/trace/propagation
+go.opencensus.io
+go.opencensus.io/metric/metricdata
+go.opencensus.io/stats/internal
+go.opencensus.io/internal/tagencoding
+go.opencensus.io/metric/metricproducer
+go.opencensus.io/resource
+# go4.org v0.0.0-20190313082347-94abd6928b1d
+go4.org/syncutil/singleflight
+# golang.org/x/build v0.0.0-20190715120730-ebc4ca1cfa7d
+golang.org/x/build/autocertcache
+# golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
+golang.org/x/crypto/acme/autocert
+golang.org/x/crypto/ssh/terminal
+golang.org/x/crypto/acme
+# golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+golang.org/x/net/context
 golang.org/x/net/html/atom
-# golang.org/x/sys v0.0.0-20190425145619-16072639606e
+golang.org/x/net/html
+golang.org/x/net/idna
+golang.org/x/net/http/httpguts
+golang.org/x/net/http2/hpack
+golang.org/x/net/http2
+golang.org/x/net/internal/iana
+golang.org/x/net/internal/socket
+golang.org/x/net/ipv4
+golang.org/x/net/ipv6
+golang.org/x/net/internal/socks
+golang.org/x/net/bpf
+golang.org/x/net/internal/timeseries
+golang.org/x/net/webdav/internal/xml
+golang.org/x/net/dns/dnsmessage
+golang.org/x/net/http/httpproxy
+golang.org/x/net/icmp
+golang.org/x/net/internal/sockstest
+golang.org/x/net/websocket
+golang.org/x/net/html/charset
+golang.org/x/net/nettest
+golang.org/x/net/trace
+golang.org/x/net/context/ctxhttp
+# golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+golang.org/x/oauth2
+golang.org/x/oauth2/google
+golang.org/x/oauth2/internal
+golang.org/x/oauth2/jws
+golang.org/x/oauth2/jwt
+# golang.org/x/sys v0.0.0-20190624142023-c5567b49c5d0
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.1
+golang.org/x/sys/windows
+golang.org/x/sys/windows/svc
+golang.org/x/sys/windows/registry
+golang.org/x/sys/windows/svc/debug
+golang.org/x/sys/windows/svc/eventlog
+golang.org/x/sys/windows/svc/mgr
+golang.org/x/sys/cpu
+golang.org/x/sys/plan9
+# golang.org/x/text v0.3.2
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
 golang.org/x/text/transform
+golang.org/x/text/secure/bidirule
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+golang.org/x/text/internal
+golang.org/x/text/language
+golang.org/x/text/message/pipeline
+golang.org/x/text/message
+golang.org/x/text/message/catalog
+golang.org/x/text/cmd/gotext/examples/extract_http/pkg
+golang.org/x/text/internal/colltab
+golang.org/x/text/collate
+golang.org/x/text/internal/format
+golang.org/x/text/internal/tag
+golang.org/x/text/internal/cldrtree
 golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/encoding/internal
 golang.org/x/text/encoding/japanese
@@ -91,14 +230,114 @@ golang.org/x/text/encoding/korean
 golang.org/x/text/encoding/simplifiedchinese
 golang.org/x/text/encoding/traditionalchinese
 golang.org/x/text/encoding/unicode
-golang.org/x/text/language
 golang.org/x/text/internal/utf8internal
 golang.org/x/text/runes
+golang.org/x/text/internal/catmsg
+golang.org/x/text/internal/number
+golang.org/x/text/internal/gen
+golang.org/x/text/unicode/cldr
+golang.org/x/text/internal/stringset
+golang.org/x/text/feature/plural
+golang.org/x/text/cases
+golang.org/x/text/width
 golang.org/x/text/internal/language
 golang.org/x/text/internal/language/compact
-golang.org/x/text/internal/tag
+golang.org/x/text/internal/testtext
+golang.org/x/text/unicode/rangetable
+golang.org/x/text/collate/build
+golang.org/x/text/currency
+golang.org/x/text/encoding/internal/enctest
+golang.org/x/text/encoding/ianaindex
+golang.org/x/text/internal/export/idna
+golang.org/x/text/internal/ucd
+golang.org/x/text/internal/triegen
+golang.org/x/text/language/display
+golang.org/x/text/number
+golang.org/x/text/unicode/runenames
+# golang.org/x/tools v0.0.0-20190628153133-6cdbf07be9d0
+golang.org/x/tools/go/buildutil
+golang.org/x/tools/go/loader
+golang.org/x/tools/go/callgraph
+golang.org/x/tools/go/callgraph/cha
+golang.org/x/tools/go/ssa
+golang.org/x/tools/go/ssa/ssautil
+golang.org/x/tools/go/ast/astutil
+golang.org/x/tools/go/internal/cgo
+golang.org/x/tools/go/types/typeutil
+golang.org/x/tools/go/packages
+golang.org/x/tools/go/gcexportdata
+golang.org/x/tools/go/internal/packagesdriver
+golang.org/x/tools/internal/gopathwalk
+golang.org/x/tools/internal/semver
+golang.org/x/tools/go/internal/gcimporter
+golang.org/x/tools/internal/fastwalk
+# google.golang.org/api v0.7.0
+google.golang.org/api/googleapi
+google.golang.org/api/iterator
+google.golang.org/api/option
+google.golang.org/api/storage/v1
+google.golang.org/api/transport/http
+google.golang.org/api/googleapi/internal/uritemplates
+google.golang.org/api/internal
+google.golang.org/api/gensupport
+google.golang.org/api/googleapi/transport
+google.golang.org/api/transport/http/internal/propagation
+# google.golang.org/appengine v1.6.1
+google.golang.org/appengine/urlfetch
+google.golang.org/appengine
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/internal/app_identity
+google.golang.org/appengine/internal/modules
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/remote_api
+# google.golang.org/genproto v0.0.0-20190716160619-c506a9f90610
+google.golang.org/genproto/googleapis/iam/v1
+google.golang.org/genproto/googleapis/rpc/code
+google.golang.org/genproto/googleapis/api/annotations
+google.golang.org/genproto/googleapis/type/expr
+google.golang.org/genproto/googleapis/rpc/status
+# google.golang.org/grpc v1.21.1
+google.golang.org/grpc
+google.golang.org/grpc/codes
+google.golang.org/grpc/metadata
+google.golang.org/grpc/status
+google.golang.org/grpc/balancer
+google.golang.org/grpc/balancer/roundrobin
+google.golang.org/grpc/connectivity
+google.golang.org/grpc/credentials
+google.golang.org/grpc/encoding
+google.golang.org/grpc/encoding/proto
+google.golang.org/grpc/grpclog
+google.golang.org/grpc/internal
+google.golang.org/grpc/internal/backoff
+google.golang.org/grpc/internal/balancerload
+google.golang.org/grpc/internal/binarylog
+google.golang.org/grpc/internal/channelz
+google.golang.org/grpc/internal/envconfig
+google.golang.org/grpc/internal/grpcrand
+google.golang.org/grpc/internal/grpcsync
+google.golang.org/grpc/internal/transport
+google.golang.org/grpc/keepalive
+google.golang.org/grpc/naming
+google.golang.org/grpc/peer
+google.golang.org/grpc/resolver
+google.golang.org/grpc/resolver/dns
+google.golang.org/grpc/resolver/passthrough
+google.golang.org/grpc/stats
+google.golang.org/grpc/tap
+google.golang.org/grpc/balancer/base
+google.golang.org/grpc/credentials/internal
+google.golang.org/grpc/binarylog/grpc_binarylog_v1
+google.golang.org/grpc/internal/syscall
 # gopkg.in/fsnotify.v1 v1.4.7
 gopkg.in/fsnotify.v1
+# gopkg.in/ini.v1 v1.42.0
+gopkg.in/ini.v1
+# gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9
+gopkg.in/jarcoal/httpmock.v1
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 gopkg.in/tomb.v1
 # gopkg.in/yaml.v2 v2.2.2

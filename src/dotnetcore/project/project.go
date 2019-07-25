@@ -12,11 +12,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gravityblast/go-jsmin"
-
 	"github.com/blang/semver"
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/go-ini/ini"
+	jsm "github.com/gravityblast/go-jsmin"
+	werrors "github.com/pkg/errors"
 )
 
 type CSProj struct {
@@ -118,6 +118,13 @@ func (p *Project) FindMatchingFrameworkVersion(name, version string, applyPatche
 		}
 	}
 	return version, nil
+}
+
+func (p *Project) FindMatchingFrameworkVersionWithPreview(name, version string, applyPatches *bool) (string, error) {
+	if strings.Contains(version, "preview") {
+		return version, nil
+	}
+	return p.FindMatchingFrameworkVersion(name, version, applyPatches)
 }
 
 func (p *Project) GetVersionFromDepsJSON(library string) (string, error) {
@@ -505,18 +512,18 @@ func (p *Project) getLatestPatch(name, version string) (string, error) {
 		return "", fmt.Errorf("could not find latest patch of %s: version %s not found", name, version)
 	}
 
+	versions := p.manifest.AllDependencyVersions(name)
+
 	if length <= 2 {
 		v = append(v, "x")
 	} else if length == 3 {
 		v[2] = "x"
-	} else {
-		return "", fmt.Errorf("could not find latest patch of %s: could not parse version %s", name, version)
 	}
 
-	versions := p.manifest.AllDependencyVersions(name)
-	latestPatch, err := libbuildpack.FindMatchingVersion(strings.Join(v, "."), versions)
+	latestPatch, err := FindMatchingVersionWithPreview(strings.Join(v, "."), versions)
+
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%s, could not a version of %s: matching %s in manifest", err.Error(), name, version)
 	}
 	return latestPatch, nil
 }
@@ -545,7 +552,7 @@ func (p *Project) fddInstallFrameworksNETCoreApp(frameworkName, frameworkVersion
 }
 
 func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
-	aspNetCoreVersion, err := p.FindMatchingFrameworkVersion("dotnet-aspnetcore", frameworkVersion, applyPatches)
+	aspNetCoreVersion, err := p.FindMatchingFrameworkVersionWithPreview("dotnet-aspnetcore", frameworkVersion, applyPatches)
 	if err != nil {
 		return err
 	}
@@ -557,7 +564,7 @@ func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVers
 		return err
 	}
 
-	aspNetCoreConfigJSON, err := parseRuntimeConfig(filepath.Join(
+	aspNetCorePaths, err := filepath.Glob(filepath.Join(
 		p.depDir,
 		"dotnet-sdk",
 		"shared",
@@ -565,6 +572,12 @@ func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVers
 		aspNetCoreVersion,
 		fmt.Sprintf("%s.runtimeconfig.json", frameworkName),
 	))
+	if err != nil {
+		return err
+	} else if len(aspNetCorePaths) < 1 {
+		return fmt.Errorf("No aspnetcore version found")
+	}
+	aspNetCoreConfigJSON, err := parseRuntimeConfig(aspNetCorePaths[0])
 	if err != nil {
 		return err
 	}
@@ -618,7 +631,8 @@ func sanitizeJsonConfig(runtimeConfigPath string) ([]byte, error) {
 	defer input.Close()
 
 	output := &bytes.Buffer{}
-	if err := jsmin.Min(input, output); err != nil {
+
+	if err := jsm.Min(input, output); err != nil {
 		return nil, err
 	}
 
@@ -634,7 +648,7 @@ func parseRuntimeConfig(runtimeConfigPath string) (ConfigJSON, error) {
 	}
 
 	if err := json.Unmarshal(buf, &obj); err != nil {
-		return obj, err
+		return obj, werrors.Wrap(err, "unable to parse runtime config")
 	}
 
 	return obj, nil
@@ -646,4 +660,16 @@ type libraryMissingError struct {
 
 func (e *libraryMissingError) Error() string {
 	return e.s
+}
+
+func FindMatchingVersionWithPreview(constraint string, versions []string) (string, error) {
+	if ver, err := libbuildpack.FindMatchingVersion(constraint, versions); err != nil {
+		ver, err2 := libbuildpack.FindMatchingVersion("~"+constraint+"-0", versions)
+		if err2 != nil {
+			return "", err
+		}
+		return ver, nil
+	} else {
+		return ver, nil
+	}
 }

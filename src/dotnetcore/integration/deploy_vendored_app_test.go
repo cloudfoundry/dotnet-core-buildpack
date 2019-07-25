@@ -60,4 +60,23 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		AssertNoInternetTraffic(fixture)
 	})
+
+	Context("The app is self contained and a preview version", func() {
+		var fixture string
+		BeforeEach(func() {
+			if os.Getenv("CF_STACK") == "cflinuxfs2" {
+				Skip("Dotnet3 only works on cflinuxfs3")
+			}
+
+			app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_3.0_preview"))
+			app.Disk = "2G"
+		})
+
+		It("displays a simple text homepage", func() {
+			PushAppAndConfirm(app)
+			Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
+		})
+
+		AssertNoInternetTraffic(fixture)
+	})
 })

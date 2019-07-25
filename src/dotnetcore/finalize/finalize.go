@@ -27,6 +27,7 @@ type Project interface {
 	InstallFrameworks() error
 	ProjFilePaths() ([]string, error)
 	MainPath() (string, error)
+	IsFDD() (bool, error)
 }
 
 type Stager interface {
@@ -113,9 +114,9 @@ func (f *Finalizer) CleanStagingArea() error {
 
 	dirsToRemove := []string{"nuget", ".nuget", ".local", ".cache", ".config", ".npm"}
 
-	if startCmd, err := f.Project.StartCommand(); err != nil {
+	if isFDD, err := f.Project.IsFDD(); err != nil {
 		return err
-	} else if !strings.HasSuffix(startCmd, ".dll") {
+	} else if !isFDD {
 		dirsToRemove = append(dirsToRemove, "dotnet-sdk")
 	}
 
@@ -165,7 +166,10 @@ func (f *Finalizer) removeSymlinksTo(dir string) error {
 }
 
 func (f *Finalizer) WriteProfileD() error {
-	scriptContents := "export ASPNETCORE_URLS=http://0.0.0.0:${PORT}\n"
+	scriptContents := fmt.Sprintf(`
+export ASPNETCORE_URLS=http://0.0.0.0:${PORT}
+export DOTNET_ROOT=%s
+`, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
 
 	return f.Stager.WriteProfileD("startup.sh", scriptContents)
 }
@@ -233,7 +237,7 @@ func (f *Finalizer) DotnetPublish() error {
 		return err
 	}
 	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
-	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") {
+	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "3.") {
 		args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
 	}
 	cmd := exec.Command("dotnet", args...)

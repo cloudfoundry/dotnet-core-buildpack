@@ -309,7 +309,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 		return "", err
 	}
 	if buildpackVersion != "" {
-		version, err := libbuildpack.FindMatchingVersion(buildpackVersion, allVersions)
+		version, err := project.FindMatchingVersionWithPreview(buildpackVersion, allVersions)
 		if err != nil {
 			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
 			return "", err
@@ -327,7 +327,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 			return globalJSONVersion, nil
 		}
 		s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
-		installVersion, err := libbuildpack.FindMatchingVersion(majorMinorOnly(globalJSONVersion), allVersions)
+		installVersion, err := project.FindMatchingVersionWithPreview(majorMinorOnly(globalJSONVersion), allVersions)
 		if err == nil {
 			s.Log.Info("falling back to latest version in version line")
 			return installVersion, nil
@@ -388,7 +388,7 @@ func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
 	}
 
 	if buildpackVersion != "" {
-		version, err := libbuildpack.FindMatchingVersion(buildpackVersion, allVersions)
+		version, err := project.FindMatchingVersionWithPreview(buildpackVersion, allVersions)
 		if err != nil {
 			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
 		}
@@ -407,7 +407,7 @@ func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
 		return globalJSONVersion, nil
 	}
 	s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
-	installVersion, err := libbuildpack.FindMatchingVersion(majorMinorOnly(globalJSONVersion), allVersions)
+	installVersion, err := project.FindMatchingVersionWithPreview(majorMinorOnly(globalJSONVersion), allVersions)
 	if err != nil {
 		return "", nil
 	}

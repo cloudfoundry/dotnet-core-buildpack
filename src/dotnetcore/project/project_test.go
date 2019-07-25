@@ -808,3 +808,38 @@ var _ = Describe("Project", func() {
 		})
 	})
 })
+
+var _ = Describe("FindMatchingVersionWithPreview", func() {
+	var versions []string
+	BeforeEach(func() {
+		versions = []string{"1.2.3", "1.2.4", "1.2.2", "1.3.3", "1.3.4-preview1", "1.4.4-preview1", "1.3.2", "2.0.0-preview1", "2.0.0", "3.0.0-preview6-27720-01"}
+	})
+
+	It("returns the prerelease version if a non-prerelease version does not exist", func() {
+		ver, err := project.FindMatchingVersionWithPreview("1.3.4", versions)
+		Expect(err).To(BeNil())
+		Expect(ver).To(Equal("1.3.4-preview1"))
+
+		ver, err = project.FindMatchingVersionWithPreview("1.4.x", versions)
+		Expect(err).To(BeNil())
+		Expect(ver).To(Equal("1.4.4-preview1"))
+	})
+
+	It("returns the latest release over prereleases", func() {
+		ver, err := project.FindMatchingVersionWithPreview("x", versions)
+		Expect(err).To(BeNil())
+		Expect(ver).To(Equal("2.0.0"))
+	})
+
+	It("returns prerelease if explicitly specified", func() {
+		ver, err := project.FindMatchingVersionWithPreview("2.0.0-preview1", versions)
+		Expect(err).To(BeNil())
+		Expect(ver).To(Equal("2.0.0-preview1"))
+	})
+
+	It("returns prerelease if explicitly specified", func() {
+		ver, err := project.FindMatchingVersionWithPreview("3.0.x", versions)
+		Expect(err).To(BeNil())
+		Expect(ver).To(Equal("3.0.0-preview6-27720-01"))
+	})
+})
