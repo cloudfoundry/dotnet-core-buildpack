@@ -114,9 +114,17 @@ func (f *Finalizer) CleanStagingArea() error {
 
 	dirsToRemove := []string{"nuget", ".nuget", ".local", ".cache", ".config", ".npm"}
 
-	if isFDD, err := f.Project.IsFDD(); err != nil {
+	isFDD, err := f.Project.IsFDD()
+	if err != nil {
 		return err
-	} else if !isFDD {
+	}
+
+	startCmd, err := f.Project.StartCommand()
+	if err != nil {
+		return err
+	}
+
+	if !(isFDD || strings.HasSuffix(startCmd, ".dll")) {
 		dirsToRemove = append(dirsToRemove, "dotnet-sdk")
 	}
 
