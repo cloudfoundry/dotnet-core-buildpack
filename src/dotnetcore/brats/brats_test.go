@@ -30,7 +30,16 @@ var _ = Describe("Dotnet buildpack", func() {
 
 		runtime := semver.MustParse(runtimeVersion)
 
-		isCompatible := (sdk.Major == runtime.Major) && (sdk.Minor >= runtime.Minor)
+		isThree := (sdk.Major == 3) || (runtime.Major == 3)
+		hasPreview := isPreview(sdk) || isPreview(runtime)
+		if isThree {
+			// TODO: when we have an official Dotnet3 release we need to test it in brats.
+			It("fails when there is an official release of dotnet 3", func() {
+				Expect(hasPreview).To(BeTrue())
+			})
+		}
+
+		isCompatible := (sdk.Major == runtime.Major) && (sdk.Minor >= runtime.Minor) && !isThree
 
 		return isCompatible
 	}
@@ -83,3 +92,16 @@ var _ = Describe("Dotnet buildpack", func() {
 		)
 	})
 })
+
+func isPreview(version semver.Version) bool {
+	if len(version.Pre) == 0 {
+		return false
+	}
+	for _, pre := range version.Pre {
+		emptyPR := semver.PRVersion{}
+		if pre != emptyPR {
+			return true
+		}
+	}
+	return false
+}
