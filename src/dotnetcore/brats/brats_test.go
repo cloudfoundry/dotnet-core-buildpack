@@ -26,20 +26,13 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
 	compatible := func(sdkVersion, runtimeVersion string) bool {
-		sdk := semver.MustParse(sdkVersion)
+		sdkSemver := semver.MustParse(sdkVersion)
 
-		runtime := semver.MustParse(runtimeVersion)
+		runtimeSemver := semver.MustParse(runtimeVersion)
 
-		isThree := (sdk.Major == 3) || (runtime.Major == 3)
-		hasPreview := isPreview(sdk) || isPreview(runtime)
-		if isThree {
-			// TODO: when we have an official Dotnet3 release we need to test it in brats.
-			It("fails when there is an official release of dotnet 3", func() {
-				Expect(hasPreview).To(BeTrue())
-			})
-		}
+		hasPreview := isPreview(sdkSemver) || isPreview(runtimeSemver)
 
-		isCompatible := (sdk.Major == runtime.Major) && (sdk.Minor >= runtime.Minor) && !isThree
+		isCompatible := (sdkSemver.Major == runtimeSemver.Major) && (sdkSemver.Minor >= runtimeSemver.Minor) && !hasPreview
 
 		return isCompatible
 	}
