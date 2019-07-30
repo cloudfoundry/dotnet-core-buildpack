@@ -1,3 +1,45 @@
+v2.2.13 Jul 30, 2019
+=====================
+
+* Add support for dotnetcore 3 Preview
+  (https://www.pivotaltracker.com/story/show/165612794)
+
+* Remove dotnet-runtime and dotnet-aspnetcore 2.1.10 and 2.2.4 for all stacks.
+
+* Remove dotnet-sdk 2.1.507, 2.2.107, 2.2.203, and 2.2.204 for all stacks.
+
+* Add dotnet-sdk 2.2.301
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167515437)
+
+* Add dotnet-runtime 2.2.6
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167208414)
+
+* Add dotnet-aspnetcore 2.2.6
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167208414)
+
+* Add dotnet-sdk 2.2.205
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167208414)
+
+* Add dotnet-runtime 2.1.12
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167186098)
+
+* Add dotnet-aspnetcore 2.1.12
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167186098)
+
+* Add dotnet-sdk 2.1.508
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167186098)
+
+* Add node 10.16.0, remove node 10.15.2
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/166317034)
+
 v2.2.12 May 24, 2019
 =====================
 
