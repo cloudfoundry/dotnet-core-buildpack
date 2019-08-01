@@ -107,6 +107,21 @@ func (mr *MockProjectMockRecorder) MainPath() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MainPath", reflect.TypeOf((*MockProject)(nil).MainPath))
 }
 
+// IsFDD mocks base method
+func (m *MockProject) IsFDD() (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsFDD")
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsFDD indicates an expected call of IsFDD
+func (mr *MockProjectMockRecorder) IsFDD() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFDD", reflect.TypeOf((*MockProject)(nil).IsFDD))
+}
+
 // MockStager is a mock of Stager interface
 type MockStager struct {
 	ctrl     *gomock.Controller
