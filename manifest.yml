@@ -362,21 +362,21 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/c624c5d6-0e9c-4dd9-9506-6b197ef44dc8/ad61b332f3abcc7dec3a49434e4766e1/dotnet-sdk-3.0.100-preview7-012821-linux-x64.tar.gz
   source_sha256: 0b5a203c5e7ac4c1506f75a5e8e7aaba3c63d2d3b91a7185c41b1c7e6ca8ce9b
 - name: libgdiplus
-  version: '5.6'
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-5.6-cflinuxfs2-4e050bc5.tar.gz
-  sha256: 4e050bc513d6232b0d70f10621a157da6f159b620ee7122bfb570e121e802492
+  version: '6.0'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-6.0-cflinuxfs2-d6551c65.tar.gz
+  sha256: d6551c657f767e087bfc249a20b1c96a1188be627ed577f5c1780bcefa0c9b2a
   cf_stacks:
   - cflinuxfs2
-  source: https://github.com/mono/libgdiplus/archive/f07965ec5fc2b22bfb300d5fef410d25ae472a34.tar.gz
-  source_sha256: 95d9cb65b9dd366ea8379eef8fce2af9f0cb86058fad25304310569080c2a9bf
+  source: https://github.com/mono/libgdiplus/archive/93f43204a94ac75f468c58334ad07726958f4f26.tar.gz
+  source_sha256: a52184c2eae1dcfefaa5652b635ea910cc417569fa89511b817658cb6d4db1f0
 - name: libgdiplus
-  version: '5.6'
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-5.6-cflinuxfs3-68c03f83.tar.gz
-  sha256: 68c03f8314b861f2aef9f3102a486d585258975c6e996a3a4a23ebc0f5c5cbf6
+  version: '6.0'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-6.0-cflinuxfs3-559895ae.tar.gz
+  sha256: 559895aeca55afeb7f06877f1f6e5f66344c6a2c497e0b575f6b9f8880f0118b
   cf_stacks:
   - cflinuxfs3
-  source: https://github.com/mono/libgdiplus/archive/f07965ec5fc2b22bfb300d5fef410d25ae472a34.tar.gz
-  source_sha256: 95d9cb65b9dd366ea8379eef8fce2af9f0cb86058fad25304310569080c2a9bf
+  source: https://github.com/mono/libgdiplus/archive/93f43204a94ac75f468c58334ad07726958f4f26.tar.gz
+  source_sha256: a52184c2eae1dcfefaa5652b635ea910cc417569fa89511b817658cb6d4db1f0
 - name: libunwind
   version: 1.3.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind-1.3.1-cflinuxfs2-2399e09e.tar.gz
