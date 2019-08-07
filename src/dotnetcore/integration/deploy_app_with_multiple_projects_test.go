@@ -5,9 +5,10 @@ import (
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
+	"path/filepath"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"path/filepath"
 )
 
 var _ = Describe("CF Dotnet Buildpack", func() {
@@ -34,6 +35,17 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			PushAppAndConfirm(app)
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello, I'm a string!"))
 			Eventually(app.Stdout.String, 10*time.Second).Should(ContainSubstring("Hello from a secondary project!"))
+		})
+	})
+
+	Context("Deploying a self-contained solution with multiple projects", func() {
+		BeforeEach(func() {
+			fixtureName = "self_contained_solution_2.2"
+		})
+
+		It("can run the app", func() {
+			PushAppAndConfirm(app)
+			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 	})
 })

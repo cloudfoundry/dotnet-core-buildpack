@@ -133,11 +133,22 @@ func (p *Project) GetVersionFromDepsJSON(library string) (string, error) {
 		return "", err
 	}
 
-	if len(depsJSONFiles) == 1 {
-		return p.getVersionFromAssetFile(depsJSONFiles[0], library)
+	if len(depsJSONFiles) == 0 {
+		return "", fmt.Errorf("no *.deps.json files present")
 	}
 
-	return "", fmt.Errorf("multiple or no *.deps.json files present")
+	for _, f := range depsJSONFiles {
+		version, found, err := p.getVersionFromAssetFile(f, library)
+		if err != nil {
+			return "", err
+		}
+
+		if found {
+			return version, nil
+		}
+	}
+
+	return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
 }
 
 func (p *Project) UsesLibrary(library string) (bool, error) {
@@ -384,19 +395,19 @@ func (p *Project) SourceInstallDotnetAspNetCore() error {
 	return nil
 }
 
-func (p *Project) getVersionFromAssetFile(path, library string) (string, error) {
+func (p *Project) getVersionFromAssetFile(path, library string) (string, bool, error) {
 	depsBytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
 
 	var result map[string]interface{}
 	if err = json.Unmarshal(depsBytes, &result); err != nil {
-		return "", err
+		return "", false, err
 	}
 
 	if _, ok := result["libraries"]; !ok {
-		return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
+		return "", false, nil
 	}
 
 	libraries := result["libraries"].(map[string]interface{})
@@ -404,11 +415,11 @@ func (p *Project) getVersionFromAssetFile(path, library string) (string, error) 
 		re := regexp.MustCompile(fmt.Sprintf(`(%s)\/(\d\.\d\.\d)`, library))
 		matchedString := re.FindStringSubmatch(key)
 		if matchedString != nil {
-			return matchedString[2], nil
+			return matchedString[2], true, nil
 		}
 	}
 
-	return "", &libraryMissingError{fmt.Sprintf("could not find library %s", library)}
+	return "", false, nil
 }
 
 func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool) ([]string, error) {

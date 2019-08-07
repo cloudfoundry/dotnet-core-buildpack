@@ -38,13 +38,21 @@ var _ = Describe("Project", func() {
 		Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, dep, version)), 0644)).To(Succeed())
 	}
 
-	createDepsJSON := func(dep, version string, emptyContent bool) {
+	createDepsJSONWithName := func(dep, version string, emptyContent bool, name string) {
+		depsJSONFile := filepath.Join(buildDir, fmt.Sprintf("%s.deps.json", name))
+		var content string
+
 		if emptyContent {
-			Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.deps.json"), []byte(`{ "libraries": {} }`), 0644)).To(Succeed())
+			content = `{ "libraries": {} }`
 		} else {
-			content := `{ "libraries": { "%s/%s": { "name": "Microsoft.NETCore.App", "version": "4.5.6" } } }`
-			Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.deps.json"), []byte(fmt.Sprintf(content, dep, version)), 0644)).To(Succeed())
+			content = fmt.Sprintf(`{ "libraries": { "%s/%s": { "name": "Microsoft.NETCore.App", "version": "4.5.6" } } }`, dep, version)
 		}
+
+		Expect(ioutil.WriteFile(depsJSONFile, []byte(content), 0644)).To(Succeed())
+	}
+
+	createDepsJSON := func(dep, version string, emptyContent bool) {
+		createDepsJSONWithName(dep, version, emptyContent, "test")
 	}
 
 	installRuntimeConfig := func(dep, aspNetCoreVersion, runtimeVersion string) {
@@ -227,7 +235,20 @@ var _ = Describe("Project", func() {
 		Context("when a .deps.json is not present", func() {
 			It("returns an error", func() {
 				_, err := subject.GetVersionFromDepsJSON("Microsoft.AspNetCore.App")
-				Expect(err).Should(MatchError("multiple or no *.deps.json files present"))
+				Expect(err).Should(MatchError("no *.deps.json files present"))
+			})
+		})
+
+		Context("when multiple .deps.json files are present", func() {
+			BeforeEach(func() {
+				createDepsJSON("Some.Dependency", "0.0.1", false)
+				createDepsJSONWithName("Microsoft.AspNetCore.App", "2.1.1", false, "test2")
+			})
+
+			It("looks through each one for the associated version", func() {
+				version, err := subject.GetVersionFromDepsJSON("Microsoft.AspNetCore.App")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(version).To(Equal("2.1.1"))
 			})
 		})
 	})
