@@ -94,7 +94,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			})
 
-			Context("when the sdk is missing", func() {
+			XContext("when the sdk is missing", func() {
+				//TODO: https://www.pivotaltracker.com/story/show/167848284
 				BeforeEach(func() {
 					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", "2.1.500")
 				})

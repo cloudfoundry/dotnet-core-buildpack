@@ -407,6 +407,7 @@ func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
 		return globalJSONVersion, nil
 	}
 	s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
+	// TODO: Reevaluate this logic in light of patch lines? https://docs.microsoft.com/en-us/dotnet/core/versions/
 	installVersion, err := project.FindMatchingVersionWithPreview(majorMinorOnly(globalJSONVersion), allVersions)
 	if err != nil {
 		return "", nil
