@@ -23,11 +23,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("The app is portable", func() {
 		var fixture string
 		BeforeEach(func() {
-			if os.Getenv("CF_STACK") == "cflinuxfs2" {
-				fixture = "fdd_asp_vendored_1.0"
-			} else {
-				fixture = "fdd_asp_vendored_2.1"
-			}
+			SkipUnlessStack("cflinuxfs3")
+			fixture = "fdd_asp_vendored_2.1"
+
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
 			app.Disk = "2G"
 		})
@@ -44,11 +42,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("The app is self contained", func() {
 		var fixture string
 		BeforeEach(func() {
-			if os.Getenv("CF_STACK") == "cflinuxfs2" {
-				fixture = "self_contained_1.0"
-			} else {
-				fixture = "self_contained_2.1"
-			}
+			SkipUnlessStack("cflinuxfs3")
+			fixture = "self_contained_2.1"
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
 			app.Disk = "2G"
 		})

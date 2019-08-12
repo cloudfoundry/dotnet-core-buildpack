@@ -27,25 +27,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Expect(page.Destroy()).To(Succeed())
 	})
 
-	Context("Deploying an angular app using msbuild and dotnet core 1.0", func() {
-		BeforeEach(func() {
-			SkipUnlessStack("cflinuxfs2")
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "angular_msbuild_dotnet_1.0"))
-			app.Disk = "2G"
-			app.Memory = "2G"
-		})
-
-		It("displays a javascript homepage", func() {
-			PushAppAndConfirm(app)
-
-			url, err := app.GetUrl("/")
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(page.Navigate(url)).To(Succeed())
-			Eventually(page.HTML, 30*time.Second).Should(ContainSubstring("My First Angular 2 App"))
-		})
-	})
-
 	Context("Deploying an angular app using msbuild and dotnet core 2.1", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs3")

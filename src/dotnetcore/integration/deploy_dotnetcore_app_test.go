@@ -41,17 +41,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	})
 
 	Context("deploying a source-based app", func() {
-		Context("with dotnet-runtime 1.0", func() {
-			BeforeEach(func() {
-				SkipUnlessStack("cflinuxfs2")
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_web_1.0"))
-			})
-
-			It("displays a simple text homepage", func() {
-				PushAppAndConfirm(app)
-			})
-		})
-
 		Context("with dotnet-runtime 2.2", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_2.2_source"))

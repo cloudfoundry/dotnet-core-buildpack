@@ -1,7 +1,6 @@
 package integration_test
 
 import (
-	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -16,10 +15,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	var createdServices []string
 
 	BeforeEach(func() {
+		SkipUnlessStack("cflinuxfs3")
 		fixture := "self_contained_2.1"
-		if os.Getenv("CF_STACK") == "cflinuxfs2" {
-			fixture = "self_contained_1.0"
-		}
 
 		app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
 		app.SetEnv("BP_DEBUG", "true")
