@@ -3,14 +3,14 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.2.1
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20190805205250-e22ed19132ff
+	github.com/cloudfoundry/libbuildpack v0.0.0-20190827190927-cfe595fe268c
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 	github.com/kr/text v0.1.0
-	github.com/onsi/ginkgo v1.8.0
+	github.com/onsi/ginkgo v1.9.0
 	github.com/onsi/gomega v1.5.0
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/pkg/errors v0.8.1
