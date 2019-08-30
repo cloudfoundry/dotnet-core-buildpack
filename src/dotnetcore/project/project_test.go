@@ -788,8 +788,7 @@ var _ = Describe("Project", func() {
 			It("it will not install old 2.0 version of dotnet-aspnetcore", func() {
 				mockManifest.
 					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").
-					Times(0)
+					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"2.0.0"})
 
 				mockInstaller.
 					EXPECT().
@@ -797,6 +796,7 @@ var _ = Describe("Project", func() {
 					Times(0)
 
 				Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
+
 			})
 		})
 	})

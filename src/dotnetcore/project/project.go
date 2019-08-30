@@ -463,29 +463,31 @@ func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool)
 }
 
 func (p *Project) installAspNetCoreDependency(version string, latestPatch bool) error {
-	semverObj, err := semver.Parse(version)
-	if err != nil {
-		return err
-	}
-
-	if semverObj.Major <= 2 && semverObj.Minor < 1 {
-		if latestPatch {
-			version, err = p.rollForward("dotnet-aspnetcore", version)
-			if err != nil {
-				return err
-			}
-		}
-	}
+	var rollForwardVersion string
+	var err error
 
 	if latestPatch {
-		version, err = p.rollForward("dotnet-aspnetcore", version)
+		rollForwardVersion, err = p.rollForward("dotnet-aspnetcore", version)
 		if err != nil {
 			return err
 		}
 	}
 
+	if rollForwardVersion == "" {
+		return nil
+	}
+
+	semverObj, err := semver.Parse(rollForwardVersion)
+	if err != nil {
+		return err
+	}
+
+	if semverObj.Major <= 2 && semverObj.Minor < 1 {
+		return nil
+	}
+
 	return p.installer.InstallDependency(
-		libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: version},
+		libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: rollForwardVersion},
 		filepath.Join(p.depDir, "dotnet-sdk"),
 	)
 }
