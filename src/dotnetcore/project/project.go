@@ -469,7 +469,12 @@ func (p *Project) installAspNetCoreDependency(version string, latestPatch bool) 
 	}
 
 	if semverObj.Major <= 2 && semverObj.Minor < 1 {
-		return nil
+		if latestPatch {
+			version, err = p.rollForward("dotnet-aspnetcore", version)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	if latestPatch {

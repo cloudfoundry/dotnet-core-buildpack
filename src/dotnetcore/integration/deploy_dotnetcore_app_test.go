@@ -19,6 +19,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		latest21ASPNetVersion, previous21ASPNetVersion   string
 		latest21SDKVersion, previous21SDKVersion         string
 		latest22SDKVersion, previous22SDKVersion         string
+		latest22RuntimeVersion                           string
+		latest22ASPNetVersion                            string
 	)
 
 	BeforeEach(func() {
@@ -33,6 +35,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		latest22SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.2.x", bpDir)
 		previous22SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest22SDKVersion), bpDir)
+
+		latest22RuntimeVersion = GetLatestDepVersion("dotnet-runtime", "2.2.x", bpDir)
+
+		latest22ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", "2.2.x", bpDir)
 	})
 
 	AfterEach(func() {
@@ -208,6 +214,22 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				By("accepts SIGTERM and exits gracefully")
 				Expect(app.Stop()).To(Succeed())
 				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
+			})
+		})
+
+		Context("when the app has Microsoft.AspNetCore.All version 2.0", func() {
+			BeforeEach(func() {
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.0"))
+
+				app.Disk = "2G"
+				app.Memory = "2G"
+			})
+
+			It("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
+				PushAppAndConfirm(app)
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest22RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest22ASPNetVersion)))
+				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
 

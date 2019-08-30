@@ -10,7 +10,7 @@ require (
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 	github.com/kr/text v0.1.0
-	github.com/onsi/ginkgo v1.10.0
+	github.com/onsi/ginkgo v1.10.1
 	github.com/onsi/gomega v1.5.0
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/pkg/errors v0.8.1
