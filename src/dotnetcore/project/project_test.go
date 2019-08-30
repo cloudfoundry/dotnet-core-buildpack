@@ -283,6 +283,20 @@ var _ = Describe("Project", func() {
 				Expect(version).To(Equal("4.5.7"))
 			})
 		})
+
+		Context("when there is no matching minor, but there is a matching major", func() {
+			applyPatches := true
+
+			BeforeEach(func() {
+				mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "4.5.7"})
+			})
+
+			It("Returns the same major.minor version with the highest available patch", func() {
+				version, err := subject.FindMatchingFrameworkVersion("dotnet-runtime", "4.4.1", &applyPatches)
+				Expect(err).To(BeNil())
+				Expect(version).To(Equal("4.5.7"))
+			})
+		})
 	})
 
 	Describe("ProjectFilePaths", func() {

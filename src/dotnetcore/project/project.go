@@ -112,7 +112,7 @@ func (p *Project) StartCommand() (string, error) {
 func (p *Project) FindMatchingFrameworkVersion(name, version string, applyPatches *bool) (string, error) {
 	var err error
 	if applyPatches == nil || *applyPatches {
-		version, err = p.getLatestPatch(name, version)
+		version, err = p.rollForward(name, version)
 		if err != nil {
 			return "", err
 		}
@@ -334,7 +334,7 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 	if runtimeVersion != "" {
 		matches := regexp.MustCompile(`\d\.\d\.\d`).FindStringSubmatch(runtimeVersion)
 		if len(matches) != 1 {
-			runtimeVersion, err = p.getLatestPatch("dotnet-runtime", runtimeVersion)
+			runtimeVersion, err = p.rollForward("dotnet-runtime", runtimeVersion)
 			if err != nil {
 				return err
 			}
@@ -343,7 +343,7 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 		matches := regexp.MustCompile(`netcoreapp(.*)`).FindStringSubmatch(proj.PropertyGroup.TargetFramework)
 		if len(matches) == 2 {
 			runtimeVersionMinor := matches[1]
-			runtimeVersion, err = p.getLatestPatch("dotnet-runtime", runtimeVersionMinor)
+			runtimeVersion, err = p.rollForward("dotnet-runtime", runtimeVersionMinor)
 			if err != nil {
 				return err
 			}
@@ -444,7 +444,7 @@ func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool)
 	versions := map[string]interface{}{}
 	for _, f := range files {
 		if rollForward {
-			version, err := p.getLatestPatch(dependency, f.Name())
+			version, err := p.rollForward(dependency, f.Name())
 			if err != nil {
 				return []string{}, nil
 			}
@@ -473,7 +473,7 @@ func (p *Project) installAspNetCoreDependency(version string, latestPatch bool) 
 	}
 
 	if latestPatch {
-		version, err = p.getLatestPatch("dotnet-aspnetcore", version)
+		version, err = p.rollForward("dotnet-aspnetcore", version)
 		if err != nil {
 			return err
 		}
@@ -516,7 +516,7 @@ func (p *Project) publishedStartCommand(projectPath string) (string, error) {
 	return "", nil
 }
 
-func (p *Project) getLatestPatch(name, version string) (string, error) {
+func (p *Project) rollForward(name, version string) (string, error) {
 	v := strings.Split(version, ".")
 	length := len(v)
 	if length == 0 {
@@ -531,12 +531,21 @@ func (p *Project) getLatestPatch(name, version string) (string, error) {
 		v[2] = "x"
 	}
 
-	latestPatch, err := FindMatchingVersionWithPreview(strings.Join(v, "."), versions)
+	rollForwardVersion, err := FindMatchingVersionWithPreview(strings.Join(v, "."), versions)
+
+	if err == nil {
+		return rollForwardVersion, nil
+	}
+
+	v[1] = "x"
+
+	rollForwardVersion, err = FindMatchingVersionWithPreview(strings.Join(v, "."), versions)
 
 	if err != nil {
 		return "", fmt.Errorf("%s, could not a version of %s: matching %s in manifest", err.Error(), name, version)
 	}
-	return latestPatch, nil
+
+	return rollForwardVersion, nil
 }
 
 func (p *Project) fddInstallFrameworksNETCoreApp(frameworkName, frameworkVersion string, applyPatches *bool) error {
