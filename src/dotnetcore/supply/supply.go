@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/config"
@@ -292,13 +293,37 @@ func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 // Turn a semver string into major.minor.x
 // Will turn a.b.c into a.b.x
 // Will not modify strings that don't match a.b.c
-func majorMinorOnly(version string) string {
+func sdkRollForward(version string, versions []string) (string, error) {
+	var featureLine string
+	var highestPatch string
 	parts := strings.SplitN(version, ".", 3)
 	if len(parts) == 3 {
-		parts[2] = "x" // ignore patch version
-		return strings.Join(parts, ".")
+		featureLine = parts[2][:1]
 	}
-	return version
+
+	for _, v := range versions {
+		versionSplit := strings.SplitN(v, ".", 3)
+		if len(versionSplit) == 3 && versionSplit[2][:1] == featureLine {
+			if highestPatch == "" {
+				highestPatch = versionSplit[2][1:]
+			} else {
+				current, err := strconv.Atoi(highestPatch)
+				comp, err := strconv.Atoi(versionSplit[2][1:])
+				if err != nil {
+					return "", err
+				}
+				if current < comp {
+					highestPatch = versionSplit[2][1:]
+				}
+			}
+		}
+	}
+
+	if highestPatch == "" {
+		return "", fmt.Errorf("could not find sdk in same feature line")
+	}
+
+	return fmt.Sprintf("%s.%s.%s%s", parts[0], parts[1], featureLine, highestPatch), nil
 }
 
 func (s *Supplier) pickVersionToInstall() (string, error) {
@@ -327,7 +352,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 			return globalJSONVersion, nil
 		}
 		s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
-		installVersion, err := project.FindMatchingVersionWithPreview(majorMinorOnly(globalJSONVersion), allVersions)
+		installVersion, err := sdkRollForward(globalJSONVersion, allVersions)
 		if err == nil {
 			s.Log.Info("falling back to latest version in version line")
 			return installVersion, nil
@@ -408,7 +433,7 @@ func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
 	}
 	s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
 	// TODO: Reevaluate this logic in light of patch lines? https://docs.microsoft.com/en-us/dotnet/core/versions/
-	installVersion, err := project.FindMatchingVersionWithPreview(majorMinorOnly(globalJSONVersion), allVersions)
+	installVersion, err := sdkRollForward(globalJSONVersion, allVersions)
 	if err != nil {
 		return "", nil
 	}

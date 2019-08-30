@@ -336,12 +336,12 @@ var _ = Describe("Supply", func() {
 
 				Context("that is missing, but matches existing version lines", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
-						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.1", "1.2.5", "1.2.6", "1.3.7"})
+						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.301"}}`), 0644)).To(Succeed())
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.113", "1.2.303", "1.2.608", "1.3.709"})
 					})
 
-					It("installs the latest of the same version line", func() {
-						dep := libbuildpack.Dependency{Name: "dotnet-sdk", Version: "1.2.6"}
+					It("installs the latest of the same feature line", func() {
+						dep := libbuildpack.Dependency{Name: "dotnet-sdk", Version: "1.2.303"}
 						mockInstaller.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet-sdk"))
 
 						Expect(supplier.InstallDotnetSdk()).To(Succeed())
@@ -423,12 +423,12 @@ var _ = Describe("Supply", func() {
 
 				Context("that is missing, but matches existing version lines", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
-						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.1", "1.2.5", "1.2.6", "1.3.7"})
+						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.301"}}`), 0644)).To(Succeed())
+						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.113", "1.2.303", "1.2.608", "1.3.709"})
 					})
 
-					It("installs the latest of the same version line", func() {
-						dep := libbuildpack.Dependency{Name: "dotnet-sdk", Version: "1.2.6"}
+					It("installs the latest of the same feature line", func() {
+						dep := libbuildpack.Dependency{Name: "dotnet-sdk", Version: "1.2.303"}
 						mockInstaller.EXPECT().InstallDependency(dep, filepath.Join(depsDir, depsIdx, "dotnet-sdk"))
 
 						Expect(supplier.InstallDotnetSdk()).To(Succeed())
