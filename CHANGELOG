@@ -1,3 +1,40 @@
+v2.2.14 Sep 05, 2019
+=====================
+
+* When a .NET Core framework version is unavailable, roll forward to the next minor line (not just the next patch version)
+  (https://www.pivotaltracker.com/story/show/167857066)
+
+* Do not error out when searching for a library in a solution with multiple *deps.json files
+  (https://www.pivotaltracker.com/story/show/166179402)
+
+* Add node 10.16.3, remove node 10.16.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167933824)
+
+* Add dotnet-sdk 2.2.401
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167852392)
+
+* removed 1.0.x and 1.1.x SDKs and Runtimes as they are EOL
+  (https://www.pivotaltracker.com/story/show/167241487)
+
+* Add dotnet-sdk 2.1.801
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167793092)
+
+* Add dotnet-sdk 2.1.605
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167786118)
+
+* Add dotnet-sdk 2.1.701
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167786124)
+
+* Add libgdiplus 6.0, remove libgdiplus 5.6
+  for stack(s) cflinuxfs2, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/167677996)
+
+
 v2.2.13 Jul 30, 2019
 =====================
 
