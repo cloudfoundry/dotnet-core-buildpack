@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"fmt"
+	"github.com/Masterminds/semver"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
@@ -90,13 +91,20 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 
 			Context("when the sdk is missing", func() {
+				var constructedVersion string
+
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", "2.1.500")
+					version, err := semver.NewVersion(latest21SDKVersion)
+					Expect(err).ToNot(HaveOccurred())
+
+					baseFeatureLine := (version.Patch() / 100) * 100
+					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
+					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", constructedVersion)
 				})
 
 				It("Logs a warning about using default SDK", func() {
 					PushAppAndConfirm(app)
-					Expect(app.Stdout.String()).To(ContainSubstring("SDK 2.1.500 in global.json is not available"))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
 					Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
 					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 2.1"))
 				})
