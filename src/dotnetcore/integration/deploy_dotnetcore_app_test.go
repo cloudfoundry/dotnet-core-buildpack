@@ -2,8 +2,9 @@ package integration_test
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -150,7 +151,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_prerender_node"))
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("displays a simple text homepage", func() {
@@ -165,7 +165,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				// app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous21SDKVersion)
 
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using exact runtime", func() {
@@ -179,7 +178,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.1_float_runtime"))
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using latest patch runtime", func() {
@@ -193,7 +191,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_all_2.1"))
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, using the TargetFramework for the runtime version and the latest 2.1 patch of dotnet-aspnetcore", func() {
@@ -209,7 +206,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_app_2.1"))
 
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, installing the correct runtime and aspnetcore versions", func() {
@@ -228,8 +224,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.0"))
 
-				app.Disk = "2G"
-				app.Memory = "2G"
+				app.Disk = "1G"
 			})
 
 			It("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
@@ -243,7 +238,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("with AssemblyName specified", func() {
 			BeforeEach(func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
-				app.Memory = "1G"
 				app.Disk = "2G"
 			})
 
@@ -281,7 +275,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_aspnetcore_2.1"))
 
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, and floats the runtime and aspnetcore versions by default", func() {
@@ -300,7 +293,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_3.0_preview"))
 
 				app.Disk = "2G"
-				app.Memory = "2G"
 			})
 
 			It("publishes and runs, the preview versions of the runtime and aspnetcore", func() {

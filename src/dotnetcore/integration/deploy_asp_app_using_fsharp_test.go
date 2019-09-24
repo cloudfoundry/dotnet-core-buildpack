@@ -21,7 +21,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		BeforeEach(func() {
 			app = cutlass.New(filepath.Join(bpDir, "fixtures", "fsharp_msbuild"))
 			app.Memory = "2G"
-			app.Disk = "2G"
 		})
 
 		It("displays a simple text homepage", func() {
