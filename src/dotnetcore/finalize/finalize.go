@@ -16,9 +16,7 @@ import (
 )
 
 var cfStackToOS = map[string]string{
-	"cflinuxfs2":  "ubuntu.14.04-x64",
-	"cflinuxfs3":  "ubuntu.18.04-x64",
-	"cflinuxfs3m": "ubuntu.18.04-x64",
+	"cflinuxfs3": "ubuntu.18.04-x64",
 }
 
 type Project interface {
