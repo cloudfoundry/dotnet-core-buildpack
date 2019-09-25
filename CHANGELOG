@@ -1,3 +1,57 @@
+v2.2.15 Sep 25, 2019
+=====================
+
+* Prune dotnet dependencies to shrink size of packaged buildpack
+  (https://www.pivotaltracker.com/story/show/168706472)
+
+* Remove cflinuxfs2 dependencies
+  Fixes #214
+  (https://www.pivotaltracker.com/story/show/166710429)
+  (https://www.pivotaltracker.com/story/show/168706472)
+
+
+* Add dotnet-sdk 2.2.402
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468458)
+
+* Add dotnet-sdk 2.1.802
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468456)
+
+* Add dotnet-sdk 2.2.206
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468455)
+
+* Add dotnet-sdk 2.1.606
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468457)
+
+* Add dotnet-runtime 2.2.7
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468454)
+
+* Add dotnet-aspnetcore 2.1.13
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468452)
+
+* Add dotnet-aspnetcore 2.2.7
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468454)
+
+* Add dotnet-runtime 2.1.13
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468452)
+
+* Add dotnet-sdk 2.2.109
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468454)
+
+* Add dotnet-sdk 2.1.509
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/168468452)
+
+
+
 v2.2.14 Sep 05, 2019
 =====================
 
