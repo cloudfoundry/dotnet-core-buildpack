@@ -38,6 +38,14 @@ dependencies:
   source: https://registry.npmjs.org/bower/-/bower-1.8.8.tgz
   source_sha256: 5ae421c71b093475fbe8e074d5336b156842852fc88f9f5a694cfebe583da49e
 - name: dotnet-aspnetcore
+  version: 2.1.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.0.linux-amd64-cflinuxfs3-f8eeca03.tar.xz
+  sha256: f8eeca03da7ab518b65c51a4c0907c13103581eb0bb7c248afc95b810066bf7d
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.microsoft.com/download/9/1/7/917308D9-6C92-4DA5-B4B1-B4A19451E2D2/aspnetcore-runtime-2.1.0-linux-x64.tar.gz/archive/.tar.gz
+  source_sha256: 1f75c6d98cf729f74dfbeb5a36207567912e0e61e9bac0bf0f72046fa7a81d4b
+- name: dotnet-aspnetcore
   version: 2.1.6
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.6.linux-amd64-cflinuxfs3-68f5a6ad.tar.xz
   sha256: 68f5a6ade61e058db93e8ad3fc763c43aa3e83a307e6650008544331e1a8bcf8
