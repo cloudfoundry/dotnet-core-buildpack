@@ -190,6 +190,14 @@ dependencies:
   source: https://github.com/dotnet/cli/archive/71d02fc7fa0590da304249427033298ceea97307.tar.gz
   source_sha256: a03a740a0a178d1973de78cdb286871874e622eb0b3057e8163fa067a94f8511
 - name: dotnet-sdk
+  version: 2.2.202
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.2.202.linux-amd64-cflinuxfs3-403359aa.tar.xz
+  sha256: 403359aa125b79e9072f30a2b454bf0d6a6056b64904f6f3968aee829a416022
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/2cecc1f4-5c77-4a9f-a2fa-8bfcee4d4bf0/4e68e8e0e0aac72711eb34c3a9988e45/dotnet-sdk-2.2.202-linux-x64.tar.gz/archive/.tar.gz
+  source_sha256: 3e3fdf2e6c8053a87f07c16f6e9c55d1be6d28d8273a67cce3207a9f58c14de1
+- name: dotnet-sdk
   version: 2.2.300
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.2.2.300.linux-amd64-cflinuxfs3-2b4858e1.tar.xz
   sha256: 2b4858e1b43a21e5a2cdb381d41f99e5352046340b8f05eeb3b7d412e22940f7
