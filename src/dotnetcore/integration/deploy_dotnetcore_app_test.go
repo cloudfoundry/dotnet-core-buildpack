@@ -61,7 +61,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 		})
 
-		Context("deploying a source-based dotnet 3-preview app", func() {
+		Context("deploying a source-based dotnet 3 app", func() {
 			Context("with dotnet-runtime 3.0", func() {
 				BeforeEach(func() {
 					SkipUnlessStack("cflinuxfs3")
@@ -288,14 +288,14 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 		})
 
-		Context("with Microsoft.AspNetCore.App 3.0-preview", func() {
+		Context("with Microsoft.AspNetCore.App 3.0", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_3.0_preview"))
+				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_3.0"))
 
 				app.Disk = "2G"
 			})
 
-			It("publishes and runs, the preview versions of the runtime and aspnetcore", func() {
+			It("publishes and runs, the 3.0 versions of the runtime and aspnetcore", func() {
 				PushAppAndConfirm(app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", "3.0")))
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", "3.0")))
