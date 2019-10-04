@@ -15,10 +15,6 @@ dependency_deprecation_dates:
   name: dotnet-runtime
   date: 2019-12-23
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: 3.0.x
-  name: dotnet-runtime
-  date: 2019-09-01
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - match: 10\.\d+\.\d+
   version_line: '10'
   name: node
