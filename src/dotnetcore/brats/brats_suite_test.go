@@ -85,7 +85,8 @@ func copyBratsWithRuntime(sdkVersion, runtimeVersion, fixture string) *cutlass.A
 	}
 
 	if runtimeVersion == "" {
-		runtimeVersion = "x"
+		majorVersion := strings.Split(sdkVersion, ".")[0]
+		runtimeVersion = majorVersion + ".x"
 	}
 
 	if strings.Contains(runtimeVersion, "x") {

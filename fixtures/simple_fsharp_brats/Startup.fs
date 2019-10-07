@@ -13,8 +13,6 @@ type Startup() =
         ()
 
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment, log: ILoggerFactory) =
-        log.AddConsole() |> ignore
-
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
         app.Run(fun context -> context.Response.WriteAsync("Hello World!"))
