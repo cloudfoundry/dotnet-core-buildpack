@@ -2,7 +2,6 @@ package integration_test
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/Masterminds/semver"
 
@@ -51,7 +50,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("deploying a source-based app", func() {
 		Context("with dotnet-runtime 2.2", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "simple_2.2_source"))
+				app = cutlass.New(Fixtures("simple_2.2_source"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -65,7 +64,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Context("with dotnet-runtime 3.0", func() {
 				BeforeEach(func() {
 					SkipUnlessStack("cflinuxfs3")
-					app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_3_0_app"))
+					app = cutlass.New(Fixtures("source_3_0_app"))
 				})
 
 				It("displays a simple text homepage", func() {
@@ -79,7 +78,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("with dotnet sdk 2.1 in global json", func() {
 			Context("when the sdk exists", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", latest21SDKVersion)
+					app = ReplaceFileTemplate(Fixtures("source_2.1_global_json_templated"), "global.json", "sdk_version", latest21SDKVersion)
 				})
 
 				It("displays a simple text homepage", func() {
@@ -100,7 +99,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 					baseFeatureLine := (version.Patch() / 100) * 100
 					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_global_json_templated"), "global.json", "sdk_version", constructedVersion)
+					app = ReplaceFileTemplate(Fixtures("source_2.1_global_json_templated"), "global.json", "sdk_version", constructedVersion)
 				})
 
 				It("Logs a warning about using default SDK", func() {
@@ -115,7 +114,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		Context("with buildpack.yml and global.json files", func() {
 			Context("when SDK versions don't match", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "with_buildpack_yml_templated"), "global.json", "sdk_version", previous21SDKVersion)
+					app = ReplaceFileTemplate(Fixtures("with_buildpack_yml_templated"), "global.json", "sdk_version", previous21SDKVersion)
 				})
 
 				It("installs the specific version from buildpack.yml instead of global.json", func() {
@@ -135,7 +134,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			Context("when SDK version from buildpack.yml is not available", func() {
 				BeforeEach(func() {
-					app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "with_buildpack_yml_templated"), "buildpack.yml", "sdk_version", "2.0.0-preview7")
+					app = ReplaceFileTemplate(Fixtures("with_buildpack_yml_templated"), "buildpack.yml", "sdk_version", "2.0.0-preview7")
 				})
 
 				It("fails due to missing SDK", func() {
@@ -149,7 +148,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with node prerendering", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_prerender_node"))
+				app = cutlass.New(Fixtures("source_prerender_node"))
 				app.Disk = "2G"
 			})
 
@@ -161,9 +160,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("when RuntimeFrameworkVersion is explicitly defined in csproj", func() {
 			BeforeEach(func() {
-				app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "source_2.1_explicit_runtime_templated"), "netcoreapp2.csproj", "runtime_version", previous21RuntimeVersion)
-				// app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous21SDKVersion)
-
+				app = ReplaceFileTemplate(Fixtures("source_2.1_explicit_runtime_templated"), "netcoreapp2.csproj", "runtime_version", previous21RuntimeVersion)
 				app.Disk = "2G"
 			})
 
@@ -176,7 +173,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("when RuntimeFrameworkVersion is floated in csproj", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.1_float_runtime"))
+				app = cutlass.New(Fixtures("source_2.1_float_runtime"))
 				app.Disk = "2G"
 			})
 
@@ -189,7 +186,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("when the app has Microsoft.AspNetCore.All version 2.1", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_all_2.1"))
+				app = cutlass.New(Fixtures("source_aspnetcore_all_2.1"))
 				app.Disk = "2G"
 			})
 
@@ -203,7 +200,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("when the app has Microsoft.AspNetCore.App version 2.1", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_app_2.1"))
+				app = cutlass.New(Fixtures("source_aspnetcore_app_2.1"))
 
 				app.Disk = "2G"
 			})
@@ -222,7 +219,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("when the app has Microsoft.AspNetCore.All version 2.0", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.0"))
+				app = cutlass.New(Fixtures("source_2.0"))
 
 				app.Disk = "1G"
 			})
@@ -237,7 +234,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with AssemblyName specified", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "with_dot_in_name"))
+				app = cutlass.New(Fixtures("with_dot_in_name"))
 				app.Disk = "2G"
 			})
 
@@ -248,7 +245,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with libgdiplus", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "uses_libgdiplus"))
+				app = cutlass.New(Fixtures("uses_libgdiplus"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -259,7 +256,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("without libgdiplus", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_aspnetcore_app_2.1"))
+				app = cutlass.New(Fixtures("source_aspnetcore_app_2.1"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -272,7 +269,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	Context("deploying an FDD app", func() {
 		Context("with Microsoft.AspNetCore.App 2.1", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_aspnetcore_2.1"))
+				app = cutlass.New(Fixtures("fdd_aspnetcore_2.1"))
 
 				app.Disk = "2G"
 			})
@@ -290,7 +287,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with Microsoft.AspNetCore.App 3.0", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "fdd_3.0"))
+				app = cutlass.New(Fixtures("fdd_3.0"))
 
 				app.Disk = "2G"
 			})
@@ -304,7 +301,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with Microsoft.AspNetCore.App 2.1 and applyPatches false", func() {
 			BeforeEach(func() {
-				app = ReplaceFileTemplate(filepath.Join(bpDir, "fixtures", "fdd_apply_patches_false_2.1_templated"), "dotnet.runtimeconfig.json", "framework_version", previous21ASPNetVersion)
+				app = ReplaceFileTemplate(Fixtures("fdd_apply_patches_false_2.1_templated"), "dotnet.runtimeconfig.json", "framework_version", previous21ASPNetVersion)
 			})
 
 			It("installs the exact version of dotnet-aspnetcore from the runtimeconfig.json", func() {
@@ -315,7 +312,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with libgdiplus", func() {
 			BeforeEach(func() {
-				app = cutlass.New(filepath.Join(bpDir, "fixtures", "uses_libgdiplus", "bin", "Debug", "netcoreapp2.2", "publish"))
+				app = cutlass.New(Fixtures("uses_libgdiplus", "bin", "Debug", "netcoreapp2.2", "publish"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -327,7 +324,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying a self contained msbuild app with RuntimeIdentfier", func() {
 		BeforeEach(func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_msbuild"))
+			app = cutlass.New(Fixtures("self_contained_msbuild"))
 		})
 
 		It("displays a simple text homepage", func() {
@@ -341,7 +338,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying an app with comments in the runtimeconfig.json", func() {
 		It("should deploy", func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "runtimeconfig_with_comments"))
+			app = cutlass.New(Fixtures("runtimeconfig_with_comments"))
 			PushAppAndConfirm(app)
 		})
 	})

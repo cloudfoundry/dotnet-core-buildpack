@@ -1,8 +1,6 @@
 package integration_test
 
 import (
-	"path/filepath"
-
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
 	. "github.com/onsi/ginkgo"
@@ -19,7 +17,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	BeforeEach(func() {
 		SkipUnlessStack("cflinuxfs3")
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", "nancy_kestrel_msbuild_dotnet2"))
+		app = cutlass.New(Fixtures("nancy_kestrel_msbuild_dotnet2"))
 	})
 
 	It("displays a simple text homepage", func() {

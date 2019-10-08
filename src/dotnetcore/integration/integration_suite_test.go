@@ -23,10 +23,12 @@ import (
 	"testing"
 )
 
-var bpDir string
-var buildpackVersion string
-var packagedBuildpack cutlass.VersionedBuildpackPackage
-var agoutiDriver *agouti.WebDriver
+var (
+	bpDir             string
+	buildpackVersion  string
+	packagedBuildpack cutlass.VersionedBuildpackPackage
+	agoutiDriver      *agouti.WebDriver
+)
 
 func init() {
 	flag.StringVar(&buildpackVersion, "version", "", "version to use (builds if empty)")
@@ -91,6 +93,14 @@ var _ = SynchronizedAfterSuite(func() {
 func TestIntegration(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Integration Suite")
+}
+
+func Fixtures(names ...string) string {
+	root, err := cutlass.FindRoot()
+	Expect(err).NotTo(HaveOccurred())
+
+	names = append([]string{root, "fixtures"}, names...)
+	return filepath.Join(names...)
 }
 
 func PushAppAndConfirm(app *cutlass.App) {
@@ -185,7 +195,7 @@ func AssertUsesProxyDuringStagingIfPresent(fixtureName string) {
 
 			traffic, built, _, err := cutlass.InternetTraffic(
 				bpDir,
-				filepath.Join("fixtures", fixtureName),
+				Fixtures(fixtureName),
 				bpFile,
 				[]string{"HTTP_PROXY=" + proxy.URL, "HTTPS_PROXY=" + proxy.URL},
 			)
@@ -202,26 +212,23 @@ func AssertUsesProxyDuringStagingIfPresent(fixtureName string) {
 	})
 }
 
-func AssertNoInternetTraffic(fixtureName string) {
-	It("has no traffic", func() {
-		SkipUnlessCached()
+func AssertNoInternetTraffic(fixturePath string) {
+	SkipUnlessCached()
 
-		bpFile := filepath.Join(bpDir, buildpackVersion+"tmp")
-		cmd := exec.Command("cp", packagedBuildpack.File, bpFile)
-		err := cmd.Run()
-		Expect(err).To(BeNil())
-		defer os.Remove(bpFile)
+	bpFile := filepath.Join(bpDir, buildpackVersion+"tmp")
+	cmd := exec.Command("cp", packagedBuildpack.File, bpFile)
+	err := cmd.Run()
+	Expect(err).To(BeNil())
+	defer os.Remove(bpFile)
 
-		traffic, _, _, err := cutlass.InternetTraffic(
-			bpDir,
-			filepath.Join("fixtures", fixtureName),
-			bpFile,
-			[]string{},
-		)
-		Expect(err).To(BeNil())
-		// Expect(built).To(BeTrue())
-		Expect(traffic).To(BeEmpty())
-	})
+	traffic, _, _, err := cutlass.InternetTraffic(
+		bpDir,
+		fixturePath,
+		bpFile,
+		[]string{},
+	)
+	Expect(err).To(BeNil())
+	Expect(traffic).To(BeEmpty())
 }
 
 func GetLatestDepVersion(dep, constraint, bpDir string) string {

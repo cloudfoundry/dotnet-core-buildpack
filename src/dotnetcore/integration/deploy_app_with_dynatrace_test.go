@@ -2,7 +2,6 @@ package integration_test
 
 import (
 	"os/exec"
-	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -18,7 +17,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		SkipUnlessStack("cflinuxfs3")
 		fixture := "self_contained_2.1"
 
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
+		app = cutlass.New(Fixtures(fixture))
 		app.SetEnv("BP_DEBUG", "true")
 		PushAppAndConfirm(app)
 

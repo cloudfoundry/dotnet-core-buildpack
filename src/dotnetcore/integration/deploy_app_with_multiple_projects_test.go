@@ -5,8 +5,6 @@ import (
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
-	"path/filepath"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -18,7 +16,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	)
 
 	JustBeforeEach(func() {
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", fixtureName))
+		app = cutlass.New(Fixtures(fixtureName))
 	})
 
 	AfterEach(func() {

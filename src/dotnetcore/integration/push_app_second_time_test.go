@@ -1,8 +1,6 @@
 package integration_test
 
 import (
-	"path/filepath"
-
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
 	. "github.com/onsi/ginkgo"
@@ -20,7 +18,7 @@ var _ = Describe("pushing an app a second time", func() {
 	BeforeEach(func() {
 		SkipUnlessUncached()
 
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", "source_2.1_float_runtime"))
+		app = cutlass.New(Fixtures("source_2.1_float_runtime"))
 		app.SetEnv("BP_DEBUG", "true")
 		app.Buildpacks = []string{"dotnet_core_buildpack"}
 	})

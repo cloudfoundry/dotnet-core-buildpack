@@ -2,7 +2,6 @@ package integration_test
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
@@ -26,7 +25,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			SkipUnlessStack("cflinuxfs3")
 			fixture = "fdd_asp_vendored_2.1"
 
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
+			app = cutlass.New(Fixtures(fixture))
 			app.Disk = "2G"
 		})
 
@@ -36,7 +35,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 
-		AssertNoInternetTraffic(fixture)
+		It("is not connected to the internet", func() {
+			AssertNoInternetTraffic(Fixtures(fixture))
+		})
 	})
 
 	Context("The app is self contained", func() {
@@ -44,7 +45,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		BeforeEach(func() {
 			SkipUnlessStack("cflinuxfs3")
 			fixture = "self_contained_2.1"
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", fixture))
+			app = cutlass.New(Fixtures(fixture))
 			app.Disk = "2G"
 		})
 
@@ -53,7 +54,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 		})
 
-		AssertNoInternetTraffic(fixture)
+		It("is not connected to the internet", func() {
+			AssertNoInternetTraffic(Fixtures(fixture))
+		})
 	})
 
 	Context("The app is self contained and a preview version", func() {
@@ -63,7 +66,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				Skip("Dotnet3 only works on cflinuxfs3")
 			}
 
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "self_contained_3.0_preview"))
+			app = cutlass.New(Fixtures("self_contained_3.0_preview"))
 			app.Disk = "2G"
 		})
 
@@ -72,6 +75,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
 		})
 
-		AssertNoInternetTraffic(fixture)
+		It("is not connected to the internet", func() {
+			AssertNoInternetTraffic(Fixtures(fixture))
+		})
 	})
 })

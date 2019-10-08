@@ -1,8 +1,6 @@
 package integration_test
 
 import (
-	"path/filepath"
-
 	"github.com/cloudfoundry/libbuildpack/cutlass"
 
 	. "github.com/onsi/ginkgo"
@@ -19,7 +17,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 	Context("deploying a simple webapp written in F#", func() {
 		BeforeEach(func() {
-			app = cutlass.New(filepath.Join(bpDir, "fixtures", "fsharp_msbuild"))
+			app = cutlass.New(Fixtures("fsharp_msbuild"))
 			app.Memory = "2G"
 		})
 
