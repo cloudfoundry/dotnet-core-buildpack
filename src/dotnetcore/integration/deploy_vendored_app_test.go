@@ -66,7 +66,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				Skip("Dotnet3 only works on cflinuxfs3")
 			}
 
-			app = cutlass.New(Fixtures("self_contained_3.0_preview"))
+			app = cutlass.New(Fixtures("self_contained_3.0"))
 			app.Disk = "2G"
 		})
 
