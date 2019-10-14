@@ -4,7 +4,7 @@ require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.2.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20191014144034-18173c12ebfb
+	github.com/cloudfoundry/libbuildpack v0.0.0-20191014153054-eb577259e0d3
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.3.1
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
