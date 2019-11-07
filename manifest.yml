@@ -67,8 +67,8 @@ dependencies:
   source_sha256: 0b4a86f13d63418636762a997ecac5acd5ce5a8d59ff28f8a0f3e7a0c701ff4e
 - name: dotnet-aspnetcore
   version: 3.0.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0.linux-amd64-cflinuxfs3-c68adedd.tar.xz
-  sha256: c68adedd2b0e6d23f35bf5235d1faf24f7aa24a2544183aaae48129b46a94726
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.3.0.0.linux-amd64-cflinuxfs3-bc189754.tar.xz
+  sha256: bc189754a9f465d9014d137058990f4b44496ebb1fa9885518043b4ae6566f8a
   cf_stacks:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/b0c44e05-b7a1-4221-94ec-a0c0d3a11eed/afc61567dd6db8f097e244871889458c/aspnetcore-runtime-3.0.0-linux-x64.tar.gz
