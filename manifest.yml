@@ -50,6 +50,14 @@ dependencies:
   source: https://github.com/dotnet/cli/archive/9b0b46aacc95a4e12fa7df23aa2c19dec1dacc03.tar.gz
   source_sha256: ecedcefdf5d8090e83c4f150ea2fa802f5dd92a2c3e1bb23b82a69fe1a9c9f18
 - name: dotnet-aspnetcore
+  version: 2.1.14
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.1.14.linux-amd64-cflinuxfs3-de13672c.tar.xz
+  sha256: de13672c1314905235caaf1e4e78c225394b006ae76b2aa0174e2184a3a91e9f
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/22e9f27e-12cd-4ba9-86ce-113cbe7c55c2/a1097e49b4da2c1949919e752264f691/aspnetcore-runtime-2.1.14-linux-x64.tar.gz
+  source_sha256: e8f1895914c8a7cb619d16600887fe25aab0ec616cd22fef668c0d0b7558d56a
+- name: dotnet-aspnetcore
   version: 2.2.6
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore.2.2.6.linux-amd64-cflinuxfs3-2ad97587.tar.xz
   sha256: 2ad9758716daa89c5a24c3188f23372978543234b95eaee62e6edf56348374be
