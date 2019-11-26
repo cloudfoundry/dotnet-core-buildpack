@@ -1,7 +1,7 @@
 module github.com/cloudfoundry/dotnet-core-buildpack
 
 require (
-	github.com/Dynatrace/libbuildpack-dynatrace v1.2.1
+	github.com/Dynatrace/libbuildpack-dynatrace v1.2.2
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20191107210012-50982838f2a1
@@ -18,6 +18,7 @@ require (
 	golang.org/x/sys v0.0.0-20191120130536-6bfc516c8699 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
+	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
 
 go 1.13
