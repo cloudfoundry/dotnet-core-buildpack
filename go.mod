@@ -18,7 +18,6 @@ require (
 	golang.org/x/sys v0.0.0-20191120130536-6bfc516c8699 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
-	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
 
 go 1.13
