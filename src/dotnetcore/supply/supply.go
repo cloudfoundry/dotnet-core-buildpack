@@ -204,16 +204,12 @@ func (s *Supplier) InstallNode() error {
 			Version: version,
 		}
 
-		if err := s.Installer.InstallDependency(dep, s.Stager.DepDir()); err != nil {
+		nodePath := filepath.Join(s.Stager.DepDir(), "node")
+		if err := s.Installer.InstallDependency(dep, nodePath); err != nil {
 			return err
 		}
 
-		oldfilename := filepath.Join(s.Stager.DepDir(), fmt.Sprintf("node-v%s-linux-x64", version))
-		newfilename := filepath.Join(s.Stager.DepDir(), "node")
-		if err := os.Rename(oldfilename, newfilename); err != nil {
-			return fmt.Errorf("Could not rename '%s' to '%s': %v", oldfilename, newfilename, err)
-		}
-		return s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "node", "bin"), "bin")
+		return s.Stager.LinkDirectoryInDepDir(filepath.Join(nodePath, "bin"), "bin")
 	}
 	return nil
 }

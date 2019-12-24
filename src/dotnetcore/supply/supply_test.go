@@ -78,8 +78,7 @@ var _ = Describe("Supply", func() {
 			Expect(dep.Name).To(Equal("node"))
 			Expect(dep.Version).To(Equal("6.12.0"))
 
-			subDir := fmt.Sprintf("node-v%s-linux-x64", "6.12.0")
-			err := os.MkdirAll(filepath.Join(installDir, subDir, "bin"), 0755)
+			err := os.MkdirAll(filepath.Join(installDir, "bin"), 0755)
 			Expect(err).To(BeNil())
 		}
 	})
