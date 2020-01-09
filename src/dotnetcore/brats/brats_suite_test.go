@@ -13,6 +13,7 @@ import (
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"gopkg.in/yaml.v2"
 
 	"fmt"
 
@@ -144,4 +145,34 @@ func ApiHasStackAssociation() bool {
 	supported, err := cutlass.ApiGreaterThan("2.113.0")
 	Expect(err).NotTo(HaveOccurred())
 	return supported
+}
+
+func RuntimesToSDKs() map[string][]string {
+	bpDir, err := cutlass.FindRoot()
+	if err != nil {
+		panic(err)
+	}
+
+	manifestContents, err := ioutil.ReadFile(filepath.Join(bpDir, "manifest.yml"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(manifestContents))
+
+	var manifest struct {
+		RuntimeToSDKs []struct {
+			RuntimeVersion string   `yaml:"runtime_version"`
+			SDKs           []string `yaml:"sdks"`
+		} `yaml:"runtime_to_sdks"`
+	}
+	err = yaml.Unmarshal(manifestContents, &manifest)
+	if err != nil {
+		panic(err)
+	}
+
+	runtimesToSDKs := map[string][]string{}
+	for _, r := range manifest.RuntimeToSDKs {
+		runtimesToSDKs[r.RuntimeVersion] = r.SDKs
+	}
+	return runtimesToSDKs
 }

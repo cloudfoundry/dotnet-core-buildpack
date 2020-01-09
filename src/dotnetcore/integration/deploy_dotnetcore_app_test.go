@@ -19,9 +19,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		latest21RuntimeVersion, previous21RuntimeVersion string
 		latest21ASPNetVersion, previous21ASPNetVersion   string
 		latest21SDKVersion, previous21SDKVersion         string
-		latest22SDKVersion, previous22SDKVersion         string
-		latest22RuntimeVersion                           string
-		latest22ASPNetVersion                            string
+		latest31SDKVersion, previous31SDKVersion         string
 	)
 
 	BeforeEach(func() {
@@ -34,12 +32,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 		latest21SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.1.x", bpDir)
 		previous21SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest21SDKVersion), bpDir)
 
-		latest22SDKVersion = GetLatestDepVersion("dotnet-sdk", "2.2.x", bpDir)
-		previous22SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest22SDKVersion), bpDir)
-
-		latest22RuntimeVersion = GetLatestDepVersion("dotnet-runtime", "2.2.x", bpDir)
-
-		latest22ASPNetVersion = GetLatestDepVersion("dotnet-aspnetcore", "2.2.x", bpDir)
+		latest31SDKVersion = GetLatestDepVersion("dotnet-sdk", "3.1.x", bpDir)
+		previous31SDKVersion = GetLatestDepVersion("dotnet-sdk", fmt.Sprintf("<%s", latest31SDKVersion), bpDir)
 	})
 
 	AfterEach(func() {
@@ -48,9 +42,9 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	})
 
 	Context("deploying a source-based app", func() {
-		Context("with dotnet-runtime 2.2", func() {
+		Context("with dotnet-runtime 3.1", func() {
 			BeforeEach(func() {
-				app = cutlass.New(Fixtures("simple_2.2_source"))
+				app = cutlass.New(Fixtures("simple_3.1_source"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -118,17 +112,17 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				})
 
 				It("installs the specific version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous22SDKVersion)
+					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", previous31SDKVersion)
 					app.Push()
 
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", previous22SDKVersion)))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", previous31SDKVersion)))
 				})
 
 				It("installs the floated version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", "2.2.x")
+					app = ReplaceFileTemplate(app.Path, "buildpack.yml", "sdk_version", "3.1.x")
 					app.Push()
 
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest22SDKVersion)))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest31SDKVersion)))
 				})
 			})
 
@@ -226,8 +220,8 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 			It("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
 				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest22RuntimeVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest22ASPNetVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest21RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest21ASPNetVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Sample pages using ASP.NET Core MVC"))
 			})
 		})
@@ -245,7 +239,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with libgdiplus", func() {
 			BeforeEach(func() {
-				app = cutlass.New(Fixtures("uses_libgdiplus"))
+				app = cutlass.New(Fixtures("uses_libgdiplus_with_3.1"))
 			})
 
 			It("displays a simple text homepage", func() {
@@ -312,7 +306,7 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 
 		Context("with libgdiplus", func() {
 			BeforeEach(func() {
-				app = cutlass.New(Fixtures("uses_libgdiplus", "bin", "Debug", "netcoreapp2.2", "publish"))
+				app = cutlass.New(Fixtures("uses_libgdiplus_with_3.1", "bin", "Release", "netcoreapp3.1", "linux-x64", "publish"))
 			})
 
 			It("displays a simple text homepage", func() {

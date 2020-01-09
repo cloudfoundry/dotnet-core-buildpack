@@ -26,24 +26,13 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
 	compatible := func(sdkVersion, runtimeVersion string) bool {
-		sdkSemver := semver.MustParse(sdkVersion)
-
-		runtimeSemver := semver.MustParse(runtimeVersion)
-
-		hasPreview := isPreview(sdkSemver) || isPreview(runtimeSemver)
-
-		isCompatible := (sdkSemver.Major == runtimeSemver.Major) && (sdkSemver.Minor >= runtimeSemver.Minor) && !hasPreview
-
-		return isCompatible
-	}
-
-	// Skip 1.0.X versions of the SDK when testing F# apps
-	compatibleWithFSharp := func(sdkVersion, runtimeVersion string) bool {
-		sdk := semver.MustParse(sdkVersion)
-		if sdk.Major <= 1 && sdk.Minor < 1 {
-			return false
+		runtimesToSDKs := RuntimesToSDKs()
+		for _, s := range runtimesToSDKs[runtimeVersion] {
+			if sdkVersion == s {
+				return true
+			}
 		}
-		return compatible(sdkVersion, runtimeVersion)
+		return false
 	}
 
 	ensureAppWorks := func(sdkVersion, runtimeVersion string, app *cutlass.App) {
@@ -78,7 +67,7 @@ var _ = Describe("Dotnet buildpack", func() {
 		bratshelper.ForAllSupportedVersions2(
 			"dotnet-sdk",
 			"dotnet-runtime",
-			compatibleWithFSharp,
+			compatible,
 			"with .NET SDK version: %s and .NET Runtime version: %s",
 			CopyFSharpBratsWithRuntime,
 			ensureAppWorks,
