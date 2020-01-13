@@ -167,8 +167,8 @@ dependencies:
   source_sha256: 43997a3939b6ccdf2f669b50fdb8a4d3205374728c2923ddc2354c65260214f8
 - name: node
   version: 10.18.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-10.18.1-linux-x64-cflinuxfs3-90465e41.tgz
-  sha256: 90465e41f23a4afe23b20a4b6eeeba41db4354be854f2d869b8337eade552a81
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node-10.18.1-linux-x64-cflinuxfs3-ad0376cb.tgz
+  sha256: ad0376cbe4dfc3d6092d0ea9fdc4fd3fcb44c477bd4a2c800ccd48eee95e994d
   cf_stacks:
   - cflinuxfs3
   source: https://nodejs.org/dist/v10.18.1/node-v10.18.1.tar.gz
