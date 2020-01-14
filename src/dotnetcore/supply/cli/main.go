@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+
 	logger := libbuildpack.NewLogger(os.Stdout)
 
 	buildpackDir, err := libbuildpack.GetBuildpackDir()
