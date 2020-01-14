@@ -1,3 +1,97 @@
+v2.3.3 Jan 14, 2020
+====================
+
+* Add node 10.18.1, remove node 10.17.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/170636221)
+  (https://www.pivotaltracker.com/story/show/170349784)
+
+* Remove .NET Core versions 2.2
+  * Update to new strategy for .NET dependency management, with supported mapping of sdk to runtimes
+  (https://www.pivotaltracker.com/story/show/170138062)
+
+* Update node dependency to account for new flat directory structure
+  (https://www.pivotaltracker.com/story/show/170366955)
+
+* Add back dotnet 3.0
+  (https://www.pivotaltracker.com/story/show/169895016)
+
+* Add back 2.2.207 sdk
+  (https://www.pivotaltracker.com/story/show/169895019)
+
+* Add dotnet-runtime 3.1.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/170107823)
+
+* Add dotnet-sdk 3.1.100
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/170107805)
+
+* Add dotnet-aspnetcore 3.1.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/170107817)
+
+
+commit c756cc34e8ea1283e9e87a4fdd7659cbc531a3b4
+Author: Mark DeLillo <mdelillo@pivotal.io>
+Date:   Mon Nov 25 16:30:15 2019 -0500
+
+    Remove older sdk/runtime versions
+
+    * Keeping these in the manifest breaks BRATS, which tries to run every "compatible" combination of sdk/runtime versions. The ones removed are not fully compatible.
+
+    * This means that this removes the guaranteed upgrade path from the previous version of the buildpack
+
+    [#169941441]
+
+
+* Add dotnet-sdk 2.1.607
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895049)
+
+* Add dotnet-sdk 3.0.101
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895021)
+
+* Add dotnet-sdk 2.1.604
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895024)
+
+* Add dotnet-sdk 2.2.207
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895019)
+
+* Add dotnet-runtime 2.1.14
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895020)
+
+* Add dotnet-aspnetcore 2.2.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895023)
+
+* Add dotnet-runtime 3.0.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895016)
+
+* Add dotnet-aspnetcore 3.0.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895018)
+
+* Add dotnet-aspnetcore 2.1.14
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169895017)
+
+* Add dotnet-runtime 2.2.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/169894978)
+
+* Add vendor for go 1.13
+  (https://www.pivotaltracker.com/story/show/169868686)
+
+* Update to go 1.13
+  (https://www.pivotaltracker.com/story/show/169868686)
+
+
 v2.3.2 Oct 31, 2019
 ====================
 
