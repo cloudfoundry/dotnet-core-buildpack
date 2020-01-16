@@ -15,7 +15,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sclevine/agouti v3.0.0+incompatible
 	github.com/smartystreets/goconvey v0.0.0-20190306220146-200a235640ff // indirect
-	golang.org/x/sys v0.0.0-20200107162124-548cf772de50 // indirect
+	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
 	gopkg.in/yaml.v2 v2.2.7
