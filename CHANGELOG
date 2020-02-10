@@ -1,3 +1,14 @@
+v2.3.5 Feb 10, 2020
+====================
+
+* Add node 10.19.0, remove node 10.18.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171120351)
+
+* Merge pull request #220 from rbamberger/develop
+  Update libbuildpack-dynatrace
+
+
 v2.3.4 Jan 23, 2020
 ====================
 
