@@ -1,3 +1,46 @@
+v2.3.6 Feb 25, 2020
+====================
+
+* Deprecate n-2 versions and update compatibility mapping
+  (https://www.pivotaltracker.com/story/show/171339795)
+
+* Add dotnet-sdk 3.1.102
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339804)
+
+* Add dotnet-sdk 3.0.103
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339801)
+
+* Add dotnet-sdk 2.1.804
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339803)
+
+* Add dotnet-runtime 2.1.16
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339799)
+
+* Add dotnet-aspnetcore 2.1.16
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339809)
+
+* Add dotnet-runtime 3.1.2
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339802)
+
+* Add dotnet-runtime 3.0.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339798)
+
+* Add dotnet-aspnetcore 3.0.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339797)
+
+* Add dotnet-aspnetcore 3.1.2
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171339795)
+
+
 v2.3.5 Feb 10, 2020
 ====================
 
