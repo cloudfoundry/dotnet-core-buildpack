@@ -54,21 +54,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 			})
 		})
 
-		Context("deploying a source-based dotnet 3 app", func() {
-			Context("with dotnet-runtime 3.0", func() {
-				BeforeEach(func() {
-					SkipUnlessStack("cflinuxfs3")
-					app = cutlass.New(Fixtures("source_3_0_app"))
-				})
-
-				It("displays a simple text homepage", func() {
-					PushAppAndConfirm(app)
-
-					Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
-				})
-			})
-		})
-
 		Context("with dotnet sdk 2.1 in global json", func() {
 			Context("when the sdk exists", func() {
 				BeforeEach(func() {
@@ -276,20 +261,6 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 				By("accepts SIGTERM and exits gracefully")
 				Expect(app.Stop()).ToNot(HaveOccurred())
 				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
-			})
-		})
-
-		Context("with Microsoft.AspNetCore.App 3.0", func() {
-			BeforeEach(func() {
-				app = cutlass.New(Fixtures("fdd_3.0"))
-
-				app.Disk = "2G"
-			})
-
-			It("publishes and runs, the 3.0 versions of the runtime and aspnetcore", func() {
-				PushAppAndConfirm(app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", "3.0")))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", "3.0")))
 			})
 		})
 
