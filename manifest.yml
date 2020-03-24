@@ -98,6 +98,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/bf08e56f-f5bb-4a11-80e6-f3e663f1d2ae/b589c7600042c20ca48de32bb388f145/dotnet-runtime-2.1.16-linux-x64.tar.gz
   source_sha256: 71c575e2eb1843b5015fba50d19743b605ef446712247c1d725c4d202fbf49e2
 - name: dotnet-runtime
+  version: 2.1.17
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_2.1.17_linux_x64_any-stack_34d99c79.tar.xz
+  sha256: 34d99c794df6aaf55d491f9c9b6faa3e5e94cac9da1f08674af53f1c251d55f3
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c/dotnet-runtime-2.1.17-linux-x64.tar.gz
+  source_sha256: f6e2fa7c920977a989302dcb39967df374b361d795379cbbd492a9e0c8feea3c
+- name: dotnet-runtime
   version: 3.1.1
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime.3.1.1.linux-amd64-any-stack-6cb244ed.tar.xz
   sha256: 6cb244edb9899f3d23d029034b39ad3563ee7bd2147ef27956dc31d58a14c517
