@@ -9,8 +9,8 @@ import (
 
 var _ = Describe("pushing an app a second time", func() {
 	const (
-		DownloadRegexp = `Download \[.*/dotnet-sdk\..*\.tar\.xz\]`
-		CopyRegexp     = `Copy \[.*/dotnet-sdk\..*\.tar\.xz\]`
+		DownloadRegexp = `Download \[.*/dotnet-sdk.*\.tar\.xz\]`
+		CopyRegexp     = `Copy \[.*/dotnet-sdk.*\.tar\.xz\]`
 	)
 
 	var app *cutlass.App
