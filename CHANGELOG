@@ -1,3 +1,31 @@
+v2.3.8 Apr 01, 2020
+====================
+
+* Add libunwind 1.4.0, remove libunwind 1.3.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172085257)
+
+* Update libbuildpack
+
+* Remove unsupported dependency versions
+
+* Add dotnet-sdk 3.1.200, dotnet-sdk 3.1.201, dotnet-sdk 2.1.805
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172004673)
+  (https://www.pivotaltracker.com/story/show/172004456)
+  (https://www.pivotaltracker.com/story/show/171965990)
+
+* Add dotnet-runtime 2.1.17, dotnet-runtime 3.1.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171965994)
+  (https://www.pivotaltracker.com/story/show/171965988)
+
+* Add dotnet-aspnetcore 2.1.17, dotnet-aspnetcore 3.1.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/171965987)
+  (https://www.pivotaltracker.com/story/show/171965989)
+
+
 v2.3.7 Mar 16, 2020
 ====================
 
