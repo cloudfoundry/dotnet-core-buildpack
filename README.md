@@ -96,5 +96,5 @@ Please fill out the issue template fully if you'd like to start an issue for the
 * [ASP.NET Core 1.0.1](https://github.com/aspnet/Home/releases/tag/1.0.1)
 * [Kestrel](https://github.com/aspnet/KestrelHttpServer)
 * [.NET Core Application Deployment](https://docs.microsoft.com/en-us/dotnet/articles/core/deploying/index)
-* [Specify the path](http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#path)
+* [Specify the path](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#-procedure)
 
