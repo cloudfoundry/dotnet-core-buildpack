@@ -1,3 +1,15 @@
+v2.3.9 Apr 13, 2020
+====================
+
+* Add node 10.20.1, remove node 10.20.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172279103)
+
+* Add node 10.20.0, remove node 10.19.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172229352)
+
+
 v2.3.8 Apr 06, 2020
 ====================
 
