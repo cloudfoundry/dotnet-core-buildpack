@@ -1,3 +1,33 @@
+v2.3.10 May 19, 2020
+=====================
+
+* Remove old dotnet versions
+
+* Add dotnet-sdk 2.1.806
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809091)
+
+* Add dotnet-sdk 3.1.202
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809034)
+
+* Add dotnet-aspnetcore 2.1.18
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809033)
+
+* Add dotnet-runtime 2.1.18
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809036)
+
+* Add dotnet-runtime 3.1.4
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809030)
+
+* Add dotnet-aspnetcore 3.1.4
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/172809029)
+
+
 v2.3.9 Apr 13, 2020
 ====================
 
