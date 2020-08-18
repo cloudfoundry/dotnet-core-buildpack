@@ -171,15 +171,15 @@ include_files:
 - bin/supply
 - manifest.yml
 runtime_to_sdks:
-- runtime_version: 2.1.19
-  sdks:
-  - 2.1.807
 - runtime_version: 2.1.20
   sdks:
   - 2.1.808
-- runtime_version: 3.1.5
+- runtime_version: 2.1.21
   sdks:
-  - 3.1.301
+  - 2.1.809
 - runtime_version: 3.1.6
   sdks:
   - 3.1.302
+- runtime_version: 3.1.7
+  sdks:
+  - 3.1.401
