@@ -1,3 +1,36 @@
+v2.3.15 Sep 15, 2020
+=====================
+
+* Removes old dependencies
+  - removes dotnet-aspnetcore 2.1.20 and 3.1.6
+  - removes dotnet-runtime 2.1.20 and 3.1.6
+  - removes dotnet-sdk 2.1.808 and 3.1.302
+
+* Add dotnet-aspnetcore 3.1.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174715151)
+
+* Add dotnet-sdk 2.1.810
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174715031)
+
+* Add dotnet-sdk 3.1.402
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174714862)
+
+* Add dotnet-runtime 3.1.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174714248)
+
+* Add dotnet-runtime 2.1.22
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174714213)
+
+* Add dotnet-aspnetcore 2.1.22
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/174713999)
+
+
 v2.3.14 Aug 18, 2020
 =====================
 
