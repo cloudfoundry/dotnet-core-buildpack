@@ -26,7 +26,7 @@ github.com/golang/mock/gomock
 github.com/gravityblast/go-jsmin
 # github.com/kr/text v0.1.0
 github.com/kr/text
-# github.com/nxadm/tail v1.4.4
+# github.com/nxadm/tail v1.4.5
 github.com/nxadm/tail
 github.com/nxadm/tail/ratelimiter
 github.com/nxadm/tail/util
@@ -86,7 +86,7 @@ github.com/tidwall/pretty
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20200923182605-d9f96fdee20d
+# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
