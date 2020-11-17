@@ -15,8 +15,8 @@ namespace HelloWeb
                 bosh2.StartInfo.FileName = "bosh2";
                 bosh2.StartInfo.Arguments = "--version";
                 bosh2.StartInfo.RedirectStandardOutput = true;
-                bosh2.Start();    
-                
+                bosh2.Start();
+
                 var output = bosh2.StandardOutput.ReadToEnd();
                 bosh2.WaitForExit();
                 return context.Response.WriteAsync("bosh2: " + output);
