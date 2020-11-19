@@ -175,7 +175,7 @@ func (f *Finalizer) WriteProfileD() error {
 	scriptContents := fmt.Sprintf(`
 export ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 export DOTNET_ROOT=%s
-`, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
+`, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet_publish"))
 
 	return f.Stager.WriteProfileD("startup.sh", scriptContents)
 }
@@ -243,7 +243,7 @@ func (f *Finalizer) DotnetPublish() error {
 		return err
 	}
 	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
-	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "3.") {
+	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "3.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "5.") {
 		args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
 	}
 	cmd := exec.Command("dotnet", args...)
