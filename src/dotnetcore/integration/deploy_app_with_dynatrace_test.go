@@ -195,6 +195,10 @@ var _ = Describe("CF Dotnet Buildpack", func() {
 	})
 
 	Context("deploying a .NET Core app with Dynatrace agent with failing agent download and checking retry", func() {
+		BeforeEach(func() {
+			SetDefaultEventuallyTimeout(5 * time.Second)
+		})
+
 		It("checks if retrying downloads works", func() {
 			credentialsServiceName := "dynatrace-" + cutlass.RandStringRunes(20) + "-service"
 			command := exec.Command("cf", "cups", credentialsServiceName, "-p",

@@ -175,7 +175,7 @@ func (f *Finalizer) WriteProfileD() error {
 	scriptContents := fmt.Sprintf(`
 export ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 export DOTNET_ROOT=%s
-`, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet_publish"))
+`, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
 
 	return f.Stager.WriteProfileD("startup.sh", scriptContents)
 }
