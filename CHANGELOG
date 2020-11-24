@@ -1,3 +1,43 @@
+v2.3.19 Nov 24, 2020
+=====================
+
+* Update DOTNET_ROOT value in finalize
+  - Fix integration test timeout
+
+* Fix integration/brats tests for dotnetcore 5.0
+  - Adds compatibility mapping for 5.0 to manifest.yml
+
+* pin fake_supply_dotnet_app dependencies to 1.*
+
+* Add libunwind 1.5, remove libunwind 1.4.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175668222)
+
+* Add dotnet-sdk 5.0.100
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175673257)
+
+* Add dotnet-aspnetcore 5.0.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175673254)
+
+* Add dotnet-runtime 5.0.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175673251)
+
+* Add dotnet-aspnetcore 3.1.10, remove 3.1.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175665883)
+
+* Add dotnet-runtime 3.1.10, remove 3.1.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175664628)
+
+* Add dotnet-sdk 3.1.404, remove 3.1.402
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/175663849)
+
+
 v2.3.18 Nov 03, 2020
 =====================
 
