@@ -26,13 +26,13 @@ dependency_deprecation_dates:
   link: https://github.com/nodejs/Release
 dependencies:
 - name: bower
-  version: 1.8.9
-  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower_1.8.9_linux_noarch_any-stack_23d4f00f.tgz
-  sha256: 23d4f00f4b85f59831d1f8911f544244c2b175c97cc77fc9d4f4a34e9a04f1e9
+  version: 1.8.10
+  uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower_1.8.10_linux_noarch_any-stack_d32679e2.tgz
+  sha256: d32679e2d7ddb53189ca3257ed91f2924728af918c5e1b36a68bf52fb170dcf8
   cf_stacks:
   - cflinuxfs3
-  source: https://registry.npmjs.org/bower/-/bower-1.8.9.tgz
-  source_sha256: 23d4f00f4b85f59831d1f8911f544244c2b175c97cc77fc9d4f4a34e9a04f1e9
+  source: https://registry.npmjs.org/bower/-/bower-1.8.10.tgz
+  source_sha256: d32679e2d7ddb53189ca3257ed91f2924728af918c5e1b36a68bf52fb170dcf8
 - name: dotnet-aspnetcore
   version: 2.1.22
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_2.1.22_linux_x64_any-stack_66e1b0f2.tar.xz
