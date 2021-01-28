@@ -1,3 +1,58 @@
+v2.3.22 Jan 28, 2021
+=====================
+
+* Remove unused versions and update compatibility table
+
+* Update bower default version in manifest
+
+* Add node 10.23.2, remove node 10.23.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176665321)
+
+* Add bower 1.8.12, remove bower 1.8.8
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176541544)
+  (https://www.pivotaltracker.com/story/show/176536857)
+  (https://www.pivotaltracker.com/story/show/176502647)
+  (https://www.pivotaltracker.com/story/show/176501316)
+
+* Add dotnet-runtime 2.1.24, remove dotnet-runtime 2.1.22
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468634)
+
+* Add dotnet-runtime 3.1.11, remove dotnet-runtime 3.1.9
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468351)
+
+* Add dotnet-runtime 5.0.2, remove dotnet-runtime 5.0.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468211)
+
+* Add dotnet-aspnetcore 2.1.24, remove dotnet-aspnetcore 2.1.22
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468301)
+
+* Add dotnet-aspnetcore 3.1.11, remove dotnet-aspnetcore 3.1.9
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468282)
+
+* Add dotnet-aspnetcore 5.0.2, remove dotnet-aspnetcore 5.0.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468230)
+
+* Add dotnet-sdk 2.1.812, remove dotnet-sdk 2.1.810
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468377)
+
+* Add dotnet-sdk 3.1.405, remove dotnet-sdk 3.1.403
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468113)
+
+* Add dotnet-sdk 5.0.102, remove dotnet-sdk 5.0.100
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/176468051)
+
+
 v2.3.21 Jan 11, 2021
 =====================
 
