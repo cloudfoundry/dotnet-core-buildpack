@@ -4,13 +4,13 @@ require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.3.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20210115235441-327a416d9a33
+	github.com/cloudfoundry/libbuildpack v0.0.0-20210202182049-39ed3f6a1634
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.4.4
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 	github.com/kr/text v0.2.0
 	github.com/nxadm/tail v1.4.6 // indirect
-	github.com/onsi/ginkgo v1.14.2
+	github.com/onsi/ginkgo v1.15.0
 	github.com/onsi/gomega v1.10.4
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/pkg/errors v0.9.1
