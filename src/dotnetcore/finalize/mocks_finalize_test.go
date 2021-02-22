@@ -5,65 +5,36 @@
 package finalize_test
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	exec "os/exec"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockProject is a mock of Project interface
+// MockProject is a mock of Project interface.
 type MockProject struct {
 	ctrl     *gomock.Controller
 	recorder *MockProjectMockRecorder
 }
 
-// MockProjectMockRecorder is the mock recorder for MockProject
+// MockProjectMockRecorder is the mock recorder for MockProject.
 type MockProjectMockRecorder struct {
 	mock *MockProject
 }
 
-// NewMockProject creates a new mock instance
+// NewMockProject creates a new mock instance.
 func NewMockProject(ctrl *gomock.Controller) *MockProject {
 	mock := &MockProject{ctrl: ctrl}
 	mock.recorder = &MockProjectMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockProject) EXPECT() *MockProjectMockRecorder {
 	return m.recorder
 }
 
-// IsPublished mocks base method
-func (m *MockProject) IsPublished() (bool, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsPublished")
-	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// IsPublished indicates an expected call of IsPublished
-func (mr *MockProjectMockRecorder) IsPublished() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsPublished", reflect.TypeOf((*MockProject)(nil).IsPublished))
-}
-
-// StartCommand mocks base method
-func (m *MockProject) StartCommand() (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartCommand")
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// StartCommand indicates an expected call of StartCommand
-func (mr *MockProjectMockRecorder) StartCommand() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartCommand", reflect.TypeOf((*MockProject)(nil).StartCommand))
-}
-
-// InstallFrameworks mocks base method
+// InstallFrameworks mocks base method.
 func (m *MockProject) InstallFrameworks() error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "InstallFrameworks")
@@ -71,43 +42,13 @@ func (m *MockProject) InstallFrameworks() error {
 	return ret0
 }
 
-// InstallFrameworks indicates an expected call of InstallFrameworks
+// InstallFrameworks indicates an expected call of InstallFrameworks.
 func (mr *MockProjectMockRecorder) InstallFrameworks() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InstallFrameworks", reflect.TypeOf((*MockProject)(nil).InstallFrameworks))
 }
 
-// ProjFilePaths mocks base method
-func (m *MockProject) ProjFilePaths() ([]string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ProjFilePaths")
-	ret0, _ := ret[0].([]string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ProjFilePaths indicates an expected call of ProjFilePaths
-func (mr *MockProjectMockRecorder) ProjFilePaths() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProjFilePaths", reflect.TypeOf((*MockProject)(nil).ProjFilePaths))
-}
-
-// MainPath mocks base method
-func (m *MockProject) MainPath() (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MainPath")
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// MainPath indicates an expected call of MainPath
-func (mr *MockProjectMockRecorder) MainPath() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MainPath", reflect.TypeOf((*MockProject)(nil).MainPath))
-}
-
-// IsFDD mocks base method
+// IsFDD mocks base method.
 func (m *MockProject) IsFDD() (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsFDD")
@@ -116,36 +57,96 @@ func (m *MockProject) IsFDD() (bool, error) {
 	return ret0, ret1
 }
 
-// IsFDD indicates an expected call of IsFDD
+// IsFDD indicates an expected call of IsFDD.
 func (mr *MockProjectMockRecorder) IsFDD() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsFDD", reflect.TypeOf((*MockProject)(nil).IsFDD))
 }
 
-// MockStager is a mock of Stager interface
+// IsPublished mocks base method.
+func (m *MockProject) IsPublished() (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsPublished")
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IsPublished indicates an expected call of IsPublished.
+func (mr *MockProjectMockRecorder) IsPublished() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsPublished", reflect.TypeOf((*MockProject)(nil).IsPublished))
+}
+
+// MainPath mocks base method.
+func (m *MockProject) MainPath() (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MainPath")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MainPath indicates an expected call of MainPath.
+func (mr *MockProjectMockRecorder) MainPath() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MainPath", reflect.TypeOf((*MockProject)(nil).MainPath))
+}
+
+// ProjFilePaths mocks base method.
+func (m *MockProject) ProjFilePaths() ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ProjFilePaths")
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ProjFilePaths indicates an expected call of ProjFilePaths.
+func (mr *MockProjectMockRecorder) ProjFilePaths() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProjFilePaths", reflect.TypeOf((*MockProject)(nil).ProjFilePaths))
+}
+
+// StartCommand mocks base method.
+func (m *MockProject) StartCommand() (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartCommand")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartCommand indicates an expected call of StartCommand.
+func (mr *MockProjectMockRecorder) StartCommand() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartCommand", reflect.TypeOf((*MockProject)(nil).StartCommand))
+}
+
+// MockStager is a mock of Stager interface.
 type MockStager struct {
 	ctrl     *gomock.Controller
 	recorder *MockStagerMockRecorder
 }
 
-// MockStagerMockRecorder is the mock recorder for MockStager
+// MockStagerMockRecorder is the mock recorder for MockStager.
 type MockStagerMockRecorder struct {
 	mock *MockStager
 }
 
-// NewMockStager creates a new mock instance
+// NewMockStager creates a new mock instance.
 func NewMockStager(ctrl *gomock.Controller) *MockStager {
 	mock := &MockStager{ctrl: ctrl}
 	mock.recorder = &MockStagerMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockStager) EXPECT() *MockStagerMockRecorder {
 	return m.recorder
 }
 
-// BuildDir mocks base method
+// BuildDir mocks base method.
 func (m *MockStager) BuildDir() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "BuildDir")
@@ -153,27 +154,13 @@ func (m *MockStager) BuildDir() string {
 	return ret0
 }
 
-// BuildDir indicates an expected call of BuildDir
+// BuildDir indicates an expected call of BuildDir.
 func (mr *MockStagerMockRecorder) BuildDir() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BuildDir", reflect.TypeOf((*MockStager)(nil).BuildDir))
 }
 
-// DepsIdx mocks base method
-func (m *MockStager) DepsIdx() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DepsIdx")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// DepsIdx indicates an expected call of DepsIdx
-func (mr *MockStagerMockRecorder) DepsIdx() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DepsIdx", reflect.TypeOf((*MockStager)(nil).DepsIdx))
-}
-
-// DepDir mocks base method
+// DepDir mocks base method.
 func (m *MockStager) DepDir() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DepDir")
@@ -181,13 +168,27 @@ func (m *MockStager) DepDir() string {
 	return ret0
 }
 
-// DepDir indicates an expected call of DepDir
+// DepDir indicates an expected call of DepDir.
 func (mr *MockStagerMockRecorder) DepDir() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DepDir", reflect.TypeOf((*MockStager)(nil).DepDir))
 }
 
-// WriteProfileD mocks base method
+// DepsIdx mocks base method.
+func (m *MockStager) DepsIdx() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DepsIdx")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// DepsIdx indicates an expected call of DepsIdx.
+func (mr *MockStagerMockRecorder) DepsIdx() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DepsIdx", reflect.TypeOf((*MockStager)(nil).DepsIdx))
+}
+
+// WriteProfileD mocks base method.
 func (m *MockStager) WriteProfileD(arg0, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WriteProfileD", arg0, arg1)
@@ -195,36 +196,36 @@ func (m *MockStager) WriteProfileD(arg0, arg1 string) error {
 	return ret0
 }
 
-// WriteProfileD indicates an expected call of WriteProfileD
+// WriteProfileD indicates an expected call of WriteProfileD.
 func (mr *MockStagerMockRecorder) WriteProfileD(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteProfileD", reflect.TypeOf((*MockStager)(nil).WriteProfileD), arg0, arg1)
 }
 
-// MockCommand is a mock of Command interface
+// MockCommand is a mock of Command interface.
 type MockCommand struct {
 	ctrl     *gomock.Controller
 	recorder *MockCommandMockRecorder
 }
 
-// MockCommandMockRecorder is the mock recorder for MockCommand
+// MockCommandMockRecorder is the mock recorder for MockCommand.
 type MockCommandMockRecorder struct {
 	mock *MockCommand
 }
 
-// NewMockCommand creates a new mock instance
+// NewMockCommand creates a new mock instance.
 func NewMockCommand(ctrl *gomock.Controller) *MockCommand {
 	mock := &MockCommand{ctrl: ctrl}
 	mock.recorder = &MockCommandMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCommand) EXPECT() *MockCommandMockRecorder {
 	return m.recorder
 }
 
-// Run mocks base method
+// Run mocks base method.
 func (m *MockCommand) Run(arg0 *exec.Cmd) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Run", arg0)
@@ -232,7 +233,7 @@ func (m *MockCommand) Run(arg0 *exec.Cmd) error {
 	return ret0
 }
 
-// Run indicates an expected call of Run
+// Run indicates an expected call of Run.
 func (mr *MockCommandMockRecorder) Run(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockCommand)(nil).Run), arg0)
