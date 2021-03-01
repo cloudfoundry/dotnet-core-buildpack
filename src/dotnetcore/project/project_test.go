@@ -638,6 +638,29 @@ var _ = Describe("Project", func() {
 	})
 
 	Describe("SourceInstallDotnetRuntime", func() {
+		Context("when the runtime version is specified under <TargetFramework> as 'netX.Y'", func() {
+			BeforeEach(func() {
+				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+					[]byte(`
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+</Project>`), 0644)).To(Succeed())
+			})
+
+			It("installs the latest runtime for that minor", func() {
+				mockManifest.
+					EXPECT().
+					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9", "5.0.1", "5.0.2"})
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "5.0.2"}, depsPath)
+
+				Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
+			})
+		})
+
 		Context("when the runtime version is only specified under <TargetFramework> in the csproj", func() {
 			BeforeEach(func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
