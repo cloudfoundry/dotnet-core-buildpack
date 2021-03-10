@@ -1,3 +1,47 @@
+v2.3.25 Mar 10, 2021
+=====================
+
+* Add dotnet-sdk 5.0.201, removes 5.0.102
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274459)
+
+* Add dotnet-sdk 2.1.814, removes 2.1.812
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274465)
+
+* Add dotnet-runtime 5.0.4, removes 5.0.2
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274461)
+
+* Add dotnet-sdk 3.1.407, removes 3.1.405
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274453)
+
+* Add dotnet-runtime 2.1.26, removes 2.1.24
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274458)
+
+* Add dotnet-runtime 3.1.13, removes, 3.1.11
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274462)
+
+* Add dotnet-aspnetcore 2.1.26, removes 2.1.24
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274460)
+
+* Add dotnet-aspnetcore 5.0.4, removes 5.0.2
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274444)
+
+* Add dotnet-aspnetcore 3.1.13, removes 3.1.11
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177274470)
+
+* Add dotnet-sdk 5.0.200
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177211145)
+
+
 v2.3.24 Mar 02, 2021
 =====================
 
