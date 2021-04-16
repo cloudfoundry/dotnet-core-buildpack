@@ -1,3 +1,50 @@
+v2.3.26 Apr 16, 2021
+=====================
+
+* Merge pull request #332 from cloudfoundry/pr-by-releng-bot-1618409631
+  Updating version for dotnet-runtime for 3.1.X
+
+* Add dotnet-aspnetcore 2.1.27
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177761087)
+
+* Add dotnet-aspnetcore 3.1.14
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177761111)
+
+* Add dotnet-sdk 3.1.408
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177761035)
+
+* Add dotnet-runtime 2.1.27
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177761086)
+
+* Add dotnet-runtime 3.1.14
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177761036)
+
+* Add dotnet-sdk 2.1.815
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177760943)
+
+* Add dotnet-sdk 5.0.202
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177655799)
+
+* Add dotnet-aspnetcore 5.0.5
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177655800)
+
+* Add dotnet-runtime 5.0.5
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177655780)
+
+* Add node 10.24.1, remove node 10.24.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177654217)
+
+
 v2.3.25 Mar 10, 2021
 =====================
 
