@@ -1,3 +1,13 @@
+v2.3.27 May 05, 2021
+=====================
+
+* Add node 14.16.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/177654221)
+
+* Update libbuildpack
+
+
 v2.3.26 Apr 16, 2021
 =====================
 
