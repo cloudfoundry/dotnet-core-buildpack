@@ -350,13 +350,13 @@ dependencies:
   source: https://nodejs.org/dist/v10.24.1/node-v10.24.1.tar.gz
   source_sha256: 95c7cfc4b5ad0b5a62bd553b30840db66f21217fbeb769ab27dac8019a4ebe5d
 - name: node
-  version: 14.16.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_14.16.1_linux_x64_cflinuxfs3_e733b241.tgz
-  sha256: e733b24155ff49fb651ea334c1b302c16ea85024192931d840ff958dd196890f
+  version: 14.17.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_14.17.0_linux_x64_cflinuxfs3_2ebd327c.tgz
+  sha256: 2ebd327ccedbe0b4ac45639679abba835145d916a58f48fd4b17db21ed29e75e
   cf_stacks:
   - cflinuxfs3
-  source: https://nodejs.org/dist/v14.16.1/node-v14.16.1.tar.gz
-  source_sha256: 5f5080427abddde7f22fd2ba77cd2b8a1f86253277a1eec54bc98a202728ce80
+  source: https://nodejs.org/dist/v14.17.0/node-v14.17.0.tar.gz
+  source_sha256: 6114e82d3256136dc85a509d835442fbdf2f8430dcd8bfa7c304097344d06fb7
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
