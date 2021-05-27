@@ -15,14 +15,9 @@ dependency_deprecation_dates:
   name: dotnet-runtime
   date: 2022-12-04
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- match: 10\.\d+\.\d+
-  version_line: '10'
+- version_line: 12.x.x
   name: node
-  date: 2021-04-30
-  link: https://github.com/nodejs/LTS
-- version_line: 10.x.x
-  name: node
-  date: 2021-04-01
+  date: 2022-04-01
   link: https://github.com/nodejs/Release
 - version_line: 14.x.x
   name: node
@@ -198,13 +193,13 @@ dependencies:
   source: https://github.com/libunwind/libunwind/releases/download/v1.5/libunwind-1.5.0.tar.gz
   source_sha256: 90337653d92d4a13de590781371c604f9031cdb50520366aa1e3a91e1efb1017
 - name: node
-  version: 10.24.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_10.24.1_linux_x64_cflinuxfs3_80ce1404.tgz
-  sha256: 80ce1404d759d8838741d1e32fad9fac3a3f601dd15b38d27a54c7fd7211710e
+  version: 12.22.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_12.22.1_linux_x64_cflinuxfs3_8e413a41.tgz
+  sha256: 8e413a41da4eb2689cd8c5100ed6ab738c4a04ec3943c012ba6a8dec489e5ce1
   cf_stacks:
   - cflinuxfs3
-  source: https://nodejs.org/dist/v10.24.1/node-v10.24.1.tar.gz
-  source_sha256: 95c7cfc4b5ad0b5a62bd553b30840db66f21217fbeb769ab27dac8019a4ebe5d
+  source: https://nodejs.org/dist/v12.22.1/node-v12.22.1.tar.gz
+  source_sha256: 6023f1f8f03f9780c75e6eca9d372b8411a83757c0389c51baee1c7242afd702
 - name: node
   version: 14.17.0
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_14.17.0_linux_x64_cflinuxfs3_2ebd327c.tgz
