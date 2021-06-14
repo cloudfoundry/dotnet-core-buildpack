@@ -1,3 +1,36 @@
+v2.3.30 Jun 14, 2021
+=====================
+
+* Add dotnet-sdk 5.0.301
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178501990)
+
+* Merge pull request #368 from cloudfoundry/automation/github-config/update
+  Updates github-config
+
+* Merge pull request #357 from cloudfoundry/automation/github-config/update
+  Updates github-config
+
+* Add dotnet-aspnetcore 5.0.7
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178453138)
+
+* Add dotnet-aspnetcore 3.1.16
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178453134)
+
+* Add dotnet-sdk 3.1.410
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178453086)
+
+* Add dotnet-runtime 5.0.7
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178452973)
+
+* Add dotnet-runtime 3.1.16
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178452974)
+
 v2.3.29 Jun 02, 2021
 =====================
 
