@@ -1,3 +1,19 @@
+v2.3.33 Jul 20, 2021
+=====================
+
+* Add dotnet-sdk 3.1.411
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178866015)
+
+* Add dotnet-sdk 5.0.302
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178865826)
+
+* Add dotnet-runtime 3.1.17
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/178865844)
+
+
 v2.3.32 Jul 09, 2021
 =====================
 
