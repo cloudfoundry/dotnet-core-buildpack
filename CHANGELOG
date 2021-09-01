@@ -1,3 +1,65 @@
+v2.34 Sep 01, 2021
+=====================
+
+* Add node 14.17.6, remove node 14.17.5
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179422584)
+
+* Add dotnet-runtime 2.1.30
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179294425)
+
+* Add dotnet-aspnetcore 2.1.30
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179294325)
+
+* Add dotnet-sdk 2.1.818
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179294155)
+
+* Add dotnet-sdk 5.0.400
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179257445)
+
+* Add node 14.17.5, remove node 14.17.4
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179196629)
+
+* Add dotnet-sdk 3.1.412
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179187094)
+
+* Add dotnet-aspnetcore 2.1.29
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186999)
+
+* Add dotnet-runtime 3.1.18
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186832)
+
+* Add dotnet-aspnetcore 5.0.9
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186745)
+
+* Add dotnet-sdk 2.1.817
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186743)
+
+* Add dotnet-aspnetcore 3.1.18
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186742)
+
+* Add dotnet-runtime 2.1.29
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186693)
+
+* Add dotnet-runtime 5.0.9
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179186703)
+
+* bump libbuildpack-dynatrace to v1.4.0 and update integration tests with networkzones
+
+
 v2.3.33 Jul 21, 2021
 =====================
 
