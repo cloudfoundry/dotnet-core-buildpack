@@ -42,10 +42,6 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Dynatrace/libbuildpack-dynatrace v1.3.0 h1:Gr3npoRtYUe4U+4V2vwAW1TiEcFckMHeYlkguVSnnCU=
-github.com/Dynatrace/libbuildpack-dynatrace v1.3.0/go.mod h1:TojYXsxk1r+TaVOTUOWKyX2hAOzbvb+BsQGxUZ8Cb2s=
-github.com/Dynatrace/libbuildpack-dynatrace v1.4.0 h1:4zvEFkyR8rlH+UbH1WQpo74cTFT3DpPsklJiQdGmpNU=
-github.com/Dynatrace/libbuildpack-dynatrace v1.4.0/go.mod h1:TojYXsxk1r+TaVOTUOWKyX2hAOzbvb+BsQGxUZ8Cb2s=
 github.com/Dynatrace/libbuildpack-dynatrace v1.4.1 h1:1IMG4xR/UgfcLxzCA/kRfZ05Tbx4MsHt1MDdkTEk/Ks=
 github.com/Dynatrace/libbuildpack-dynatrace v1.4.1/go.mod h1:TojYXsxk1r+TaVOTUOWKyX2hAOzbvb+BsQGxUZ8Cb2s=
 github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
@@ -136,8 +132,8 @@ github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeME
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
-github.com/go-ini/ini v1.42.0 h1:TWr1wGj35+UiWHlBA8er89seFXxzwFn11spilrrj+38=
-github.com/go-ini/ini v1.42.0/go.mod h1:ByCAeIL28uOIIG0E3PJtZPDL8WnHpFKFOtgjp+3Ies8=
+github.com/go-ini/ini v1.62.1 h1:XBcLl1BShebSJglYzsJtOv56/m9wBSAmd7m5KnA8jo8=
+github.com/go-ini/ini v1.62.1/go.mod h1:ByCAeIL28uOIIG0E3PJtZPDL8WnHpFKFOtgjp+3Ies8=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
 github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V4qmtdjCk=
