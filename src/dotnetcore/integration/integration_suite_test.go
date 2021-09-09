@@ -29,6 +29,7 @@ var (
 	packagedBuildpack cutlass.VersionedBuildpackPackage
 	agoutiDriver      *agouti.WebDriver
 	token             string
+	platform          string
 )
 
 var _ = func() bool {
@@ -42,6 +43,7 @@ func init() {
 	flag.StringVar(&cutlass.DefaultMemory, "memory", "256M", "default memory for pushed apps")
 	flag.StringVar(&cutlass.DefaultDisk, "disk", "512M", "default disk for pushed apps")
 	flag.StringVar(&token, "github-token", "", "use the token to make GitHub API requests")
+	flag.StringVar(&platform, "platform", "cf", "platform to run tests against")
 	flag.Parse()
 }
 
