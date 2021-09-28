@@ -13,8 +13,9 @@ import (
 
 func testMultipleProjects(t *testing.T, context spec.G, it spec.S) {
 	var (
-		Expect = NewWithT(t).Expect
-		app    *cutlass.App
+		Expect     = NewWithT(t).Expect
+		Eventually = NewWithT(t).Eventually
+		app        *cutlass.App
 	)
 
 	it.Before(func() {
