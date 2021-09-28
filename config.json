@@ -4,7 +4,7 @@
     "linux"
   ],
   "integration": {
-    "harness": "ginkgo",
+    "harness": "gotest",
     "matrix": [
       { "cached": false, "parallel": true },
       { "cached": true, "parallel": true }

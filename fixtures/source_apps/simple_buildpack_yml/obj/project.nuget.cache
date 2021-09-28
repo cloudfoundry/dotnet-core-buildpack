@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "yQCJDTNlaXMj0ECG8w7r3nHvej2i3FIs0Wb4clcVpLPQp/TmX82whlWWNK7urJIi8eKkMyjAVHssIU4sCTH9+w==",
+  "success": true,
+  "projectFilePath": "/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/source_apps/simple_source/simple_3.1_source.csproj",
+  "expectedPackageFiles": [
+    "/home/ubuntu/.nuget/packages/microsoft.netcore.app.ref/3.1.0/microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "/home/ubuntu/.nuget/packages/microsoft.aspnetcore.app.ref/3.1.10/microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "/home/ubuntu/.nuget/packages/microsoft.netcore.app.host.linux-x64/3.1.17/microsoft.netcore.app.host.linux-x64.3.1.17.nupkg.sha512"
+  ],
+  "logs": []
+}

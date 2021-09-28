@@ -1,12 +1,16 @@
 # code.cloudfoundry.org/lager v2.0.0+incompatible
 code.cloudfoundry.org/lager
 # github.com/Dynatrace/libbuildpack-dynatrace v1.4.1
+## explicit
 github.com/Dynatrace/libbuildpack-dynatrace
 # github.com/Masterminds/semver v1.5.0
+## explicit
 github.com/Masterminds/semver
 # github.com/blang/semver v3.5.1+incompatible
+## explicit
 github.com/blang/semver
 # github.com/cloudfoundry/libbuildpack v0.0.0-20210716155446-6d504feed848
+## explicit
 github.com/cloudfoundry/libbuildpack
 github.com/cloudfoundry/libbuildpack/ansicleaner
 github.com/cloudfoundry/libbuildpack/bratshelper
@@ -19,12 +23,16 @@ github.com/elazarl/goproxy
 # github.com/fsnotify/fsnotify v1.4.9
 github.com/fsnotify/fsnotify
 # github.com/go-ini/ini v1.42.0
+## explicit
 github.com/go-ini/ini
 # github.com/golang/mock v1.6.0
+## explicit
 github.com/golang/mock/gomock
 # github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
+## explicit
 github.com/gravityblast/go-jsmin
 # github.com/kr/text v0.2.0
+## explicit
 github.com/kr/text
 # github.com/nxadm/tail v1.4.8
 github.com/nxadm/tail
@@ -33,6 +41,7 @@ github.com/nxadm/tail/util
 github.com/nxadm/tail/watch
 github.com/nxadm/tail/winfile
 # github.com/onsi/ginkgo v1.16.4
+## explicit
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
 github.com/onsi/ginkgo/formatter
@@ -54,6 +63,7 @@ github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
 # github.com/onsi/gomega v1.14.0
+## explicit
 github.com/onsi/gomega
 github.com/onsi/gomega/format
 github.com/onsi/gomega/internal/assertion
@@ -69,15 +79,23 @@ github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
 # github.com/paketo-buildpacks/packit v0.14.1
 github.com/paketo-buildpacks/packit/pexec
+# github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a
+## explicit
 # github.com/pkg/errors v0.9.1
+## explicit
 github.com/pkg/errors
 # github.com/sclevine/agouti v3.0.0+incompatible
+## explicit
 github.com/sclevine/agouti
 github.com/sclevine/agouti/api
 github.com/sclevine/agouti/api/internal/bus
 github.com/sclevine/agouti/api/internal/service
 github.com/sclevine/agouti/internal/element
 github.com/sclevine/agouti/internal/target
+# github.com/sclevine/spec v1.4.0
+## explicit
+github.com/sclevine/spec
+github.com/sclevine/spec/report
 # github.com/tidwall/gjson v1.7.5
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.0.3
@@ -89,6 +107,7 @@ golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
 # golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
+## explicit
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.6
@@ -109,7 +128,10 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
+# gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9
+## explicit
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 gopkg.in/tomb.v1
 # gopkg.in/yaml.v2 v2.4.0
+## explicit
 gopkg.in/yaml.v2

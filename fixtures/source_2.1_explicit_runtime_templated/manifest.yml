@@ -1,5 +1,0 @@
----
-applications:
-- name: netcoreapp2
-  env:
-    DOTNET_CLI_TELEMETRY_OPTOUT: 1
