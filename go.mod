@@ -1,5 +1,7 @@
 module github.com/cloudfoundry/dotnet-core-buildpack
 
+go 1.16
+
 require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.4.1
 	github.com/Masterminds/semver v1.5.0
@@ -14,9 +16,8 @@ require (
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sclevine/agouti v3.0.0+incompatible
+	github.com/sclevine/spec v1.4.0
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
-
-go 1.13

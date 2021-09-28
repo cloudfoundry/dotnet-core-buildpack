@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>simple_3._1_source</RootNamespace>
+  </PropertyGroup>
+
+</Project>

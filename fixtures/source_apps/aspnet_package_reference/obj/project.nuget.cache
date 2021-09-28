@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "dgSpecHash": "oHOdijVI6ngYfQ32h96+EXTdJj+M4Offe1VupOEFgd3VN5kzMYE5BTgl8o5sx6rXV/sjwbaY9kRzUV2shTFKog==",
+  "success": true,
+  "projectFilePath": "/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/source_apps/aspnet_package_reference2/aspnet_package_reference2.csproj",
+  "expectedPackageFiles": [],
+  "logs": []
+}

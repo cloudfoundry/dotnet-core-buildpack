@@ -1,9 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "/Users/pivotal/.dotnet/store/|arch|/|tfm|",
-      "/Users/pivotal/.nuget/packages",
-      "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-    ]
-  }
-}

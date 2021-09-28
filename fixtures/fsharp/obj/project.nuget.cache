@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "K0KflW2IutQ0uBC/Fw3Sv4CrROegfSBoY//f22lDFUQTmJdnO0KWj6tl6XbeOFeqr5f2xWj8S+pqqizByO1cEQ==",
+  "success": true,
+  "projectFilePath": "/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fsharp/fsharp.fsproj",
+  "expectedPackageFiles": [
+    "/home/ubuntu/.nuget/packages/fsharp.core/5.0.0/fsharp.core.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

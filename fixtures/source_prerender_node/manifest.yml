@@ -1,9 +1,0 @@
----
-  applications:
-    - name: asp_prerender_node
-      disk_quota: 2G
-      timeout: 120
-      env:
-        DOTNET_CLI_TELEMETRY_OPTOUT: 1
-        CACHE_NUGET_PACKAGES: false
-        INSTALL_NODE: true

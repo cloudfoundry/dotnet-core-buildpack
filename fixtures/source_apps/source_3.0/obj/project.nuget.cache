@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "dgSpecHash": "Oz5QTumgBIEyBKtvYKnYlOrLmCFoearWefeCt6+GB1kmGYqNycln6pH9B3ndVbkzjgME3b8rfmYeb2oZxMitLw==",
+  "success": true,
+  "projectFilePath": "/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/source_3.0/source_3.0.csproj",
+  "expectedPackageFiles": [],
+  "logs": []
+}

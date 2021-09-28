@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "dgSpecHash": "1D1EqU3eLQSDHe3nFIo3Bj/UZ90yimrRU4my4CagKEPCKrBZrA/0GjfdYO+1uFQgh6/NsKZntqYGU9pDMnTq3w==",
+  "success": true,
+  "projectFilePath": "/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/default/templated_explicit_runtime/templated_explicit_runtime.csproj",
+  "expectedPackageFiles": [],
+  "logs": []
+}
