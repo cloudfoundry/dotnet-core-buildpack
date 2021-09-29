@@ -65,11 +65,6 @@ func Run(f *Finalizer) error {
 			return err
 		}
 
-		if err := f.DotnetRestore(); err != nil {
-			f.Log.Error("Unable to run dotnet restore: %s", err.Error())
-			return err
-		}
-
 		if err := f.Project.SourceInstallDotnetAspNetCore(); err != nil {
 			f.Log.Error("Unable to install dotnet-aspnetcore: %s", err.Error())
 			return err
@@ -193,32 +188,6 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 	return map[string]map[string]string{
 		"default_process_types": {"web": fmt.Sprintf("cd %s && exec %s --server.urls http://0.0.0.0:${PORT}", directory, startCmd)},
 	}, nil
-}
-
-func (f *Finalizer) DotnetRestore() error {
-	if !strings.HasPrefix(f.Config.DotnetSdkVersion, "1.") {
-		return nil
-	}
-
-	f.Log.BeginStep("Restore dotnet dependencies")
-
-	paths, err := f.Project.ProjectFilePaths()
-	if err != nil {
-		return err
-	}
-
-	for _, path := range paths {
-		cmd := exec.Command("dotnet", "restore", path)
-		cmd.Dir = f.Stager.BuildDir()
-		cmd.Env = f.shellEnvironment()
-		cmd.Stdout = indentWriter(os.Stdout)
-		cmd.Stderr = indentWriter(os.Stderr)
-		if err := f.Command.Run(cmd); err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func (f *Finalizer) DotnetPublish() error {

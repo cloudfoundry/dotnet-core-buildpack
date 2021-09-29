@@ -89,41 +89,6 @@ var _ = Describe("Finalize", func() {
 		})
 	})
 
-	Describe("DotnetRestore", func() {
-		Context("The project is already published", func() {
-			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
-			})
-			It("Does not run dotnet restore", func() {
-				Expect(finalizer.DotnetRestore()).To(Succeed())
-			})
-		})
-		Context("The project is NOT already published", func() {
-			BeforeEach(func() {
-				for _, name := range []string{
-					"dir/second.csproj",
-					"a/b/first.vbproj",
-					"b/c/first.fsproj",
-				} {
-					Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
-				}
-
-			})
-
-			It("Runs dotnet publish when the SDK is 1.X", func() {
-				finalizer.Config.DotnetSdkVersion = "1.0.0"
-				mockCommand.EXPECT().Run(gomock.Any()).Times(3).Return(nil)
-				Expect(finalizer.DotnetRestore()).To(Succeed())
-			})
-
-			It("Does not run dotnet publish when SDK is 2.X", func() {
-				finalizer.Config.DotnetSdkVersion = "2.0.0"
-				Expect(finalizer.DotnetRestore()).To(Succeed())
-			})
-		})
-	})
-
 	Describe("CleanStagingArea", func() {
 		Context(`The .nuget directory exists with a symlink to it`, func() {
 			BeforeEach(func() {
