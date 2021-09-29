@@ -212,9 +212,7 @@ func (f *Finalizer) DotnetPublish() error {
 		return err
 	}
 	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
-	if strings.HasPrefix(f.Config.DotnetSdkVersion, "2.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "3.") || strings.HasPrefix(f.Config.DotnetSdkVersion, "5.") {
-		args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
-	}
+	args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
 	cmd := exec.Command("dotnet", args...)
 	cmd.Dir = f.Stager.BuildDir()
 	cmd.Env = env
