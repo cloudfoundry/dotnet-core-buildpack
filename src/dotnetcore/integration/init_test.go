@@ -88,7 +88,6 @@ func TestIntegration(t *testing.T) {
 	Expect(err).NotTo(HaveOccurred())
 
 	suite := spec.New("integration", spec.Report(report.Terminal{}), spec.Parallel())
-	suite("Cache", testCache)
 	suite("Default", testDefault)
 	suite("Dynatrace", testDynatrace)
 	suite("Fsharp", testFsharp)
