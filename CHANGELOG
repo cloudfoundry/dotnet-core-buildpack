@@ -1,3 +1,73 @@
+v2.3.35 Sep 30, 2021
+=====================
+* remove old version lines from manifest
+
+* Rename vendored test to offline test for clarity
+
+* Remove unused branch for now-deprecated .NET 1.x SDK.
+
+* Remove cache test from running in cutless.Cached scenario
+
+* Remove .NET 1.x restore functionality.
+  - We previously dropped support for .NET 1.x so this branch is never executed.
+
+* Rebuild node 14.18.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179736417)
+
+* add eventually to multiple_projects_test
+
+* Update brats version line to 3.1
+
+* Remove dotnet 2.1.X line
+  - Resolves https://github.com/cloudfoundry/dotnet-core-buildpack/issues/404
+
+* Update fixtures to .NET Core 3.1 and use spec in tests
+  - Resolves #432
+  - All fixtures have been reorganized and ported over to .NET Core 3.1
+  - All tests have been ported over to use `spec` instead of `ginkgo`
+  - Adds platform field to integration suite
+  - Adds all README files, with placeholders for apps we're unsure about
+  - Some fixtures and their corresponding tests have been removed because
+  they are no longer relevant or are redundant:
+  * nancy_kestrel_msbuild_dotnet2 (removed, Nancy is no longer maintained)
+  * runtimeconfig_with_comments (removed)
+  * self_contained_3.0 (removed)
+  * simple_2.2_source (replaced with a 3.0 source app)
+  * source_2.1_float_runtime (removed)
+  * source_prerender_node (removed, feature is deprecated in .NET Core
+  3.1)
+
+* Add node 14.18.0, remove node 14.17.6
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179736417)
+
+* Add dotnet-sdk 5.0.401
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179583092)
+
+* Add dotnet-runtime 3.1.19
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179583090)
+
+* Add dotnet-aspnetcore 3.1.19
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179582958)
+
+* Add dotnet-aspnetcore 5.0.10
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179582939)
+
+* Add dotnet-sdk 3.1.413
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179582855)
+
+* Add dotnet-runtime 5.0.10
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179582725)
+
+* Adds platform flag for integration suite
+
 v2.34 Sep 01, 2021
 =====================
 
