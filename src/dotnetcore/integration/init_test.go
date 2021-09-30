@@ -97,7 +97,7 @@ func TestIntegration(t *testing.T) {
 	suite("Supply", testSupply)
 
 	if cutlass.Cached {
-		suite("Vendored", testVendored)
+		suite("Offline", testOffline)
 	} else {
 		suite("Cache", testCache)
 	}

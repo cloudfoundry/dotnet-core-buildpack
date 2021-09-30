@@ -12,7 +12,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func testVendored(t *testing.T, context spec.G, it spec.S) {
+func testOffline(t *testing.T, context spec.G, it spec.S) {
 	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "simple"))
 	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
 }
