@@ -111,6 +111,8 @@ func TestIntegration(t *testing.T) {
 }
 
 func PushAppAndConfirm(t *testing.T, app *cutlass.App) {
+	t.Helper()
+
 	var (
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
@@ -122,12 +124,16 @@ func PushAppAndConfirm(t *testing.T, app *cutlass.App) {
 }
 
 func DestroyApp(t *testing.T, app *cutlass.App) *cutlass.App {
+	t.Helper()
+
 	var Expect = NewWithT(t).Expect
 	Expect(app.Destroy()).To(Succeed())
 	return nil
 }
 
 func GetLatestDepVersion(t *testing.T, dep, constraint, bpDir string) string {
+	t.Helper()
+
 	var Expect = NewWithT(t).Expect
 
 	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
@@ -140,6 +146,8 @@ func GetLatestDepVersion(t *testing.T, dep, constraint, bpDir string) string {
 }
 
 func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replaceVal string) *cutlass.App {
+	t.Helper()
+
 	var Expect = NewWithT(t).Expect
 
 	dir, err := cutlass.CopyFixture(pathToFixture)
