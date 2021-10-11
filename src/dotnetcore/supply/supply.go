@@ -316,7 +316,7 @@ func sdkRollForward(version string, versions []string) (string, error) {
 	}
 
 	if highestPatch == "" {
-		return "", fmt.Errorf("could not find sdk in same feature line")
+		return "", fmt.Errorf("could not find sdk in same feature line as '%s'", version)
 	}
 
 	return fmt.Sprintf("%s.%s.%s%s", parts[0], parts[1], featureLine, highestPatch), nil
@@ -353,6 +353,7 @@ func (s *Supplier) pickVersionToInstall() (string, error) {
 			s.Log.Info("falling back to latest version in version line")
 			return installVersion, nil
 		}
+		return "", err
 	}
 
 	dep, err := s.Manifest.DefaultVersion("dotnet-sdk")
@@ -400,41 +401,6 @@ func (s *Supplier) installRuntimeIfNeeded() error {
 		return s.Installer.InstallDependency(libbuildpack.Dependency{Name: name, Version: runtimeVersion}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk"))
 	}
 	return nil
-}
-
-func (s *Supplier) suppliedVersion(allVersions []string) (string, error) {
-	buildpackVersion, err := s.buildpackYamlSdkVersion()
-	if err != nil {
-		return "", err
-	}
-
-	if buildpackVersion != "" {
-		version, err := project.FindMatchingVersionWithPreview(buildpackVersion, allVersions)
-		if err != nil {
-			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
-		}
-		return version, err
-	}
-
-	globalJSONVersion, err := s.globalJsonSdkVersion()
-	if err != nil {
-		return "", err
-	}
-	if globalJSONVersion == "" {
-		return "", nil
-	}
-
-	if contains(allVersions, globalJSONVersion) {
-		return globalJSONVersion, nil
-	}
-	s.Log.Warning("SDK %s in global.json is not available", globalJSONVersion)
-	// TODO: Reevaluate this logic in light of patch lines? https://docs.microsoft.com/en-us/dotnet/core/versions/
-	installVersion, err := sdkRollForward(globalJSONVersion, allVersions)
-	if err != nil {
-		return "", nil
-	}
-	s.Log.Info("falling back to latest version in version line")
-	return installVersion, nil
 }
 
 func (s *Supplier) buildpackYamlSdkVersion() (string, error) {
