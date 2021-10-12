@@ -6,7 +6,7 @@ require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.4.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20210726164432-80929621d448
+	github.com/cloudfoundry/libbuildpack v0.0.0-20211012151659-ed6fb71f47bf
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.6.0
