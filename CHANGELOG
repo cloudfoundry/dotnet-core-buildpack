@@ -1,3 +1,39 @@
+v2.3.36 Oct 19, 2021
+=====================
+
+* Add dotnet-runtime 5.0.11
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179911594)
+
+* Add dotnet-runtime 3.1.20
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179911278)
+
+* Add dotnet-sdk 5.0.402
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179911143)
+
+* Add dotnet-aspnetcore 3.1.20
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179911158)
+
+* Add dotnet-aspnetcore 5.0.11
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179911083)
+
+* Add dotnet-sdk 3.1.414
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179910730)
+
+* Add node 14.18.1, remove node 14.18.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/179907722)
+
+* Propagates errors from global.json SDK install
+  Instead of ignoring the error and installing the default SDK, returns the error and stops staging. If the global.json is present, but
+  does not contain an SDK version, the existing behavior is maintained (uses default SDK).
+
+
 v2.3.35 Sep 30, 2021
 =====================
 * remove old version lines from manifest
