@@ -72,6 +72,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/ac2cec9e-f5ab-44db-8fa9-aba5e5cf7378/956dac1b6510675a0ae8705918e22df7/aspnetcore-runtime-5.0.11-linux-x64.tar.gz
   source_sha256: e8afced6086cf8806ac286467957d4a600807821875d46c6075f8f6b32735179
+- name: dotnet-aspnetcore
+  version: 5.0.12
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_5.0.12_linux_x64_any-stack_636dee9a.tar.xz
+  sha256: 636dee9ad0513748152e181b353d9c64e27cb203d5dc45d43ff05d7fb8b6f753
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/ad0a54ca-4b88-4762-a790-aebeaba6b9e7/0f796fb90696d078046d90d8a05c027e/aspnetcore-runtime-5.0.12-linux-x64.tar.gz
+  source_sha256: ea97d8c86178c3d29fafc485013267ac3801cdd275ac7653b3b95d087ff5e530
 - name: dotnet-runtime
   version: 3.1.18
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.18_linux_x64_any-stack_fb39d01d.tar.xz
