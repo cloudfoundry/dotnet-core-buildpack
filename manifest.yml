@@ -169,13 +169,13 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/6788a5a5-1879-4095-948d-72c7fbdf350f/c996151548ec9f24d553817db64c3577/dotnet-sdk-5.0.402-linux-x64.tar.gz
   source_sha256: 84266f13d65798a254d1a711fe7e51980631a433ecc8fc818740fc2cb95a2127
 - name: libgdiplus
-  version: '6.0'
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus-6.0-cflinuxfs3-559895ae.tar.gz
-  sha256: 559895aeca55afeb7f06877f1f6e5f66344c6a2c497e0b575f6b9f8880f0118b
+  version: '6.1'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_3ae1e451.tgz
+  sha256: 3ae1e4514e7df37059aa5fd2bdb464697016f47f737c413d4045a0ddf8f407a5
   cf_stacks:
   - cflinuxfs3
-  source: https://github.com/mono/libgdiplus/archive/93f43204a94ac75f468c58334ad07726958f4f26.tar.gz
-  source_sha256: a52184c2eae1dcfefaa5652b635ea910cc417569fa89511b817658cb6d4db1f0
+  source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
+  source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
 - name: libunwind
   version: '1.5'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.5_linux_noarch_cflinuxfs3_6a1dd8f2.tgz
