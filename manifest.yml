@@ -168,6 +168,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/6788a5a5-1879-4095-948d-72c7fbdf350f/c996151548ec9f24d553817db64c3577/dotnet-sdk-5.0.402-linux-x64.tar.gz
   source_sha256: 84266f13d65798a254d1a711fe7e51980631a433ecc8fc818740fc2cb95a2127
+- name: dotnet-sdk
+  version: 5.0.403
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_5.0.403_linux_x64_any-stack_ce333e08.tar.xz
+  sha256: ce333e08c436fb70a3dbd86a46e4c5561433ab29c37f23e6ec2535d072848b70
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/b77183fa-c045-4058-82c5-d37742ed5f2d/ddaccef3e448a6df348cae4d1d271339/dotnet-sdk-5.0.403-linux-x64.tar.gz
+  source_sha256: 62f2634d249f8cf62b1855e12905fd36def453c2af907c5e38fba00a20059d50
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_3ae1e451.tgz
