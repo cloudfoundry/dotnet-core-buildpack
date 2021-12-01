@@ -225,13 +225,13 @@ dependencies:
   source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
   source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
 - name: libunwind
-  version: 1.6.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.6.1_linux_noarch_cflinuxfs3_631481b0.tgz
-  sha256: 631481b0cfb9b9ba1bf3f57197baa4a3cb19537b6258a09bb635a8ab51ed1b46
+  version: 1.6.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.6.2_linux_noarch_cflinuxfs3_02d17047.tgz
+  sha256: 02d1704741d91bd6d985c14b8a814dafa20e9db707c98b7be6a2fc58ed2855cd
   cf_stacks:
   - cflinuxfs3
-  source: https://github.com/libunwind/libunwind/releases/download/v1.6.1/libunwind-1.6.1.tar.gz
-  source_sha256: c357991723434a81147b72e27eda140171e6687455e1ea7b95e5e4c2e7065c85
+  source: https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz
+  source_sha256: 4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
 - name: node
   version: 14.18.2
   uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_14.18.2_linux_x64_cflinuxfs3_44c618d4.tgz
