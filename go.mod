@@ -6,7 +6,7 @@ require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.4.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20211130212435-04f27cac65ac
+	github.com/cloudfoundry/libbuildpack v0.0.0-20211201073524-877368d188fd
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-ini/ini v1.42.0
 	github.com/golang/mock v1.6.0
@@ -18,8 +18,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sclevine/agouti v3.0.0+incompatible
 	github.com/sclevine/spec v1.4.0
-	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
-	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
+	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
