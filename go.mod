@@ -3,7 +3,7 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 go 1.16
 
 require (
-	github.com/Dynatrace/libbuildpack-dynatrace v1.4.1
+	github.com/Dynatrace/libbuildpack-dynatrace v1.4.2
 	github.com/Masterminds/semver v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20211201073524-877368d188fd
