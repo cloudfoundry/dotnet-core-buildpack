@@ -1,3 +1,89 @@
+v2.3.37 Dec 10, 2021
+=====================
+
+* Bump github.com/Dynatrace/libbuildpack-dynatrace from 1.4.1 to 1.4.2
+  Bumps [github.com/Dynatrace/libbuildpack-dynatrace](https://github.com/Dynatrace/libbuildpack-dynatrace) from 1.4.1 to 1.4.2.
+  - [Release notes](https://github.com/Dynatrace/libbuildpack-dynatrace/releases)
+  - [Commits](https://github.com/Dynatrace/libbuildpack-dynatrace/compare/v1.4.1...v1.4.2)
+  
+  ---
+  updated-dependencies:
+  - dependency-name: github.com/Dynatrace/libbuildpack-dynatrace
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+  ...
+
+* Bump github.com/onsi/gomega from 1.14.0 to 1.17.0
+  Bumps [github.com/onsi/gomega](https://github.com/onsi/gomega) from 1.14.0 to 1.17.0.
+  - [Release notes](https://github.com/onsi/gomega/releases)
+  - [Changelog](https://github.com/onsi/gomega/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/onsi/gomega/compare/v1.14.0...v1.17.0)
+  
+  ---
+  updated-dependencies:
+  - dependency-name: github.com/onsi/gomega
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+
+* Bump github.com/go-ini/ini from 1.42.0 to 1.66.2
+  Bumps [github.com/go-ini/ini](https://github.com/go-ini/ini) from 1.42.0 to 1.66.2.
+  - [Release notes](https://github.com/go-ini/ini/releases)
+  - [Commits](https://github.com/go-ini/ini/compare/v1.42.0...v1.66.2)
+  
+  ---
+  updated-dependencies:
+  - dependency-name: github.com/go-ini/ini
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+  ...
+
+* Add dotnet-sdk 3.1.415
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234283)
+
+* Add dotnet-sdk 5.0.403
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234297)
+
+* Add dotnet-runtime 5.0.12
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234291)
+
+* Add dotnet-runtime 3.1.21
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234287)
+
+* Add dotnet-aspnetcore 3.1.21
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234307)
+
+* Add dotnet-aspnetcore 5.0.12
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180234295)
+
+* Add libunwind 1.6.2, remove libunwind 1.5
+  for stack(s) cflinuxfs3
+
+* Add libgdiplus 6.1, remove libgdiplus 6.0
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180186271)
+
+* Add node 14.18.2, remove node 14.18.1
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180480654)
+
+* Add bower 1.8.13, remove bower 1.8.12
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/180314436)
+
+* Update libbuildpack
+
+* Readme: Update packager install instructions
+
+* Fix default bower version
+
+
 v2.3.36 Oct 19, 2021
 =====================
 
