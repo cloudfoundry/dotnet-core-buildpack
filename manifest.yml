@@ -9,7 +9,7 @@ url_to_dependency_map: []
 dependency_deprecation_dates:
 - version_line: 3.1.x
   name: dotnet-runtime
-  date: 2022-12-04
+  date: 2022-12-03
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 14.x.x
   name: node
@@ -120,6 +120,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/286e526e-282b-47e5-afeb-4f99ee481972/495908d6a6019e47249bd05f8346aeb5/dotnet-runtime-3.1.21-linux-x64.tar.gz
   source_sha256: 0ea93fc00d58f90b0455277f6f57dfc693c0cf6c85c8a371e0d6e80cafce6352
+- name: dotnet-runtime
+  version: 3.1.22
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.22_linux_x64_any-stack_3829eaad.tar.xz
+  sha256: 3829eaad0913eb90a768fe7330986bc07d3b4f1eb5279a4917916f04af3ac7e6
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/8a11a2ba-d599-486f-ba61-9e420bc4a2bb/db9d61f28e0a688adc83687b611702ff/dotnet-runtime-3.1.22-linux-x64.tar.gz
+  source_sha256: 8a5b1a9a8ca0b927450c14671e879f5e1d99906e4b67e2933047c888fda879e1
 - name: dotnet-runtime
   version: 5.0.9
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_5.0.9_linux_x64_any-stack_b605c2f7.tar.xz
