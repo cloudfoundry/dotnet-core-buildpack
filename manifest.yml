@@ -12,6 +12,10 @@ dependency_deprecation_dates:
   date: 2022-05-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 3.1.x
+  name: dotnet-aspnetcore
+  date: 2022-12-03
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 3.1.x
   name: dotnet-runtime
   date: 2022-12-03
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
@@ -60,6 +64,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/c4565012-97e8-4a5a-9edf-8d6c94f0ac5c/dd227c01d532bcb731b026243a51f55f/aspnetcore-runtime-3.1.21-linux-x64.tar.gz
   source_sha256: '02692dddac6dbd306472eb81678624992f36e85a5deca34fb6d5e3c18d5f639f'
+- name: dotnet-aspnetcore
+  version: 3.1.22
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.22_linux_x64_any-stack_d42d64d3.tar.xz
+  sha256: d42d64d380afd2ee91ca06f5fcb29733a06ae7d5d0d406cdf57d13ca706b9978
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/ded261a4-ec9a-46be-8359-3055e73ff388/9ab54349df5185d4f548abdca3dd523d/aspnetcore-runtime-3.1.22-linux-x64.tar.gz
+  source_sha256: 1ec19c78b4497e12447415561d2b55d6d6ecb396596f2dfa27f6d85856f2a802
 - name: dotnet-aspnetcore
   version: 5.0.9
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_5.0.9_linux_x64_any-stack_a6d36eff.tar.xz
