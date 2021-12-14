@@ -7,20 +7,24 @@ default_versions:
   version: 1.8.13
 url_to_dependency_map: []
 dependency_deprecation_dates:
+- version_line: 3.1.x
+  name: dotnet-aspnetcore
+  date: 2022-12-03
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 5.0.x
   name: dotnet-aspnetcore
   date: 2022-05-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 3.1.x
-  name: dotnet-aspnetcore
-  date: 2022-12-03
-  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: 3.1.x
   name: dotnet-runtime
   date: 2022-12-03
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 5.0.x
   name: dotnet-runtime
+  date: 2022-05-08
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 5.0.4x
+  name: dotnet-sdk
   date: 2022-05-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 14.x.x
@@ -260,6 +264,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/b77183fa-c045-4058-82c5-d37742ed5f2d/ddaccef3e448a6df348cae4d1d271339/dotnet-sdk-5.0.403-linux-x64.tar.gz
   source_sha256: 62f2634d249f8cf62b1855e12905fd36def453c2af907c5e38fba00a20059d50
+- name: dotnet-sdk
+  version: 5.0.404
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_5.0.404_linux_x64_any-stack_e376b80c.tar.xz
+  sha256: e376b80c1c75ad9691871013ccf0c4d9f0a23759b215f06b8bd32ccfee0eb010
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/2c1eb8c8-ac05-4dc7-9bef-307b3e450e9d/75e85b3d1662f60afd69572fd5df6884/dotnet-sdk-5.0.404-linux-x64.tar.gz
+  source_sha256: fd1df1d71244c4adcee62bcb00c11f1d0aa177adb03686331b60147fd0a8a4ca
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_3ae1e451.tgz
