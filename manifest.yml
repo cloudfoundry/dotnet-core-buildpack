@@ -23,6 +23,10 @@ dependency_deprecation_dates:
   name: dotnet-runtime
   date: 2022-05-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 3.1.4x
+  name: dotnet-sdk
+  date: 2022-12-03
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 14.x.x
   name: node
   date: 2023-04-30
