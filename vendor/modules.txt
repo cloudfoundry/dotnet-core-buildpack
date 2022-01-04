@@ -9,7 +9,7 @@ github.com/Masterminds/semver
 # github.com/blang/semver v3.5.1+incompatible
 ## explicit
 github.com/blang/semver
-# github.com/cloudfoundry/libbuildpack v0.0.0-20211201073524-877368d188fd
+# github.com/cloudfoundry/libbuildpack v0.0.0-20211207004218-1ef25b7c793a
 ## explicit
 github.com/cloudfoundry/libbuildpack
 github.com/cloudfoundry/libbuildpack/ansicleaner
@@ -74,7 +74,7 @@ github.com/onsi/gomega/matchers/support/goraph/edge
 github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
-# github.com/paketo-buildpacks/packit v0.14.2
+# github.com/paketo-buildpacks/packit v1.3.1
 github.com/paketo-buildpacks/packit/pexec
 # github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a
 ## explicit
@@ -93,6 +93,8 @@ github.com/sclevine/agouti/internal/target
 ## explicit
 github.com/sclevine/spec
 github.com/sclevine/spec/report
+# github.com/stretchr/testify v1.7.0
+## explicit
 # github.com/tidwall/gjson v1.12.0
 github.com/tidwall/gjson
 # github.com/tidwall/match v1.1.1
@@ -104,7 +106,7 @@ github.com/tidwall/pretty
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20211205182925-97ca703d548d
+# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
 ## explicit
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
@@ -134,3 +136,5 @@ gopkg.in/tomb.v1
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit
 gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+## explicit
