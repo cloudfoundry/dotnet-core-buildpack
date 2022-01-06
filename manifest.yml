@@ -370,3 +370,15 @@ runtime_to_sdks:
 - runtime_version: 5.0.10
   sdks:
   - 5.0.401
+- runtime_version: 5.0.11
+  sdks:
+  - 5.0.402
+- runtime_version: 5.0.12
+  sdks:
+  - 5.0.403
+- runtime_version: 5.0.13
+  sdks:
+  - 5.0.404
+- runtime_version: 6.0.1
+  sdks:
+  - 6.0.101
