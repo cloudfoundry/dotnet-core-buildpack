@@ -364,6 +364,15 @@ runtime_to_sdks:
 - runtime_version: 3.1.19
   sdks:
   - 3.1.413
+- runtime_version: 3.1.20
+  sdks:
+  - 3.1.414
+- runtime_version: 3.1.21
+  sdks:
+  - 3.1.415
+- runtime_version: 3.1.22
+  sdks:
+  - 3.1.416
 - runtime_version: 5.0.9
   sdks:
   - 5.0.400
