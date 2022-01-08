@@ -5,3 +5,4 @@ log/
 /pkg/
 !vendor/**
 .idea/
+.DS_Store

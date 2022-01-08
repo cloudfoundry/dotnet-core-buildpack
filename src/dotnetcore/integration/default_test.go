@@ -182,9 +182,20 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
 			})
 		})
+
+		context("with .NET Core 6", func() {
+			it.Before(func() {
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
+			})
+
+			it("builds and runs successfully", func() {
+				PushAppAndConfirm(t, app)
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
+			})
+		})
 	})
 
-	context("deploying an FDD app", func() {
+	context("deploying a framework-dependent app", func() {
 		context("with Microsoft.AspNetCore.App 3.1", func() {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "fdd_apps", "simple"))
@@ -222,6 +233,17 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
 			})
 		})
+
+		context("with .NET Core 6", func() {
+			it.Before(func() {
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "fde_apps", "fde_6.0"))
+			})
+
+			it("builds and runs successfully", func() {
+				PushAppAndConfirm(t, app)
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
+			})
+		})
 	})
 
 	context("deploying a self contained msbuild app with RuntimeIdentfier", func() {
@@ -233,6 +255,17 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			PushAppAndConfirm(t, app)
 			Expect(app.Stdout.String()).To(MatchRegexp("Removing dotnet-sdk"))
 			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+		})
+	})
+
+	context("deploying .NET Core 6 self-contained app", func() {
+		it.Before(func() {
+			app = cutlass.New(filepath.Join(settings.FixturesPath, "self_contained_apps", "self_contained_executable_6.0"))
+		})
+
+		it("builds and runs successfully", func() {
+			PushAppAndConfirm(t, app)
+			Expect(app.GetBody("/")).To(ContainSubstring("Hello, world!"))
 		})
 	})
 }

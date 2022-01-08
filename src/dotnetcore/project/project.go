@@ -33,13 +33,16 @@ type CSProj struct {
 	} `xml:"ItemGroup"`
 }
 
+type Framework struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
 type ConfigJSON struct {
 	RuntimeOptions struct {
-		Framework struct {
-			Name    string `json:"name"`
-			Version string `json:"version"`
-		} `json:"framework"`
-		ApplyPatches *bool `json:"applyPatches"`
+		Framework    Framework   `json:"framework"`
+		Frameworks   []Framework `json:"frameworks"`
+		ApplyPatches *bool       `json:"applyPatches"`
 	} `json:"runtimeOptions"`
 }
 
@@ -284,7 +287,7 @@ func (p *Project) IsFDD() (bool, error) {
 			return false, err
 		}
 
-		if runtimeJSON.RuntimeOptions.Framework.Name != "" {
+		if runtimeJSON.RuntimeOptions.Framework.Name != "" || len(runtimeJSON.RuntimeOptions.Frameworks) > 0 {
 			return true, nil
 		}
 	}
@@ -311,17 +314,25 @@ func (p *Project) FDDInstallFrameworks() error {
 		return err
 	}
 
-	frameworkName := runtimeConfig.RuntimeOptions.Framework.Name
-	frameworkVersion := runtimeConfig.RuntimeOptions.Framework.Version
 	applyPatches := runtimeConfig.RuntimeOptions.ApplyPatches
 
-	if frameworkName == "Microsoft.NETCore.App" {
-		return p.fddInstallFrameworksNETCoreApp(frameworkName, frameworkVersion, applyPatches)
-	} else if frameworkName == "Microsoft.AspNetCore.All" || frameworkName == "Microsoft.AspNetCore.App" {
-		return p.fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVersion, applyPatches)
+	for _, fw := range append([]Framework{runtimeConfig.RuntimeOptions.Framework}, runtimeConfig.RuntimeOptions.Frameworks...) {
+		switch fw.Name {
+		case "":
+			continue
+		case "Microsoft.NETCore.App":
+			if err := p.fddInstallFrameworksNETCoreApp(fw.Name, fw.Version, applyPatches); err != nil {
+				return err
+			}
+		case "Microsoft.AspNetCore.App":
+			if err := p.fddInstallFrameworksAspNetCoreApp(fw.Name, fw.Version, applyPatches); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("invalid framework '%s' specified in %s", fw.Name, filepath.Base(path))
+		}
 	}
-
-	return fmt.Errorf("invalid framework [%s] specified in application runtime config file", frameworkName)
+	return nil
 }
 
 func (p *Project) SourceInstallDotnetRuntime() error {
@@ -604,17 +615,25 @@ func (p *Project) fddInstallFrameworksAspNetCoreApp(frameworkName, frameworkVers
 	))
 	if err != nil {
 		return err
-	} else if len(aspNetCorePaths) < 1 {
-		return fmt.Errorf("No aspnetcore version found")
 	}
+
+	if len(aspNetCorePaths) < 1 {
+		return nil
+	}
+
 	aspNetCoreConfigJSON, err := parseRuntimeConfig(aspNetCorePaths[0])
 	if err != nil {
 		return err
 	}
 
+	fw := findFramework("Microsoft.NETCore.App", append(aspNetCoreConfigJSON.RuntimeOptions.Frameworks, aspNetCoreConfigJSON.RuntimeOptions.Framework))
+	if fw.Name == "" {
+		return nil
+	}
+
 	runtimeVersion, err := p.FindMatchingFrameworkVersion(
 		"dotnet-runtime",
-		aspNetCoreConfigJSON.RuntimeOptions.Framework.Version,
+		fw.Version,
 		aspNetCoreConfigJSON.RuntimeOptions.ApplyPatches,
 	)
 	if err != nil {
@@ -682,6 +701,15 @@ func parseRuntimeConfig(runtimeConfigPath string) (ConfigJSON, error) {
 	}
 
 	return obj, nil
+}
+
+func findFramework(name string, frameworks []Framework) Framework {
+	for _, fw := range frameworks {
+		if fw.Name == name {
+			return fw
+		}
+	}
+	return Framework{}
 }
 
 type libraryMissingError struct {

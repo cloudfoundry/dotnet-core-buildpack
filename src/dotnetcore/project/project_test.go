@@ -2,11 +2,11 @@ package project_test
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/cloudfoundry/dotnet-core-buildpack/src/dotnetcore/project"
 	"github.com/cloudfoundry/libbuildpack"
@@ -36,6 +36,15 @@ var _ = Describe("Project", func() {
 	createRuntimeConfig := func(dep, version string) {
 		content := `{ "runtimeOptions": { "framework": { "name": "%s", "version": "%s" }, "applyPatches": false } }`
 		Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, dep, version)), 0644)).To(Succeed())
+	}
+
+	createRuntimeConfigMulti := func(frameworks ...project.Framework) {
+		var fws []string
+		for _, fw := range frameworks {
+			fws = append(fws, fmt.Sprintf(`{ "name": "%s", "version": "%s" }`, fw.Name, fw.Version))
+		}
+		content := `{ "runtimeOptions": { "applyPatches": false, "frameworks": [%s] } }`
+		Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, strings.Join(fws, ","))), 0644)).To(Succeed())
 	}
 
 	createDepsJSONWithName := func(dep, version string, emptyContent bool, name string) {
@@ -602,37 +611,24 @@ var _ = Describe("Project", func() {
 				Expect(subject.FDDInstallFrameworks()).To(Succeed())
 			})
 		})
-		Context("when the app specifies Microsoft.AspNetCore.All in .runtimeconfig.json", func() {
+
+		Context("when .runtimeconfig.json contains multiple frameworks", func() {
 			BeforeEach(func() {
-				createRuntimeConfig("Microsoft.AspNetCore.All", "6.7.8")
+				createRuntimeConfigMulti(
+					project.Framework{Name: "Microsoft.NETCore.App", Version: "7.8.9"},
+					project.Framework{Name: "Microsoft.AspNetCore.App", Version: "2.3.4"},
+				)
+				createDepsJSON("", "", true)
 			})
 
-			It("installs the dotnet-aspnetcore from the app's runtimeconfig.json and dotnet-runtime from Microsoft.AspNetCore.All.runtimeconfig.json", func() {
+			It("installs all frameworks", func() {
 				mockInstaller.
 					EXPECT().
-					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "6.7.8"}, depsPath).
-					Do(func(d libbuildpack.Dependency, s string) {
-						installRuntimeConfig("Microsoft.AspNetCore.All", "6.7.8", "1.2.3")
-					})
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, depsPath)
 				mockInstaller.
 					EXPECT().
-					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "1.2.3"}, depsPath)
-
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "2.3.4"}, depsPath)
 				Expect(subject.FDDInstallFrameworks()).To(Succeed())
-			})
-		})
-
-		Context("when Microsoft.AspNetCore.App is in .runtimeconfig.json", func() {
-			BeforeEach(func() {
-				createRuntimeConfig("Microsoft.AspNetCore.App", "2.0.0")
-			})
-
-			It("fails when the dotnet-aspnetcore version is less than 2.1.0", func() {
-				mockInstaller.
-					EXPECT().
-					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "2.0.0"}, gomock.Any()).
-					Return(errors.New("could not find dotnet-aspnetcore version 2.0.0"))
-				Expect(subject.FDDInstallFrameworks()).NotTo(Succeed())
 			})
 		})
 	})
