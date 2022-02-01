@@ -43,6 +43,10 @@ dependency_deprecation_dates:
   name: node
   date: 2023-04-30
   link: https://github.com/nodejs/Release
+- version_line: 16.x.x
+  name: node
+  date: 2024-04-30
+  link: https://github.com/nodejs/Release
 dependencies:
 - name: bower
   version: 1.8.13
@@ -340,6 +344,14 @@ dependencies:
   - cflinuxfs3
   source: https://nodejs.org/dist/v14.19.0/node-v14.19.0.tar.gz
   source_sha256: 284cf4824d0c3e79177899519f90c160491c0c642bbf459b72a97679cad8fe87
+- name: node
+  version: 16.13.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_16.13.2_linux_x64_cflinuxfs3_5ea039ba.tgz
+  sha256: 5ea039ba849e3bac7228b1487041f50348714c989a7179dbf7c15611228d24e1
+  cf_stacks:
+  - cflinuxfs3
+  source: https://nodejs.org/dist/v16.13.2/node-v16.13.2.tar.gz
+  source_sha256: cd5a07cae25985704a5b1878355b2793d62d70fc97b8a181ad2bf86201121b08
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
