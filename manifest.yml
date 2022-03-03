@@ -43,6 +43,10 @@ dependency_deprecation_dates:
   name: dotnet-sdk
   date: 2024-11-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 6.0.2x
+  name: dotnet-sdk
+  date: 2024-11-08
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 16.x.x
   name: node
   date: 2024-04-30
@@ -224,6 +228,14 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/e7acb87d-ab08-4620-9050-b3e80f688d36/e93bbadc19b12f81e3a6761719f28b47/dotnet-sdk-6.0.102-linux-x64.tar.gz
   source_sha256: 9bdd4dacdf9a23d386f207ec19260afd36a7fb7302233c9abc0b47e65ffc3119
+- name: dotnet-sdk
+  version: 6.0.200
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.200_linux_x64_any-stack_6b0bae7d.tar.xz
+  sha256: 6b0bae7d465205803c1c5a3cc28cca3ae1a29acdab2521906316e568fb4ebd9c
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/807f9d72-4940-4b1a-aa4a-8dbb0f73f5d7/cb666c22a87bf9413f29615e0ba94500/dotnet-sdk-6.0.200-linux-x64.tar.gz
+  source_sha256: a0e2754e4de0aab645ebada1f49b8f472019fbb967b4b48d690b82781ea1fd32
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_3ae1e451.tgz
