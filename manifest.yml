@@ -77,6 +77,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/ded261a4-ec9a-46be-8359-3055e73ff388/9ab54349df5185d4f548abdca3dd523d/aspnetcore-runtime-3.1.22-linux-x64.tar.gz
   source_sha256: 1ec19c78b4497e12447415561d2b55d6d6ecb396596f2dfa27f6d85856f2a802
 - name: dotnet-aspnetcore
+  version: 3.1.23
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.23_linux_x64_any-stack_52567917.tar.xz
+  sha256: 525679179382c0deb29a6837254bbc098a3cd9b51cda173696d10d15f430669a
+  cf_stacks:
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/437c96ef-4100-41a2-8c3a-17e01d078e53/d62482387d9ff71f009c3b7794a80212/aspnetcore-runtime-3.1.23-linux-x64.tar.gz
+  source_sha256: 8f95cb6034357bf93d56f051511e806399d613bad31910acf398b9f90aadc04c
+- name: dotnet-aspnetcore
   version: 5.0.12
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_5.0.12_linux_x64_any-stack_636dee9a.tar.xz
   sha256: 636dee9ad0513748152e181b353d9c64e27cb203d5dc45d43ff05d7fb8b6f753
