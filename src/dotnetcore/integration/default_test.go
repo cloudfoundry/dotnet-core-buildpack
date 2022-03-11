@@ -20,9 +20,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		app *cutlass.App
 
-		latest31RuntimeVersion, previous31RuntimeVersion string
-		latest31ASPNetVersion, previous31ASPNetVersion   string
-		latest31SDKVersion, previous31SDKVersion         string
+		latest31RuntimeVersion string
+		latest31ASPNetVersion  string
+		latest31SDKVersion     string
 	)
 
 	it.Before(func() {
@@ -32,13 +32,10 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		latest31RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "3.1.x", bpDir)
-		previous31RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", fmt.Sprintf("<%s", latest31RuntimeVersion), bpDir)
 
 		latest31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "3.1.x", bpDir)
-		previous31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", fmt.Sprintf("<%s", latest31ASPNetVersion), bpDir)
 
 		latest31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "3.1.x", bpDir)
-		previous31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", fmt.Sprintf("<%s", latest31SDKVersion), bpDir)
 	})
 
 	it.After(func() {
@@ -94,20 +91,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest31SDKVersion)
 			})
 
-			context("when SDK versions don't match", func() {
-				it("installs the specific version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "buildpack.yml", "sdk_version", previous31SDKVersion)
-					app.Push()
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", previous31SDKVersion)))
-				})
-
-				it("installs the floated version from buildpack.yml instead of global.json", func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "buildpack.yml", "sdk_version", "3.1.x")
-					app.Push()
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest31SDKVersion)))
-				})
-			})
-
 			context("when SDK version from buildpack.yml is not available", func() {
 				it("fails due to missing SDK", func() {
 					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "buildpack.yml", "sdk_version", "2.0.0-preview7")
@@ -116,19 +99,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 					Eventually(app.Stdout.String).Should(ContainSubstring("SDK 2.0.0-preview7 in buildpack.yml is not available"))
 					Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet SDK: no match found for 2.0.0-preview7"))
 				})
-			})
-		})
-
-		context("when RuntimeFrameworkVersion is explicitly defined in csproj", func() {
-			it.Before(func() {
-				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "templated_runtime"), "templated_runtime.csproj", "runtime_version", previous31RuntimeVersion)
-				app.Disk = "2G"
-			})
-
-			it("publishes and runs, using exact runtime", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", previous31RuntimeVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 			})
 		})
 
@@ -209,17 +179,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
 				Expect(app.Stop()).ToNot(HaveOccurred())
 				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
-			})
-		})
-
-		context("with Microsoft.AspNetCore.App 3.1 and applyPatches false", func() {
-			it.Before(func() {
-				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "fdd_apps", "templated_framework"), "templated_framework.runtimeconfig.json", "framework_version", previous31ASPNetVersion)
-			})
-
-			it("installs the exact version of dotnet-aspnetcore from the runtimeconfig.json", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", previous31ASPNetVersion)))
 			})
 		})
 
