@@ -4,7 +4,7 @@ default_versions:
 - name: dotnet-sdk
   version: 3.1.x
 - name: bower
-  version: 1.8.13
+  version: 1.8.x
 url_to_dependency_map: []
 dependency_deprecation_dates:
 - version_line: 3.1.x
