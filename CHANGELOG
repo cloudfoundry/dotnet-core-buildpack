@@ -1,3 +1,54 @@
+v2.3.40 Mar 16, 2022
+=====================
+
+* Add dotnet-sdk 3.1.417
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502406)
+
+* Add dotnet-sdk 5.0.406
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502344)
+
+* Add dotnet-sdk 6.0.201
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502206)
+
+* Add dotnet-runtime 3.1.23
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502532)
+
+* Add dotnet-runtime 5.0.15
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502142)
+
+* Add dotnet-runtime 6.0.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502294)
+
+* Add dotnet-aspnetcore 3.1.23
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502296)
+
+* Add dotnet-aspnetcore 5.0.15
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502248)
+
+* Add dotnet-aspnetcore 6.0.3
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181502289)
+
+* Add bower 1.8.14, remove bower 1.8.13
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/181559845)
+
+* Update .NET Buildpack dependencies lines to only keep 1 of each patch version (latest)
+
+* remove tests expecting multiple patch versions
+  Multiple patches for the same line were removed in
+  https://github.com/cloudfoundry/dotnet-core-buildpack/issues/518
+
+
+
 v2.3.39 Feb 10, 2022
 =====================
 
