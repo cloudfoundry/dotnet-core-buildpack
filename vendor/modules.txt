@@ -9,7 +9,7 @@ github.com/Masterminds/semver
 # github.com/blang/semver v3.5.1+incompatible
 ## explicit
 github.com/blang/semver
-# github.com/cloudfoundry/libbuildpack v0.0.0-20211207004218-1ef25b7c793a
+# github.com/cloudfoundry/libbuildpack v0.0.0-20220104002832-0463886d7d21
 ## explicit
 github.com/cloudfoundry/libbuildpack
 github.com/cloudfoundry/libbuildpack/ansicleaner
@@ -106,7 +106,8 @@ github.com/tidwall/pretty
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
+# golang.org/x/sys v0.0.0-20220329152356-43be30ef3008
+## explicit
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.7
