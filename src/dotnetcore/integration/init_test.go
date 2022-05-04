@@ -95,6 +95,7 @@ func TestIntegration(t *testing.T) {
 	suite("Node", testNode)
 	suite("Override", testOverride)
 	suite("Supply", testSupply)
+	suite("Sealights", testSealights)
 
 	if cutlass.Cached {
 		suite("Offline", testOffline)
