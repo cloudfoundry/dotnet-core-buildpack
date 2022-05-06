@@ -1,4 +1,12 @@
-# TODO:
-Get context on how this app was created. See
-https://github.com/cloudfoundry/dotnet-core-buildpack/commits/master/fixtures/uses_libgdiplus_with_3.1
-for original app history.
+This app was generated with the .NET Core CLI by running:
+
+```shell
+dotnet new web -o libgdiplus
+```
+
+Then the following command was run on the app:
+
+```shell
+dotnet publish --configuration Release --runtime ubuntu.18.04-x64
+--self-contained false libgdiplus
+```

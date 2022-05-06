@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "Mj7mTemXAzqUgdVq9XmTTpXNmK9WQHZHqrX7YKwrdwnEbLW0KMX9NcHDkKVjYISo1cOo0TiF/VALknuE/sWVWg==",
+  "success": true,
+  "projectFilePath": "/test/test/uses_libgdiplus/uses_libgdiplus.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.netcore.platforms/2.0.0/microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "/root/.nuget/packages/microsoft.win32.systemevents/4.5.0/microsoft.win32.systemevents.4.5.0.nupkg.sha512",
+    "/root/.nuget/packages/system.drawing.common/4.5.1/system.drawing.common.4.5.1.nupkg.sha512"
+  ],
+  "logs": []
+}
