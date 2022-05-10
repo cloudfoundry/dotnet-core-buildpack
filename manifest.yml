@@ -206,8 +206,8 @@ dependencies:
   source_sha256: 0cceb8299532ef11fb38bb32153ccd68d57ac36d45b1c58678021805c85e593b
 - name: dotnet-sdk
   version: 6.0.202
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.202_linux_x64_any-stack_d40ed92c.tar.xz
-  sha256: d40ed92c63583d6dd385ae76f022753eb59ca883cad451e8bbf5e1be879166d6
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.202_linux_x64_any-stack_0bee6a80.tar.xz
+  sha256: 0bee6a801342252fc085109a94c8c29b00d62d6fb50c9d7562f3420232fbf690
   cf_stacks:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/9d8c7137-2091-4fc6-a419-60ba59c8b9de/db0c5cda94f31d2260d369123de32d59/dotnet-sdk-6.0.202-linux-x64.tar.gz
