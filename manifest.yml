@@ -45,14 +45,6 @@ dependencies:
   source: https://registry.npmjs.org/bower/-/bower-1.8.14.tgz
   source_sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
 - name: dotnet-aspnetcore
-  version: 3.1.23
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.23_linux_x64_any-stack_52567917.tar.xz
-  sha256: 525679179382c0deb29a6837254bbc098a3cd9b51cda173696d10d15f430669a
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/437c96ef-4100-41a2-8c3a-17e01d078e53/d62482387d9ff71f009c3b7794a80212/aspnetcore-runtime-3.1.23-linux-x64.tar.gz
-  source_sha256: 8f95cb6034357bf93d56f051511e806399d613bad31910acf398b9f90aadc04c
-- name: dotnet-aspnetcore
   version: 3.1.25
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.25_linux_x64_any-stack_f5cd5a6f.tar.xz
   sha256: f5cd5a6f0c555424567caca5cc4a826f27386e8a1350dc01ad1f35292072015b
@@ -60,14 +52,6 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/0f50a1fa-5fba-4d48-ae5e-dfa009528c60/d188c4e048b701b01604553167c14c5f/aspnetcore-runtime-3.1.25-linux-x64.tar.gz
   source_sha256: 9257e8a7db8192b94fe8e125e7cd568267185781261498afcb6b5ae0a7d88762
-- name: dotnet-aspnetcore
-  version: 6.0.3
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.3_linux_x64_any-stack_c90aa73e.tar.xz
-  sha256: c90aa73e9d96cadd98b3cbaa3f8af72b181b3ccbbfcdb0c278b8a801379d715e
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/3af854b6-80fb-425a-972f-c7f0d693bf1b/cd458a4feae5a98646ee12a14ab34151/aspnetcore-runtime-6.0.3-linux-x64.tar.gz
-  source_sha256: 2c49297337026fbffee211a9fc5a6b9adf6d9d5321670645831b6c4109def79d
 - name: dotnet-aspnetcore
   version: 6.0.5
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.5_linux_x64_any-stack_c49edeae.tar.xz
@@ -77,14 +61,6 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/a0e9ceb8-04eb-4510-876c-795a6a123dda/6141e57558eddc2d4629c7c14c2c6fa1/aspnetcore-runtime-6.0.5-linux-x64.tar.gz
   source_sha256: 95a3cc7c4e7de792e39e40ffda72127ba49a49604b61fee18d50f970c9c1e903
 - name: dotnet-runtime
-  version: 3.1.23
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.23_linux_x64_any-stack_bd593265.tar.xz
-  sha256: bd593265fc2a243f0d76e52795d260b61d09555bf0f6005bac24dfd02e38ea1e
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/4022ad95-d68e-46de-a849-f66d482d6b45/f67e642ff95d838d03a0548cc4ea0ba1/dotnet-runtime-3.1.23-linux-x64.tar.gz
-  source_sha256: 171738bc83f794870f8c2e03e9c63a0f3f152b5ff646a225a7c90a2f29458db3
-- name: dotnet-runtime
   version: 3.1.25
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.25_linux_x64_any-stack_5bef87b3.tar.xz
   sha256: 5bef87b3aaca36bb490f6cd3b3ac146083bdfc39843dc8203b553e01b55d2c23
@@ -92,14 +68,6 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/e74046f6-ee72-4619-8648-2d31ca1cbacf/6c634a9ac8d2df9ec76f278b37e22dc7/dotnet-runtime-3.1.25-linux-x64.tar.gz
   source_sha256: b3cb385d1ccea91d461b0d1ca12285f96218de1ce7bfdf80bdf92d6df2c1900f
-- name: dotnet-runtime
-  version: 6.0.3
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.3_linux_x64_any-stack_acd9be98.tar.xz
-  sha256: acd9be988781e565c66713faddac907356ad53f8c76f086be06a30abc1232791
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/4e766615-57e6-4b1d-a574-25eeb7a71107/9f95f74c33711e085302ffd644ef86ee/dotnet-runtime-6.0.3-linux-x64.tar.gz
-  source_sha256: 275d9eb77d82665ac57089d88d9010a7f86329bdcf6997908543c701eaf196ec
 - name: dotnet-runtime
   version: 6.0.5
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.5_linux_x64_any-stack_13e4f6da.tar.xz
@@ -109,14 +77,6 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/56d9250f-97df-4786-b33e-a8e34b349e86/dcf054ca00899a70a80aa1a7d3072b52/dotnet-runtime-6.0.5-linux-x64.tar.gz
   source_sha256: 688694c604bbd810d28446752131e20468390a071aa2a5157a4e2d87a43dfa3c
 - name: dotnet-sdk
-  version: 3.1.417
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_3.1.417_linux_x64_any-stack_bc4f8677.tar.xz
-  sha256: bc4f8677e279fa696a0cc2b4efe993ef2b1709dd53d580d53585528c8f04d76d
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/d8cdb908-9a61-45e9-8cac-1899af7b49b4/0f815fae130481a31fed4d9d1ad5b217/dotnet-sdk-3.1.417-linux-x64.tar.gz
-  source_sha256: 5d077715abc10b4a4dcee8c88d18b21cbb656f7eb67c3454bf33d791a35309e3
-- name: dotnet-sdk
   version: 3.1.419
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_3.1.419_linux_x64_any-stack_1ab4b939.tar.xz
   sha256: 1ab4b939d12b191c5e26af763709214f5fd0be352cffd606e29eeb916915b221
@@ -124,14 +84,6 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/5dcee8cc-68e4-4b4f-8288-5ea8f95053ba/86c39872e9e206b9e103367de6b8f596/dotnet-sdk-3.1.419-linux-x64.tar.gz
   source_sha256: 514f10e82f279c4172b538e9f57512f4d8c070527fbb4c36cbacc6cf8a0fe971
-- name: dotnet-sdk
-  version: 6.0.201
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.201_linux_x64_any-stack_aff6015d.tar.xz
-  sha256: aff6015d2f92c2535c3d39382821a37d5c2f912364c6e167932107e81da4bdf1
-  cf_stacks:
-  - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/c505a449-9ecf-4352-8629-56216f521616/bd6807340faae05b61de340c8bf161e8/dotnet-sdk-6.0.201-linux-x64.tar.gz
-  source_sha256: 0cceb8299532ef11fb38bb32153ccd68d57ac36d45b1c58678021805c85e593b
 - name: dotnet-sdk
   version: 6.0.300
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.300_linux_x64_any-stack_23bc3672.tar.xz
@@ -182,9 +134,9 @@ include_files:
 - bin/supply
 - manifest.yml
 runtime_to_sdks:
-- runtime_version: 3.1.24
+- runtime_version: 3.1.25
   sdks:
-  - 3.1.418
-- runtime_version: 6.0.4
+  - 3.1.419
+- runtime_version: 6.0.5
   sdks:
-  - 6.0.202
+  - 6.0.300
