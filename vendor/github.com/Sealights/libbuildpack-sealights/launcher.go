@@ -65,7 +65,10 @@ func (la *Launcher) buildCommandLine(command string) string {
 	options := la.Options
 
 	agent := filepath.Join(la.AgentDir, AgentName)
-	dotnetCli := filepath.Join(la.DotNetDir, "dotnet")
+	dotnetCli := "dotnet"
+	if la.DotNetDir != "" {
+		dotnetCli = filepath.Join(la.DotNetDir, "dotnet")
+	}
 
 	agentMode := DefaultAgentMode
 	if options.Mode != "" {
@@ -155,7 +158,7 @@ func (la *Launcher) buildCommandLine(command string) string {
 }
 
 func (la *Launcher) getTargetArgs(command string) (target string, args string) {
-	if strings.HasPrefix(command, "dotnet") {
+	if strings.HasPrefix(command, "dotnet") || la.DotNetDir == "" {
 		// use dotnet as target and remove it from command
 		target = "dotnet"
 		command = strings.TrimPrefix(command, "dotnet")
