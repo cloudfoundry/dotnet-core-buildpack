@@ -6,7 +6,7 @@ github.com/Dynatrace/libbuildpack-dynatrace
 # github.com/Masterminds/semver v1.5.0
 ## explicit
 github.com/Masterminds/semver
-# github.com/Sealights/libbuildpack-sealights v1.0.0
+# github.com/Sealights/libbuildpack-sealights v1.0.1
 ## explicit
 github.com/Sealights/libbuildpack-sealights
 # github.com/blang/semver v3.5.1+incompatible
