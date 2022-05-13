@@ -1,3 +1,25 @@
+v2.3.42 May 12, 2022
+=====================
+
+* Deprecate dotnet-aspnetcore, dotnet-runtime, and dotnet-sdk 5.x
+
+* Add dotnet-aspnetcore 3.1.25, remove dotnet-aspnetcore 3.1.23 for stack(s) cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.5, remove dotnet-aspnetcore 6.0.3 for stack(s) cflinuxfs3
+
+* Add dotnet-runtime 3.1.25, remove dotnet-runtime 3.1.23 for stack(s) cflinuxfs3
+
+* Add dotnet-runtime 6.0.5, remove dotnet-runtime 6.0.3 for stack(s) cflinuxfs3
+
+* Add dotnet-sdk 3.1.419, remove dotnet-sdk 3.1.417 for stack(s) cflinuxfs3
+
+* Add dotnet-sdk 6.0.300, remove dotnet-sdk 6.0.201 for stack(s) cflinuxfs3
+
+* Add node 16.15.0, remove node 16.14.2 for stack(s) cflinuxfs3
+
+* Add Sealights integration
+
+
 v2.3.41 Apr 07, 2022
 =====================
 
