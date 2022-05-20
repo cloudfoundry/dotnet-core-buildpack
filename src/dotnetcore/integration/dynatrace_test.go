@@ -263,4 +263,26 @@ func testDynatrace(t *testing.T, context spec.G, it spec.S) {
 			Expect(app.Stdout.String()).To(ContainSubstring("Dynatrace OneAgent injection is set up."))
 		})
 	})
+
+	context("deploying a .NET Core app with Dynatrace OneAgent with single credentials service", func() {
+		it("checks if agent config update via API was successful", func() {
+			serviceName := "dynatrace-" + cutlass.RandStringRunes(20) + "-service"
+			command := exec.Command("cf", "cups", serviceName, "-p",
+				fmt.Sprintf("'{\"apitoken\":\"secretpaastoken\",\"apiurl\":\"%s\",\"environmentid\":\"envid\"}'", settings.Dynatrace.URI))
+			_, err := command.CombinedOutput()
+			Expect(err).To(BeNil())
+			services = append(services, serviceName)
+			command = exec.Command("cf", "bind-service", app.Name, serviceName)
+			_, err = command.CombinedOutput()
+			Expect(err).To(BeNil())
+
+			command = exec.Command("cf", "restage", app.Name)
+			_, err = command.Output()
+			Expect(err).To(BeNil())
+
+			Expect(app.ConfirmBuildpack(settings.Buildpack.Version)).To(Succeed())
+			Expect(app.Stdout.String()).To(ContainSubstring("Fetching updated OneAgent configuration from tenant..."))
+			Expect(app.Stdout.String()).To(ContainSubstring("Finished writing updated OneAgent config back to"))
+		})
+	})
 }
