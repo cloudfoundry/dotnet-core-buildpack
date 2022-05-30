@@ -9,7 +9,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20220509111721-05ef1d6ca1f1
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/go-ini/ini v1.66.4
+	github.com/go-ini/ini v1.66.5
 	github.com/golang/mock v1.6.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
 	github.com/kr/text v0.2.0
