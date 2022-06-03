@@ -76,7 +76,7 @@ func TestIntegration(t *testing.T) {
 	Expect(cutlass.CopyCfHome()).To(Succeed())
 	cutlass.SeedRandom()
 
-	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "util", "dynatrace"))
+	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "fake_dynatrace_api"))
 	settings.Dynatrace.App.SetEnv("BP_DEBUG", "true")
 
 	Expect(settings.Dynatrace.App.Push()).To(Succeed())
