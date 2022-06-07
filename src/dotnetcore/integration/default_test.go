@@ -23,6 +23,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		latest31RuntimeVersion string
 		latest31ASPNetVersion  string
 		latest31SDKVersion     string
+		latest6RuntimeVersion  string
+		latest6ASPNetVersion   string
+		latest6SDKVersion      string
 	)
 
 	it.Before(func() {
@@ -36,6 +39,12 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		latest31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "3.1.x", bpDir)
 
 		latest31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "3.1.x", bpDir)
+
+		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
+
+		latest6ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "6.0.x", bpDir)
+
+		latest6SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "6.0.x", bpDir)
 	})
 
 	it.After(func() {
@@ -46,12 +55,12 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		it("builds and runs the app and accepts SIGTERM and exits gracefully", func() {
 			PushAppAndConfirm(t, app)
 
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest31SDKVersion)))
-			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-			Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 3.1"))
+			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest6SDKVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
+			Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
 
 			Expect(app.Stop()).To(Succeed())
-			Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
+			Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
 		})
 
 		context("with dotnet sdk 3.1 in global json", func() {
@@ -67,28 +76,83 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				})
 			})
 			context("when the sdk is missing", func() {
-				var constructedVersion string
+				var (
+					constructedVersion string
+					baseFeatureLine    int
+					proceed            bool
+				)
 
 				it.Before(func() {
 					version, err := semver.NewVersion(latest31SDKVersion)
 					Expect(err).ToNot(HaveOccurred())
-					baseFeatureLine := (version.Patch() / 100) * 100
+
+					if version.Patch()%100 != 0 {
+						proceed = true
+					}
+
+					baseFeatureLine = int((version.Patch() / 100) * 100)
+
 					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
 					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json"), "global.json", "sdk_version", constructedVersion)
 				})
 
 				it("logs a warning about using source_apps SDK", func() {
 					PushAppAndConfirm(t, app)
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
-					Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
+					if proceed {
+						Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
+						Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
+					}
 					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 3.1"))
+				})
+			})
+		})
+
+		context("with dotnet sdk 6 in global json", func() {
+			context("when the sdk exists", func() {
+				it.Before(func() {
+					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_6"), "global.json", "sdk_version", latest6SDKVersion)
+				})
+
+				it("displays a simple text homepage", func() {
+					PushAppAndConfirm(t, app)
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest6SDKVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+				})
+			})
+			context("when the sdk is missing", func() {
+				var (
+					constructedVersion string
+					baseFeatureLine    int
+					proceed            bool
+				)
+
+				it.Before(func() {
+					version, err := semver.NewVersion(latest6SDKVersion)
+					Expect(err).ToNot(HaveOccurred())
+
+					if version.Patch()%100 != 0 {
+						proceed = true
+					}
+
+					baseFeatureLine = int((version.Patch() / 100) * 100)
+					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
+					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_6"), "global.json", "sdk_version", constructedVersion)
+				})
+
+				it("logs a warning about using source_apps SDK", func() {
+					PushAppAndConfirm(t, app)
+					if proceed {
+						Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
+						Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
+					}
+					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
 				})
 			})
 		})
 
 		context("with buildpack.yml and global.json files", func() {
 			it.Before(func() {
-				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest31SDKVersion)
+				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest6SDKVersion)
 			})
 
 			context("when SDK version from buildpack.yml is not available", func() {
@@ -102,32 +166,65 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("when a 3.1 app has a Microsoft.AspNetCore.App version 3.1", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference"))
-				app.Disk = "2G"
+		context("when an app has a Microsoft.AspNetCore.App", func() {
+			context("with version 3.1", func() {
+				it.Before(func() {
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference"))
+					app.Disk = "2G"
+				})
+
+				it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
+					PushAppAndConfirm(t, app)
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
+					Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+				})
 			})
 
-			it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
-				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+			context("with version 6", func() {
+				it.Before(func() {
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference_6"))
+					app.Disk = "2G"
+				})
+
+				it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
+					PushAppAndConfirm(t, app)
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest6ASPNetVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
+					Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+				})
 			})
 		})
 
-		context("when the app has Microsoft.AspNetCore.All version 3.0", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_3.0"))
-				app.Disk = "1G"
+		context("when the app has Microsoft.AspNetCore.All", func() {
+			context("with version 3.1", func() {
+				it.Before(func() {
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_3.1"))
+					app.Disk = "1G"
+				})
+
+				it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
+					PushAppAndConfirm(t, app)
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
+				})
 			})
 
-			it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
+			context("with version 6", func() {
+				it.Before(func() {
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
+					app.Disk = "1G"
+				})
+
+				it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
+					PushAppAndConfirm(t, app)
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest6ASPNetVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
+				})
 			})
 		})
 
@@ -160,7 +257,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
 			})
 		})
 	})
@@ -184,7 +281,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		context("with libgdiplus", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "netcoreapp3.1", "linux-x64", "publish"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net6.0", "ubuntu.18.04-x64", "publish"))
 			})
 
 			it("displays a simple text homepage", func() {
@@ -200,7 +297,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
 			})
 		})
 	})
