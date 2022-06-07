@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RuntimeFrameworkVersion><%= runtime_version %></RuntimeFrameworkVersion>
     <RootNamespace>source_3._1</RootNamespace>
   </PropertyGroup>
 
