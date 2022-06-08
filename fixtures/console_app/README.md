@@ -1,4 +1,4 @@
-This app was generated with the .NET Core CLI version 3.1.413 by running:
+This app was generated with the .NET Core CLI by running:
 ```
 dotnet new console -o console_app
 ```
