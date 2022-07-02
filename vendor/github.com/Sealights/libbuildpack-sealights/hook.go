@@ -55,7 +55,7 @@ func (h *SealightsHook) AfterCompile(stager *libbuildpack.Stager) error {
 	}
 	h.Log.Info("Sealights. Dotnet is installed")
 
-	launcher := NewLauncher(h.Log, conf.Value, agentDir, dotnetDir)
+	launcher := NewLauncher(h.Log, conf.Value, agentDir, dotnetDir, stager.BuildDir())
 	launcher.ModifyStartParameters(stager)
 
 	h.Log.Info("Sealights. Service is set up")
