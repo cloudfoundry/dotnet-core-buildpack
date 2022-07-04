@@ -15,33 +15,16 @@ Cloud Foundry Buildpack integrations with Sealights
     Complete list of the prameters currently supported by the buildpack service is:
     ```
     {
-        "version": "string"                 //sealights version. default value - latest
-        "customAgentUrl": "string"          //sealights agent will be downloaded from this url if provided
-        "mode": "string"                    //execution stage. values: [config, scan, startExecution, testListener, endExecution]. default value - testListener
-        "token": "string"                   //sealights token
-        "tokenFile": "string"               //sealights token filename
-        "bsId": "string"                    //sealights session id
-        "bsIdFile": "string"                //sealights session id filename
-        "target": "string"                  //[testListener] target. default value is calculated based on app start command 
-        "targetArgs": "string"              //[testListener] target args. default value is calculated based on app start command 
-        "workingDir": "string"              //[testListener] target working directory. default value is calculated by cf
-        "profilerLogDir": "string"          //[testListener] profiler will write logs to this directory
-        "profilerLogLevel": "string"        //[testListener] profiler log level
-        "labId": "string"                   //lab id
-        "proxy": "string"
-        "proxyUsername": "string"
-        "proxyPassword": "string"
-        "ignoreCertificateErrors": "string" 
-        "tools": "string"
-        "tags": "string"
-        "notCli": "string"
-        "appName": "string"                 //[config] application name
-        "branchName": "string"              //[config] branch name
-        "buildName": "string"               //[config] build number
-        "includeNamespace": "string"        //[config] namespaces allow list
-        "workspacePath": "string"           //[scan] folder to scan. default value is app directory
-        "ignoreGeneratedCode": "string"     //[scan] ignore generated code
-        "testStage": "string"               //[startExecution] test stage name
+        "version"           // sealights version. default value - latest
+        "verb"              // execution stage. values: [config, scan, startExecution, testListener, endExecution]
+                            // in case if stage is not provided sealights service will not be called on container start
+        "customAgentUrl"    // sealights agent will be downloaded from this url if provided
+        "customCommand"     // allow to replace application start command
+        "proxy"             // proxy for the agent download client
+        "proxyUsername"     // proxy user
+        "proxyPassword"     // proxy password
+
+        + rest of the arguments that required for sealights service
     }
     ```
 

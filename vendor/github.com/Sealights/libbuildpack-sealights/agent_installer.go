@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -43,7 +44,7 @@ func (agi *AgentInstaller) InstallAgent(stager *libbuildpack.Stager) (string, er
 		return "", err
 	}
 
-	return filepath.Join("${HOME}", AgentDir), nil
+	return AgentDir, nil
 }
 
 func (agi *AgentInstaller) InstallDependency(stager *libbuildpack.Stager) (string, error) {
@@ -133,7 +134,7 @@ func (agi *AgentInstaller) downloadPackage() (string, error) {
 	agi.Log.Debug("Sealights. Download package started. From '%s'", url)
 
 	tempAgentFile := filepath.Join(os.TempDir(), PackageArchiveName)
-	err := downloadFileWithRetry(url, tempAgentFile, agi.MaxDownloadRetries)
+	err := agi.downloadFileWithRetry(url, tempAgentFile, agi.MaxDownloadRetries)
 	if err != nil {
 		agi.Log.Error("Sealights. Failed to download package.")
 		return "", err
@@ -176,12 +177,12 @@ func (agi *AgentInstaller) getDownloadUrl() string {
 	return url
 }
 
-func downloadFileWithRetry(url string, filePath string, MaxDownloadRetries int) error {
+func (agi *AgentInstaller) downloadFileWithRetry(url string, filePath string, MaxDownloadRetries int) error {
 	const baseWaitTime = 3 * time.Second
 
 	var err error
 	for i := 0; i < MaxDownloadRetries; i++ {
-		err = downloadFile(url, filePath)
+		err = agi.downloadFile(url, filePath)
 		if err == nil {
 			return nil
 		}
@@ -193,8 +194,11 @@ func downloadFileWithRetry(url string, filePath string, MaxDownloadRetries int) 
 	return err
 }
 
-func downloadFile(url, destFile string) error {
-	resp, err := http.Get(url)
+func (agi *AgentInstaller) downloadFile(agentUrl string, destFile string) error {
+
+	client := agi.createClient()
+
+	resp, err := client.Get(agentUrl)
 	if err != nil {
 		return err
 	}
@@ -205,6 +209,24 @@ func downloadFile(url, destFile string) error {
 	}
 
 	return writeToFile(resp.Body, destFile, 0666)
+}
+
+func (agi *AgentInstaller) createClient() *http.Client {
+	if agi.Options.Proxy != "" {
+		proxyUrl, _ := url.Parse(agi.Options.Proxy)
+
+		return &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyURL(&url.URL{
+					Scheme: proxyUrl.Scheme,
+					User:   url.UserPassword(agi.Options.ProxyUsername, agi.Options.ProxyPassword),
+					Host:   proxyUrl.Host,
+				}),
+			},
+		}
+	} else {
+		return &http.Client{}
+	}
 }
 
 func writeToFile(source io.Reader, destFile string, mode os.FileMode) error {
