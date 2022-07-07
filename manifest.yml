@@ -113,13 +113,13 @@ dependencies:
   source: https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz
   source_sha256: 4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
 - name: node
-  version: 16.15.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_16.15.1_linux_x64_cflinuxfs3_271a665f.tgz
-  sha256: 271a665f1a473ade14c6c042ba355e806482f14331146ec218de3b9481639568
+  version: 16.16.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_16.16.0_linux_x64_cflinuxfs3_d71834bf.tgz
+  sha256: d71834bf82c7be1ba999c627e48e29987e3a049114346b30f1ab32ce25aee817
   cf_stacks:
   - cflinuxfs3
-  source: https://nodejs.org/dist/v16.15.1/node-v16.15.1.tar.gz
-  source_sha256: 308aee7149c4092a53c87c28ef49e23a8d1606119e79ae68333062e2a1f94208
+  source: https://nodejs.org/dist/v16.16.0/node-v16.16.0.tar.gz
+  source_sha256: e07c30b0498f143c08793e34bda1adeaad32f485a4f79f4d67a82879f4c0bbe3
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
