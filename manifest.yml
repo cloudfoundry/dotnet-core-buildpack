@@ -45,6 +45,7 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/bower/bower_1.8.14_linux_noarch_any-stack_00df3dcc.tgz
   sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
   cf_stacks:
+  - cflinuxfs4
   - cflinuxfs3
   source: https://registry.npmjs.org/bower/-/bower-1.8.14.tgz
   source_sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
