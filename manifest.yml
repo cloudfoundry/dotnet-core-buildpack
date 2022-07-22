@@ -140,7 +140,7 @@ include_files:
 runtime_to_sdks:
 - runtime_version: 3.1.27
   sdks:
-    - 3.1.421
+  - 3.1.421
 - runtime_version: 6.0.7
   sdks:
-    - 6.0.302
+  - 6.0.302
