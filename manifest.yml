@@ -106,10 +106,18 @@ dependencies:
   source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
 - name: libunwind
   version: 1.6.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.6.2_linux_noarch_cflinuxfs3_02d17047.tgz
-  sha256: 02d1704741d91bd6d985c14b8a814dafa20e9db707c98b7be6a2fc58ed2855cd
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.6.2_linux_noarch_cflinuxfs3_61087b90.tgz
+  sha256: 61087b901edff8beeb721cb2544c0ed5968c104b5398ad1035ba7f15ee8f6213
   cf_stacks:
   - cflinuxfs3
+  source: https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz
+  source_sha256: 4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
+- name: libunwind
+  version: 1.6.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libunwind/libunwind_1.6.2_linux_noarch_cflinuxfs4_d228f471.tgz
+  sha256: d228f471cca9ec9f164bd5cf2297a379d18698c210ec2d9f46d9af8efa7db490
+  cf_stacks:
+  - cflinuxfs4
   source: https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz
   source_sha256: 4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
 - name: node
