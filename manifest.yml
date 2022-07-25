@@ -62,6 +62,7 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.7_linux_x64_any-stack_3869bf61.tar.xz
   sha256: 3869bf61af98567a42aab5eeb6255eeadd784d04c0a7a60baa3b54723a3c41fb
   cf_stacks:
+  - cflinuxfs4
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/98271725-1784-407c-841a-64d87c674512/b433af33506c816e3b5838f5c65d990a/aspnetcore-runtime-6.0.7-linux-x64.tar.gz
   source_sha256: 61c2b79cc31e1d5df9a398766044177cecb7b9c2baad4ef9d011723ba21fd0ee
