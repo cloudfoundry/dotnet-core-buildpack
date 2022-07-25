@@ -78,6 +78,7 @@ dependencies:
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.7_linux_x64_any-stack_4c3a31a3.tar.xz
   sha256: 4c3a31a38940cadca8c44d14a01cf3c265745bf76bf1a894eac6d0b7aba613fc
   cf_stacks:
+  - cflinuxfs4
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/bd828687-1706-4041-a804-5e93631fe256/d4ec75936459a7e8c772c929edcbfeda/dotnet-runtime-6.0.7-linux-x64.tar.gz
   source_sha256: 6ed407c5c6d365673e707bd9532a0db78d43fbdb2cea99674a841c784cba5063
