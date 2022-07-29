@@ -29,6 +29,7 @@ var _ = Describe("Finalize", func() {
 		buffer      *bytes.Buffer
 		mockCtrl    *gomock.Controller
 		mockCommand *MockCommand
+		stackRID    string
 	)
 
 	BeforeEach(func() {
@@ -60,6 +61,8 @@ var _ = Describe("Finalize", func() {
 			Project: project,
 			Config:  cfg,
 		}
+
+		stackRID = "ubuntu.18.04-x64"
 	})
 
 	AfterEach(func() {
@@ -78,13 +81,13 @@ var _ = Describe("Finalize", func() {
 				Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
 			})
 			It("Does not run dotnet publish", func() {
-				Expect(finalizer.DotnetPublish()).To(Succeed())
+				Expect(finalizer.DotnetPublish(stackRID)).To(Succeed())
 			})
 		})
 		Context("The project is NOT already published", func() {
 			It("Runs dotnet publish", func() {
 				mockCommand.EXPECT().Run(gomock.Any())
-				Expect(finalizer.DotnetPublish()).To(Succeed())
+				Expect(finalizer.DotnetPublish(stackRID)).To(Succeed())
 			})
 		})
 	})
