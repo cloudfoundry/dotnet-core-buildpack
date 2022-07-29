@@ -15,8 +15,9 @@ import (
 	"github.com/kr/text"
 )
 
-var cfStackToOS = map[string]string{
+var stackToRuntimeRID = map[string]string{
 	"cflinuxfs3": "ubuntu.18.04-x64",
+	"cflinuxfs4": "ubuntu.22.04-x64",
 }
 
 type Project interface {
@@ -59,6 +60,13 @@ func Run(f *Finalizer) error {
 		return err
 	}
 
+	stack := os.Getenv("CF_STACK")
+	stackRID := stackToRuntimeRID[stack]
+	if stackRID == "" {
+		f.Log.Error("Unsupported stack: %s", stack)
+		return err
+	}
+
 	if isSourceBased {
 		if err := f.Project.SourceInstallDotnetRuntime(); err != nil {
 			f.Log.Error("Unable to install dotnet-runtime: %s", err.Error())
@@ -70,7 +78,7 @@ func Run(f *Finalizer) error {
 			return err
 		}
 
-		if err := f.DotnetPublish(); err != nil {
+		if err := f.DotnetPublish(stackRID); err != nil {
 			f.Log.Error("Unable to run dotnet publish: %s", err.Error())
 			return err
 		}
@@ -190,7 +198,7 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 	}, nil
 }
 
-func (f *Finalizer) DotnetPublish() error {
+func (f *Finalizer) DotnetPublish(stackRID string) error {
 	if published, err := f.Project.IsPublished(); err != nil {
 		return err
 	} else if published {
@@ -212,7 +220,7 @@ func (f *Finalizer) DotnetPublish() error {
 		return err
 	}
 	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
-	args = append(args, "-r", cfStackToOS[os.Getenv("CF_STACK")])
+	args = append(args, "-r", stackRID)
 	cmd := exec.Command("dotnet", args...)
 	cmd.Dir = f.Stager.BuildDir()
 	cmd.Env = env
