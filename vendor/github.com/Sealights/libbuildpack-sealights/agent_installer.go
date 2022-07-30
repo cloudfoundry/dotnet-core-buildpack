@@ -47,6 +47,7 @@ func (agi *AgentInstaller) InstallAgent(stager *libbuildpack.Stager) (string, er
 	return AgentDir, nil
 }
 
+// Install dotnet sdk and runtime required for the agent
 func (agi *AgentInstaller) InstallDependency(stager *libbuildpack.Stager) (string, error) {
 	if agi.isRequiredVersionInstalled(stager) {
 		agi.Log.Debug("Required dotnet version is already installed")
@@ -195,7 +196,6 @@ func (agi *AgentInstaller) downloadFileWithRetry(url string, filePath string, Ma
 }
 
 func (agi *AgentInstaller) downloadFile(agentUrl string, destFile string) error {
-
 	client := agi.createClient()
 
 	resp, err := client.Get(agentUrl)
@@ -205,12 +205,13 @@ func (agi *AgentInstaller) downloadFile(agentUrl string, destFile string) error 
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("Could not download: %d", resp.StatusCode)
+		return fmt.Errorf("could not download: %d", resp.StatusCode)
 	}
 
 	return writeToFile(resp.Body, destFile, 0666)
 }
 
+// Create simple client or client with proxy, based on the settings
 func (agi *AgentInstaller) createClient() *http.Client {
 	if agi.Options.Proxy != "" {
 		proxyUrl, _ := url.Parse(agi.Options.Proxy)

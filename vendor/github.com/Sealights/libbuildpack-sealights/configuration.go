@@ -13,20 +13,16 @@ type VcapServicesModel struct {
 }
 
 type SealightsOptions struct {
-	Version          string
-	Verb             string
-	CustomAgentUrl   string
-	CustomCommand    string
-	LabId            string
-	Token            string
-	TokenFile        string
-	BsId             string
-	BsIdFile         string
-	ParseArgsFromCmd string
-	Proxy            string
-	ProxyUsername    string
-	ProxyPassword    string
-	SlArguments      map[string]string
+	Version            string
+	Verb               string
+	CustomAgentUrl     string
+	CustomCommand      string
+	LabId              string
+	Proxy              string
+	ProxyUsername      string
+	ProxyPassword      string
+	EnableProfilerLogs string
+	SlArguments        map[string]string
 }
 
 type Configuration struct {
@@ -58,10 +54,11 @@ func (conf *Configuration) parseVcapServices() {
 	}
 
 	buildpackSpecificArguments := map[string]bool{
-		"version":        true,
-		"verb":           true,
-		"customAgentUrl": true,
-		"customCommand":  true,
+		"version":            true,
+		"verb":               true,
+		"customAgentUrl":     true,
+		"customCommand":      true,
+		"enableProfilerLogs": true,
 	}
 
 	for _, services := range vcapServices {
@@ -88,29 +85,28 @@ func (conf *Configuration) parseVcapServices() {
 			}
 
 			options := &SealightsOptions{
-				Version:          queryString("version"),
-				Verb:             queryString("verb"),
-				CustomAgentUrl:   queryString("customAgentUrl"),
-				CustomCommand:    queryString("customCommand"),
-				Token:            queryString("token"),
-				TokenFile:        queryString("tokenFile"),
-				BsId:             queryString("buildSessionId"),
-				BsIdFile:         queryString("buildSessionIdFile"),
-				LabId:            queryString("labId"),
-				ParseArgsFromCmd: queryString("parseArgsFromCmd"),
-				Proxy:            queryString("proxy"),
-				ProxyUsername:    queryString("proxyUsername"),
-				ProxyPassword:    queryString("proxyPassword"),
-				SlArguments:      slArguments,
+				Version:            queryString("version"),
+				Verb:               queryString("verb"),
+				CustomAgentUrl:     queryString("customAgentUrl"),
+				CustomCommand:      queryString("customCommand"),
+				LabId:              queryString("labId"),
+				Proxy:              queryString("proxy"),
+				ProxyUsername:      queryString("proxyUsername"),
+				ProxyPassword:      queryString("proxyPassword"),
+				EnableProfilerLogs: queryString("enableProfilerLogs"),
+				SlArguments:        slArguments,
 			}
 
-			isTokenProvided := options.Token != "" || options.TokenFile != ""
-			if !isTokenProvided {
+			// write warning in case token or session is not provided
+			_, tokenProvided := options.SlArguments["token"]
+			_, tokenFileProvided := options.SlArguments["tokenFile"]
+			if !tokenProvided && !tokenFileProvided {
 				conf.Log.Warning("Sealights access token isn't provided")
 			}
 
-			isSessionIdProvided := options.BsId != "" || options.BsIdFile != ""
-			if !isSessionIdProvided {
+			_, sessionProvided := options.SlArguments["buildSessionId"]
+			_, sessionFileProvided := options.SlArguments["buildSessionIdFile"]
+			if !sessionProvided && !sessionFileProvided {
 				conf.Log.Warning("Sealights build session id isn't provided")
 			}
 
