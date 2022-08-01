@@ -8,8 +8,8 @@ github.com/Masterminds/semver v1.4.2/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF0
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=
 github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
-github.com/Sealights/libbuildpack-sealights v1.1.0 h1:Wh9roxgIwqeN9GzgP9cDXZGfykQM5WeanaIg+MslsDQ=
-github.com/Sealights/libbuildpack-sealights v1.1.0/go.mod h1:ZX8o3uDgAa4zacLX3Ch/MjF5X03ov+OxxXGj25bsB+o=
+github.com/Sealights/libbuildpack-sealights v1.2.0 h1:3xu3+9gBuY0Y5mASiHjuhcGn6yJThlM/42biD40ieXM=
+github.com/Sealights/libbuildpack-sealights v1.2.0/go.mod h1:ZX8o3uDgAa4zacLX3Ch/MjF5X03ov+OxxXGj25bsB+o=
 github.com/VividCortex/ewma v1.1.1/go.mod h1:2Tkkvm3sRDVXaiyucHiACn4cqf7DpdyLvmxzcbUokwA=
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
