@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -34,11 +35,14 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		bpDir, err := cutlass.FindRoot()
 		Expect(err).NotTo(HaveOccurred())
 
-		latest31RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "3.1.x", bpDir)
+		// cflinuxfs4 does not support 3.1
+		if os.Getenv("CF_STACK") != "cflinuxfs4" {
+			latest31RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "3.1.x", bpDir)
 
-		latest31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "3.1.x", bpDir)
+			latest31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "3.1.x", bpDir)
 
-		latest31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "3.1.x", bpDir)
+			latest31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "3.1.x", bpDir)
+		}
 
 		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
 
@@ -64,6 +68,11 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		context("with dotnet sdk 3.1 in global json", func() {
+			it.Before(func() {
+				// 3.1 not supported on cflinuxfs4
+				SkipOnCflinuxfs4(t)
+			})
+
 			context("when the sdk exists", func() {
 				it.Before(func() {
 					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json"), "global.json", "sdk_version", latest31SDKVersion)
@@ -169,6 +178,8 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		context("when an app has a Microsoft.AspNetCore.App", func() {
 			context("with version 3.1", func() {
 				it.Before(func() {
+					// 3.1 not supported on cflinuxfs4
+					SkipOnCflinuxfs4(t)
 					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference"))
 					app.Disk = "2G"
 				})
@@ -201,6 +212,8 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		context("when the app has Microsoft.AspNetCore.All", func() {
 			context("with version 3.1", func() {
 				it.Before(func() {
+					// 3.1 not supported on cflinuxfs4
+					SkipOnCflinuxfs4(t)
 					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_3.1"))
 					app.Disk = "1G"
 				})
@@ -265,6 +278,8 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 	context("deploying a framework-dependent app", func() {
 		context("with Microsoft.AspNetCore.App 3.1", func() {
 			it.Before(func() {
+				// 3.1 not supported on cflinuxfs4
+				SkipOnCflinuxfs4(t)
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "fdd_apps", "simple"))
 				app.Disk = "2G"
 			})

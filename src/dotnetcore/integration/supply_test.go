@@ -45,6 +45,8 @@ func testSupply(t *testing.T, context spec.G, it spec.S) {
 	context("with no csproj file", func() {
 		context("the app is pushed once", func() {
 			it.Before(func() {
+				// Staticfile does not support cflinuxfs4 yet
+				SkipOnCflinuxfs4(t)
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "supply", "staticfile_app"))
 				app.Buildpacks = []string{
 					"dotnet_core_buildpack",

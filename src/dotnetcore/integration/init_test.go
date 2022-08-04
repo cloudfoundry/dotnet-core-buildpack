@@ -167,3 +167,9 @@ func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replace
 
 	return cutlass.New(dir)
 }
+
+func SkipOnCflinuxfs4(t *testing.T) {
+	if os.Getenv("CF_STACK") == "cflinuxfs4" {
+		t.Skip("Skipping test not relevant for stack cflinuxfs4")
+	}
+}
