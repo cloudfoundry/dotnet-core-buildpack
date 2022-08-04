@@ -13,7 +13,7 @@ import (
 )
 
 func testOffline(t *testing.T, context spec.G, it spec.S) {
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "simple"))
+	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "fdd_app_6.0"))
 	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
 }
 
@@ -24,15 +24,25 @@ func AssertNoInternetTraffic(t *testing.T, context spec.G, it spec.S, fixture st
 	context("when offline", func() {
 		it.Before(func() {
 			app = cutlass.New(fixture)
+			// TODO: remove we get around to publishing the image on cloudfoundry
+			if os.Getenv("CF_STACK") == "cflinuxfs4" {
+				Expect(os.Setenv("CF_STACK_DOCKER_IMAGE", "cfbuildpacks/cflinuxfs4")).To(Succeed())
+			}
 		})
 
 		it.After(func() {
+			Expect(os.Unsetenv("CF_STACK_DOCKER_IMAGE")).To(Succeed())
 			app = DestroyApp(t, app)
 		})
 
 		it("displays a simple text homepage", func() {
 			PushAppAndConfirm(t, app)
-			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+			Expect(app.GetBody("/")).To(
+				Or(
+					ContainSubstring("Hello World!"),
+					ContainSubstring("<body>"),
+				),
+			)
 		})
 
 		it("builds and runs the app", func() {
