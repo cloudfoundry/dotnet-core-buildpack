@@ -77,6 +77,12 @@ func TestIntegration(t *testing.T) {
 	cutlass.SeedRandom()
 
 	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "util", "dynatrace"))
+
+	// TODO: remove this once go-buildpack runs on cflinuxfs4
+	// This is done to have the dynatrace broker app written in go up and running
+	if os.Getenv("CF_STACK") == "cflinuxfs4" {
+		settings.Dynatrace.App.Stack = "cflinuxfs3"
+	}
 	settings.Dynatrace.App.SetEnv("BP_DEBUG", "true")
 
 	Expect(settings.Dynatrace.App.Push()).To(Succeed())
