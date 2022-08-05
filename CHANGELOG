@@ -1,3 +1,36 @@
+v2.4.0 Aug 05, 2022
+=====================
+
+* Introduce cflinuxfs4 stack support.
+  cflinuxfs4 is not supported for the .NET 3.1 version line
+  Use .NET 6.0 for cflinuxfs4 stack.
+
+* Bump github.com/Sealights/libbuildpack-sealights from 1.1.0 to 1.2.0
+  - [Release notes](https://github.com/Sealights/libbuildpack-sealights/releases)
+  - [Changelog](https://github.com/Sealights/libbuildpack-sealights/blob/master/release_info.go)
+
+* Add dotnet-sdk 3.1.421, remove 6.0.420
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/182703553)
+
+* Add dotnet-sdk 6.0.302, remove 6.0.301
+  (https://www.pivotaltracker.com/story/show/182703234)
+
+* Add dotnet-runtime 3.1.27, remove 3.1.26
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/182703221)
+
+* Add dotnet-runtime 6.0.7, remove 6.0.6
+  (https://www.pivotaltracker.com/story/show/182703013)
+
+* Add dotnet-aspnetcore 3.1.27, remove 3.1.26
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/182703050)
+
+* Add dotnet-aspnetcore 6.0.7, remove 6.0.6
+  (https://www.pivotaltracker.com/story/show/182703012)
+
+
 v2.3.44 Jul 08, 2022
 =====================
 
