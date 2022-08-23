@@ -31,6 +31,7 @@ var settings struct {
 	FixturesPath string
 	GitHubToken  string
 	Platform     string
+	Stack        string
 }
 
 func init() {
@@ -40,6 +41,7 @@ func init() {
 	flag.StringVar(&settings.Buildpack.Version, "version", "", "version to use (builds if empty)")
 	flag.StringVar(&settings.GitHubToken, "github-token", "", "use the token to make GitHub API requests")
 	flag.StringVar(&settings.Platform, "platform", "cf", "platform to run against")
+	flag.StringVar(&settings.Stack, "stack", "cflinuxfs3", "stack to use when pushing apps")
 }
 
 func TestIntegration(t *testing.T) {
