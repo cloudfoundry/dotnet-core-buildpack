@@ -24,14 +24,9 @@ func AssertNoInternetTraffic(t *testing.T, context spec.G, it spec.S, fixture st
 	context("when offline", func() {
 		it.Before(func() {
 			app = cutlass.New(fixture)
-			// TODO: remove we get around to publishing the image on cloudfoundry
-			if os.Getenv("CF_STACK") == "cflinuxfs4" {
-				Expect(os.Setenv("CF_STACK_DOCKER_IMAGE", "cfbuildpacks/cflinuxfs4")).To(Succeed())
-			}
 		})
 
 		it.After(func() {
-			Expect(os.Unsetenv("CF_STACK_DOCKER_IMAGE")).To(Succeed())
 			app = DestroyApp(t, app)
 		})
 
