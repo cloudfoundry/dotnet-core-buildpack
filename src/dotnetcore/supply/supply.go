@@ -290,6 +290,9 @@ func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 // Will turn a.b.c into a.b.x
 // Will not modify strings that don't match a.b.c
 func sdkRollForward(version string, versions []string) (string, error) {
+	// Filter versions that match the major.minor version
+	versions = filterVersions(versions, version)
+
 	var featureLine string
 	var highestPatch string
 	parts := strings.SplitN(version, ".", 3)
@@ -320,6 +323,18 @@ func sdkRollForward(version string, versions []string) (string, error) {
 	}
 
 	return fmt.Sprintf("%s.%s.%s%s", parts[0], parts[1], featureLine, highestPatch), nil
+}
+
+func filterVersions(versions []string, version string) []string {
+	var filtered []string
+	semver := strings.SplitN(version, ".", 3)
+	major, minor := semver[0], semver[1]
+	for _, v := range versions {
+		if strings.HasPrefix(v, major+"."+minor) {
+			filtered = append(filtered, v)
+		}
+	}
+	return filtered
 }
 
 func (s *Supplier) pickVersionToInstall() (string, error) {
