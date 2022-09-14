@@ -1,3 +1,31 @@
+v2.4.1 Sep 14, 2022
+====================
+
+* Bug Fix: Fix logic in rolling the version forward
+  (https://github.com/cloudfoundry/dotnet-core-buildpack/pull/646)
+
+* Add dotnet-sdk 3.1.423, remove dotnet-sdk 3.1.421
+  for stack(s) cflinuxfs3
+
+* Add dotnet-sdk 6.0.401, remove dotnet-sdk 6.0.302
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 3.1.29, remove dotnet-runtime 3.1.27
+  for stack(s) cflinuxfs3
+
+* Add dotnet-runtime 6.0.9, remove dotnet-runtime 6.0.7
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 3.1.29, remove dotnet-aspnetcore 3.1.27
+  for stack(s) cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.9, remove dotnet-aspnetcore 6.0.7
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add node 16.17.0, remove node 16.16.0
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+
 v2.4.0 Aug 05, 2022
 =====================
 
