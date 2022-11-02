@@ -22,7 +22,8 @@ To build this buildpack, run the following commands from the buildpack's directo
    ```bash
    source .envrc
    ```
-   To simplify the process in the future, install [direnv](https://direnv.net/) which will automatically source .envrc when you change directories.
+   To simplify the process in the future, install [direnv](https://direnv.net/)
+   which will automatically source .envrc when you change directories.
 
 1. Install buildpack-packager
 
