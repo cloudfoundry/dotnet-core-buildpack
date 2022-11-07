@@ -35,9 +35,9 @@ dependency_deprecation_dates:
   name: dotnet-sdk
   date: 2024-11-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: 16.x.x
+- version_line: 18.x.x
   name: node
-  date: 2024-04-30
+  date: 2025-04-30
   link: https://github.com/nodejs/Release
 dependencies:
 - name: bower
