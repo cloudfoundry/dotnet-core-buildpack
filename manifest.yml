@@ -35,9 +35,9 @@ dependency_deprecation_dates:
   name: dotnet-sdk
   date: 2024-11-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-- version_line: 16.x.x
+- version_line: 18.x.x
   name: node
-  date: 2024-04-30
+  date: 2025-04-30
   link: https://github.com/nodejs/Release
 dependencies:
 - name: bower
@@ -50,56 +50,56 @@ dependencies:
   source: https://registry.npmjs.org/bower/-/bower-1.8.14.tgz
   source_sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
 - name: dotnet-aspnetcore
-  version: 3.1.30
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.30_linux_x64_any-stack_1b9e0e66.tar.xz
-  sha256: 1b9e0e660b2bd323dacd42e932c18b8a60308c73f16d300d1cb82eb1a637e4e4
+  version: 3.1.31
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_3.1.31_linux_x64_any-stack_180ae8b1.tar.xz
+  sha256: 180ae8b12434826ab6b0fc6f2b1ab087dcea96e1bb2499f259c64cc8cdbd5dbd
   cf_stacks:
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/12f61df9-e5d2-4cc2-b992-80d30ee3fc43/0087f4e0b8b3a94effa890ee3ebba0b1/aspnetcore-runtime-3.1.30-linux-x64.tar.gz
-  source_sha256: 92e8e028d9a6094437a38ba2d3a7898436f027ccd2655ca52b2b0b27e42e3455
+  source: https://download.visualstudio.microsoft.com/download/pr/2fc0069c-e99a-4296-99ee-a422b3cf50de/df8aee91eeaf50a12c810c3845341eb3/aspnetcore-runtime-3.1.31-linux-x64.tar.gz
+  source_sha256: 0504d12d01a66f58d7d919f0af76957bcf6e997d2691a71ede83de079b7ab70c
 - name: dotnet-aspnetcore
-  version: 6.0.10
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.10_linux_x64_any-stack_db750f38.tar.xz
-  sha256: db750f3844a9c4ac35fb2fc56c62466c58d83036dad158f06608df690f20f49c
+  version: 6.0.11
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.11_linux_x64_any-stack_2a7ae36c.tar.xz
+  sha256: 2a7ae36c53c36e07584c89fe2183672cd38e4acb094b3a6d796a3f6be7db2957
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/7d44ddeb-ad35-41a8-a581-03b151afbd80/6888586c28836b1e1f71df879184550b/aspnetcore-runtime-6.0.10-linux-x64.tar.gz
-  source_sha256: 17685d3e8fa7aa9c1a658f7ca5e176bec7bb4c189b0352ac5abfed98135b93d9
+  source: https://download.visualstudio.microsoft.com/download/pr/0a17a9f6-7705-4b47-aead-c0b582cad317/158b62e5183281e416994d56ce81bc0c/aspnetcore-runtime-6.0.11-linux-x64.tar.gz
+  source_sha256: d499a4af84cc3f9947230392f10d5af5fda65a71e002554f2ea3cd4244538133
 - name: dotnet-runtime
-  version: 3.1.30
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.30_linux_x64_any-stack_6808d72a.tar.xz
-  sha256: 6808d72a9a41c6bd7ff4fc0c6bb59c3558922017e65e981ff76dbd38bd1df0fb
+  version: 3.1.31
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_3.1.31_linux_x64_any-stack_b525772e.tar.xz
+  sha256: b525772ef74d4b48c8bb1c7b98304c2d00ce996b7715e7765577222e8e2e3183
   cf_stacks:
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/9f6128a8-3962-4018-b9b0-9608b9aecec8/f46a672e0117d9128acdbc82cc314e20/dotnet-runtime-3.1.30-linux-x64.tar.gz
-  source_sha256: b2600a6135ab07ed14f0fd23677511cbb4b6bad7c62f42b2215834b8a2cbc867
+  source: https://download.visualstudio.microsoft.com/download/pr/046afe25-7b88-48ad-a06c-1c3625115c63/6814f9ca777bc7e2cb4b373027dcdd76/dotnet-runtime-3.1.31-linux-x64.tar.gz
+  source_sha256: 512be3bf9e3498950c931331d89cce4d248ae6cf127664ba6a47d64f245bf88f
 - name: dotnet-runtime
-  version: 6.0.10
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.10_linux_x64_any-stack_431cc15b.tar.xz
-  sha256: 431cc15b3a17c49621f8ece9cc7f408ba453bcbaacc4bd416636fdb1a922beb5
+  version: 6.0.11
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.11_linux_x64_any-stack_e7fbc5c1.tar.xz
+  sha256: e7fbc5c1c983822eb3816c30b1ebe8542442403ff07216ba2a7bbb8b9efe067e
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/48fbc600-8228-424e-aaed-52b7e601c277/c493b8ac4629341f1e5acc4ff515fead/dotnet-runtime-6.0.10-linux-x64.tar.gz
-  source_sha256: c7e7e1faa375ca7b98124ed5c694f9a28878bb243b4301ce0966100ae38910e6
+  source: https://download.visualstudio.microsoft.com/download/pr/367108bb-8782-4f0b-839d-c98191b7729a/94185f91ef33890816a5846a374b74b7/dotnet-runtime-6.0.11-linux-x64.tar.gz
+  source_sha256: 8b5b933de46d7d885ce99f4e5b49204ab46dd1c0eac9c976ef39558e20a490bf
 - name: dotnet-sdk
-  version: 3.1.424
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_3.1.424_linux_x64_any-stack_0c7cea19.tar.xz
-  sha256: 0c7cea19e6017a0f2dd045a5ebd5949d9ea4a9cbac88529a73c091b42473818d
+  version: 3.1.425
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_3.1.425_linux_x64_any-stack_53f84ce9.tar.xz
+  sha256: 53f84ce9aeb43d187762c7547226be5e6605298861ff34e0427cf5f5b7ee014e
   cf_stacks:
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/28fd6fc0-f484-43d0-90cf-5e297a784e44/09c0612bb1cc46378546dfbdfd83014e/dotnet-sdk-3.1.424-linux-x64.tar.gz
-  source_sha256: c53f38880dc66a863d252abcd93e5830a6b94f6aca4cda1178ac8f609d621a6c
+  source: https://download.visualstudio.microsoft.com/download/pr/c2574deb-9c23-4851-89bd-211243ecd85b/046fc7e68a8e7e6e5854fc0b3b56e59c/dotnet-sdk-3.1.425-linux-x64.tar.gz
+  source_sha256: a8e0fa00eb5278fd457330586348724f53b83fd655da24f27f90b7707c084843
 - name: dotnet-sdk
-  version: 6.0.402
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.402_linux_x64_any-stack_6a125a3a.tar.xz
-  sha256: 6a125a3a5c71bdcb09abf53cf854083849a4cfed3541a54fbd5afbd923d21b9b
+  version: 6.0.403
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.403_linux_x64_any-stack_4100833b.tar.xz
+  sha256: 4100833b10099056aa0e7eb25953b107138da63868b34f29e64bfbcc1152885f
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/d3e46476-4494-41b7-a628-c517794c5a6a/6066215f6c0a18b070e8e6e8b715de0b/dotnet-sdk-6.0.402-linux-x64.tar.gz
-  source_sha256: 635f25082b1074f76dc6617062f339201908bb523d7fa6eba46795d6bca3ee85
+  source: https://download.visualstudio.microsoft.com/download/pr/1d2007d3-da35-48ad-80cc-a39cbc726908/1f3555baa8b14c3327bb4eaa570d7d07/dotnet-sdk-6.0.403-linux-x64.tar.gz
+  source_sha256: e0e751e978d6024c8c75620e0f35f086534d2e81cd26f2fc0ed01423d5e99e19
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_bb66aa5a.tgz
@@ -133,21 +133,21 @@ dependencies:
   source: https://github.com/libunwind/libunwind/releases/download/v1.6.2/libunwind-1.6.2.tar.gz
   source_sha256: 4a6aec666991fb45d0889c44aede8ad6eb108071c3554fcdff671f9c94794976
 - name: node
-  version: 16.18.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_16.18.0_linux_x64_cflinuxfs3_f365ce0a.tgz
-  sha256: f365ce0adcb99c116b987519ce776b627c18c864f29584a96c3bae345a320344
+  version: 18.12.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_18.12.1_linux_x64_cflinuxfs3_e4fbb4e4.tgz
+  sha256: e4fbb4e44f376230b9cab86f220b8d4525e46014ab18d9522cbfa17749ed2689
   cf_stacks:
   - cflinuxfs3
-  source: https://nodejs.org/dist/v16.18.0/node-v16.18.0.tar.gz
-  source_sha256: 276c8a469bd4013c5842ee4166fb9b0087e5ee252a7c932d97e274b77ba73e70
+  source: https://nodejs.org/dist/v18.12.1/node-v18.12.1.tar.gz
+  source_sha256: ba8174dda00d5b90943f37c6a180a1d37c861d91e04a4cb38dc1c0c74981c186
 - name: node
-  version: 16.18.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_16.18.0_linux_x64_cflinuxfs4_aa131291.tgz
-  sha256: aa131291a99ee999ce2a878123ec478665c48da6655e2f3254c0c0d2e9494566
+  version: 18.12.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_18.12.1_linux_x64_cflinuxfs4_3129df7a.tgz
+  sha256: 3129df7acedad0988d3c9bfd2a6f800b58419daab3c73a54a358f6e396ee8cac
   cf_stacks:
   - cflinuxfs4
-  source: https://nodejs.org/dist/v16.18.0/node-v16.18.0.tar.gz
-  source_sha256: 276c8a469bd4013c5842ee4166fb9b0087e5ee252a7c932d97e274b77ba73e70
+  source: https://nodejs.org/dist/v18.12.1/node-v18.12.1.tar.gz
+  source_sha256: ba8174dda00d5b90943f37c6a180a1d37c861d91e04a4cb38dc1c0c74981c186
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
@@ -166,9 +166,9 @@ include_files:
 - bin/supply
 - manifest.yml
 runtime_to_sdks:
-- runtime_version: 3.1.30
+- runtime_version: 3.1.31
   sdks:
-  - 3.1.424
-- runtime_version: 6.0.10
+  - 3.1.425
+- runtime_version: 6.0.11
   sdks:
-  - 6.0.402
+  - 6.0.403
