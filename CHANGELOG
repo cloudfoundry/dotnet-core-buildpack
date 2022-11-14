@@ -1,3 +1,32 @@
+v2.4.3 Nov 14, 2022
+====================
+
+* Add dotnet-aspnetcore 3.1.31, remove dotnet-aspnetcore 3.1.30
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183751987)
+
+* Add dotnet-runtime 3.1.31, remove dotnet-runtime 3.1.30
+  for stack(s) cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183751988)
+
+* Add dotnet-sdk 6.0.403, remove dotnet-sdk 6.0.402
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183751455)
+
+* Add dotnet-aspnetcore 6.0.11, remove dotnet-aspnetcore 6.0.10
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183751561)
+
+* Add dotnet-runtime 6.0.11, remove dotnet-runtime 6.0.10
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183751459)
+
+* Set node to version 18 (current LTS)
+
+* Add node 18.12.1, remove node 16.18.0
+  for stack(s) cflinuxfs3, cflinuxfs4
+
+
 v2.4.2 Oct 14, 2022
 ====================
 
