@@ -27,6 +27,10 @@ dependency_deprecation_dates:
   name: dotnet-runtime
   date: 2024-11-08
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 7.0.x
+  name: dotnet-runtime
+  date: 2024-05-14
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 3.1.x
   name: dotnet-sdk
   date: 2022-12-03
@@ -83,6 +87,15 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/367108bb-8782-4f0b-839d-c98191b7729a/94185f91ef33890816a5846a374b74b7/dotnet-runtime-6.0.11-linux-x64.tar.gz
   source_sha256: 8b5b933de46d7d885ce99f4e5b49204ab46dd1c0eac9c976ef39558e20a490bf
+- name: dotnet-runtime
+  version: 7.0.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_7.0.0_linux_x64_any-stack_48915f8f.tar.xz
+  sha256: 48915f8f7338d9371040b2b70ae1923003c14639f9303ee46c9c57bb22ba357f
+  cf_stacks:
+  - cflinuxfs4
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/d4b0a69b-29cd-40ef-9e95-a8d16f0ff346/5844add76ae3917af9efd59d95e3cbd4/dotnet-runtime-7.0.0-linux-x64.tar.gz
+  source_sha256: 47538f598b5c60a51a1bfa643eae040b8e3832de1c2c2dcb1d3f2da6c7c4d76f
 - name: dotnet-sdk
   version: 3.1.425
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_3.1.425_linux_x64_any-stack_53f84ce9.tar.xz
