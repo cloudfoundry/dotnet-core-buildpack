@@ -27,6 +27,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		latest6RuntimeVersion  string
 		latest6ASPNetVersion   string
 		latest6SDKVersion      string
+		latest7RuntimeVersion  string
 	)
 
 	it.Before(func() {
@@ -49,6 +50,8 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		latest6ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "6.0.x", bpDir)
 
 		latest6SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "6.0.x", bpDir)
+
+		latest7RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "7.0.x", bpDir)
 	})
 
 	it.After(func() {
@@ -271,6 +274,20 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
 				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+			})
+		})
+
+		context("with .NET Core 7", func() {
+			it.Before(func() {
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source-app-7"))
+				app.Disk = "2G"
+				app.Memory = "1G"
+			})
+
+			it("builds and runs successfully", func() {
+				PushAppAndConfirm(t, app)
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest7RuntimeVersion)))
+				Expect(app.GetBody("/")).To(ContainSubstring("<title>source_app_7</title>"))
 			})
 		})
 	})

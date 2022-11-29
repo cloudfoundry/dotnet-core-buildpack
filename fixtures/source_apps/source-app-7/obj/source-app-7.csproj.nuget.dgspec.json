@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "/source-app-7/source-app-7.csproj": {}
+  },
+  "projects": {
+    "/source-app-7/source-app-7.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/source-app-7/source-app-7.csproj",
+        "projectName": "source-app-7",
+        "projectPath": "/source-app-7/source-app-7.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/source-app-7/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/root/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.SpaProxy": {
+              "target": "Package",
+              "version": "[7.0.0-rc.2.22476.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.100-rc.2.22477.23/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

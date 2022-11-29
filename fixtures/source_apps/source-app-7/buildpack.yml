@@ -1,0 +1,2 @@
+dotnet-core:
+  sdk: 7.0.x
