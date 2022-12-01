@@ -1,3 +1,19 @@
+v2.4.4 Dec 01, 2022
+====================
+
+* Add dotnet-sdk 7.0.100
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183841988)
+
+* Add dotnet-aspnetcore 7.0.0
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183841985)
+
+* Add dotnet-runtime 7.0.0
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/183841983)
+
+
 v2.4.3 Nov 14, 2022
 ====================
 
