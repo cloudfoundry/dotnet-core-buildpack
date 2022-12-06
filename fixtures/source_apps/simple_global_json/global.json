@@ -1,6 +1,0 @@
-{
-  "sdk": {
-    "version": "<%= sdk_version %>"
-  }
-}
-

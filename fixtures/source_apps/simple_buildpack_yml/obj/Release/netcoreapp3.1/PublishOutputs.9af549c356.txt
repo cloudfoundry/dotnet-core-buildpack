@@ -1,7 +1,0 @@
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/simple_3.1_source
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/appsettings.Development.json
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/appsettings.json
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/simple_3.1_source.dll
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/simple_3.1_source.deps.json
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/simple_3.1_source.runtimeconfig.json
-/home/ubuntu/workspace/cloudfoundry/dotnet-core-buildpack/fixtures/fdd_apps/simple/simple_3.1_source.pdb

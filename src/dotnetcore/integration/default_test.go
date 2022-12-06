@@ -19,15 +19,11 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		Expect     = NewWithT(t).Expect
 		Eventually = NewWithT(t).Eventually
 
-		app *cutlass.App
-
-		latest31RuntimeVersion string
-		latest31ASPNetVersion  string
-		latest31SDKVersion     string
-		latest6RuntimeVersion  string
-		latest6ASPNetVersion   string
-		latest6SDKVersion      string
-		latest7RuntimeVersion  string
+		app                   *cutlass.App
+		latest6RuntimeVersion string
+		latest6ASPNetVersion  string
+		latest6SDKVersion     string
+		latest7RuntimeVersion string
 	)
 
 	it.Before(func() {
@@ -35,15 +31,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		bpDir, err := cutlass.FindRoot()
 		Expect(err).NotTo(HaveOccurred())
-
-		// cflinuxfs4 does not support 3.1
-		if os.Getenv("CF_STACK") != "cflinuxfs4" {
-			latest31RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "3.1.x", bpDir)
-
-			latest31ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "3.1.x", bpDir)
-
-			latest31SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "3.1.x", bpDir)
-		}
 
 		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
 
@@ -68,55 +55,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 			Expect(app.Stop()).To(Succeed())
 			Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
-		})
-
-		context("with dotnet sdk 3.1 in global json", func() {
-			it.Before(func() {
-				// 3.1 not supported on cflinuxfs4
-				SkipOnCflinuxfs4(t)
-			})
-
-			context("when the sdk exists", func() {
-				it.Before(func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json"), "global.json", "sdk_version", latest31SDKVersion)
-				})
-
-				it("displays a simple text homepage", func() {
-					PushAppAndConfirm(t, app)
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest31SDKVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 3.1"))
-				})
-			})
-			context("when the sdk is missing", func() {
-				var (
-					constructedVersion string
-					baseFeatureLine    int
-					proceed            bool
-				)
-
-				it.Before(func() {
-					version, err := semver.NewVersion(latest31SDKVersion)
-					Expect(err).ToNot(HaveOccurred())
-
-					if version.Patch()%100 != 0 {
-						proceed = true
-					}
-
-					baseFeatureLine = int((version.Patch() / 100) * 100)
-
-					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json"), "global.json", "sdk_version", constructedVersion)
-				})
-
-				it("logs a warning about using source_apps SDK", func() {
-					PushAppAndConfirm(t, app)
-					if proceed {
-						Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
-						Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
-					}
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello From Dotnet 3.1"))
-				})
-			})
 		})
 
 		context("with dotnet sdk 6 in global json", func() {
@@ -179,22 +117,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		context("when an app has a Microsoft.AspNetCore.App", func() {
-			context("with version 3.1", func() {
-				it.Before(func() {
-					// 3.1 not supported on cflinuxfs4
-					SkipOnCflinuxfs4(t)
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference"))
-					app.Disk = "2G"
-				})
-
-				it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
-					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
-				})
-			})
 
 			context("with version 6", func() {
 				it.Before(func() {
@@ -213,22 +135,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		context("when the app has Microsoft.AspNetCore.All", func() {
-			context("with version 3.1", func() {
-				it.Before(func() {
-					// 3.1 not supported on cflinuxfs4
-					SkipOnCflinuxfs4(t)
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_3.1"))
-					app.Disk = "1G"
-				})
-
-				it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
-					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
-				})
-			})
-
 			context("with version 6", func() {
 				it.Before(func() {
 					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
@@ -293,24 +199,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 	})
 
 	context("deploying a framework-dependent app", func() {
-		context("with Microsoft.AspNetCore.App 3.1", func() {
-			it.Before(func() {
-				// 3.1 not supported on cflinuxfs4
-				SkipOnCflinuxfs4(t)
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "fdd_apps", "simple"))
-				app.Disk = "2G"
-			})
-
-			it("publishes and runs, and floats the runtime and aspnetcore versions by default", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest31SDKVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest31ASPNetVersion)))
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest31RuntimeVersion)))
-				Expect(app.Stop()).ToNot(HaveOccurred())
-				Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Goodbye, cruel world!"))
-			})
-		})
-
 		context("with libgdiplus", func() {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net6.0", "ubuntu.18.04-x64", "publish"))
