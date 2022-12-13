@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -59,7 +58,7 @@ type Supplier struct {
 func Run(s *Supplier) error {
 	s.Log.BeginStep("Supplying Dotnet Core")
 
-	if err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "touch", "/tmp/checkpoint"); err != nil {
+	if err := s.Command.Execute(s.Stager.BuildDir(), io.Discard, io.Discard, "touch", "/tmp/checkpoint"); err != nil {
 		s.Log.Error("Unable to execute command: %s", err.Error())
 		return err
 	}
@@ -135,7 +134,7 @@ func (s *Supplier) InstallLibgdiplus() error {
 }
 
 func (s *Supplier) shouldInstallBower() (bool, error) {
-	err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "bower", "-v")
+	err := s.Command.Execute(s.Stager.BuildDir(), io.Discard, io.Discard, "bower", "-v")
 	if err == nil {
 		return false, nil
 	}
@@ -158,7 +157,7 @@ func (s *Supplier) bowerInstall() error {
 	versions := s.Manifest.AllDependencyVersions("bower")
 	dep := libbuildpack.Dependency{Name: "bower", Version: versions[0]}
 
-	dir, err := ioutil.TempDir("", "dotnet-core_buildpack-bower")
+	dir, err := os.MkdirTemp("", "dotnet-core_buildpack-bower")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -168,7 +167,7 @@ func (s *Supplier) bowerInstall() error {
 		return err
 	}
 
-	if err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "npm", "install", "-g", filepath.Join(dir, "bower.tar.gz")); err != nil {
+	if err := s.Command.Execute(s.Stager.BuildDir(), io.Discard, io.Discard, "npm", "install", "-g", filepath.Join(dir, "bower.tar.gz")); err != nil {
 		return err
 	}
 	return s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "node", "bin"), "bin")
@@ -181,7 +180,7 @@ func (s *Supplier) InstallBower() error {
 		return nil
 	}
 
-	if err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "npm", "-v"); err != nil {
+	if err := s.Command.Execute(s.Stager.BuildDir(), io.Discard, io.Discard, "npm", "-v"); err != nil {
 		return fmt.Errorf("Trying to install bower but NPM is not installed")
 	}
 
@@ -215,7 +214,7 @@ func (s *Supplier) InstallNode() error {
 }
 
 func (s *Supplier) shouldInstallNode() (bool, error) {
-	err := s.Command.Execute(s.Stager.BuildDir(), ioutil.Discard, ioutil.Discard, "node", "-v")
+	err := s.Command.Execute(s.Stager.BuildDir(), io.Discard, io.Discard, "node", "-v")
 	if err == nil {
 		return false, nil
 	}
@@ -252,7 +251,7 @@ func (s *Supplier) commandsInProjFiles(commands []string) (bool, error) {
 			} `xml:"Target"`
 		}{}
 
-		projFileContent, err := ioutil.ReadFile(projFile)
+		projFileContent, err := os.ReadFile(projFile)
 		if err != nil {
 			return false, fmt.Errorf("Could not read project file: %v", err)
 		}
@@ -404,7 +403,7 @@ func (s *Supplier) installRuntimeIfNeeded() error {
 	if err != nil {
 		return err
 	} else if exists {
-		version, err := ioutil.ReadFile(runtimeVersionPath)
+		version, err := os.ReadFile(runtimeVersionPath)
 		if err != nil {
 			return err
 		}

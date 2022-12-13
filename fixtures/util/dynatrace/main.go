@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,7 +33,7 @@ func main() {
 			}
 
 		case "/manifest.json", "/dynatrace-env.sh", "/liboneagentproc.so":
-			contents, err := ioutil.ReadFile(strings.TrimPrefix(req.URL.Path, "/"))
+			contents, err := os.ReadFile(strings.TrimPrefix(req.URL.Path, "/"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))

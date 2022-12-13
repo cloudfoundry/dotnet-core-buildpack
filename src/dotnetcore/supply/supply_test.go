@@ -3,7 +3,6 @@ package supply_test
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -38,13 +37,13 @@ var _ = Describe("Supply", func() {
 	)
 
 	BeforeEach(func() {
-		buildDir, err = ioutil.TempDir("", "dotnetcore-buildpack.build.")
+		buildDir, err = os.MkdirTemp("", "dotnetcore-buildpack.build.")
 		Expect(err).To(BeNil())
 
-		cacheDir, err = ioutil.TempDir("", "dotnetcore-buildpack.cache.")
+		cacheDir, err = os.MkdirTemp("", "dotnetcore-buildpack.cache.")
 		Expect(err).To(BeNil())
 
-		depsDir, err = ioutil.TempDir("", "dotnetcore-buildpack.deps.")
+		depsDir, err = os.MkdirTemp("", "dotnetcore-buildpack.deps.")
 		Expect(err).To(BeNil())
 
 		depsIdx = "9"
@@ -106,7 +105,7 @@ var _ = Describe("Supply", func() {
 													<Exec Command="bower install" />
 												</Target>
 											</Project>`
-			Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
+			Expect(os.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
 			Expect(err).To(BeNil())
 			mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "bower", "-v").AnyTimes().Return(fmt.Errorf("error"))
 			mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "install", "-g", gomock.Any()).AnyTimes().Return(nil)
@@ -125,7 +124,7 @@ var _ = Describe("Supply", func() {
 
 		Context("It is a published project and bower command necessary", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
 				mockCommand.EXPECT().Execute(buildDir, gomock.Any(), gomock.Any(), "npm", "-v").AnyTimes()
 			})
 			It("Does not install bower", func() {
@@ -146,7 +145,7 @@ var _ = Describe("Supply", func() {
 		var csprojXml string
 
 		BeforeEach(func() {
-			nodeTmpDir, err = ioutil.TempDir("", "dotnetcore-buildpack.tmp")
+			nodeTmpDir, err = os.MkdirTemp("", "dotnetcore-buildpack.tmp")
 			Expect(err).To(BeNil())
 			csprojXml = `<Project Sdk="Microsoft.NET.Sdk.Web">
 						   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
@@ -183,7 +182,7 @@ var _ = Describe("Supply", func() {
 
 			Context("Not a published project and bower/npm commands necessary", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
 				})
 
 				It("Installs node", func() {
@@ -195,8 +194,8 @@ var _ = Describe("Supply", func() {
 
 			Context("It is a published project and bower/npm commands necessary", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "test_app.csproj"), []byte(csprojXml), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
 				})
 
 				It("Does not install node", func() {
@@ -224,7 +223,7 @@ var _ = Describe("Supply", func() {
 			Context("with exact sdk/version", func() {
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
 					})
 
@@ -238,7 +237,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is not in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 1.2.3"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 1.2.3"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.1", "1.2.2", "1.3.7"})
 					})
 
@@ -251,7 +250,7 @@ var _ = Describe("Supply", func() {
 			Context("with floating sdk/version line", func() {
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.x"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.x"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.7", "6.7.8", "6.9.0"})
 					})
 
@@ -265,7 +264,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.x.x"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.x.x"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.7", "6.7.8", "7.0.0"})
 					})
 
@@ -279,7 +278,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.x"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.x"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.7", "6.7.8", "7.0.0"})
 					})
 
@@ -293,7 +292,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is not in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 1.2.x"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 1.2.x"), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.1", "1.3.7"})
 					})
 
@@ -307,7 +306,7 @@ var _ = Describe("Supply", func() {
 		Context("with global.json", func() {
 			Context("utf-8 encoded", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte("\uFEFF"+`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte("\uFEFF"+`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
 					mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
 				})
 
@@ -321,7 +320,7 @@ var _ = Describe("Supply", func() {
 			Context("with sdk/version", func() {
 				Context("that is in the buildpack", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
 					})
 
@@ -335,7 +334,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is missing, but matches existing version lines", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.301"}}`), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.301"}}`), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.113", "1.2.303", "1.2.608", "1.3.709"})
 					})
 
@@ -349,7 +348,7 @@ var _ = Describe("Supply", func() {
 
 				Context("that is missing, and does not match existing version lines", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "1.2.3"}}`), 0644)).To(Succeed())
 						mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"1.1.1", "1.3.7"})
 					})
 
@@ -361,7 +360,7 @@ var _ = Describe("Supply", func() {
 
 			Context("without sdk/version", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{}`), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{}`), 0644)).To(Succeed())
 				})
 
 				It("installs the default version", func() {
@@ -375,7 +374,7 @@ var _ = Describe("Supply", func() {
 
 			Context("with malformed sdk/version", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`hi mom`), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`hi mom`), 0644)).To(Succeed())
 				})
 
 				It("installs an error", func() {
@@ -388,8 +387,8 @@ var _ = Describe("Supply", func() {
 
 		Context("with buildpack.yml and global.json", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 5.4.3"), 0644)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 5.4.3"), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "global.json"), []byte(`{"sdk": {"version": "6.7.8"}}`), 0644)).To(Succeed())
 				mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"5.4.3", "6.7.8"})
 			})
 
@@ -413,13 +412,13 @@ var _ = Describe("Supply", func() {
 
 		Context("when runtimes were extracted completely", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8"), 0644)).To(Succeed())
 				mockManifest.EXPECT().AllDependencyVersions("dotnet-sdk").Return([]string{"6.7.8"})
 				mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"3.1.4", "3.1.5"})
 				mockInstaller.EXPECT().InstallDependency(libbuildpack.Dependency{Name: "dotnet-sdk", Version: "6.7.8"}, gomock.Any()).
 					DoAndReturn(func(_ libbuildpack.Dependency, _ string) error {
 						Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet-sdk"), 0744)).To(Succeed())
-						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"), []byte("3.1.4"), 0644)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "RuntimeVersion.txt"), []byte("3.1.4"), 0644)).To(Succeed())
 						return nil
 					})
 			})

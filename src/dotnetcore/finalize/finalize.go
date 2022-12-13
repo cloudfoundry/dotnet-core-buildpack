@@ -3,7 +3,6 @@ package finalize
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -151,13 +150,17 @@ func (f *Finalizer) CleanStagingArea() error {
 
 func (f *Finalizer) removeSymlinksTo(dir string) error {
 	for _, name := range []string{"bin", "lib"} {
-		files, err := ioutil.ReadDir(filepath.Join(f.Stager.DepDir(), name))
+		files, err := os.ReadDir(filepath.Join(f.Stager.DepDir(), name))
 		if err != nil {
 			return err
 		}
 
 		for _, file := range files {
-			if (file.Mode() & os.ModeSymlink) != 0 {
+			info, err := file.Info()
+			if err != nil {
+				return err
+			}
+			if (info.Mode() & os.ModeSymlink) != 0 {
 				source := filepath.Join(f.Stager.DepDir(), name, file.Name())
 				target, err := os.Readlink(source)
 				if err != nil {

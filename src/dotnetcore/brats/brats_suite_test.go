@@ -3,7 +3,6 @@ package brats_test
 import (
 	"bytes"
 	"flag"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -112,13 +111,13 @@ func copyBratsWithRuntime(sdkVersion, runtimeVersion, fixture string) *cutlass.A
 	Expect(len(projectFile)).To(Equal(1))
 
 	for _, file := range []string{filepath.Base(projectFile[0]), "global.json"} {
-		data, err := ioutil.ReadFile(filepath.Join(dir, file))
+		data, err := os.ReadFile(filepath.Join(dir, file))
 		Expect(err).ToNot(HaveOccurred())
 
 		data = bytes.Replace(data, []byte("<%= net_core_app %>"), []byte(netCoreApp), -1)
 		data = bytes.Replace(data, []byte("<%= runtime_version %>"), []byte(runtimeVersion), -1)
 		data = bytes.Replace(data, []byte("<%= sdk_version %>"), []byte(sdkVersion), -1)
-		Expect(ioutil.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
+		Expect(os.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
 	}
 
 	return cutlass.New(dir)
@@ -147,7 +146,7 @@ func RuntimesToSDKs() map[string][]string {
 		panic(err)
 	}
 
-	manifestContents, err := ioutil.ReadFile(filepath.Join(bpDir, "manifest.yml"))
+	manifestContents, err := os.ReadFile(filepath.Join(bpDir, "manifest.yml"))
 	if err != nil {
 		panic(err)
 	}
