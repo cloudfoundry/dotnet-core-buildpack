@@ -3,7 +3,6 @@ package project_test
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -35,7 +34,7 @@ var _ = Describe("Project", func() {
 
 	createRuntimeConfig := func(dep, version string) {
 		content := `{ "runtimeOptions": { "framework": { "name": "%s", "version": "%s" }, "applyPatches": false } }`
-		Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, dep, version)), 0644)).To(Succeed())
+		Expect(os.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, dep, version)), 0644)).To(Succeed())
 	}
 
 	createRuntimeConfigMulti := func(frameworks ...project.Framework) {
@@ -44,7 +43,7 @@ var _ = Describe("Project", func() {
 			fws = append(fws, fmt.Sprintf(`{ "name": "%s", "version": "%s" }`, fw.Name, fw.Version))
 		}
 		content := `{ "runtimeOptions": { "applyPatches": false, "frameworks": [%s] } }`
-		Expect(ioutil.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, strings.Join(fws, ","))), 0644)).To(Succeed())
+		Expect(os.WriteFile(filepath.Join(buildDir, "test.runtimeconfig.json"), []byte(fmt.Sprintf(content, strings.Join(fws, ","))), 0644)).To(Succeed())
 	}
 
 	createDepsJSONWithName := func(dep, version string, emptyContent bool, name string) {
@@ -57,7 +56,7 @@ var _ = Describe("Project", func() {
 			content = fmt.Sprintf(`{ "libraries": { "%s/%s": { "name": "Microsoft.NETCore.App", "version": "4.5.6" } } }`, dep, version)
 		}
 
-		Expect(ioutil.WriteFile(depsJSONFile, []byte(content), 0644)).To(Succeed())
+		Expect(os.WriteFile(depsJSONFile, []byte(content), 0644)).To(Succeed())
 	}
 
 	createDepsJSON := func(dep, version string, emptyContent bool) {
@@ -68,14 +67,14 @@ var _ = Describe("Project", func() {
 		content := `{ "runtimeOptions": { "framework": { "name": "Microsoft.NETCore.App", "version": "%s" }, "applyPatches": false } }`
 		path := fmt.Sprintf(filepath.Join(depsDir, depsIdx, "dotnet-sdk", "shared", "%s", "%s", "%s.runtimeconfig.json"), dep, aspNetCoreVersion, dep)
 		Expect(os.MkdirAll(filepath.Dir(path), 0777)).To(Succeed())
-		Expect(ioutil.WriteFile(path, []byte(fmt.Sprintf(content, runtimeVersion)), 0666)).To(Succeed())
+		Expect(os.WriteFile(path, []byte(fmt.Sprintf(content, runtimeVersion)), 0666)).To(Succeed())
 	}
 
 	BeforeEach(func() {
-		buildDir, err = ioutil.TempDir("", "dotnet-core-buildpack.build.")
+		buildDir, err = os.MkdirTemp("", "dotnet-core-buildpack.build.")
 		Expect(err).To(BeNil())
 
-		depsDir, err = ioutil.TempDir("", "dotnetcore-buildpack.deps.")
+		depsDir, err = os.MkdirTemp("", "dotnetcore-buildpack.deps.")
 		Expect(err).To(BeNil())
 
 		depsIdx = "9"
@@ -104,13 +103,13 @@ var _ = Describe("Project", func() {
 	Describe("StartCommand", func() {
 		Context("The project is published", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
 			})
 
 			Context("An executable for the project exists", func() {
 				//before: make a 'fred' executable.
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred"), []byte(""), 0755)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "fred"), []byte(""), 0755)).To(Succeed())
 				})
 
 				It("returns ${HOME}/project", func() {
@@ -122,7 +121,7 @@ var _ = Describe("Project", func() {
 
 			Context("An executable for the project does NOT exist, but a dll does", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.dll"), []byte(""), 0755)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "fred.dll"), []byte(""), 0755)).To(Succeed())
 				})
 
 				It("returns ${HOME}/project.dll", func() {
@@ -144,13 +143,13 @@ var _ = Describe("Project", func() {
 			Context("The csproj file does not have an AssemblyName tag", func() {
 				BeforeEach(func() {
 					Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte("<Project></Project>"), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte("<Project></Project>"), 0644)).To(Succeed())
 					Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
 				})
 
 				Context("An executable for the project exists", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred"), []byte(""), 0755)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred"), []byte(""), 0755)).To(Succeed())
 					})
 
 					It("returns a path to the project executable", func() {
@@ -162,7 +161,7 @@ var _ = Describe("Project", func() {
 
 				Context("An executable for the project does NOT exist, but a dll does", func() {
 					BeforeEach(func() {
-						Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred.dll"), []byte(""), 0755)).To(Succeed())
+						Expect(os.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "fred.dll"), []byte(""), 0755)).To(Succeed())
 					})
 
 					It("returns the path to the project.dll", func() {
@@ -191,9 +190,9 @@ var _ = Describe("Project", func() {
 		<AssemblyName>f.red.csproj</AssemblyName>
 	</PropertyGroup>
 </Project>`
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte(csprojContents), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "subdir", "fred.csproj"), []byte(csprojContents), 0644)).To(Succeed())
 					Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, "dotnet_publish"), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "f.red"), []byte(""), 0755)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(depsDir, depsIdx, "dotnet_publish", "f.red"), []byte(""), 0755)).To(Succeed())
 				})
 
 				It("returns a start command with the AssemblyName instead of filename", func() {
@@ -321,7 +320,7 @@ var _ = Describe("Project", func() {
 				"c/d/other.txt",
 			} {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			}
 		})
 
@@ -342,13 +341,13 @@ var _ = Describe("Project", func() {
 				"c/d/other.txt",
 			} {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			}
 		})
 
 		Context("*.runtimeconfig.json exists", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
 			})
 
 			It("returns true", func() {
@@ -370,7 +369,7 @@ var _ = Describe("Project", func() {
 				"c/d/other.txt",
 			} {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			}
 		})
 
@@ -400,7 +399,7 @@ var _ = Describe("Project", func() {
 				"c/d/other.txt",
 			} {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			}
 		})
 
@@ -428,7 +427,7 @@ var _ = Describe("Project", func() {
 				"c/d/other.txt",
 			} {
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			}
 		})
 
@@ -436,7 +435,7 @@ var _ = Describe("Project", func() {
 			BeforeEach(func() {
 				name := "a/c/something.fsproj"
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			})
 
 			It("returns true", func() {
@@ -454,7 +453,7 @@ var _ = Describe("Project", func() {
 			BeforeEach(func() {
 				name := ".cloudfoundry/0/a/b/something.fsproj"
 				Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 			})
 
 			It("returns false", func() {
@@ -467,7 +466,7 @@ var _ = Describe("Project", func() {
 		Context("There is a runtimeconfig file present", func() {
 			BeforeEach(func() {
 
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "fred.runtimeconfig.json"), []byte(""), 0644)).To(Succeed())
 			})
 
 			It("returns the runtimeconfig file", func() {
@@ -488,7 +487,7 @@ var _ = Describe("Project", func() {
 		Context("Exactly one project path in paths", func() {
 			BeforeEach(func() {
 				Expect(os.MkdirAll(filepath.Join(buildDir, "subdir"), 0755)).To(Succeed())
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "subdir", "first.csproj"), []byte(""), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "subdir", "first.csproj"), []byte(""), 0644)).To(Succeed())
 			})
 			It("returns that one path", func() {
 				path, err := subject.MainPath()
@@ -510,13 +509,13 @@ var _ = Describe("Project", func() {
 					"c/d/other.txt",
 				} {
 					Expect(os.MkdirAll(filepath.Dir(filepath.Join(buildDir, name)), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, name), []byte(""), 0644)).To(Succeed())
 				}
 			})
 
 			Context("There is a .deployment file present", func() {
 				BeforeEach(func() {
-					Expect(ioutil.WriteFile(filepath.Join(buildDir, ".deployment"), []byte("[config]\nproject = ./a/b/first.vbproj"), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, ".deployment"), []byte("[config]\nproject = ./a/b/first.vbproj"), 0644)).To(Succeed())
 				})
 				It("returns the path specified in the .deployment file.", func() {
 					path, err := subject.MainPath()
@@ -636,7 +635,7 @@ var _ = Describe("Project", func() {
 	Describe("SourceInstallDotnetRuntime", func() {
 		Context("when the runtime version is specified under <TargetFramework> as 'netX.Y'", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
@@ -659,7 +658,7 @@ var _ = Describe("Project", func() {
 
 		Context("when the runtime version is only specified under <TargetFramework> in the csproj", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
@@ -682,7 +681,7 @@ var _ = Describe("Project", func() {
 
 		Context("when the exact version is specified under RuntimeFrameworkVersion in the csproj", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
@@ -703,7 +702,7 @@ var _ = Describe("Project", func() {
 
 		Context("when a floating version is specified under RuntimeFrameworkVersion in the csproj", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
@@ -729,7 +728,7 @@ var _ = Describe("Project", func() {
 	Describe("SourceInstallDotnetAspNetCore", func() {
 		Context("when the Microsoft.AspNetCore.App version is discovered via .csproj", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
@@ -755,7 +754,7 @@ var _ = Describe("Project", func() {
 
 		Context("when the dotnet-aspnetcore version is not found in the csproj", func() {
 			BeforeEach(func() {
-				ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
+				os.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
 				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, ".nuget", "packages", "microsoft.aspnetcore.app", "4.5.6"), 0755)).To(Succeed())
 			})
 
@@ -775,7 +774,7 @@ var _ = Describe("Project", func() {
 
 		Context("when the dotnet-aspnetcore version found in the nuget cache is less than 2.1", func() {
 			BeforeEach(func() {
-				ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
+				os.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
 				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, ".nuget", "packages", "microsoft.aspnetcore.app", "4.5.6"), 0755)).To(Succeed())
 			})
 
@@ -795,7 +794,7 @@ var _ = Describe("Project", func() {
 
 		Context("when the dotnet-aspnetcore version is less than 2.1", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
 					[]byte(`
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
@@ -824,7 +823,7 @@ var _ = Describe("Project", func() {
 		Context("when the app uses System.Drawing.Common", func() {
 			It("should return true for a source based app", func() {
 				contents := []byte(`<Project Sdk="Microsoft.NET.Sdk.Web"> <ItemGroup> <PackageReference Include="System.Drawing.Common" Version="4.5.1" /> </ItemGroup> </Project>`)
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
 
 				exists, err := subject.UsesLibrary("System.Drawing.Common")
 				Expect(err).NotTo(HaveOccurred())
@@ -844,7 +843,7 @@ var _ = Describe("Project", func() {
 		Context("when the app does not use System.Drawing.Common", func() {
 			It("should return false for a source based app", func() {
 				contents := []byte(`<Project Sdk="Microsoft.NET.Sdk.Web"> <ItemGroup> <PackageReference Include="Other.Dependency" Version="1.2.3" /> </ItemGroup> </Project>`)
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"), contents, 0644)).To(Succeed())
 
 				exists, err := subject.UsesLibrary("System.Drawing.Common")
 				Expect(err).NotTo(HaveOccurred())

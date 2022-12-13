@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -162,10 +161,10 @@ func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replace
 	dir, err := cutlass.CopyFixture(pathToFixture)
 	Expect(err).ToNot(HaveOccurred())
 
-	data, err := ioutil.ReadFile(filepath.Join(dir, file))
+	data, err := os.ReadFile(filepath.Join(dir, file))
 	Expect(err).ToNot(HaveOccurred())
 	data = bytes.Replace(data, []byte(fmt.Sprintf("<%%= %s %%>", templateVar)), []byte(replaceVal), -1)
-	Expect(ioutil.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
+	Expect(os.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
 
 	return cutlass.New(dir)
 }

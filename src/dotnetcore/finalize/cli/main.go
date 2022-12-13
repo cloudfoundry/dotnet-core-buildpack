@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -15,7 +14,7 @@ import (
 )
 
 func main() {
-	logfile, err := ioutil.TempFile("", "cloudfoundry.dotnetcore-buildpack.finalize")
+	logfile, err := os.CreateTemp("", "cloudfoundry.dotnetcore-buildpack.finalize")
 	defer logfile.Close()
 	if err != nil {
 		logger := libbuildpack.NewLogger(os.Stdout)

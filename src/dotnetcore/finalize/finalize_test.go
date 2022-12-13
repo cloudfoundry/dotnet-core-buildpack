@@ -2,7 +2,6 @@ package finalize_test
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -33,10 +32,10 @@ var _ = Describe("Finalize", func() {
 	)
 
 	BeforeEach(func() {
-		buildDir, err = ioutil.TempDir("", "dotnet-core-buildpack.build.")
+		buildDir, err = os.MkdirTemp("", "dotnet-core-buildpack.build.")
 		Expect(err).To(BeNil())
 
-		depsDir, err = ioutil.TempDir("", "dotnet-core-buildpack.deps.")
+		depsDir, err = os.MkdirTemp("", "dotnet-core-buildpack.deps.")
 		Expect(err).To(BeNil())
 
 		depsIdx = "9"
@@ -78,7 +77,7 @@ var _ = Describe("Finalize", func() {
 	Describe("DotnetPublish", func() {
 		Context("The project is already published", func() {
 			BeforeEach(func() {
-				Expect(ioutil.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
+				Expect(os.WriteFile(filepath.Join(buildDir, "test_app.runtimeconfig.json"), []byte("any text"), 0644)).To(Succeed())
 			})
 			It("Does not run dotnet publish", func() {
 				Expect(finalizer.DotnetPublish(stackRID)).To(Succeed())
@@ -103,7 +102,7 @@ var _ = Describe("Finalize", func() {
 					"other/file.txt",
 				} {
 					Expect(os.MkdirAll(filepath.Dir(filepath.Join(depsDir, depsIdx, name)), 0755)).To(Succeed())
-					Expect(ioutil.WriteFile(filepath.Join(depsDir, depsIdx, name), []byte(""), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(depsDir, depsIdx, name), []byte(""), 0644)).To(Succeed())
 					Expect(os.Symlink(filepath.Join(depsDir, depsIdx, name), filepath.Join(depsDir, depsIdx, "bin", filepath.Base(name)))).To(Succeed())
 					Expect(os.Symlink(filepath.Join(depsDir, depsIdx, name), filepath.Join(depsDir, depsIdx, "lib", filepath.Base(name)))).To(Succeed())
 				}

@@ -6,7 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -410,7 +410,7 @@ func (p *Project) SourceInstallDotnetAspNetCore() error {
 }
 
 func (p *Project) getVersionFromAssetFile(path, library string) (string, bool, error) {
-	depsBytes, err := ioutil.ReadFile(path)
+	depsBytes, err := os.ReadFile(path)
 	if err != nil {
 		return "", false, err
 	}
@@ -449,7 +449,7 @@ func (p *Project) versionsFromNugetPackages(dependency string, rollForward bool)
 		return []string{}, nil
 	}
 
-	files, err := ioutil.ReadDir(restoredVersionsDir)
+	files, err := os.ReadDir(restoredVersionsDir)
 	if err != nil {
 		return []string{}, err
 	}
@@ -660,7 +660,7 @@ func (p *Project) parseProj() (CSProj, error) {
 		return CSProj{}, err
 	}
 	defer projFile.Close()
-	projBytes, err := ioutil.ReadAll(projFile)
+	projBytes, err := io.ReadAll(projFile)
 	if err != nil {
 		return CSProj{}, err
 	}
