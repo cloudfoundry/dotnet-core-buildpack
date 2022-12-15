@@ -172,6 +172,6 @@ runtime_to_sdks:
 - runtime_version: 7.0.1
   sdks:
   - 7.0.101
-- runtime_version: 6.0.11
+- runtime_version: 6.0.12
   sdks:
-  - 6.0.403
+  - 6.0.404
