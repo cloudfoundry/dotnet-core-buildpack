@@ -1,3 +1,19 @@
+v2.4.6 Jan 13, 2023
+====================
+
+* Add dotnet-sdk 7.0.102, remove dotnet-sdk 7.0.101 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 6.0.405, remove dotnet-sdk 6.0.404 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.13, remove dotnet-aspnetcore 6.0.12 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 6.0.13, remove dotnet-runtime 6.0.12 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 7.0.2, remove dotnet-runtime 7.0.1 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 7.0.2, remove dotnet-aspnetcore 7.0.1 for stack(s) cflinuxfs4, cflinuxfs3
+
+
 v2.4.5 Dec 16, 2022
 ====================
 
