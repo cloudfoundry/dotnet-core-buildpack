@@ -169,9 +169,9 @@ include_files:
 - bin/supply
 - manifest.yml
 runtime_to_sdks:
-- runtime_version: ''
+- runtime_version: 7.0.2
   sdks:
-  - ''
+  - 7.0.102
 - runtime_version: 6.0.13
   sdks:
   - 6.0.405
