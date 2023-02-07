@@ -20,13 +20,9 @@ var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
 	compatible := func(sdkVersion, runtimeVersion string) bool {
-		runtimesToSDKs := RuntimesToSDKs()
-		for _, s := range runtimesToSDKs[runtimeVersion] {
-			if sdkVersion == s {
-				return true
-			}
-		}
-		return false
+		sdkSemVer := semver.MustParse(sdkVersion)
+		runtimeSemVer := semver.MustParse(runtimeVersion)
+		return sdkSemVer.Major == runtimeSemVer.Major && sdkSemVer.Minor == runtimeSemVer.Minor
 	}
 
 	ensureAppWorks := func(sdkVersion, runtimeVersion string, app *cutlass.App) {
@@ -68,16 +64,3 @@ var _ = Describe("Dotnet buildpack", func() {
 		)
 	})
 })
-
-func isPreview(version semver.Version) bool {
-	if len(version.Pre) == 0 {
-		return false
-	}
-	for _, pre := range version.Pre {
-		emptyPR := semver.PRVersion{}
-		if pre != emptyPR {
-			return true
-		}
-	}
-	return false
-}
