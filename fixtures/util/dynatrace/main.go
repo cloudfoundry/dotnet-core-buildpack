@@ -32,7 +32,7 @@ func main() {
 				return
 			}
 
-		case "/dynatrace-env.sh", "/liboneagentproc.so":
+		case "/dynatrace-env.sh", "/liboneagentproc.so", "/ruxitagentproc.conf":
 			contents, err := os.ReadFile(strings.TrimPrefix(req.URL.Path, "/"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
