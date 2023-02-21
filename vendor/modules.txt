@@ -1,8 +1,8 @@
 # code.cloudfoundry.org/lager v2.0.0+incompatible
 ## explicit
 code.cloudfoundry.org/lager
-# github.com/Dynatrace/libbuildpack-dynatrace v1.4.2
-## explicit
+# github.com/Dynatrace/libbuildpack-dynatrace v1.5.2
+## explicit; go 1.19
 github.com/Dynatrace/libbuildpack-dynatrace
 # github.com/Masterminds/semver v1.5.0
 ## explicit
@@ -146,8 +146,6 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
-# gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9
-## explicit
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 ## explicit
 gopkg.in/tomb.v1

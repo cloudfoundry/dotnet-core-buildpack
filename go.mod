@@ -3,7 +3,7 @@ module github.com/cloudfoundry/dotnet-core-buildpack
 go 1.19
 
 require (
-	github.com/Dynatrace/libbuildpack-dynatrace v1.4.2
+	github.com/Dynatrace/libbuildpack-dynatrace v1.5.2
 	github.com/Masterminds/semver v1.5.0
 	github.com/Sealights/libbuildpack-sealights v1.2.0
 	github.com/blang/semver v3.5.1+incompatible
@@ -34,7 +34,6 @@ require (
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
-	gopkg.in/jarcoal/httpmock.v1 v1.0.0-20190310145901-c8b53f8af6a9 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
