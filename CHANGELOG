@@ -1,3 +1,25 @@
+v2.4.8 Feb 21, 2023
+====================
+* Add dotnet-runtime 6.0.14, remove dotnet-runtime 6.0.13 (#748)
+
+* Add dotnet-aspnetcore 6.0.14, remove dotnet-aspnetcore 6.0.13 (#747)
+
+* Add dotnet-runtime 7.0.3, remove dotnet-runtime 7.0.2 (#746)
+
+* Add dotnet-aspnetcore 7.0.3, remove dotnet-aspnetcore 7.0.2 (#745)
+
+* Add dotnet-sdk 7.0.200, remove dotnet-sdk 7.0.102 (#744)
+
+* Add dotnet-sdk 6.0.406, remove dotnet-sdk 6.0.405 (#742)
+
+* Add node 18.14.2, remove node 18.14.0 (#743)
+  for stack(s) cflinuxfs3, cflinuxfs4
+  (https://www.pivotaltracker.com/story/show/184532347)
+
+* update libbuildpack-dynatrace (#691)
+
+* Removes compatibility table that only exists for brats tests and replaces it with simpler logic
+
 v2.4.7 Feb 08, 2023
 ====================
 
