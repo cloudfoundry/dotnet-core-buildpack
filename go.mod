@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/Sealights/libbuildpack-sealights v1.2.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20230202173042-e0fe4bc5c1ef
+	github.com/cloudfoundry/libbuildpack v0.0.0-20230209225346-0e58f7be61d4
 	github.com/go-ini/ini v1.67.0
 	github.com/golang/mock v1.6.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
