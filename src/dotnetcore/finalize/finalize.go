@@ -179,7 +179,7 @@ func (f *Finalizer) removeSymlinksTo(dir string) error {
 
 func (f *Finalizer) WriteProfileD() error {
 	scriptContents := fmt.Sprintf(`
-export ASPNETCORE_URLS="${ASPNETCORE_URLS:=http://0.0.0.0:${PORT}}
+export ASPNETCORE_URLS="${ASPNETCORE_URLS:-http://0.0.0.0:${PORT}}"
 export DOTNET_ROOT=%s
 `, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
 
