@@ -179,7 +179,7 @@ func (f *Finalizer) removeSymlinksTo(dir string) error {
 
 func (f *Finalizer) WriteProfileD() error {
 	scriptContents := fmt.Sprintf(`
-export ASPNETCORE_URLS=http://0.0.0.0:${PORT}
+export ASPNETCORE_URLS="${ASPNETCORE_URLS:=http://0.0.0.0:${PORT}}
 export DOTNET_ROOT=%s
 `, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
 
@@ -197,7 +197,7 @@ func (f *Finalizer) GenerateReleaseYaml() (map[string]map[string]string, error) 
 		startCmd = "dotnet " + startCmd
 	}
 	return map[string]map[string]string{
-		"default_process_types": {"web": fmt.Sprintf("cd %s && exec %s --server.urls http://0.0.0.0:${PORT}", directory, startCmd)},
+		"default_process_types": {"web": fmt.Sprintf("cd %s && exec %s", directory, startCmd)},
 	}, nil
 }
 
