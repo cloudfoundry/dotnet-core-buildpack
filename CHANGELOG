@@ -1,3 +1,15 @@
+v2.4.10 Apr 10, 2023
+=====================
+
+* Update libbuildpack
+
+* Bump github.com/onsi/gomega from 1.27.2 to 1.27.6
+  Bumps [github.com/onsi/gomega](https://github.com/onsi/gomega) from 1.27.2 to 1.27.6.
+  - [Release notes](https://github.com/onsi/gomega/releases)
+  - [Changelog](https://github.com/onsi/gomega/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/onsi/gomega/compare/v1.27.2...v1.27.6)
+
+
 v2.4.9 Mar 20, 2023
 ====================
 
