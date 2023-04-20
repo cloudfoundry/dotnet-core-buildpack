@@ -1,3 +1,39 @@
+v2.4.11 Apr 19, 2023
+=====================
+
+* Add dotnet-sdk 7.0.203, remove dotnet-sdk 7.0.202 (#772)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 7.0.5, remove dotnet-aspnetcore 7.0.4 (#774)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 7.0.5, remove dotnet-runtime 7.0.4 (#775)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 6.0.16, remove dotnet-runtime 6.0.15 (#771)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+
+* Add dotnet-aspnetcore 6.0.16, remove dotnet-aspnetcore 6.0.15 (#770)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+
+* Add dotnet-sdk 6.0.408, remove dotnet-sdk 6.0.407 (#773)
+    for stack(s) cflinuxfs4, cflinuxfs3
+
+
+v2.4.10 Apr 10, 2023
+=====================
+
+* Update libbuildpack
+
+* Bump github.com/onsi/gomega from 1.27.2 to 1.27.6
+  Bumps [github.com/onsi/gomega](https://github.com/onsi/gomega) from 1.27.2 to 1.27.6.
+  - [Release notes](https://github.com/onsi/gomega/releases)
+  - [Changelog](https://github.com/onsi/gomega/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/onsi/gomega/compare/v1.27.2...v1.27.6)
+
+
 v2.4.9 Mar 20, 2023
 ====================
 
