@@ -1,3 +1,13 @@
+v2.4.13 Jun 07, 2023
+=====================
+
+* Add libunwind 1.7.0, remove libunwind 1.6.2
+  for stack(s) cflinuxfs3, cflinuxfs4
+
+* Add dotnet-sdk 7.0.302, remove dotnet-sdk 7.0.203 (#781)
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+
 v2.4.12 May 04, 2023
 =====================
 
