@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "0z/f5q+gUXNJwpVTfghLM7YWaCsSXR9KIAk2SbW+xHuO3x2nsIY9RBwgRP9ZrJHqBOZt6FMLyuUYqnCTk/ostg==",
+  "success": true,
+  "projectFilePath": "/test/app.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.aspnetcore.spaproxy/6.0.6/microsoft.aspnetcore.spaproxy.6.0.6.nupkg.sha512"
+  ],
+  "logs": []
+}
