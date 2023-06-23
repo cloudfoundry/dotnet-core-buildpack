@@ -8,6 +8,7 @@ require (
 	github.com/Sealights/libbuildpack-sealights v1.2.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20230331144814-0b11b8e0551a
+	github.com/cloudfoundry/switchblade v0.4.0
 	github.com/go-ini/ini v1.67.0
 	github.com/golang/mock v1.6.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
@@ -21,20 +22,35 @@ require (
 
 require (
 	code.cloudfoundry.org/lager v2.0.0+incompatible // indirect
+	github.com/Microsoft/go-winio v0.6.0 // indirect
+	github.com/docker/distribution v2.8.1+incompatible // indirect
+	github.com/docker/docker v23.0.5+incompatible // indirect
+	github.com/docker/go-connections v0.4.0 // indirect
+	github.com/docker/go-units v0.5.0 // indirect
 	github.com/elazarl/goproxy v0.0.0-20190911111923-ecfe977594f1 // indirect
-	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
+	github.com/opencontainers/go-digest v1.0.0 // indirect
+	github.com/opencontainers/image-spec v1.1.0-rc2.0.20221005185240-3a7f492d3f1b // indirect
 	github.com/paketo-buildpacks/packit v1.3.1 // indirect
+	github.com/paketo-buildpacks/packit/v2 v2.9.1 // indirect
 	github.com/pilu/miniassert v0.0.0-20140522125902-bee63581261a // indirect
-	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569 // indirect
 	github.com/tidwall/gjson v1.12.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
+	github.com/ulikunitz/xz v0.5.11 // indirect
+	golang.org/x/mod v0.10.0 // indirect
+	golang.org/x/net v0.9.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/tools v0.8.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/cloudfoundry/switchblade => ../switchblade

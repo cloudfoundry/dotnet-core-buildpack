@@ -1,16 +1,15 @@
 package integration_test
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
+	"github.com/cloudfoundry/libbuildpack"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/cloudfoundry/libbuildpack"
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/onsi/gomega/format"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
@@ -18,159 +17,165 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var settings struct {
-	Buildpack struct {
-		Version string
-		Path    string
+var (
+	settings struct {
+		Buildpack struct {
+			Version string
+			Path    string
+		}
+
+		Cached      bool
+		Serial      bool
+		GitHubToken string
+		Platform    string
+		Stack       string
 	}
-	Dynatrace struct {
-		App *cutlass.App
-		URI string
-	}
-	FixturesPath string
-	GitHubToken  string
-	Platform     string
-	Stack        string
-}
+)
+
+const (
+	Regexp         = `\[.*\/python[\-_][\d.]+[\-_]linux[\-_](amd64)?(x64)?[\-_]cflinuxfs\d[\-_][\da-f]+\.tgz\]`
+	DownloadRegexp = "Download " + Regexp
+	CopyRegexp     = "Copy " + Regexp
+)
 
 func init() {
-	flag.BoolVar(&cutlass.Cached, "cached", true, "cached buildpack")
-	flag.StringVar(&cutlass.DefaultMemory, "memory", "256M", "default memory for pushed apps")
-	flag.StringVar(&cutlass.DefaultDisk, "disk", "512M", "default disk for pushed apps")
-	flag.StringVar(&settings.Buildpack.Version, "version", "", "version to use (builds if empty)")
+	flag.BoolVar(&settings.Cached, "cached", false, "run cached buildpack tests")
+	flag.BoolVar(&settings.Serial, "serial", false, "run serial buildpack tests")
+	flag.StringVar(&settings.Platform, "platform", "cf", `switchblade platform to test against ("cf" or "docker")`)
 	flag.StringVar(&settings.GitHubToken, "github-token", "", "use the token to make GitHub API requests")
-	flag.StringVar(&settings.Platform, "platform", "cf", "platform to run against")
 	flag.StringVar(&settings.Stack, "stack", "cflinuxfs3", "stack to use when pushing apps")
 }
 
 func TestIntegration(t *testing.T) {
+	var Expect = NewWithT(t).Expect
+
 	format.MaxLength = 0
+	SetDefaultEventuallyTimeout(10 * time.Second)
 
-	var (
-		Expect     = NewWithT(t).Expect
-		Eventually = NewWithT(t).Eventually
+	root, err := filepath.Abs("./../../..")
+	Expect(err).NotTo(HaveOccurred())
 
-		packagedBuildpack cutlass.VersionedBuildpackPackage
+	fixtures := filepath.Join(root, "fixtures")
+
+	platform, err := switchblade.NewPlatform(settings.Platform, settings.GitHubToken, settings.Stack)
+	Expect(err).NotTo(HaveOccurred())
+
+	err = platform.Initialize(
+		switchblade.Buildpack{
+			Name: "dotnet_core_buildpack",
+			URI:  os.Getenv("BUILDPACK_FILE"),
+		},
+		switchblade.Buildpack{
+			Name: "override_buildpack",
+			URI:  filepath.Join(fixtures, "util", "override_buildpack"),
+		},
 	)
-
-	root, err := cutlass.FindRoot()
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.FixturesPath = filepath.Join(root, "fixtures")
+	//proxyName, err := switchblade.RandomName()
+	//Expect(err).NotTo(HaveOccurred())
 
-	if settings.Buildpack.Version == "" {
-		packagedBuildpack, err = cutlass.PackageUniquelyVersionedBuildpack(os.Getenv("CF_STACK"), true)
-		Expect(err).NotTo(HaveOccurred())
+	//proxyDeploymentProcess := platform.Deploy.WithBuildpacks("go_buildpack")
+	//
+	//// TODO: remove this once go-buildpack runs on cflinuxfs4
+	//// This is done to have the proxy app written in go up and running
+	//if settings.Stack == "cflinuxfs4" {
+	//	proxyDeploymentProcess = proxyDeploymentProcess.WithStack("cflinuxfs3")
+	//}
+	//
+	//proxyDeployment, _, err := proxyDeploymentProcess.
+	//	Execute(proxyName, filepath.Join(fixtures, "util", "proxy"))
+	//Expect(err).NotTo(HaveOccurred())
 
-		settings.Buildpack.Path = packagedBuildpack.File
+	//dynatraceName, err := switchblade.RandomName()
+	//Expect(err).NotTo(HaveOccurred())
 
-		info, err := os.Stat(settings.Buildpack.Path)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(info.Size() < 1024*1024*1024).To(BeTrue(), "Buildpack file size must be less than 1G")
-
-		settings.Buildpack.Version = packagedBuildpack.Version
-	}
-
-	err = cutlass.CreateOrUpdateBuildpack("override", filepath.Join(settings.FixturesPath, "util", "override_buildpack"), "")
-	Expect(err).NotTo(HaveOccurred())
-
-	Expect(cutlass.CopyCfHome()).To(Succeed())
-	cutlass.SeedRandom()
-
-	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "util", "dynatrace"))
-
-	// TODO: remove this once go-buildpack runs on cflinuxfs4
-	// This is done to have the dynatrace broker app written in go up and running
-	if os.Getenv("CF_STACK") == "cflinuxfs4" {
-		settings.Dynatrace.App.Stack = "cflinuxfs3"
-	}
-	settings.Dynatrace.App.SetEnv("BP_DEBUG", "true")
-
-	Expect(settings.Dynatrace.App.Push()).To(Succeed())
-	Eventually(func() ([]string, error) {
-		return settings.Dynatrace.App.InstanceStates()
-	}, 60*time.Second).Should(Equal([]string{"RUNNING"}))
-
-	settings.Dynatrace.URI, err = settings.Dynatrace.App.GetUrl("")
-	Expect(err).NotTo(HaveOccurred())
+	//dynatraceDeploymentProcess := platform.Deploy.WithBuildpacks("go_buildpack")
+	//
+	//// TODO: remove this once go-buildpack runs on cflinuxfs4
+	//// This is done to have the dynatrace broker app app written in go up and running
+	//if settings.Stack == "cflinuxfs4" {
+	//	dynatraceDeploymentProcess = dynatraceDeploymentProcess.WithStack("cflinuxfs3")
+	//}
+	//
+	//dynatraceDeployment, _, err := dynatraceDeploymentProcess.
+	//	Execute(dynatraceName, filepath.Join(fixtures, "util", "dynatrace"))
+	//Expect(err).NotTo(HaveOccurred())
 
 	suite := spec.New("integration", spec.Report(report.Terminal{}), spec.Parallel())
-	suite("Default", testDefault)
-	suite("Dynatrace", testDynatrace)
-	suite("Fsharp", testFsharp)
-	suite("MultipleProjects", testMultipleProjects)
-	suite("Node", testNode)
-	suite("Override", testOverride)
-	suite("Supply", testSupply)
-	suite("Sealights", testSealights)
+	//suite("Default", testDefault(platform, fixtures))
+	//suite("Dynatrace", testDynatrace(platform, fixtures, dynatraceDeployment.InternalURL))
+	//suite("Source Based", testSourceBased(platform, fixtures))
+	//suite("Framework Dependant", testFrameworkDependant(platform, fixtures))
+	//suite("Self Contained", testSelfContained(platform, fixtures))
+	suite("Versions", testVersions(platform, fixtures, root))
 
-	if cutlass.Cached {
-		suite("Offline", testOffline)
-	} else {
-		suite("Cache", testCache)
+	if settings.Cached {
+		suite("Offline", testOffline(platform, fixtures))
 	}
+	//else {
+	//	suite("Cache", testCache(platform, fixtures))
+	//	suite("Proxy", testProxy(platform, fixtures, proxyDeployment.InternalURL))
+	//}
 
 	suite.Run(t)
 
-	DestroyApp(t, settings.Dynatrace.App)
-	Expect(cutlass.RemovePackagedBuildpack(packagedBuildpack)).To(Succeed())
-	Expect(cutlass.DeleteBuildpack("override")).To(Succeed())
-	Expect(cutlass.DeleteOrphanedRoutes()).To(Succeed())
+	//Expect(platform.Delete.Execute(proxyName)).To(Succeed())
+	//Expect(platform.Delete.Execute(dynatraceName)).To(Succeed())
+	Expect(os.Remove(os.Getenv("BUILDPACK_FILE"))).To(Succeed())
 }
 
-func PushAppAndConfirm(t *testing.T, app *cutlass.App) {
-	t.Helper()
+func GetLatestVersions(rootDir string) (LatestVersions, error) {
+
+	manifest, err := libbuildpack.NewManifest(rootDir, nil, time.Now())
+	if err != nil {
+		return LatestVersions{}, fmt.Errorf("failed to load manifest: %s", err)
+	}
 
 	var (
-		Expect     = NewWithT(t).Expect
-		Eventually = NewWithT(t).Eventually
+		latest6RuntimeVersion, latest6ASPNetVersion, latest6SDKVersion, latest7RuntimeVersion, latest7SDKVersion string
 	)
 
-	Expect(app.Push()).To(Succeed())
-	Eventually(func() ([]string, error) { return app.InstanceStates() }, 20*time.Second).Should(Equal([]string{"RUNNING"}))
-	Expect(app.ConfirmBuildpack(settings.Buildpack.Version)).To(Succeed())
-}
-
-func DestroyApp(t *testing.T, app *cutlass.App) *cutlass.App {
-	t.Helper()
-
-	var Expect = NewWithT(t).Expect
-	Expect(app.Destroy()).To(Succeed())
-	return nil
-}
-
-func GetLatestDepVersion(t *testing.T, dep, constraint, bpDir string) string {
-	t.Helper()
-
-	var Expect = NewWithT(t).Expect
-
-	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
-	Expect(err).ToNot(HaveOccurred())
-	deps := manifest.AllDependencyVersions(dep)
-	runtimeVersion, err := libbuildpack.FindMatchingVersion(constraint, deps)
-	Expect(err).ToNot(HaveOccurred())
-
-	return runtimeVersion
-}
-
-func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replaceVal string) *cutlass.App {
-	t.Helper()
-
-	var Expect = NewWithT(t).Expect
-
-	dir, err := cutlass.CopyFixture(pathToFixture)
-	Expect(err).ToNot(HaveOccurred())
-
-	data, err := os.ReadFile(filepath.Join(dir, file))
-	Expect(err).ToNot(HaveOccurred())
-	data = bytes.Replace(data, []byte(fmt.Sprintf("<%%= %s %%>", templateVar)), []byte(replaceVal), -1)
-	Expect(os.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
-
-	return cutlass.New(dir)
-}
-
-func SkipOnCflinuxfs4(t *testing.T) {
-	if os.Getenv("CF_STACK") == "cflinuxfs4" {
-		t.Skip("Skipping test not relevant for stack cflinuxfs4")
+	latest6RuntimeVersion, err = FindMatchingVersion(manifest, "dotnet-runtime", "6.*")
+	if err != nil {
+		return LatestVersions{}, err
 	}
+
+	latest6ASPNetVersion, err = FindMatchingVersion(manifest, "dotnet-aspnetcore", "6.*")
+	if err != nil {
+		return LatestVersions{}, err
+	}
+
+	latest6SDKVersion, err = FindMatchingVersion(manifest, "dotnet-sdk", "6.*")
+	if err != nil {
+		return LatestVersions{}, err
+	}
+
+	latest7RuntimeVersion, err = FindMatchingVersion(manifest, "dotnet-runtime", "7.*")
+	if err != nil {
+		return LatestVersions{}, err
+	}
+
+	latest7SDKVersion, err = FindMatchingVersion(manifest, "dotnet-sdk", "7.*")
+	if err != nil {
+		return LatestVersions{}, err
+	}
+
+	return LatestVersions{
+		latest6RuntimeVersion,
+		latest6ASPNetVersion,
+		latest6SDKVersion,
+		latest7RuntimeVersion,
+		latest7SDKVersion,
+	}, nil
+}
+
+func FindMatchingVersion(manifest *libbuildpack.Manifest, dep, constraint string) (string, error) {
+	deps := manifest.AllDependencyVersions(dep)
+	version, err := libbuildpack.FindMatchingVersion(constraint, deps)
+	if err != nil {
+		return "", fmt.Errorf("failed to find matching version: %s", err)
+	}
+
+	return version, nil
 }

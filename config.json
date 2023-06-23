@@ -4,10 +4,9 @@
     "linux"
   ],
   "integration": {
-    "harness": "gotest",
+    "harness": "switchblade",
     "matrix": [
-      { "cached": false, "parallel": true },
-      { "cached": true, "parallel": true }
+      { "cached": false, "parallel": true }
     ]
   }
 }

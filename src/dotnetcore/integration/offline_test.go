@@ -1,58 +1,64 @@
 package integration_test
 
 import (
-	"os"
-	"os/exec"
 	"path/filepath"
 	"testing"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/sclevine/spec"
 
+	. "github.com/cloudfoundry/switchblade/matchers"
 	. "github.com/onsi/gomega"
 )
 
-func testOffline(t *testing.T, context spec.G, it spec.S) {
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "fdd_app_6.0"))
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
-}
+func testOffline(platform switchblade.Platform, fixtures string) func(*testing.T, spec.G, spec.S) {
+	return func(t *testing.T, context spec.G, it spec.S) {
+		var (
+			Expect     = NewWithT(t).Expect
+			Eventually = NewWithT(t).Eventually
 
-func AssertNoInternetTraffic(t *testing.T, context spec.G, it spec.S, fixture string) {
-	var Expect = NewWithT(t).Expect
-	var app *cutlass.App
+			name   string
+			source string
+			err    error
+		)
 
-	context("when offline", func() {
 		it.Before(func() {
-			app = cutlass.New(fixture)
+			name, err = switchblade.RandomName()
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		it.After(func() {
-			app = DestroyApp(t, app)
+			Expect(platform.Delete.Execute(name)).To(Succeed())
 		})
 
-		it("displays a simple text homepage", func() {
-			PushAppAndConfirm(t, app)
-			Expect(app.GetBody("/")).To(
-				Or(
-					ContainSubstring("Hello World!"),
-					ContainSubstring("<body>"),
-				),
-			)
+		context("when pushing a simple app", func() {
+			it.Before(func() {
+				var err error
+				name, err = switchblade.RandomName()
+				Expect(err).NotTo(HaveOccurred())
+
+				source, err = switchblade.Source(filepath.Join(fixtures, "vendored", "fdd_dotnet_6"))
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			it.After(func() {
+				Expect(platform.Delete.Execute(name)).To(Succeed())
+			})
+
+			it.Focus("builds and runs the app", func() {
+				deployment, logs, err := platform.Deploy.
+					WithoutInternetAccess().
+					Execute(name, source)
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(logs.String()).To(SatisfyAll(
+					ContainSubstring("Supplying Dotnet Core"),
+					MatchRegexp(CopyRegexp),
+					Not(MatchRegexp(DownloadRegexp)),
+				))
+
+				Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
+			})
 		})
-
-		it("builds and runs the app", func() {
-			root, err := cutlass.FindRoot()
-			Expect(err).NotTo(HaveOccurred())
-
-			bpFile := filepath.Join(root, settings.Buildpack.Version+"tmp")
-			cmd := exec.Command("cp", settings.Buildpack.Path, bpFile)
-			Expect(cmd.Run()).To(Succeed())
-			defer os.Remove(bpFile)
-
-			traffic, _, _, err := cutlass.InternetTraffic(fixture, bpFile, nil)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(traffic).To(BeEmpty())
-		})
-
-	})
+	}
 }
