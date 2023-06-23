@@ -50,14 +50,14 @@ dependencies:
   source: https://registry.npmjs.org/bower/-/bower-1.8.14.tgz
   source_sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
 - name: dotnet-aspnetcore
-  version: 6.0.18
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.18_linux_x64_any-stack_30355527.tar.xz
-  sha256: 303555273f51f3a4e7947893806e6d6cd0ef4590f407e64e456e4411b0e747b8
+  version: 6.0.19
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_6.0.19_linux_x64_any-stack_46db253c.tar.xz
+  sha256: 46db253cef29c6cab79286619943d86a1f86117201aaf9f8d3403c0f72ee1f7f
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/503c4325-104f-41e0-8dc6-1a8b55e0651a/3dcd8a5d03d3a04bb4111296b12cd11d/aspnetcore-runtime-6.0.18-linux-x64.tar.gz
-  source_sha256: 8b7a6c4fc46887d1281f18558e76e34b1656ca1f487c3c71f63d3453a1f5c63b
+  source: https://download.visualstudio.microsoft.com/download/pr/fb0913f6-79a8-40b6-b604-bda42b60d0c2/eb98e78d3d75c16326a54cd0277b5406/aspnetcore-runtime-6.0.19-linux-x64.tar.gz
+  source_sha256: 217e4dfb3c9469580559f5714daa3c505f36156d2bd97a15238d240c6bcc54bf
 - name: dotnet-aspnetcore
   version: 7.0.7
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_7.0.7_linux_x64_any-stack_56b670f6.tar.xz
