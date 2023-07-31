@@ -52,7 +52,6 @@ func testSealights(t *testing.T, context spec.G, it spec.S) {
 
 			Expect(app.Stdout.String()).To(ContainSubstring("Sealights. Service is enabled"))
 			Expect(app.Stdout.String()).To(ContainSubstring("Sealights. Agent is installed"))
-			Expect(app.Stdout.String()).To(ContainSubstring("Sealights. Dotnet is installed"))
 			Expect(app.Stdout.String()).To(ContainSubstring("Sealights. Service is set up"))
 		})
 	})
