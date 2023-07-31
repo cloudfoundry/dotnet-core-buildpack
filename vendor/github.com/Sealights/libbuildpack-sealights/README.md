@@ -20,13 +20,12 @@ Cloud Foundry Buildpack integrations with Sealights
                                 // in case if stage is not provided sealights service will not be called on container start
         "customAgentUrl"        // sealights agent will be downloaded from this url if provided
         "customCommand"         // allow to replace application start command
-        "labId"                 // will be downloaded agent version of the specified lab
         "proxy"                 // proxy for the agent download client
         "proxyUsername"         // proxy user
         "proxyPassword"         // proxy password
         "enableProfilerLogs"    // allow to enable logs in the profiler when listener is started in the background mode
 
-        + rest of the arguments that required for sealights service
+        + rest of the parameters will be passed directly to the Sealights agent
     }
     ```
 

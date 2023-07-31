@@ -2,6 +2,7 @@ package sealights
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 
@@ -17,7 +18,6 @@ type SealightsOptions struct {
 	Verb               string
 	CustomAgentUrl     string
 	CustomCommand      string
-	LabId              string
 	Proxy              string
 	ProxyUsername      string
 	ProxyPassword      string
@@ -26,12 +26,13 @@ type SealightsOptions struct {
 }
 
 type Configuration struct {
-	Value *SealightsOptions
-	Log   *libbuildpack.Logger
+	Value  *SealightsOptions
+	Log    *libbuildpack.Logger
+	Stager *libbuildpack.Stager
 }
 
-func NewConfiguration(log *libbuildpack.Logger) *Configuration {
-	configuration := Configuration{Log: log, Value: nil}
+func NewConfiguration(log *libbuildpack.Logger, stager *libbuildpack.Stager) *Configuration {
+	configuration := Configuration{Log: log, Value: nil, Stager: stager}
 	configuration.parseVcapServices()
 
 	return &configuration
@@ -85,11 +86,11 @@ func (conf *Configuration) parseVcapServices() {
 			}
 
 			options := &SealightsOptions{
-				Version:            queryString("version"),
-				Verb:               queryString("verb"),
-				CustomAgentUrl:     queryString("customAgentUrl"),
-				CustomCommand:      queryString("customCommand"),
-				LabId:              queryString("labId"),
+				Version:        queryString("version"),
+				Verb:           queryString("verb"),
+				CustomAgentUrl: queryString("customAgentUrl"),
+				CustomCommand:  queryString("customCommand"),
+
 				Proxy:              queryString("proxy"),
 				ProxyUsername:      queryString("proxyUsername"),
 				ProxyPassword:      queryString("proxyPassword"),
@@ -110,8 +111,24 @@ func (conf *Configuration) parseVcapServices() {
 				conf.Log.Warning("Sealights build session id isn't provided")
 			}
 
+			_, toolsProvided := options.SlArguments["tools"]
+			if !toolsProvided {
+				options.SlArguments["tools"] = conf.buildToolName()
+			}
+
 			conf.Value = options
 			return
 		}
 	}
+}
+
+func (conf *Configuration) buildToolName() string {
+	lang := conf.Stager.BuildpackLanguage()
+	ver, err := conf.Stager.BuildpackVersion()
+	if err != nil {
+		conf.Log.Warning("Failed to get buildpack version")
+		ver = "unknown"
+	}
+
+	return fmt.Sprintf("pcf-%s-%s", lang, ver)
 }

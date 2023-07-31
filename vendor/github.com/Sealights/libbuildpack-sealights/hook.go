@@ -33,7 +33,7 @@ func (h *SealightsHook) AfterCompile(stager *libbuildpack.Stager) error {
 
 	h.Log.Debug("Sealights. Check servicec status...")
 
-	conf := NewConfiguration(h.Log)
+	conf := NewConfiguration(h.Log, stager)
 	if !conf.UseSealights() {
 		h.Log.Debug("Sealights service isn't configured")
 		return nil
@@ -43,19 +43,13 @@ func (h *SealightsHook) AfterCompile(stager *libbuildpack.Stager) error {
 
 	agentInstaller := NewAgentInstaller(h.Log, conf.Value)
 
-	agentDir, err := agentInstaller.InstallAgent(stager)
+	agentDir, agentVersion, err := agentInstaller.InstallAgent(stager)
 	if err != nil {
 		return err
 	}
-	h.Log.Info("Sealights. Agent is installed")
+	h.Log.Info("Sealights. Agent is installed (version: %s)", agentVersion)
 
-	dotnetDir, err := agentInstaller.InstallDependency(stager)
-	if err != nil {
-		return err
-	}
-	h.Log.Info("Sealights. Dotnet is installed")
-
-	launcher := NewLauncher(h.Log, conf.Value, agentDir, dotnetDir, stager.BuildDir())
+	launcher := NewLauncher(h.Log, conf.Value, agentDir, stager.BuildDir())
 	launcher.ModifyStartParameters(stager)
 
 	h.Log.Info("Sealights. Service is set up")
