@@ -1,3 +1,25 @@
+v2.4.16 Aug 17, 2023
+=====================
+
+* Add dotnet-runtime 6.0.21, remove dotnet-runtime 6.0.20 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 6.0.413, remove dotnet-sdk 6.0.412 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.21, remove dotnet-aspnetcore 6.0.20 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 7.0.10, remove dotnet-runtime 7.0.9 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 7.0.400, remove dotnet-sdk 7.0.306 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 7.0.10, remove dotnet-aspnetcore 7.0.9 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add libunwind 1.7.2, remove libunwind 1.7.0 for stack(s) cflinuxfs3, cflinuxfs4
+
+* Add node 18.17.1, remove node 18.17.0 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Bump github.com/Sealights/libbuildpack-sealights from 1.2.0 to 1.3.0
+
+
 v2.4.15 Jul 19, 2023
 =====================
 
