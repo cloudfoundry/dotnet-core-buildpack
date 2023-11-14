@@ -68,14 +68,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/7a1d3e1e-ede9-4b28-a9c8-3023858b7f01/c9214ad6a85286f4abd026d23dca5d3c/aspnetcore-runtime-7.0.14-linux-x64.tar.gz
   source_sha256: '08d78cba09966cd7afeae5d968fe5ec2b56ba088cf35247290426a6c305b6170'
 - name: dotnet-runtime
-  version: 6.0.24
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.24_linux_x64_any-stack_ef392620.tar.xz
-  sha256: ef392620ccb61df17e51c5568e7f4e393156703db6f9c7891835809fc53e4850
+  version: 6.0.25
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.25_linux_x64_any-stack_8b61c0da.tar.xz
+  sha256: 8b61c0da0f82a8a611950eabfdb1058bf2748ebfa5fd93a4eebe3bad4507ccaa
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/872b4f32-dd0d-49e5-bca3-2b27314286a7/e72d2be582895b7053912deb45a4677d/dotnet-runtime-6.0.24-linux-x64.tar.gz
-  source_sha256: 6bfb17cd1c988205b7ee46443856922a96db2cbd9396f3a471bc4de22489a789
+  source: https://download.visualstudio.microsoft.com/download/pr/0e8de3f9-7fda-46b7-9337-a3709c8e385d/bc29c53eb79fda25abb0fb9be60c6a22/dotnet-runtime-6.0.25-linux-x64.tar.gz
+  source_sha256: 226a9a360309f7ff4e110bdee213d86ea62a90de28470ea3dad58d35b24f7794
 - name: dotnet-runtime
   version: 7.0.14
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_7.0.14_linux_x64_any-stack_c6263673.tar.xz
