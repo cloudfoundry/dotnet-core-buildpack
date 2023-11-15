@@ -61,7 +61,7 @@ var _ = Describe("Finalize", func() {
 			Config:  cfg,
 		}
 
-		stackRID = "ubuntu.18.04-x64"
+		stackRID = "linux-x64"
 	})
 
 	AfterEach(func() {
