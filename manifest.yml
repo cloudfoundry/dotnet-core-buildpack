@@ -19,6 +19,10 @@ dependency_deprecation_dates:
   name: dotnet-aspnetcore
   date: 2024-05-14
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 8.0.x
+  name: dotnet-aspnetcore
+  date: 2026-11-10
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 6.0.x
   name: dotnet-runtime
   date: 2024-11-08
@@ -67,6 +71,15 @@ dependencies:
   - cflinuxfs3
   source: https://download.visualstudio.microsoft.com/download/pr/a4ac0f7a-a65f-4222-bd1a-c1a94f7df32b/2c62b82c325a8c396db10f09cfa952c5/aspnetcore-runtime-7.0.13-linux-x64.tar.gz
   source_sha256: 00ff7565f95742f8de5c1717131319ce37867c84816fc0af3222949117c5d9ec
+- name: dotnet-aspnetcore
+  version: 8.0.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.0_linux_x64_any-stack_d1164500.tar.xz
+  sha256: d11645002cd37e199962e46fdc79220e565be0b76e1492ddadf7b0159b598a08
+  cf_stacks:
+  - cflinuxfs4
+  - cflinuxfs3
+  source: https://download.visualstudio.microsoft.com/download/pr/257bdcc7-cbfd-4680-964a-cbe8e9160bca/ac0cbf19d897ba51ae004b4146940a0a/aspnetcore-runtime-8.0.0-linux-x64.tar.gz
+  source_sha256: 4418b2169d5f3bb33064e40e34f2cff0f67659dcd3fb0f3c9355b2b69e688964
 - name: dotnet-runtime
   version: 6.0.24
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_6.0.24_linux_x64_any-stack_ef392620.tar.xz
