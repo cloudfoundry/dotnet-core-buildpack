@@ -366,47 +366,19 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 		}
 	}
 
-	return p.installer.InstallDependency(
-		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
+	err = p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: runtimeVersion},
 		filepath.Join(p.depDir, "dotnet-sdk"),
 	)
-}
 
-func (p *Project) SourceInstallDotnetAspNetCore() error {
-	proj, err := p.parseProj()
 	if err != nil {
 		return err
 	}
 
-	aspnetcoreVersion := ""
-	for _, ig := range proj.ItemGroups {
-		for _, pr := range ig.PackageReferences {
-			if pr.Include == "Microsoft.AspNetCore.App" || pr.Include == "Microsoft.AspNetCore.All" {
-				aspnetcoreVersion = pr.Version
-			}
-		}
-	}
-
-	if aspnetcoreVersion == "" {
-		aspnetcoreVersions, err := p.versionsFromNugetPackages("dotnet-aspnetcore", true)
-		if err != nil {
-			return err
-		}
-
-		for _, version := range aspnetcoreVersions {
-			err := p.installAspNetCoreDependency(version, false)
-			if err != nil {
-				return err
-			}
-		}
-	} else {
-		err = p.installAspNetCoreDependency(aspnetcoreVersion, true)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return p.installer.InstallDependency(
+		libbuildpack.Dependency{Name: "dotnet-runtime", Version: runtimeVersion},
+		filepath.Join(p.depDir, "dotnet-sdk"),
+	)
 }
 
 func (p *Project) getVersionFromAssetFile(path, library string) (string, bool, error) {

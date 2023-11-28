@@ -100,7 +100,7 @@ func copyBratsWithRuntime(sdkVersion, runtimeVersion, fixture string) *cutlass.A
 	}
 
 	versionParts := strings.Split(runtimeVersion, ".")
-	netCoreApp := fmt.Sprintf("netcoreapp%s.%s", versionParts[0], versionParts[1])
+	netCoreApp := fmt.Sprintf("net%s.%s", versionParts[0], versionParts[1])
 
 	dir, err := cutlass.CopyFixture(filepath.Join(bratshelper.Data.BpDir, "fixtures", fixture))
 	Expect(err).ToNot(HaveOccurred())

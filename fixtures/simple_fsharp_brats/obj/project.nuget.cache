@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ZGMybHz5EzDJcneNbB2KjqyP/as/njkp2SthoxB01cD8tuCtvI3sCcA6PXczhtv6dPLWb3fBPoNoyf/7AcA4lg==",
+  "success": true,
+  "projectFilePath": "/tmp/simple_fsharp_brats/simple_fsharp_brats.fsproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/fsharp.core/8.0.100/fsharp.core.8.0.100.nupkg.sha512"
+  ],
+  "logs": []
+}

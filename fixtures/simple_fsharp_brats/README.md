@@ -1,4 +1,4 @@
-# TODO:
-Get context on how this app was created. See
-https://github.com/cloudfoundry/dotnet-core-buildpack/commits/master/fixtures/simple_fsharp_brats
-for original app history.
+This app was generated with the .NET Core CLI:
+```
+dotnet new web -lang "F#" -o simple_brats
+```
