@@ -5,77 +5,82 @@
 package project_test
 
 import (
+	reflect "reflect"
+
 	libbuildpack "github.com/cloudfoundry/libbuildpack"
 	gomock "github.com/golang/mock/gomock"
-	reflect "reflect"
 )
 
-// MockManifest is a mock of Manifest interface
+// MockManifest is a mock of Manifest interface.
 type MockManifest struct {
 	ctrl     *gomock.Controller
 	recorder *MockManifestMockRecorder
 }
 
-// MockManifestMockRecorder is the mock recorder for MockManifest
+// MockManifestMockRecorder is the mock recorder for MockManifest.
 type MockManifestMockRecorder struct {
 	mock *MockManifest
 }
 
-// NewMockManifest creates a new mock instance
+// NewMockManifest creates a new mock instance.
 func NewMockManifest(ctrl *gomock.Controller) *MockManifest {
 	mock := &MockManifest{ctrl: ctrl}
 	mock.recorder = &MockManifestMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockManifest) EXPECT() *MockManifestMockRecorder {
 	return m.recorder
 }
 
-// AllDependencyVersions mocks base method
+// AllDependencyVersions mocks base method.
 func (m *MockManifest) AllDependencyVersions(arg0 string) []string {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AllDependencyVersions", arg0)
 	ret0, _ := ret[0].([]string)
 	return ret0
 }
 
-// AllDependencyVersions indicates an expected call of AllDependencyVersions
+// AllDependencyVersions indicates an expected call of AllDependencyVersions.
 func (mr *MockManifestMockRecorder) AllDependencyVersions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllDependencyVersions", reflect.TypeOf((*MockManifest)(nil).AllDependencyVersions), arg0)
 }
 
-// MockInstaller is a mock of Installer interface
+// MockInstaller is a mock of Installer interface.
 type MockInstaller struct {
 	ctrl     *gomock.Controller
 	recorder *MockInstallerMockRecorder
 }
 
-// MockInstallerMockRecorder is the mock recorder for MockInstaller
+// MockInstallerMockRecorder is the mock recorder for MockInstaller.
 type MockInstallerMockRecorder struct {
 	mock *MockInstaller
 }
 
-// NewMockInstaller creates a new mock instance
+// NewMockInstaller creates a new mock instance.
 func NewMockInstaller(ctrl *gomock.Controller) *MockInstaller {
 	mock := &MockInstaller{ctrl: ctrl}
 	mock.recorder = &MockInstallerMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockInstaller) EXPECT() *MockInstallerMockRecorder {
 	return m.recorder
 }
 
-// InstallDependency mocks base method
+// InstallDependency mocks base method.
 func (m *MockInstaller) InstallDependency(arg0 libbuildpack.Dependency, arg1 string) error {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "InstallDependency", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// InstallDependency indicates an expected call of InstallDependency
+// InstallDependency indicates an expected call of InstallDependency.
 func (mr *MockInstallerMockRecorder) InstallDependency(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InstallDependency", reflect.TypeOf((*MockInstaller)(nil).InstallDependency), arg0, arg1)
 }
