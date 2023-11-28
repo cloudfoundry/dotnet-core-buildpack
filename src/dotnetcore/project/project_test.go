@@ -647,7 +647,13 @@ var _ = Describe("Project", func() {
 			It("installs the latest runtime for that minor", func() {
 				mockManifest.
 					EXPECT().
+					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9", "5.0.1", "5.0.2"})
+				mockManifest.
+					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9", "5.0.1", "5.0.2"})
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "5.0.2"}, depsPath)
 				mockInstaller.
 					EXPECT().
 					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "5.0.2"}, depsPath)
@@ -670,7 +676,13 @@ var _ = Describe("Project", func() {
 			It("installs the latest runtime for that minor", func() {
 				mockManifest.
 					EXPECT().
+					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
+				mockManifest.
+					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "6.7.9"}, depsPath)
 				mockInstaller.
 					EXPECT().
 					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "6.7.9"}, depsPath)
@@ -694,6 +706,10 @@ var _ = Describe("Project", func() {
 			It("installs the runtime", func() {
 				mockInstaller.
 					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "6.7.8"}, depsPath)
+
+				mockInstaller.
+					EXPECT().
 					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "6.7.8"}, depsPath)
 
 				Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
@@ -715,106 +731,18 @@ var _ = Describe("Project", func() {
 			It("installs the runtime floating on patch", func() {
 				mockManifest.
 					EXPECT().
+					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
+				mockManifest.
+					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "6.7.9"}, depsPath)
 				mockInstaller.
 					EXPECT().
 					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "6.7.9"}, depsPath)
 
 				Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
-			})
-		})
-	})
-
-	Describe("SourceInstallDotnetAspNetCore", func() {
-		Context("when the Microsoft.AspNetCore.App version is discovered via .csproj", func() {
-			BeforeEach(func() {
-				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
-					[]byte(`
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="1.2.3"/>
-  </ItemGroup>
-</Project>`), 0666)).To(Succeed())
-			})
-
-			It("installs the dotnet-aspnetcore specified by PackageReference floating on patch", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"1.2.3", "1.2.4", "6.7.9", "6.8.9"}).
-					Times(2)
-
-				mockInstaller.
-					EXPECT().
-					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "1.2.4"}, gomock.Any()).
-					Times(1)
-
-				Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
-			})
-		})
-
-		Context("when the dotnet-aspnetcore version is not found in the csproj", func() {
-			BeforeEach(func() {
-				os.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
-				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, ".nuget", "packages", "microsoft.aspnetcore.app", "4.5.6"), 0755)).To(Succeed())
-			})
-
-			It("installs the dotnet-aspnetcore found in the nuget cache", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6"})
-
-				mockInstaller.
-					EXPECT().
-					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "4.5.6"}, depsPath).
-					Times(1)
-
-				Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
-			})
-		})
-
-		Context("when the dotnet-aspnetcore version found in the nuget cache is less than 2.1", func() {
-			BeforeEach(func() {
-				os.WriteFile(filepath.Join(buildDir, "foo.csproj"), []byte("<valid/>"), 0644)
-				Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx, ".nuget", "packages", "microsoft.aspnetcore.app", "4.5.6"), 0755)).To(Succeed())
-			})
-
-			It("does not install the dotnet-aspnetcore", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"2.0.0"})
-
-				mockInstaller.
-					EXPECT().
-					InstallDependency(gomock.Any(), gomock.Any()).
-					Times(0)
-
-				Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
-			})
-		})
-
-		Context("when the dotnet-aspnetcore version is less than 2.1", func() {
-			BeforeEach(func() {
-				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
-					[]byte(`
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.0.0"/>
-  </ItemGroup>
-</Project>`), 0666)).To(Succeed())
-			})
-
-			It("it will not install old 2.0 version of dotnet-aspnetcore", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"2.0.0"})
-
-				mockInstaller.
-					EXPECT().
-					InstallDependency(gomock.Any(), gomock.Any()).
-					Times(0)
-
-				Expect(subject.SourceInstallDotnetAspNetCore()).To(Succeed())
-
 			})
 		})
 	})

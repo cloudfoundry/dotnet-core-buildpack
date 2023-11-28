@@ -72,11 +72,6 @@ func Run(f *Finalizer) error {
 			return err
 		}
 
-		if err := f.Project.SourceInstallDotnetAspNetCore(); err != nil {
-			f.Log.Error("Unable to install dotnet-aspnetcore: %s", err.Error())
-			return err
-		}
-
 		if err := f.DotnetPublish(stackRID); err != nil {
 			f.Log.Error("Unable to run dotnet publish: %s", err.Error())
 			return err
@@ -222,7 +217,7 @@ func (f *Finalizer) DotnetPublish(stackRID string) error {
 	if err := os.MkdirAll(publishPath, 0755); err != nil {
 		return err
 	}
-	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig()}
+	args := []string{"publish", mainProject, "-o", publishPath, "-c", f.publicConfig(), "--self-contained"}
 	args = append(args, "-r", stackRID)
 	cmd := exec.Command("dotnet", args...)
 	cmd.Dir = f.Stager.BuildDir()

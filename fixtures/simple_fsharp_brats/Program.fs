@@ -1,22 +1,15 @@
-namespace tmp
-
 open System
-open System.IO
-open Microsoft.AspNetCore.Hosting
+open Microsoft.AspNetCore.Builder
+open Microsoft.Extensions.Hosting
 
-module Program =
-    let exitCode = 0
+[<EntryPoint>]
+let main args =
+    let builder = WebApplication.CreateBuilder(args)
+    let app = builder.Build()
 
-    [<EntryPoint>]
-    let main args =
-        let host = 
-            WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseKestrel()
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .Build()
+    app.MapGet("/", Func<string>(fun () -> "Hello World!")) |> ignore
 
-        host.Run()
+    app.Run()
 
-        exitCode
+    0 // Exit code
+
