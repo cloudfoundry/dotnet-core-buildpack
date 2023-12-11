@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/Sealights/libbuildpack-sealights v1.3.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cloudfoundry/libbuildpack v0.0.0-20230404152448-8da916cb09fe
+	github.com/cloudfoundry/libbuildpack v0.0.0-20231211162543-86d10e150195
 	github.com/go-ini/ini v1.67.0
 	github.com/golang/mock v1.6.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
@@ -21,7 +21,7 @@ require (
 
 require (
 	code.cloudfoundry.org/lager v2.0.0+incompatible // indirect
-	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
+	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/elazarl/goproxy v0.0.0-20190911111923-ecfe977594f1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
