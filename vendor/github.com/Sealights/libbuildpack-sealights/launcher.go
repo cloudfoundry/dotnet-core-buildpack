@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 
@@ -44,7 +45,8 @@ func (la *Launcher) ModifyStartParameters(stager *libbuildpack.Stager) error {
 			return err
 		}
 
-		la.Log.Info(fmt.Sprintf("Sealights: Start command updated. From '%s' to '%s'", startCommand, newStartCommand))
+		logMessage := fmt.Sprintf("Sealights: Start command updated. From '%s' to '%s'", startCommand, newStartCommand)
+		la.Log.Info(maskSensitiveData(logMessage))
 	} else {
 		la.Log.Warning("Sealights. Verb or Custom Command are missed - start command will not be modified")
 	}
@@ -89,13 +91,14 @@ func (la *Launcher) buildCommandLine(command string) string {
 		sb.WriteString(fmt.Sprintf(" --%s %s", key, value))
 	}
 
-	testListenerSessionKey, sessionKeyExists := la.Options.SlArguments["testListenerSessionKey"]
-	if sessionKeyExists {
-		exportEnvCmd, _ := la.addProfilerConfiguration(la.AgentDirForRuntime, testListenerSessionKey)
+	// background test listener require to set environment variables
+	// before starting the target process
+	if la.Options.Verb == "startBackgroundTestListener" {
+		exportEnvCmd, _ := la.addProfilerConfiguration(la.AgentDirForRuntime)
 
 		// if testListenerSessionKey is provided, selected mode is background test listener
 		// and target application should be started after the sealights agent
-		sb.WriteString(fmt.Sprintf(" && %s && env && %s", exportEnvCmd, command))
+		sb.WriteString(fmt.Sprintf(" && %s && %s", exportEnvCmd, command))
 
 		// resulting launch command should have only one 'exec' keyword
 		// for the last subsequence part
@@ -107,7 +110,7 @@ func (la *Launcher) buildCommandLine(command string) string {
 
 // Create file sealights.envrc with all the required env variables to make
 // the profiler to attach to the target application
-func (la *Launcher) addProfilerConfiguration(agentPath string, collectorId string) (string, error) {
+func (la *Launcher) addProfilerConfiguration(agentPath string) (string, error) {
 	agentEnvFileName := "sealights.envrc"
 	exportCommand := "export"
 	executeCommand := "source"
@@ -149,11 +152,10 @@ func (la *Launcher) addProfilerConfiguration(agentPath string, collectorId strin
 	fileContent += fmt.Sprintf("%s CORECLR_PROFILER={%s}\n", exportCommand, profilerId)
 	fileContent += fmt.Sprintf("%s CORECLR_PROFILER_PATH_32=%s\n", exportCommand, agentProfilerLibx86)
 	fileContent += fmt.Sprintf("%s CORECLR_PROFILER_PATH_64=%s\n", exportCommand, agentProfilerLibx64)
-	fileContent += fmt.Sprintf("%s SeaLights_CollectorId=%s\n", exportCommand, collectorId)
 
-	if la.Options.EnableProfilerLogs == "true" {
-		fileContent += fmt.Sprintf("%s SL_LogDir=%s\n", exportCommand, la.AgentDirForRuntime)
-		fileContent += fmt.Sprintf("%s SL_LogLevel=6\n", exportCommand)
+	testListenerSessionKey, sessionKeyExists := la.Options.SlArguments["testListenerSessionKey"]
+	if sessionKeyExists {
+		fileContent += fmt.Sprintf("%s SL_CollectorId=%s\n", exportCommand, testListenerSessionKey)
 	}
 
 	if _, err = file.WriteString(fileContent); err != nil {
@@ -169,4 +171,11 @@ func (la *Launcher) agentFillPath() string {
 	} else {
 		return filepath.Join(la.AgentDirForRuntime, LinuxAgentName)
 	}
+}
+
+func maskSensitiveData(input string) string {
+	re := regexp.MustCompile(`(--proxyPassword\s|--token\s).*?(\s--|\s&&)`)
+	output := re.ReplaceAllString(input, "$1********$2")
+
+	return output
 }
