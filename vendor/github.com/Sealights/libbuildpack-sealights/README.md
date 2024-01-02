@@ -15,15 +15,13 @@ Cloud Foundry Buildpack integrations with Sealights
     Complete list of the prameters currently supported by the buildpack service is:
     ```
     {
-        "version"               // sealights version. default value - latest
-        "verb"                  // execution stage. values: [config, scan, startExecution, testListener, endExecution]
-                                // in case if stage is not provided sealights service will not be called on container start
+        "version"               // sealights version. default value: 'latest'
+        "verb"                  // allow to specify command for the agent. default value: 'startBackgroundTestListener'
         "customAgentUrl"        // sealights agent will be downloaded from this url if provided
         "customCommand"         // allow to replace application start command
         "proxy"                 // proxy for the agent download client
         "proxyUsername"         // proxy user
         "proxyPassword"         // proxy password
-        "enableProfilerLogs"    // allow to enable logs in the profiler when listener is started in the background mode
 
         + rest of the parameters will be passed directly to the Sealights agent
     }
@@ -37,3 +35,9 @@ Cloud Foundry Buildpack integrations with Sealights
 
     cf restage [app name]
 
+## Logs
+
+You can enable Debug logs level by setting `BP_DEBUG` env variable:
+```
+cf set-env <your-app> BP_DEBUG True
+```
