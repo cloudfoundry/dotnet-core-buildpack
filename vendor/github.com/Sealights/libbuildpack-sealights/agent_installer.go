@@ -1,12 +1,15 @@
 package sealights
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"math"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -36,9 +39,8 @@ func NewAgentInstaller(log *libbuildpack.Logger, options *SealightsOptions) *Age
 }
 
 func (agi *AgentInstaller) InstallAgent(stager *libbuildpack.Stager) (string, string, error) {
-	packageName := getPackageNameByPlatform()
 	installationPath := filepath.Join(stager.BuildDir(), AgentDir)
-	archivePath, err := agi.downloadPackage(packageName)
+	archivePath, err := agi.downloadPackage()
 	if err != nil {
 		return "", "", err
 	}
@@ -53,13 +55,12 @@ func (agi *AgentInstaller) InstallAgent(stager *libbuildpack.Stager) (string, st
 	return AgentDir, agentVersion, nil
 }
 
-func (agi *AgentInstaller) downloadPackage(packageName string) (string, error) {
-	url := agi.getDownloadUrl(packageName)
+func (agi *AgentInstaller) downloadPackage() (string, error) {
+	url := agi.getDownloadUrl()
 
 	agi.Log.Debug("Sealights. Download package started. From '%s'", url)
 
-	tempAgentFile := filepath.Join(os.TempDir(), packageName)
-	err := agi.downloadFileWithRetry(url, tempAgentFile, agi.MaxDownloadRetries)
+	tempAgentFile, err := agi.downloadFileWithRetry(url, agi.MaxDownloadRetries)
 	if err != nil {
 		agi.Log.Error("Sealights. Failed to download package.")
 		return "", err
@@ -89,7 +90,7 @@ func (agi *AgentInstaller) extractPackage(source string, target string) error {
 	return nil
 }
 
-func (agi *AgentInstaller) getDownloadUrl(packageName string) string {
+func (agi *AgentInstaller) getDownloadUrl() string {
 	if agi.Options.CustomAgentUrl != "" {
 		return agi.Options.CustomAgentUrl
 	}
@@ -99,6 +100,8 @@ func (agi *AgentInstaller) getDownloadUrl(packageName string) string {
 		version = agi.Options.Version
 	}
 
+	packageName := getPackageNameByPlatform()
+
 	// resulting url example:
 	// https://agents.sealights.co/dotnetcore/latest/sealights-dotnet-agent-linux-self-contained.tar.gz
 	url := fmt.Sprintf(AgentDownloadUrlFormat, version, packageName)
@@ -106,37 +109,45 @@ func (agi *AgentInstaller) getDownloadUrl(packageName string) string {
 	return url
 }
 
-func (agi *AgentInstaller) downloadFileWithRetry(url string, filePath string, MaxDownloadRetries int) error {
+func (agi *AgentInstaller) downloadFileWithRetry(url string, MaxDownloadRetries int) (string, error) {
 	const baseWaitTime = 3 * time.Second
 
 	var err error
+	var filePath string
 	for i := 0; i < MaxDownloadRetries; i++ {
-		err = agi.downloadFile(url, filePath)
+		filePath, err = agi.downloadFile(url)
 		if err == nil {
-			return nil
+			return filePath, nil
 		}
 
 		waitTime := baseWaitTime + time.Duration(math.Pow(2, float64(i)))*time.Second
 		time.Sleep(waitTime)
 	}
 
-	return err
+	return "", err
 }
 
-func (agi *AgentInstaller) downloadFile(agentUrl string, destFile string) error {
+func (agi *AgentInstaller) downloadFile(agentUrl string) (string, error) {
 	client := agi.createClient()
 
 	resp, err := client.Get(agentUrl)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return fmt.Errorf("could not download: %d", resp.StatusCode)
+		return "", fmt.Errorf("could not download: %d", resp.StatusCode)
 	}
 
-	return writeToFile(resp.Body, destFile, 0666)
+	fileName, err := guessFilename(resp)
+	if err != nil {
+		fileName = getPackageNameByPlatform()
+	}
+
+	destFile := filepath.Join(os.TempDir(), fileName)
+
+	return destFile, writeToFile(resp.Body, destFile, 0666)
 }
 
 // Create simple client or client with proxy, based on the settings
@@ -165,7 +176,9 @@ func (agi *AgentInstaller) readAgentVersion(installationPath string) string {
 		return "unknown"
 	}
 
-	return string(data)
+	agentVersion := string(data)
+
+	return strings.TrimSuffix(agentVersion, "\n")
 }
 
 func writeToFile(source io.Reader, destFile string, mode os.FileMode) error {
@@ -194,4 +207,32 @@ func getPackageNameByPlatform() string {
 	} else {
 		return LinuxPackageName
 	}
+}
+
+func guessFilename(resp *http.Response) (string, error) {
+	filename := resp.Request.URL.Path
+
+	cd := resp.Header.Get("Content-Disposition")
+
+	if cd != "" {
+		_, params, err := mime.ParseMediaType(cd)
+		if err == nil {
+			val, ok := params["filename"]
+			if ok {
+				filename = val
+			}
+		}
+	}
+
+	// sanitize
+	if filename == "" || strings.HasSuffix(filename, "/") || strings.Contains(filename, "\x00") {
+		return "", errors.New("no file name")
+	}
+
+	filename = filepath.Base(path.Clean("/" + filename))
+	if filename == "" || filename == "." || filename == "/" {
+		return "", errors.New("no file name")
+	}
+
+	return filename, nil
 }

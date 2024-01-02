@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/Dynatrace/libbuildpack-dynatrace v1.5.2
 	github.com/Masterminds/semver v1.5.0
-	github.com/Sealights/libbuildpack-sealights v1.3.0
+	github.com/Sealights/libbuildpack-sealights v1.4.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20231211162543-86d10e150195
 	github.com/go-ini/ini v1.67.0

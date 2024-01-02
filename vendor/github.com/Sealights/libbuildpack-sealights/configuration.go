@@ -14,15 +14,14 @@ type VcapServicesModel struct {
 }
 
 type SealightsOptions struct {
-	Version            string
-	Verb               string
-	CustomAgentUrl     string
-	CustomCommand      string
-	Proxy              string
-	ProxyUsername      string
-	ProxyPassword      string
-	EnableProfilerLogs string
-	SlArguments        map[string]string
+	Version        string
+	Verb           string
+	CustomAgentUrl string
+	CustomCommand  string
+	Proxy          string
+	ProxyUsername  string
+	ProxyPassword  string
+	SlArguments    map[string]string
 }
 
 type Configuration struct {
@@ -55,11 +54,10 @@ func (conf *Configuration) parseVcapServices() {
 	}
 
 	buildpackSpecificArguments := map[string]bool{
-		"version":            true,
-		"verb":               true,
-		"customAgentUrl":     true,
-		"customCommand":      true,
-		"enableProfilerLogs": true,
+		"version":        true,
+		"verb":           true,
+		"customAgentUrl": true,
+		"customCommand":  true,
 	}
 
 	for _, services := range vcapServices {
@@ -90,12 +88,10 @@ func (conf *Configuration) parseVcapServices() {
 				Verb:           queryString("verb"),
 				CustomAgentUrl: queryString("customAgentUrl"),
 				CustomCommand:  queryString("customCommand"),
-
-				Proxy:              queryString("proxy"),
-				ProxyUsername:      queryString("proxyUsername"),
-				ProxyPassword:      queryString("proxyPassword"),
-				EnableProfilerLogs: queryString("enableProfilerLogs"),
-				SlArguments:        slArguments,
+				Proxy:          queryString("proxy"),
+				ProxyUsername:  queryString("proxyUsername"),
+				ProxyPassword:  queryString("proxyPassword"),
+				SlArguments:    slArguments,
 			}
 
 			// write warning in case token or session is not provided
@@ -114,6 +110,15 @@ func (conf *Configuration) parseVcapServices() {
 			_, toolsProvided := options.SlArguments["tools"]
 			if !toolsProvided {
 				options.SlArguments["tools"] = conf.buildToolName()
+			}
+
+			if options.Verb == "" {
+				options.Verb = "startBackgroundTestListener"
+			}
+
+			_, collectorIdPorvided := options.SlArguments["testListenerSessionKey"]
+			if collectorIdPorvided {
+				conf.Log.Warning("Sealights. Option 'testListenerSessionKey' isn't supported in this environment")
 			}
 
 			conf.Value = options
