@@ -79,10 +79,10 @@ func TestIntegration(t *testing.T) {
 
 	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "util", "dynatrace"))
 
-	// TODO: remove this once go-buildpack runs on cflinuxfs4
-	// This is done to have the dynatrace broker app written in go up and running
-	if os.Getenv("CF_STACK") == "cflinuxfs4" {
-		settings.Dynatrace.App.Stack = "cflinuxfs3"
+	// This is done to have the dynatrace broker app running on default
+	// cf-deployment envs. They do not come with cflinuxfs3 buildpacks.
+	if os.Getenv("CF_STACK") == "cflinuxfs3" {
+		settings.Dynatrace.App.Buildpacks = []string{"https://github.com/cloudfoundry/go-buildpack"}
 	}
 	settings.Dynatrace.App.SetEnv("BP_DEBUG", "true")
 
