@@ -1,3 +1,47 @@
+v2.4.21 Jan 22, 2024
+=====================
+
+* Add dotnet-aspnetcore 6.0.26, remove dotnet-aspnetcore 6.0.25 (#896)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186813026)
+
+* Add dotnet-runtime 6.0.26, remove dotnet-runtime 6.0.25 (#893)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186812683)
+
+* Add dotnet-sdk 6.0.418, remove dotnet-sdk 6.0.417 (#901)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186821238)
+
+* Add dotnet-aspnetcore 7.0.15, remove dotnet-aspnetcore 7.0.14 (#894)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186812737)
+
+* Add dotnet-runtime 7.0.15, remove dotnet-runtime 7.0.14 (#895)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186812950)
+
+* Add dotnet-sdk 7.0.405, remove dotnet-sdk 7.0.404 (#900)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186813133)
+
+* Add dotnet-aspnetcore 8.0.1, remove dotnet-aspnetcore 8.0.0 (#899)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186813130)
+
+* Add dotnet-runtime 8.0.1, remove dotnet-runtime 8.0.0 (#897)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186813078)
+
+* Add dotnet-sdk 8.0.101, remove dotnet-sdk 8.0.100 (#898)
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/186813081)
+
+* Add node 20.11.0, remove node 20.10.0 (#902)
+  for stack(s) cflinuxfs3, cflinuxfs4
+  (https://www.pivotaltracker.com/story/show/186817667)
+
+
 v2.4.20 Jan 09, 2024
 =====================
 
