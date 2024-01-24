@@ -216,6 +216,80 @@ var _ = Describe("Supply", func() {
 		})
 	})
 
+	Describe("LoadLegacySSLProvider", func() {
+		Context("with buildpack.yml", func() {
+			Context("contains use_legacy_openssl: true", func() {
+				BeforeEach(func() {
+					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
+				})
+				AfterEach(func() {
+					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+				})
+				It("Loads legacy SSL provider", func() {
+					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
+					Expect(filepath.Join(buildDir, "openssl.cnf")).To(BeARegularFile())
+					Expect(buffer.String()).To(ContainSubstring("Loading legacy SSL provider"))
+				})
+			})
+			Context("contains use_legacy_openssl: false", func() {
+				BeforeEach(func() {
+					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: false\n"), 0644)).To(Succeed())
+				})
+				AfterEach(func() {
+					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+				})
+				It("does not load legacy SSL provider", func() {
+					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
+					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
+				})
+			})
+
+			Context("does not contain use_legacy_openssl at all", func() {
+				BeforeEach(func() {
+					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\n"), 0644)).To(Succeed())
+				})
+				AfterEach(func() {
+					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+				})
+				It("does not load legacy SSL provider", func() {
+					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
+					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
+				})
+			})
+
+			Context("openssl.cnf file already exists in app", func() {
+				BeforeEach(func() {
+					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "openssl.cnf"), []byte("some-data"), 0644)).To(Succeed())
+				})
+				AfterEach(func() {
+					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+					Expect(os.Remove(filepath.Join(buildDir, "openssl.cnf"))).To(Succeed())
+				})
+				It("uses the openssl.cnf file that already exists", func() {
+					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
+					Expect(filepath.Join(buildDir, "openssl.cnf")).To(BeARegularFile())
+					Expect(buffer.String()).To(ContainSubstring("Application already contains openssl.cnf file"))
+				})
+			})
+		})
+
+		Context("error cases", func() {
+			Context("cannot parse buildpack.yaml", func() {
+				BeforeEach(func() {
+					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("bad yaml"), 0644)).To(Succeed())
+				})
+				AfterEach(func() {
+					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+				})
+				It("returns an error", func() {
+					Expect(supplier.LoadLegacySSLProvider()).To(MatchError(ContainSubstring("cannot unmarshal")))
+					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
+				})
+			})
+		})
+	})
+
 	Describe("InstallDotnetSdk", func() {
 		var defaultDep = libbuildpack.Dependency{Name: "dotnet-sdk", Version: "3.4.5"}
 
