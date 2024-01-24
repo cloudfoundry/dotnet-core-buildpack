@@ -90,6 +90,11 @@ func Run(s *Supplier) error {
 		return err
 	}
 
+	if err := s.LoadLegacySSLProvider(); err != nil {
+		s.Log.Error("Unable to load the requested legacy SSL provider: %s", err.Error())
+		return err
+	}
+
 	if err := s.InstallNode(); err != nil {
 		s.Log.Error("Unable to install NodeJs: %s", err.Error())
 		return err
@@ -338,15 +343,15 @@ func filterVersions(versions []string, version string) []string {
 
 func (s *Supplier) pickVersionToInstall() (string, error) {
 	allVersions := s.Manifest.AllDependencyVersions("dotnet-sdk")
-
-	buildpackVersion, err := s.buildpackYamlSdkVersion()
+	buildpackYamlVersion, err := s.parseBuildpackYamlVersion()
 	if err != nil {
 		return "", err
 	}
-	if buildpackVersion != "" {
-		version, err := project.FindMatchingVersionWithPreview(buildpackVersion, allVersions)
+
+	if buildpackYamlVersion != "" {
+		version, err := project.FindMatchingVersionWithPreview(buildpackYamlVersion, allVersions)
 		if err != nil {
-			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackVersion)
+			s.Log.Warning("SDK %s in buildpack.yml is not available", buildpackYamlVersion)
 			return "", err
 		}
 		return version, err
@@ -396,6 +401,47 @@ func (s *Supplier) InstallDotnetSdk() error {
 	return s.installRuntimeIfNeeded()
 }
 
+func (s *Supplier) LoadLegacySSLProvider() error {
+	loadLegacySSLProvider, err := s.parseBuildpackYamlOpenssl()
+	if err != nil {
+		return err
+	}
+
+	if loadLegacySSLProvider {
+		// If a user sets the buidpack.yml to include legacy provider AND
+		// includes their own openssl.cnf, just use the provided openssl.cnf
+		opensslCnfFile := filepath.Join(s.Stager.BuildDir(), "openssl.cnf")
+		exists, err := libbuildpack.FileExists(opensslCnfFile)
+		if err != nil {
+			// untested
+			return err
+		}
+
+		s.Log.BeginStep("Loading legacy SSL provider")
+		if !exists {
+			content := `[provider_sect]
+default = default_sect
+legacy = legacy_sect
+
+[default_sect]
+activate = 1
+
+[legacy_sect]
+activate = 1`
+			err := os.WriteFile(opensslCnfFile, []byte(content), 0644)
+			if err != nil {
+				s.Log.Info("Cannot write openssl.cnf file to build directory")
+				// untested
+				return err
+			}
+		} else {
+			s.Log.Info("Application already contains openssl.cnf file")
+		}
+	}
+
+	return nil
+}
+
 func (s *Supplier) installRuntimeIfNeeded() error {
 	runtimeVersionPath := filepath.Join(s.Stager.DepDir(), "dotnet-sdk", "RuntimeVersion.txt")
 
@@ -415,23 +461,6 @@ func (s *Supplier) installRuntimeIfNeeded() error {
 		return s.Installer.InstallDependency(libbuildpack.Dependency{Name: name, Version: runtimeVersion}, filepath.Join(s.Stager.DepDir(), "dotnet-sdk"))
 	}
 	return nil
-}
-
-func (s *Supplier) buildpackYamlSdkVersion() (string, error) {
-	if found, err := libbuildpack.FileExists(filepath.Join(s.Stager.BuildDir(), "buildpack.yml")); err != nil || !found {
-		return "", err
-	}
-
-	obj := struct {
-		DotnetCore struct {
-			Version string `yaml:"sdk"`
-		} `yaml:"dotnet-core"`
-	}{}
-	if err := libbuildpack.NewYAML().Load(filepath.Join(s.Stager.BuildDir(), "buildpack.yml"), &obj); err != nil {
-		return "", err
-	}
-
-	return obj.DotnetCore.Version, nil
 }
 
 func (s *Supplier) globalJsonSdkVersion() (string, error) {
@@ -488,4 +517,40 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+type buildpackYaml struct {
+	DotnetCore struct {
+		Version string `yaml:"sdk"`
+	} `yaml:"dotnet-core"`
+	UseLegacyOpenssl bool `yaml:"use_legacy_openssl"`
+}
+
+func (s *Supplier) parseBuildpackYamlVersion() (string, error) {
+	content, err := s.parseBuildpackYamlFile()
+	if err != nil {
+		return "", err
+	}
+	return content.DotnetCore.Version, nil
+}
+
+func (s *Supplier) parseBuildpackYamlOpenssl() (bool, error) {
+	content, err := s.parseBuildpackYamlFile()
+	if err != nil {
+		return false, err
+	}
+	return content.UseLegacyOpenssl, nil
+}
+
+func (s *Supplier) parseBuildpackYamlFile() (buildpackYaml, error) {
+	obj := buildpackYaml{}
+	if found, err := libbuildpack.FileExists(filepath.Join(s.Stager.BuildDir(), "buildpack.yml")); err != nil || !found {
+		return obj, err
+	}
+
+	if err := libbuildpack.NewYAML().Load(filepath.Join(s.Stager.BuildDir(), "buildpack.yml"), &obj); err != nil {
+		return obj, err
+	}
+
+	return obj, nil
 }

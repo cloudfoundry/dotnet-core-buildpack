@@ -212,6 +212,19 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 			})
 		})
+
+		context("with use_legacy_openssl specified in buildpack.yml", func() {
+			it.Before(func() {
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple_legacy_openssl"))
+			})
+
+			it("activates openssl legacy provider and builds/runs successfully", func() {
+				PushAppAndConfirm(t, app)
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+				Expect(app.Stdout.String()).To(ContainSubstring("Loading legacy SSL provider"))
+				Expect(app.Stdout.String()).To(ContainSubstring("name: OpenSSL Legacy Provider"))
+			})
+		})
 	})
 
 	context("deploying a framework-dependent app", func() {
