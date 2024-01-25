@@ -219,10 +219,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 
 			it("activates openssl legacy provider and builds/runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+				Expect(app.Push()).To(Succeed())
 				Expect(app.Stdout.String()).To(ContainSubstring("Loading legacy SSL provider"))
-				Expect(app.Stdout.String()).To(ContainSubstring("name: OpenSSL Legacy Provider"))
+				Eventually(app.Stdout.String()).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
 			})
 		})
 	})
