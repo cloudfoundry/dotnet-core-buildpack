@@ -1,7 +1,0 @@
----
-applications:
-- name: simple_legacy_openssl
-  processes:
-  - type: worker
-    command: openssl list -providers
-    instances: 1
