@@ -1,0 +1,3 @@
+dotnet-core:
+  sdk: 6.0.x
+use_legacy_openssl: true
