@@ -408,6 +408,10 @@ func (s *Supplier) LoadLegacySSLProvider() error {
 	}
 
 	if loadLegacySSLProvider {
+		if os.Getenv("CF_STACK") == "cflinuxfs3" {
+			s.Log.Warning("Legacy SSL support requested, this feature is not available on cflinuxfs3")
+			return nil
+		}
 		// If a user sets the buidpack.yml to include legacy provider AND
 		// includes their own openssl.cnf, just use the provided openssl.cnf
 		opensslCnfFile := filepath.Join(s.Stager.BuildDir(), "openssl.cnf")

@@ -272,6 +272,22 @@ var _ = Describe("Supply", func() {
 					Expect(buffer.String()).To(ContainSubstring("Application already contains openssl.cnf file"))
 				})
 			})
+			Context("on cflinuxfs3", func() {
+				Context("contains use_legacy_openssl: true", func() {
+					BeforeEach(func() {
+						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
+						Expect(os.Setenv("CF_STACK", "cflinuxfs3")).To(Succeed())
+					})
+					AfterEach(func() {
+						Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+						Expect(os.Unsetenv("CF_STACK")).To(Succeed())
+					})
+					It("doesn not load legacy SSL provider", func() {
+						Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
+						Expect(buffer.String()).To(ContainSubstring("Legacy SSL support requested, this feature is not available on cflinuxfs3"))
+					})
+				})
+			})
 		})
 
 		Context("error cases", func() {
