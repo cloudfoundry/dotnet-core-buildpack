@@ -174,3 +174,9 @@ func SkipOnCflinuxfs4(t *testing.T) {
 		t.Skip("Skipping test not relevant for stack cflinuxfs4")
 	}
 }
+
+func SkipOnCflinuxfs3(t *testing.T) {
+	if os.Getenv("CF_STACK") == "cflinuxfs3" {
+		t.Skip("Skipping test not relevant for stack cflinuxfs3")
+	}
+}
