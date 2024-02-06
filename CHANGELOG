@@ -1,3 +1,13 @@
+v2.4.22 Feb 06, 2024
+=====================
+
+* Add libunwind 1.8.0, remove libunwind 1.7.2 for stack(s) cflinuxfs3, cflinuxfs4
+
+* Use a procfile
+
+* Load legacy openssl provider when buildpack.yml config is set (only for cflinuxfs4)
+
+
 v2.4.21 Jan 22, 2024
 =====================
 
