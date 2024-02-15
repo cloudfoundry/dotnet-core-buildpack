@@ -213,11 +213,12 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("with use_legacy_openssl specified in buildpack.yml", func() {
+		context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
 			it.Before(func() {
 				// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
 				SkipOnCflinuxfs3(t)
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple_legacy_openssl"))
+				app.SetEnv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")
 			})
 
 			it("activates openssl legacy provider and builds/runs successfully", func() {
