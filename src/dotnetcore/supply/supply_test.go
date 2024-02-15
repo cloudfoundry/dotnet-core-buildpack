@@ -217,13 +217,13 @@ var _ = Describe("Supply", func() {
 	})
 
 	Describe("LoadLegacySSLProvider", func() {
-		Context("with buildpack.yml", func() {
-			Context("contains use_legacy_openssl: true", func() {
+		Context("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER is set", func() {
+			Context("set to true", func() {
 				BeforeEach(func() {
-					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
+					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")).To(Succeed())
 				})
 				AfterEach(func() {
-					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
 				})
 				It("Loads legacy SSL provider", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
@@ -231,75 +231,49 @@ var _ = Describe("Supply", func() {
 					Expect(buffer.String()).To(ContainSubstring("Loading legacy SSL provider"))
 				})
 			})
-			Context("contains use_legacy_openssl: false", func() {
+
+			Context("set to false", func() {
 				BeforeEach(func() {
-					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: false\n"), 0644)).To(Succeed())
+					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "false")).To(Succeed())
 				})
 				AfterEach(func() {
-					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
 				})
 				It("does not load legacy SSL provider", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
 					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
+					Expect(buffer.String()).NotTo(ContainSubstring("Loading legacy SSL provider"))
 				})
 			})
 
-			Context("does not contain use_legacy_openssl at all", func() {
+			Context("both environment variable and openssl.cnf are present", func() {
 				BeforeEach(func() {
-					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\n"), 0644)).To(Succeed())
+					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")).To(Succeed())
+					Expect(os.WriteFile(filepath.Join(buildDir, "openssl.cnf"), []byte(""), 0644)).To(Succeed())
 				})
 				AfterEach(func() {
-					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
-				})
-				It("does not load legacy SSL provider", func() {
-					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
-					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
-				})
-			})
-
-			Context("openssl.cnf file already exists in app", func() {
-				BeforeEach(func() {
-					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
-					Expect(os.WriteFile(filepath.Join(buildDir, "openssl.cnf"), []byte("some-data"), 0644)).To(Succeed())
-				})
-				AfterEach(func() {
-					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
 					Expect(os.Remove(filepath.Join(buildDir, "openssl.cnf"))).To(Succeed())
 				})
-				It("uses the openssl.cnf file that already exists", func() {
+				It("the openssl.cnf file takes precedence", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
 					Expect(filepath.Join(buildDir, "openssl.cnf")).To(BeARegularFile())
+					Expect(buffer.String()).To(ContainSubstring("Loading legacy SSL provider"))
 					Expect(buffer.String()).To(ContainSubstring("Application already contains openssl.cnf file"))
-				})
-			})
-			Context("on cflinuxfs3", func() {
-				Context("contains use_legacy_openssl: true", func() {
-					BeforeEach(func() {
-						Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("dotnet-core:\n  sdk: 6.7.8\nuse_legacy_openssl: true\n"), 0644)).To(Succeed())
-						Expect(os.Setenv("CF_STACK", "cflinuxfs3")).To(Succeed())
-					})
-					AfterEach(func() {
-						Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
-						Expect(os.Unsetenv("CF_STACK")).To(Succeed())
-					})
-					It("doesn not load legacy SSL provider", func() {
-						Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
-						Expect(buffer.String()).To(ContainSubstring("Legacy SSL support requested, this feature is not available on cflinuxfs3"))
-					})
 				})
 			})
 		})
 
 		Context("error cases", func() {
-			Context("cannot parse buildpack.yaml", func() {
+			Context("cannot parse the BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER boolean", func() {
 				BeforeEach(func() {
-					Expect(os.WriteFile(filepath.Join(buildDir, "buildpack.yml"), []byte("bad yaml"), 0644)).To(Succeed())
+					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "bad boolean")).To(Succeed())
 				})
 				AfterEach(func() {
-					Expect(os.Remove(filepath.Join(buildDir, "buildpack.yml"))).To(Succeed())
+					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
 				})
 				It("returns an error", func() {
-					Expect(supplier.LoadLegacySSLProvider()).To(MatchError(ContainSubstring("cannot unmarshal")))
+					Expect(supplier.LoadLegacySSLProvider()).To(MatchError(ContainSubstring(`parsing "bad boolean": invalid syntax`)))
 					Expect(filepath.Join(buildDir, "openssl.cnf")).NotTo(BeARegularFile())
 				})
 			})

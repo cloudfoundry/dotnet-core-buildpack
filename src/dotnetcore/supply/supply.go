@@ -401,10 +401,18 @@ func (s *Supplier) InstallDotnetSdk() error {
 	return s.installRuntimeIfNeeded()
 }
 
+// Users can load the legacy SSL provider via:
+// - the BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER=true environment variable
+// - provide an openssl.cnf file in the application directory
 func (s *Supplier) LoadLegacySSLProvider() error {
-	loadLegacySSLProvider, err := s.parseBuildpackYamlOpenssl()
-	if err != nil {
-		return err
+	var loadLegacySSLProvider bool
+	var err error
+
+	if legacySSLEnvVar, ok := os.LookupEnv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER"); ok {
+		loadLegacySSLProvider, err = strconv.ParseBool(legacySSLEnvVar)
+		if err != nil {
+			return err
+		}
 	}
 
 	if loadLegacySSLProvider {
@@ -412,7 +420,7 @@ func (s *Supplier) LoadLegacySSLProvider() error {
 			s.Log.Warning("Legacy SSL support requested, this feature is not available on cflinuxfs3")
 			return nil
 		}
-		// If a user sets the buidpack.yml to include legacy provider AND
+		// If a user requests the legacy provider AND
 		// includes their own openssl.cnf, just use the provided openssl.cnf
 		opensslCnfFile := filepath.Join(s.Stager.BuildDir(), "openssl.cnf")
 		exists, err := libbuildpack.FileExists(opensslCnfFile)
@@ -527,7 +535,6 @@ type buildpackYaml struct {
 	DotnetCore struct {
 		Version string `yaml:"sdk"`
 	} `yaml:"dotnet-core"`
-	UseLegacyOpenssl bool `yaml:"use_legacy_openssl"`
 }
 
 func (s *Supplier) parseBuildpackYamlVersion() (string, error) {
@@ -536,14 +543,6 @@ func (s *Supplier) parseBuildpackYamlVersion() (string, error) {
 		return "", err
 	}
 	return content.DotnetCore.Version, nil
-}
-
-func (s *Supplier) parseBuildpackYamlOpenssl() (bool, error) {
-	content, err := s.parseBuildpackYamlFile()
-	if err != nil {
-		return false, err
-	}
-	return content.UseLegacyOpenssl, nil
 }
 
 func (s *Supplier) parseBuildpackYamlFile() (buildpackYaml, error) {
