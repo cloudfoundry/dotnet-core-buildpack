@@ -1,3 +1,12 @@
+v2.4.24 Feb 16, 2024
+=====================
+
+* Add support for BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER (#921)
+  Enabling the new environment variable will load and active the legacy openssl provider
+
+* Removes `use_legacy_openssl` buildpack.yml setting in favour of the environment variable
+
+
 v2.4.23 Feb 14, 2024
 =====================
 
