@@ -15,23 +15,23 @@ jobs:
       - name: Should run
         id: should_run
         run: |
-          if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-            echo "Skipping date check, because workflow was run manually"
-            echo "bool=true" >> "${GITHUB_OUTPUT}"
+          # if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+          #   echo "Skipping date check, because workflow was run manually"
+          #   echo "bool=true" >> "${GITHUB_OUTPUT}"
+          # else
+          day_of_month=$(date +%d)
+          # Check if it's the second or fourth Thursday
+          if [ "$day_of_month" -le "14" ]; then
+              echo "It's the second Thursday of the month"
+              echo "bool=true" >> "${GITHUB_OUTPUT}"
+          elif [ "$day_of_month" -ge "22" ]; then
+              echo "It's the fourth Thursday of the month"
+              echo "bool=true" >> "${GITHUB_OUTPUT}"
           else
-            day_of_month=$(date +%d)
-            # Check if it's the second or fourth Thursday
-            if [ "$day_of_month" -le "14" ]; then
-                echo "It's the second Thursday of the month"
-                echo "bool=true" >> "${GITHUB_OUTPUT}"
-            elif [ "$day_of_month" -ge "22" ]; then
-                echo "It's the fourth Thursday of the month"
-                echo "bool=true" >> "${GITHUB_OUTPUT}"
-            else
-                echo "It's another Thursday of the month"
-                echo "bool=false" >> "${GITHUB_OUTPUT}"
-            fi
+              echo "It's another Thursday of the month"
+              echo "bool=false" >> "${GITHUB_OUTPUT}"
           fi
+          # fi
   reminder:
     name: Reminder
     runs-on: ubuntu-22.04
