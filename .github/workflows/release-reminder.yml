@@ -7,7 +7,7 @@ on:
 
 jobs:
   determine-date:
-    name: Run on 2nd and 4th Thursday of a month
+    name: Release buildpacks on 2nd and 4th Thursday of the month
     runs-on: ubuntu-22.04
     outputs:
       should_run: ${{ steps.should_run.outputs.bool }}
@@ -15,23 +15,25 @@ jobs:
       - name: Should run
         id: should_run
         run: |
-          # if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
-          #   echo "Skipping date check, because workflow was run manually"
-          #   echo "bool=true" >> "${GITHUB_OUTPUT}"
-          # else
-          day_of_month=$(date +%d)
-          # Check if it's the second or fourth Thursday
-          if [ "$day_of_month" -le "14" ]; then
-              echo "It's the second Thursday of the month"
-              echo "bool=true" >> "${GITHUB_OUTPUT}"
-          elif [ "$day_of_month" -ge "22" ]; then
-              echo "It's the fourth Thursday of the month"
-              echo "bool=true" >> "${GITHUB_OUTPUT}"
+          if [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+            echo "Skipping date check, because workflow was run manually"
+            echo "bool=true" >> "${GITHUB_OUTPUT}"
           else
-              echo "It's another Thursday of the month"
-              echo "bool=false" >> "${GITHUB_OUTPUT}"
+            day_of_month=$(date +%d)
+            # Check if it's the second or fourth Thursday of the month
+            # second thursday of the month will always be between day 8 and 14 (inclusive)
+            if [[ "$day_of_month" -ge "8" && "$day_of_month" -le "14" ]]; then
+                echo "It's the second Thursday of the month"
+                echo "bool=true" >> "${GITHUB_OUTPUT}"
+            # fourth thursday of the month will always be between day 21 and 28 (inclusive)
+            elif [[ "$day_of_month" -ge "22" && "$day_of_month" -le "28" ]]; then
+                echo "It's the fourth Thursday of the month"
+                echo "bool=true" >> "${GITHUB_OUTPUT}"
+            else
+                echo "It's another Thursday of the month"
+                echo "bool=false" >> "${GITHUB_OUTPUT}"
+            fi
           fi
-          # fi
   reminder:
     name: Reminder
     runs-on: ubuntu-22.04
