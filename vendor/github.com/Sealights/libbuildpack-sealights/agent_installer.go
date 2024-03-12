@@ -20,6 +20,8 @@ import (
 
 const WindowsPackageName = "sealights-dotnet-agent-windows-self-contained.zip"
 const LinuxPackageName = "sealights-dotnet-agent-linux-self-contained.tar.gz"
+const WindowsPackageDir = "sealights-dotnet-agent-windows-self-contained"
+const LinuxPackageDir = "sealights-dotnet-agent-linux-self-contained"
 
 const DefaultVersion = "latest"
 const AgentDir = "sealights"
@@ -74,7 +76,7 @@ func (agi *AgentInstaller) extractPackage(source string, target string) error {
 	agi.Log.Debug("Sealights. Extract package from '%s' to '%s'", source, target)
 
 	var err error
-	var isZip = strings.HasSuffix(source, ".zip")
+	var isZip = strings.HasSuffix(source, ".zip") || strings.HasSuffix(source, ".nupkg")
 	if isZip {
 		err = libbuildpack.ExtractZip(source, target)
 	} else {
@@ -86,7 +88,47 @@ func (agi *AgentInstaller) extractPackage(source string, target string) error {
 		return err
 	}
 
+	err = agi.extractContentIfNeeded(target)
+	if err != nil {
+		agi.Log.Error("Sealights. Failed to copy content from package")
+		return err
+	}
+
 	agi.Log.Debug("Sealights. Package extracted.")
+	return nil
+}
+
+func (agi *AgentInstaller) extractContentIfNeeded(target string) error {
+	contentDirectory := filepath.Join(target, "content")
+	found, err := libbuildpack.FileExists(contentDirectory)
+	if err != nil {
+		return err
+	} else if found {
+		// nuget package has different structure compare to
+		// regular installation package. need to extract corresponding
+		// agent from the content to align them
+
+		singlePackage, err := libbuildpack.FileExists(filepath.Join(contentDirectory, "version.txt"))
+		if err != nil {
+			return err
+		}
+
+		agentDir := contentDirectory
+		if !singlePackage {
+			agentDir = filepath.Join(contentDirectory, getPackageDirByPlatform())
+		}
+
+		err = libbuildpack.MoveDirectory(agentDir, target)
+		if err != nil {
+			return err
+		}
+
+		agi.updateFilePermissions(target)
+	}
+
+	// remove "content" directory once it not needed
+	os.RemoveAll(contentDirectory)
+
 	return nil
 }
 
@@ -169,6 +211,19 @@ func (agi *AgentInstaller) createClient() *http.Client {
 	}
 }
 
+func (agi *AgentInstaller) updateFilePermissions(installationPath string) error {
+	files, err := os.ReadDir(installationPath)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		os.Chmod(filepath.Join(installationPath, file.Name()), 0755)
+	}
+
+	return nil
+}
+
 func (agi *AgentInstaller) readAgentVersion(installationPath string) string {
 	data, err := os.ReadFile(filepath.Join(installationPath, VersionFileName))
 	if err != nil {
@@ -206,6 +261,14 @@ func getPackageNameByPlatform() string {
 		return WindowsPackageName
 	} else {
 		return LinuxPackageName
+	}
+}
+
+func getPackageDirByPlatform() string {
+	if runtime.GOOS == "windows" {
+		return WindowsPackageDir
+	} else {
+		return LinuxPackageDir
 	}
 }
 
