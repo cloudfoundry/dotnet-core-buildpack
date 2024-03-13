@@ -112,6 +112,11 @@ func (conf *Configuration) parseVcapServices() {
 				options.SlArguments["tools"] = conf.buildToolName()
 			}
 
+			_, tagsProvided := options.SlArguments["tags"]
+			if !tagsProvided {
+				options.SlArguments["tags"] = conf.buildToolName()
+			}
+
 			if options.Verb == "" {
 				options.Verb = "startBackgroundTestListener"
 			}
@@ -128,12 +133,11 @@ func (conf *Configuration) parseVcapServices() {
 }
 
 func (conf *Configuration) buildToolName() string {
-	lang := conf.Stager.BuildpackLanguage()
 	ver, err := conf.Stager.BuildpackVersion()
 	if err != nil {
 		conf.Log.Warning("Failed to get buildpack version")
 		ver = "unknown"
 	}
 
-	return fmt.Sprintf("pcf-%s-%s", lang, ver)
+	return fmt.Sprintf("sl-pcf-%s", ver)
 }
