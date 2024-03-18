@@ -1,3 +1,26 @@
+v2.4.26 Mar 15, 2024
+=====================
+
+* Add dotnet-sdk 8.0.203, remove dotnet-sdk 8.0.202 (#947)
+
+* Add dotnet-aspnetcore 6.0.28, remove dotnet-aspnetcore 6.0.27
+
+* Add dotnet-runtime 6.0.28, remove dotnet-runtime 6.0.27 (#940)
+
+* Add dotnet-sdk 6.0.420, remove dotnet-sdk 6.0.419 (#939)
+
+* Add dotnet-aspnetcore 7.0.17, remove dotnet-aspnetcore 7.0.16 (#942)
+
+* Add dotnet-runtime 7.0.17, remove dotnet-runtime 7.0.16 (#945)
+
+* Add dotnet-sdk 7.0.407, remove dotnet-sdk 7.0.406 (#941)
+
+* Add dotnet-aspnetcore 8.0.3, remove dotnet-aspnetcore 8.0.2 (#937)
+
+* Add dotnet-runtime 8.0.3, remove dotnet-runtime 8.0.2 (#943)
+
+* Add dotnet-sdk 8.0.202, remove dotnet-sdk 8.0.201 (#938)
+
 v2.4.25 Mar 04, 2024
 =====================
 
