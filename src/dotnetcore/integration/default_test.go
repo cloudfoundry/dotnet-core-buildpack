@@ -145,8 +145,8 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 				it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
 					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest6ASPNetVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest8ASPNetVersion)))
 					Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
 				})
 			})
