@@ -1,9 +1,0 @@
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/uses_libgdiplus
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/appsettings.Development.json
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/appsettings.json
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/uses_libgdiplus.dll
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/uses_libgdiplus.deps.json
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/uses_libgdiplus.runtimeconfig.json
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/uses_libgdiplus.pdb
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/Microsoft.Win32.SystemEvents.dll
-/test/test/uses_libgdiplus/bin/Release/net6.0/ubuntu.18.04-x64/publish/System.Drawing.Common.dll

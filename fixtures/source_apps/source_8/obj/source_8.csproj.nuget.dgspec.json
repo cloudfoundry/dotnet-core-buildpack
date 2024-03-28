@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/tmp/source_8/source_8.csproj": {}
+    "/tmp/source_apps/source_8/source_8.csproj": {}
   },
   "projects": {
-    "/tmp/source_8/source_8.csproj": {
+    "/tmp/source_apps/source_8/source_8.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/tmp/source_8/source_8.csproj",
+        "projectUniqueName": "/tmp/source_apps/source_8/source_8.csproj",
         "projectName": "source_8",
-        "projectPath": "/tmp/source_8/source_8.csproj",
+        "projectPath": "/tmp/source_apps/source_8/source_8.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/tmp/source_8/obj/",
+        "outputPath": "/tmp/source_apps/source_8/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -56,7 +61,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

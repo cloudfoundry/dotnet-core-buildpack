@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AJn9YIdR423CAUiEHQ0GiDtC/VV9wjJwO+5G5KNp060BKPM/352rK+gi6uLM8aT0dIp3slRmXMIfi4KIIIhTIA==",
+  "dgSpecHash": "33AP2G77jdEMVFuIpLI5320ubf6w5++9Q0Jo7B2dg5ZGYs+U4tMbttrPFp0QSupERcxZ3CUJpBJVfQ4l+Uw+6g==",
   "success": true,
-  "projectFilePath": "/Users/meyera/workspace/dotnet-core-buildpack/fixtures/source_apps/source_6.0/source_6.0.csproj",
+  "projectFilePath": "/test/simple_8/source_8.0/source_8.0.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

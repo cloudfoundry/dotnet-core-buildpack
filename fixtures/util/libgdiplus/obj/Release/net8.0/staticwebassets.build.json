@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "meybrjk22G4Y6CIdzwKrQwgsCyPSiJorZPp0mLdMZig=",
+  "Source": "libgdiplus",
+  "BasePath": "_content/libgdiplus",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

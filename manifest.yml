@@ -2,11 +2,11 @@
 language: dotnet-core
 default_versions:
 - name: dotnet-runtime
-  version: 6.0.x
+  version: 8.0.x
 - name: dotnet-aspnetcore
-  version: 6.0.x
+  version: 8.0.x
 - name: dotnet-sdk
-  version: 6.0.x
+  version: 8.0.x
 - name: bower
   version: 1.8.x
 url_to_dependency_map: []

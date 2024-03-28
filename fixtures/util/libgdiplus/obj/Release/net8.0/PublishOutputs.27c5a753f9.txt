@@ -1,0 +1,7 @@
+/tmp/libgdiplus/bin/Release/net8.0/publish/libgdiplus
+/tmp/libgdiplus/bin/Release/net8.0/publish/appsettings.Development.json
+/tmp/libgdiplus/bin/Release/net8.0/publish/appsettings.json
+/tmp/libgdiplus/bin/Release/net8.0/publish/libgdiplus.dll
+/tmp/libgdiplus/bin/Release/net8.0/publish/libgdiplus.deps.json
+/tmp/libgdiplus/bin/Release/net8.0/publish/libgdiplus.runtimeconfig.json
+/tmp/libgdiplus/bin/Release/net8.0/publish/libgdiplus.pdb

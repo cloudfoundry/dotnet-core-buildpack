@@ -20,10 +20,10 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		app                   *cutlass.App
 		latest6RuntimeVersion string
-		latest6ASPNetVersion  string
-		latest6SDKVersion     string
 		latest7RuntimeVersion string
 		latest8RuntimeVersion string
+		latest8ASPNetVersion  string
+		latest8SDKVersion     string
 	)
 
 	it.Before(func() {
@@ -34,13 +34,13 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
 
-		latest6ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "6.0.x", bpDir)
-
-		latest6SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "6.0.x", bpDir)
-
 		latest7RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "7.0.x", bpDir)
 
 		latest8RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "8.0.x", bpDir)
+
+		latest8ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "8.0.x", bpDir)
+
+		latest8SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "8.0.x", bpDir)
 	})
 
 	it.After(func() {
@@ -51,24 +51,24 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		it("builds and runs the app and accepts SIGTERM and exits gracefully", func() {
 			PushAppAndConfirm(t, app)
 
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest6SDKVersion)))
-			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
-			Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+			Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
 
 			Expect(app.Stop()).To(Succeed())
 			Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
 		})
 
-		context("with dotnet sdk 6 in global json", func() {
+		context("with dotnet sdk 8 in global json", func() {
 			context("when the sdk exists", func() {
 				it.Before(func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_6"), "global.json", "sdk_version", latest6SDKVersion)
+					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_8"), "global.json", "sdk_version", latest8SDKVersion)
 				})
 
 				it("displays a simple text homepage", func() {
 					PushAppAndConfirm(t, app)
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest6SDKVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
 				})
 			})
 			context("when the sdk is missing", func() {
@@ -79,7 +79,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				)
 
 				it.Before(func() {
-					version, err := semver.NewVersion(latest6SDKVersion)
+					version, err := semver.NewVersion(latest8SDKVersion)
 					Expect(err).ToNot(HaveOccurred())
 
 					if version.Patch()%100 != 0 {
@@ -88,7 +88,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 					baseFeatureLine = int((version.Patch() / 100) * 100)
 					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_6"), "global.json", "sdk_version", constructedVersion)
+					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_8"), "global.json", "sdk_version", constructedVersion)
 				})
 
 				it("logs a warning about using source_apps SDK", func() {
@@ -97,14 +97,14 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 						Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
 						Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
 					}
-					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
 				})
 			})
 		})
 
 		context("with buildpack.yml and global.json files", func() {
 			it.Before(func() {
-				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest6SDKVersion)
+				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest8SDKVersion)
 			})
 
 			context("when SDK version from buildpack.yml is not available", func() {
@@ -120,16 +120,16 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		context("when an app has a Microsoft.AspNetCore.App", func() {
 
-			context("with version 6", func() {
+			context("with version 8", func() {
 				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference_6"))
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference_8"))
 					app.Disk = "2G"
 				})
 
 				it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
 					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest6ASPNetVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest8ASPNetVersion)))
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
 					Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
 					Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
 				})
@@ -137,9 +137,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		})
 
 		context("when the app has Microsoft.AspNetCore.All", func() {
-			context("with version 6", func() {
+			context("with version 8", func() {
 				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8"))
 					app.Disk = "1G"
 				})
 
@@ -174,42 +174,42 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("with .NET Core 6", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
-			})
-
-			it("builds and runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
-			})
-		})
-
-		context("with .NET Core 7", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source-app-7"))
-				app.Disk = "2G"
-				app.Memory = "1G"
-			})
-
-			it("builds and runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest7RuntimeVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("<title>source_app_7</title>"))
-			})
-		})
-
 		context("with .NET Core 8", func() {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8"))
+			})
+
+			it("builds and runs successfully", func() {
+				PushAppAndConfirm(t, app)
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
+			})
+		})
+
+		context("with .NET Core 6", func() {
+			it.Before(func() {
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
 				app.Disk = "2G"
 				app.Memory = "1G"
 			})
 
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+			})
+
+			context("with .NET Core 7", func() {
+				it.Before(func() {
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source-app-7"))
+					app.Disk = "2G"
+					app.Memory = "1G"
+				})
+
+				it("builds and runs successfully", func() {
+					PushAppAndConfirm(t, app)
+					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest7RuntimeVersion)))
+					Expect(app.GetBody("/")).To(ContainSubstring("<title>source_app_7</title>"))
+				})
 			})
 		})
 
@@ -232,7 +232,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 	context("deploying a framework-dependent app", func() {
 		context("with libgdiplus", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net6.0", "ubuntu.18.04-x64", "publish"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net8.0", "publish"))
 			})
 
 			it("displays a simple text homepage", func() {
@@ -241,14 +241,14 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("with .NET Core 6", func() {
+		context("with .NET Core 8", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "fde_apps", "fde_6.0"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "fde_apps", "fde_8.0"))
 			})
 
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 6"))
+				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
 			})
 		})
 	})
@@ -265,9 +265,9 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		})
 	})
 
-	context("deploying .NET Core 6 self-contained app", func() {
+	context("deploying .NET Core 8 self-contained app", func() {
 		it.Before(func() {
-			app = cutlass.New(filepath.Join(settings.FixturesPath, "self_contained_apps", "self_contained_executable_6.0"))
+			app = cutlass.New(filepath.Join(settings.FixturesPath, "self_contained_apps", "self_contained_executable_8.0"))
 		})
 
 		it("builds and runs successfully", func() {
