@@ -1,0 +1,7 @@
+/tmp/fdd_apps/source_8
+/tmp/fdd_apps/appsettings.Development.json
+/tmp/fdd_apps/appsettings.json
+/tmp/fdd_apps/source_8.dll
+/tmp/fdd_apps/source_8.deps.json
+/tmp/fdd_apps/source_8.runtimeconfig.json
+/tmp/fdd_apps/source_8.pdb

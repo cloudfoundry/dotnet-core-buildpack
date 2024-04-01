@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "dgSpecHash": "F/7PMJbXVBZyz0pgNQPsqrC1y1pbi1CtnG3F4eAYhq91fD0XYJCKehSK0fsXSd2fSk4t76/PR4INn65xHvB1Ow==",
-  "success": true,
-  "projectFilePath": "/test/fixtures/source_apps/aspnet_package_reference_6/aspnet_package_reference.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
-}
