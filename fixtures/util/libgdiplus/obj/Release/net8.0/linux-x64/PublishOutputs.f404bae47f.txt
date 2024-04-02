@@ -1,0 +1,9 @@
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/libgdiplus
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/appsettings.Development.json
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/appsettings.json
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/libgdiplus.dll
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/libgdiplus.deps.json
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/libgdiplus.runtimeconfig.json
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/libgdiplus.pdb
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/Microsoft.Win32.SystemEvents.dll
+/test/libgdiplus/bin/Release/net8.0/linux-x64/publish/System.Drawing.Common.dll

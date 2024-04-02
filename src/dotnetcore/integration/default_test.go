@@ -139,7 +139,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		context("when the app has Microsoft.AspNetCore.All", func() {
 			context("with version 8", func() {
 				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8"))
+					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8.0"))
 					app.Disk = "1G"
 				})
 
@@ -176,7 +176,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		context("with .NET Core 8", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8.0"))
 			})
 
 			it("builds and runs successfully", func() {
@@ -195,7 +195,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+				Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
 			})
 
 			context("with .NET Core 7", func() {
@@ -232,7 +232,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 	context("deploying a framework-dependent app", func() {
 		context("with libgdiplus", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net8.0", "publish"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net8.0", "linux-x64", "publish"))
 			})
 
 			it("displays a simple text homepage", func() {
