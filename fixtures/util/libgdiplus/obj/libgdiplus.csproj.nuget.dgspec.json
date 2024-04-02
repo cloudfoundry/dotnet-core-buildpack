@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/tmp/libgdiplus/libgdiplus.csproj": {}
+    "/test/libgdiplus/libgdiplus.csproj": {}
   },
   "projects": {
-    "/tmp/libgdiplus/libgdiplus.csproj": {
+    "/test/libgdiplus/libgdiplus.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/tmp/libgdiplus/libgdiplus.csproj",
+        "projectUniqueName": "/test/libgdiplus/libgdiplus.csproj",
         "projectName": "libgdiplus",
-        "projectPath": "/tmp/libgdiplus/libgdiplus.csproj",
+        "projectPath": "/test/libgdiplus/libgdiplus.csproj",
         "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/tmp/libgdiplus/obj/",
+        "outputPath": "/test/libgdiplus/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/root/.nuget/NuGet/NuGet.Config"
@@ -42,6 +42,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[4.7.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -62,6 +68,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }
