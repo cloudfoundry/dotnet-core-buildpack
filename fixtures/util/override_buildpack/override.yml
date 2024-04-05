@@ -1,8 +1,8 @@
 dotnet-core:
   dependencies:
   - name: dotnet-sdk
-    version: 6.0.9999
-    uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.6.0.9999-linux-x64-062d906c.tgz
+    version: 8.0.9999
+    uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk.8.0.9999-linux-x64-062d906c.tgz
     file: BUILDPACK_DIR/dotnet-sdk.tgz
     sha256: 062d906c87839d03b243e2821e10653c89b4c92878bfe2bf995dec231e117bfc
     cf_stacks:

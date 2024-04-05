@@ -13,7 +13,7 @@ import (
 )
 
 func testOffline(t *testing.T, context spec.G, it spec.S) {
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "fdd_app_6.0"))
+	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "fdd_8.0"))
 	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
 }
 

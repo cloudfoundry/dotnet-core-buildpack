@@ -233,6 +233,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		context("with libgdiplus", func() {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net8.0", "linux-x64", "publish"))
+				app.Disk = "700M"
 			})
 
 			it("displays a simple text homepage", func() {
@@ -244,6 +245,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		context("with .NET Core 8", func() {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "fde_apps", "fde_8.0"))
+				app.Disk = "700M"
 			})
 
 			it("builds and runs successfully", func() {
