@@ -24,6 +24,7 @@ func AssertNoInternetTraffic(t *testing.T, context spec.G, it spec.S, fixture st
 	context("when offline", func() {
 		it.Before(func() {
 			app = cutlass.New(fixture)
+			app.Disk = "700M"
 		})
 
 		it.After(func() {
