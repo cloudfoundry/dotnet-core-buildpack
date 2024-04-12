@@ -1,3 +1,29 @@
+v2.4.27 Apr 12, 2024
+=====================
+
+* Update default .NET Core version in buildpack from 6.0.x to 8.0.x
+
+* Add dotnet-runtime 6.0.29, remove dotnet-runtime 6.0.28 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 7.0.18, remove dotnet-runtime 7.0.17 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 8.0.4, remove dotnet-runtime 8.0.3 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 6.0.421, remove dotnet-sdk 6.0.420 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 7.0.408, remove dotnet-sdk 7.0.407 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 8.0.204, remove dotnet-sdk 8.0.203 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.29, remove dotnet-aspnetcore 6.0.28 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 7.0.18, remove dotnet-aspnetcore 7.0.17 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 8.0.4, remove dotnet-aspnetcore 8.0.3 for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add node 20.12.2, remove node 20.11.1 for stack(s) cflinuxfs3, cflinuxfs4
+
+
 v2.4.26 Mar 15, 2024
 =====================
 
