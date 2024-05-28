@@ -20,7 +20,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 
 		app                   *cutlass.App
 		latest6RuntimeVersion string
-		latest7RuntimeVersion string
 		latest8RuntimeVersion string
 		latest8ASPNetVersion  string
 		latest8SDKVersion     string
@@ -33,8 +32,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		Expect(err).NotTo(HaveOccurred())
 
 		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
-
-		latest7RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "7.0.x", bpDir)
 
 		latest8RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "8.0.x", bpDir)
 
@@ -196,20 +193,6 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 				PushAppAndConfirm(t, app)
 				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
-			})
-
-			context("with .NET Core 7", func() {
-				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source-app-7"))
-					app.Disk = "2G"
-					app.Memory = "1G"
-				})
-
-				it("builds and runs successfully", func() {
-					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest7RuntimeVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("<title>source_app_7</title>"))
-				})
 			})
 		})
 
