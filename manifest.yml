@@ -136,21 +136,21 @@ dependencies:
   source: https://github.com/libunwind/libunwind/releases/download/v1.8.1/libunwind-1.8.1.tar.gz
   source_sha256: ddf0e32dd5fafe5283198d37e4bf9decf7ba1770b6e7e006c33e6df79e6a6157
 - name: node
-  version: 20.14.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_20.14.0_linux_x64_cflinuxfs3_c30754a2.tgz
-  sha256: c30754a21d8efe13e6f64cc7d68f7a8bbda9f26a672db68641409361beec2cc6
+  version: 20.15.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_20.15.0_linux_x64_cflinuxfs3_6e57f7be.tgz
+  sha256: 6e57f7be303a80e016a3a06192146b1a48aef89374d67f22f41e226e3f09e2b3
   cf_stacks:
   - cflinuxfs3
-  source: https://nodejs.org/dist/v20.14.0/node-v20.14.0.tar.gz
-  source_sha256: f01109d3102754ac360fcf25aa588f3bef5c090a8eed3fb1d0be194149c46cf2
+  source: https://nodejs.org/dist/v20.15.0/node-v20.15.0.tar.gz
+  source_sha256: 01e2c034467a324a33e778c81f2808dff13d289eaa9307d3e9b06c171e4d932d
 - name: node
-  version: 20.14.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_20.14.0_linux_x64_cflinuxfs4_e3d1cd0f.tgz
-  sha256: e3d1cd0f373447d5704f0bacd2e1657b9a393fc0b6d2d50079f8001853d27f98
+  version: 20.15.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_20.15.0_linux_x64_cflinuxfs4_21119122.tgz
+  sha256: 21119122839ffb0125c76195cb04c2166af34f0f12108c7d916f3569d8d84136
   cf_stacks:
   - cflinuxfs4
-  source: https://nodejs.org/dist/v20.14.0/node-v20.14.0.tar.gz
-  source_sha256: f01109d3102754ac360fcf25aa588f3bef5c090a8eed3fb1d0be194149c46cf2
+  source: https://nodejs.org/dist/v20.15.0/node-v20.15.0.tar.gz
+  source_sha256: 01e2c034467a324a33e778c81f2808dff13d289eaa9307d3e9b06c171e4d932d
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
