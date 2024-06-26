@@ -1,3 +1,15 @@
+v2.4.30 Jun 26, 2024
+=====================
+
+* Add dotnet-sdk 8.0.302, remove dotnet-sdk 8.0.301
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/187774625)
+
+* Add node 20.15.0, remove node 20.14.0
+  for stack(s) cflinuxfs4, cflinuxfs3
+  (https://www.pivotaltracker.com/story/show/187832044)
+
+
 v2.4.29 May 30, 2024
 =====================
 
