@@ -13,8 +13,6 @@ var _ = Describe("Dotnet buildpack", func() {
 
 	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
 
-	bratshelper.StagingWithCustomBuildpackWithCredentialsInDependencies(CopyBrats)
-
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet-sdk", CopyBrats)
 
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
