@@ -1,3 +1,28 @@
+v2.4.31 Jul 18, 2024
+=====================
+
+* Add node 20.15.1, remove node 20.15.0
+  for stack(s) cflinuxfs3, cflinuxfs4
+
+* Add dotnet-sdk 6.0.424, remove dotnet-sdk 6.0.423
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.32, remove dotnet-aspnetcore 6.0.31
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 6.0.32, remove dotnet-runtime 6.0.31
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 8.0.7, remove dotnet-runtime 8.0.6
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 8.0.303, remove dotnet-sdk 8.0.302
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 8.0.7, remove dotnet-aspnetcore 8.0.6
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+
 v2.4.30 Jun 26, 2024
 =====================
 
