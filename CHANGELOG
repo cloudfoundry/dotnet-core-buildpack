@@ -1,3 +1,11 @@
+v2.4.33 Sep 18, 2024
+=====================
+
+* tests: avoid using chrome-driver
+  chrome-driver was removed from the CI image in
+  https://github.com/cloudfoundry/buildpacks-ci/pull/413.
+
+
 v2.4.32 Aug 23, 2024
 =====================
 
