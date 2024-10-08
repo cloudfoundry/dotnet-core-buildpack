@@ -86,14 +86,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/ebc433c4-8f01-43c8-a1e2-bbe1291ba857/e073f3f679d7a4067a56e8f5d12fc0e5/dotnet-runtime-8.0.10-linux-x64.tar.gz
   source_sha256: 1b8c0d1ec380c88980d69c3ce4606b170af11ac3fb94874e43e7eb304afcb72a
 - name: dotnet-sdk
-  version: 6.0.425
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.425_linux_x64_any-stack_1c7de89c.tar.xz
-  sha256: 1c7de89c6e84b3db2127cc4638416bac63ceb6b72fe099070b76c1b1d69704b4
+  version: 6.0.427
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_6.0.427_linux_x64_any-stack_ca9c5d80.tar.xz
+  sha256: ca9c5d80ceb59ce1f2b76e31d0993d61ebed3ad1dad3671567f9dd813a5e15f3
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/f57cd7db-7781-4ee0-9285-010a6435ef4f/ebc5bb7e43d2a288a8efcc6401ce3f85/dotnet-sdk-6.0.425-linux-x64.tar.gz
-  source_sha256: c37613b327f29e2b32bf24e3ce0874787283fcc993e438cb2e3e50c9ebff6ade
+  source: https://download.visualstudio.microsoft.com/download/pr/12ee34e8-640c-400e-a6dc-4892b442df92/81d40fc98a5bbbfbafa4cc1ab86d6288/dotnet-sdk-6.0.427-linux-x64.tar.gz
+  source_sha256: 1e35111c24084cc38e113afa55e2122cf418424eb28f84ef03904c69a026242e
 - name: dotnet-sdk
   version: 8.0.403
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.403_linux_x64_any-stack_a66e1fed.tar.xz
