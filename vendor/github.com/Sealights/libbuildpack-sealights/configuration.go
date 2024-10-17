@@ -21,7 +21,9 @@ type SealightsOptions struct {
 	Proxy          string
 	ProxyUsername  string
 	ProxyPassword  string
+	UsePic         bool
 	SlArguments    map[string]string
+	SlEnvironment  map[string]string
 }
 
 type Configuration struct {
@@ -58,6 +60,9 @@ func (conf *Configuration) parseVcapServices() {
 		"verb":           true,
 		"customAgentUrl": true,
 		"customCommand":  true,
+		"usePic":         true,
+		"cli":            true,
+		"env":            true,
 	}
 
 	for _, services := range vcapServices {
@@ -66,45 +71,59 @@ func (conf *Configuration) parseVcapServices() {
 				continue
 			}
 
-			queryString := func(key string) string {
-				if value, ok := service.Credentials[key].(string); ok {
-					return value
-				}
-				return ""
+			slEnvironment := getMap(service.Credentials, "env")
+			if slEnvironment == nil {
+				slEnvironment = make(map[string]string)
 			}
 
-			slArguments := map[string]string{}
-			for parameterName, parameterValue := range service.Credentials {
-				_, shouldBeSkipped := buildpackSpecificArguments[parameterName]
-				if shouldBeSkipped {
-					continue
-				}
+			slArguments := getMap(service.Credentials, "cli")
+			if slArguments == nil {
+				slArguments = make(map[string]string)
+			}
 
-				slArguments[parameterName] = parameterValue.(string)
+			// this validation required to make settings for version 1.5.0 back compatible with 1.4
+			// there is no property "cli" in the old version of the libpack - all fields for cli comes directly from settings
+			// so if env variables are set - all settings not from the new "cli" property will be used only by libpack itself
+			if len(slEnvironment) == 0 {
+				for parameterName, parameterValue := range service.Credentials {
+					_, shouldBeSkipped := buildpackSpecificArguments[parameterName]
+					if shouldBeSkipped {
+						continue
+					}
+
+					slArguments[parameterName] = parameterValue.(string)
+				}
+			} else {
+				conf.Log.Debug("Sealights. Option 'env' is provided - only options specified directly in the 'cli' field will be propagated to a command line")
 			}
 
 			options := &SealightsOptions{
-				Version:        queryString("version"),
-				Verb:           queryString("verb"),
-				CustomAgentUrl: queryString("customAgentUrl"),
-				CustomCommand:  queryString("customCommand"),
-				Proxy:          queryString("proxy"),
-				ProxyUsername:  queryString("proxyUsername"),
-				ProxyPassword:  queryString("proxyPassword"),
+				Version:        getValue[string](service.Credentials, "version"),
+				Verb:           getValue[string](service.Credentials, "verb"),
+				CustomAgentUrl: getValue[string](service.Credentials, "customAgentUrl"),
+				CustomCommand:  getValue[string](service.Credentials, "customCommand"),
+				Proxy:          getValue[string](service.Credentials, "proxy"),
+				ProxyUsername:  getValue[string](service.Credentials, "proxyUsername"),
+				ProxyPassword:  getValue[string](service.Credentials, "proxyPassword"),
+				UsePic:         getValue[bool](service.Credentials, "usePic"),
 				SlArguments:    slArguments,
+				SlEnvironment:  slEnvironment,
 			}
 
 			// write warning in case token or session is not provided
-			_, tokenProvided := options.SlArguments["token"]
-			_, tokenFileProvided := options.SlArguments["tokenFile"]
-			if !tokenProvided && !tokenFileProvided {
-				conf.Log.Warning("Sealights access token isn't provided")
+			tokenVariables := []string{"token", "tokenFile", "SL_TOKEN", "SL_TOKENFILE"}
+			isTokenProvided := conf.isAnyVariableProvided(tokenVariables, *options)
+			if !isTokenProvided {
+				conf.Log.Warning("The Sealights token has not been provided.")
 			}
 
-			_, sessionProvided := options.SlArguments["buildSessionId"]
-			_, sessionFileProvided := options.SlArguments["buildSessionIdFile"]
-			if !sessionProvided && !sessionFileProvided {
-				conf.Log.Warning("Sealights build session id isn't provided")
+			_, picEnabled := options.SlEnvironment["SL_PROFILER_INITIALIZECOLLECTOR"]
+			if picEnabled {
+				options.UsePic = true
+			}
+
+			if options.UsePic {
+				conf.Log.Info("Sealights. PIC mode enabled")
 			}
 
 			_, toolsProvided := options.SlArguments["tools"]
@@ -117,8 +136,9 @@ func (conf *Configuration) parseVcapServices() {
 				options.SlArguments["tags"] = conf.buildToolName()
 			}
 
-			if options.Verb == "" {
+			if options.Verb == "" && !options.UsePic {
 				options.Verb = "startBackgroundTestListener"
+				conf.Log.Debug("Sealights. Verb has not been set. Continue with 'startBackgroundTestListener'")
 			}
 
 			_, collectorIdPorvided := options.SlArguments["testListenerSessionKey"]
@@ -132,6 +152,22 @@ func (conf *Configuration) parseVcapServices() {
 	}
 }
 
+func (conf *Configuration) isAnyVariableProvided(variableName []string, options SealightsOptions) bool {
+	for _, key := range variableName {
+		_, variableProvided := options.SlArguments[key]
+		if variableProvided {
+			return true
+		}
+
+		_, variableProvided = options.SlEnvironment[key]
+		if variableProvided {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (conf *Configuration) buildToolName() string {
 	ver, err := conf.Stager.BuildpackVersion()
 	if err != nil {
@@ -140,4 +176,24 @@ func (conf *Configuration) buildToolName() string {
 	}
 
 	return fmt.Sprintf("sl-pcf-%s", ver)
+}
+
+func getValue[T any](dict map[string]interface{}, key string) T {
+	var result T
+
+	if value, ok := dict[key].(T); ok {
+		return value
+	}
+
+	return result
+}
+
+func getMap(dict map[string]interface{}, key string) map[string]string {
+	var result = make(map[string]string)
+
+	for key, value := range getValue[map[string]interface{}](dict, key) {
+		result[key] = value.(string)
+	}
+
+	return result
 }

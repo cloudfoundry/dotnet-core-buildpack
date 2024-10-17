@@ -6,8 +6,8 @@ github.com/Dynatrace/libbuildpack-dynatrace v1.5.2/go.mod h1:Uu9aa5UFAk1Ua+zZXnv
 github.com/Masterminds/semver v1.5.0 h1:H65muMkzWKEuNDnfl9d70GUjFniHKHRbFPGBuZ3QEww=
 github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
-github.com/Sealights/libbuildpack-sealights v1.4.1 h1:Oax/neU7gxIu0ISQgfMwyov316Cgz7K3o1zhR8WhMDA=
-github.com/Sealights/libbuildpack-sealights v1.4.1/go.mod h1:DO7SAzc01NCrI/D5bAs6vTOKX93/HzAq07rjgqCg2+c=
+github.com/Sealights/libbuildpack-sealights v1.5.0 h1:fsM+jS6UYkxuVO0iCAMi5JiXukkMEQ7RX6djfpQ1faA=
+github.com/Sealights/libbuildpack-sealights v1.5.0/go.mod h1:DO7SAzc01NCrI/D5bAs6vTOKX93/HzAq07rjgqCg2+c=
 github.com/VividCortex/ewma v1.1.1/go.mod h1:2Tkkvm3sRDVXaiyucHiACn4cqf7DpdyLvmxzcbUokwA=
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
