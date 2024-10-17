@@ -7,7 +7,7 @@ github.com/Dynatrace/libbuildpack-dynatrace
 # github.com/Masterminds/semver v1.5.0
 ## explicit
 github.com/Masterminds/semver
-# github.com/Sealights/libbuildpack-sealights v1.4.1
+# github.com/Sealights/libbuildpack-sealights v1.5.0
 ## explicit; go 1.18
 github.com/Sealights/libbuildpack-sealights
 # github.com/blang/semver v3.5.1+incompatible
@@ -101,12 +101,6 @@ github.com/paketo-buildpacks/packit/pexec
 github.com/pkg/errors
 # github.com/sclevine/agouti v3.0.0+incompatible
 ## explicit
-github.com/sclevine/agouti
-github.com/sclevine/agouti/api
-github.com/sclevine/agouti/api/internal/bus
-github.com/sclevine/agouti/api/internal/service
-github.com/sclevine/agouti/internal/element
-github.com/sclevine/agouti/internal/target
 # github.com/sclevine/spec v1.4.0
 ## explicit; go 1.13
 github.com/sclevine/spec
