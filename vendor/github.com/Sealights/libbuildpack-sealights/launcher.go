@@ -11,25 +11,22 @@ import (
 	"github.com/cloudfoundry/libbuildpack"
 )
 
-const WindowsProfilerId = "01CA2C22-DC03-4FF5-8350-59E32A3536BA"
 const WindowsAgentName = "SL.DotNet.exe"
-
-const LinuxProfilerId = "3B1DAA64-89D4-4999-ABF4-6A979B650B7D"
 const LinuxAgentName = "SL.DotNet"
-
-const DefaultPort = "31031"
+const GlobalVariablesFile = "sealights-env.sh"
 
 type Launcher struct {
 	Log                *libbuildpack.Logger
 	Options            *SealightsOptions
 	AgentDirAbsolute   string
 	AgentDirForRuntime string
+	Stager             *libbuildpack.Stager
 }
 
-func NewLauncher(log *libbuildpack.Logger, options *SealightsOptions, agentInstallationDir string, buildDir string) *Launcher {
+func NewLauncher(log *libbuildpack.Logger, options *SealightsOptions, agentInstallationDir string, stager *libbuildpack.Stager) *Launcher {
 	agentDirForRuntime := filepath.Join("${HOME}", agentInstallationDir)
-	agentDirAbsolute := filepath.Join(buildDir, agentInstallationDir)
-	return &Launcher{Log: log, Options: options, AgentDirForRuntime: agentDirForRuntime, AgentDirAbsolute: agentDirAbsolute}
+	agentDirAbsolute := filepath.Join(stager.BuildDir(), agentInstallationDir)
+	return &Launcher{Log: log, Options: options, AgentDirForRuntime: agentDirForRuntime, AgentDirAbsolute: agentDirAbsolute, Stager: stager}
 }
 
 func (la *Launcher) ModifyStartParameters(stager *libbuildpack.Stager) error {
@@ -39,6 +36,8 @@ func (la *Launcher) ModifyStartParameters(stager *libbuildpack.Stager) error {
 
 	startCommand := releaseInfo.GetStartCommand()
 	newStartCommand := la.updateStartCommand(startCommand)
+
+	la.setEnvVariablesGlobally()
 
 	shouldApply := la.Options.Verb != "" || la.Options.CustomCommand != ""
 	if shouldApply {
@@ -50,7 +49,7 @@ func (la *Launcher) ModifyStartParameters(stager *libbuildpack.Stager) error {
 		logMessage := fmt.Sprintf("Sealights: Start command updated. From '%s' to '%s'", startCommand, newStartCommand)
 		la.Log.Info(maskSensitiveData(logMessage))
 	} else {
-		la.Log.Warning("Sealights. Verb or Custom Command are missed - start command will not be modified")
+		la.Log.Debug("Sealights. Start command will not be modified")
 	}
 
 	return nil
@@ -114,57 +113,25 @@ func (la *Launcher) buildCommandLine(command string) string {
 // Create file sealights.envrc with all the required env variables to make
 // the profiler to attach to the target application
 func (la *Launcher) addProfilerConfiguration(agentPath string) (string, error) {
-	agentEnvFileName := "sealights.envrc"
-	exportCommand := "export"
 	executeCommand := "source"
-	profilerLib_x64 := "libSL.DotNet.ProfilerLib.Linux.so"
-	profilerLib_x86 := "libSL.DotNet.ProfilerLib.Linux.so"
-	profilerId := LinuxProfilerId
-
 	if runtime.GOOS == "windows" {
-		agentEnvFileName = "sealights.bat"
-		exportCommand = "set"
 		executeCommand = "call"
-		profilerLib_x64 = "SL.DotNet.ProfilerLib_x64.dll"
-		profilerLib_x86 = "SL.DotNet.ProfilerLib_x86.dll"
-		profilerId = WindowsProfilerId
 	}
 
-	la.Log.Debug(fmt.Sprintf("Create file %s", agentEnvFileName))
+	agentEnvFileName := la.agentEnvFileName()
 
 	agentEnvFile := filepath.Join(la.AgentDirAbsolute, agentEnvFileName)
 	homeBasedEnvFile := filepath.Join(la.AgentDirForRuntime, agentEnvFileName)
-	file, err := os.OpenFile(agentEnvFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	envManager := NewEnvManager(la.Log, la.Options)
+	envVariebles := envManager.GetVariables(la.AgentDirForRuntime)
+
+	err := envManager.WriteIntoFile(agentEnvFile, envVariebles)
 	if err != nil {
-		la.Log.Error(fmt.Sprint(err))
 		return "", err
 	}
-	defer file.Close()
 
-	agentProfilerLibx86 := filepath.Join(la.AgentDirForRuntime, profilerLib_x86)
-	agentProfilerLibx64 := filepath.Join(la.AgentDirForRuntime, profilerLib_x64)
-
-	fileContent := ""
-
-	fileContent += fmt.Sprintf("%s Cor_Profiler={%s}\n", exportCommand, profilerId)
-	fileContent += fmt.Sprintf("%s Cor_Enable_Profiling=1\n", exportCommand)
-	fileContent += fmt.Sprintf("%s Cor_Profiler_Path=%s\n", exportCommand, agentProfilerLibx64)
-	fileContent += fmt.Sprintf("%s COR_PROFILER_PATH_32=%s\n", exportCommand, agentProfilerLibx86)
-	fileContent += fmt.Sprintf("%s COR_PROFILER_PATH_64=%s\n", exportCommand, agentProfilerLibx64)
-	fileContent += fmt.Sprintf("%s CORECLR_ENABLE_PROFILING=1\n", exportCommand)
-	fileContent += fmt.Sprintf("%s CORECLR_PROFILER={%s}\n", exportCommand, profilerId)
-	fileContent += fmt.Sprintf("%s CORECLR_PROFILER_PATH_32=%s\n", exportCommand, agentProfilerLibx86)
-	fileContent += fmt.Sprintf("%s CORECLR_PROFILER_PATH_64=%s\n", exportCommand, agentProfilerLibx64)
-	fileContent += fmt.Sprintf("%s SL_AGENT_PORT=%s\n", exportCommand, DefaultPort)
-
-	testListenerSessionKey, sessionKeyExists := la.Options.SlArguments["testListenerSessionKey"]
-	if sessionKeyExists {
-		fileContent += fmt.Sprintf("%s SL_CollectorId=%s\n", exportCommand, testListenerSessionKey)
-	}
-
-	if _, err = file.WriteString(fileContent); err != nil {
-		return "", err
-	}
+	la.Log.Debug(fmt.Sprintf("Create file %s", agentEnvFileName))
 
 	return fmt.Sprintf("%s %s", executeCommand, homeBasedEnvFile), nil
 }
@@ -174,6 +141,44 @@ func (la *Launcher) agentFullPath() string {
 		return filepath.Join(la.AgentDirForRuntime, WindowsAgentName)
 	} else {
 		return filepath.Join(la.AgentDirForRuntime, LinuxAgentName)
+	}
+}
+
+func (la *Launcher) agentEnvFileName() string {
+	if runtime.GOOS == "windows" {
+		return "sealights.bat"
+	} else {
+		return "sealights.envrc"
+	}
+}
+
+func (la *Launcher) setEnvVariablesGlobally() {
+	envManager := NewEnvManager(la.Log, la.Options)
+	var envVariables map[string]string
+	if la.Options.UsePic {
+		// set all variables important for the profiler
+		envVariables = envManager.GetVariables(la.AgentDirForRuntime)
+	} else {
+		// set only dlls provided directly in options
+		envVariables = la.Options.SlArguments
+	}
+
+	if runtime.GOOS == "windows" {
+		for key, value := range envVariables {
+			os.Setenv(key, value)
+		}
+	} else {
+		localEnvFile := filepath.Join(la.AgentDirAbsolute, GlobalVariablesFile)
+		err := envManager.WriteIntoFile(localEnvFile, envVariables)
+		if err != nil {
+			la.Log.Error("Sealights. Failed to create local env file")
+		}
+
+		sealightsEnvPath := filepath.Join(la.Stager.DepDir(), "profile.d", GlobalVariablesFile)
+		la.Log.Debug("Copy %s to %s", localEnvFile, sealightsEnvPath)
+		if err = libbuildpack.CopyFile(localEnvFile, sealightsEnvPath); err != nil {
+			la.Log.Error("Sealights. Failed to copy file to profile.d")
+		}
 	}
 }
 
