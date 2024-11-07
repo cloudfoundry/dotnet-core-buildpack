@@ -11,15 +11,15 @@ namespace HelloWeb
         {
             app.Run(context =>
             {
-                var bosh2 = new Process();
-                bosh2.StartInfo.FileName = "bosh2";
-                bosh2.StartInfo.Arguments = "--version";
-                bosh2.StartInfo.RedirectStandardOutput = true;
-                bosh2.Start();
+                var go = new Process();
+                go.StartInfo.FileName = "go";
+                go.StartInfo.Arguments = "version";
+                go.StartInfo.RedirectStandardOutput = true;
+                go.Start();
 
-                var output = bosh2.StandardOutput.ReadToEnd();
-                bosh2.WaitForExit();
-                return context.Response.WriteAsync("bosh2: " + output);
+                var output = go.StandardOutput.ReadToEnd();
+                go.WaitForExit();
+                return context.Response.WriteAsync("go: " + output);
             });
         }
     }
