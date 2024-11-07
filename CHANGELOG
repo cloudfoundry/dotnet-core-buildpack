@@ -1,3 +1,27 @@
+v2.4.34 Nov 07, 2024
+=====================
+
+* Upgrade Sealights version to 1.5.0
+
+* Add dotnet-sdk 6.0.427, remove dotnet-sdk 6.0.425
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 8.0.403, remove dotnet-sdk 8.0.401
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 8.0.10, remove dotnet-aspnetcore 8.0.8
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.35, remove dotnet-aspnetcore 6.0.33
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 6.0.35, remove dotnet-runtime 6.0.33
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 8.0.10, remove dotnet-runtime 8.0.8
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+
 v2.4.33 Sep 18, 2024
 =====================
 
