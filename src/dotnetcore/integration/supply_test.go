@@ -29,15 +29,15 @@ func testSupply(t *testing.T, context spec.G, it spec.S) {
 			it.Before(func() {
 				app = cutlass.New(filepath.Join(settings.FixturesPath, "supply", "dotnet_app"))
 				app.Buildpacks = []string{
-					"https://buildpacks.cloudfoundry.org/fixtures/new_supply_bosh2.zip",
+					"https://github.com/cloudfoundry/go-buildpack/#master",
 					"dotnet_core_buildpack",
 				}
 			})
 
 			it("finds the supplied dependency in the runtime container", func() {
 				PushAppAndConfirm(t, app)
-				Expect(app.Stdout.String()).To(ContainSubstring("SUPPLYING BOSH2"))
-				Expect(app.GetBody("/")).To(MatchRegexp("bosh2: version 2.0.1-74fad57"))
+				Expect(app.Stdout.String()).To(ContainSubstring("Installing go"))
+				Expect(app.GetBody("/")).To(MatchRegexp("go: go version go\\d+.\\d+.\\d+ linux/amd64"))
 			})
 		})
 	})
