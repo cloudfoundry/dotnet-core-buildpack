@@ -1,3 +1,27 @@
+v2.4.35 Nov 18, 2024
+=====================
+
+* Add dotnet-runtime 8.0.11, remove dotnet-runtime 8.0.10
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-runtime 6.0.36, remove dotnet-runtime 6.0.35
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 8.0.11, remove dotnet-aspnetcore 8.0.10
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-aspnetcore 6.0.36, remove dotnet-aspnetcore 6.0.35
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 8.0.404, remove dotnet-sdk 8.0.403
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* Add dotnet-sdk 6.0.428, remove dotnet-sdk 6.0.427
+  for stack(s) cflinuxfs4, cflinuxfs3
+
+* This is planned to be the last buildpack release with .NET 6
+
+
 v2.4.34 Nov 07, 2024
 =====================
 
