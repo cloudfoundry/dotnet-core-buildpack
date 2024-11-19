@@ -1,2 +1,2 @@
 dotnet-core:
-  sdk: 6.0.x
+  sdk: 9.0.x
