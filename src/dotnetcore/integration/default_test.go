@@ -19,7 +19,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		Eventually = NewWithT(t).Eventually
 
 		app                   *cutlass.App
-		latest6RuntimeVersion string
+		latest9RuntimeVersion string
 		latest8RuntimeVersion string
 		latest8ASPNetVersion  string
 		latest8SDKVersion     string
@@ -31,7 +31,7 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 		bpDir, err := cutlass.FindRoot()
 		Expect(err).NotTo(HaveOccurred())
 
-		latest6RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "6.0.x", bpDir)
+		latest9RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "9.0.x", bpDir)
 
 		latest8RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "8.0.x", bpDir)
 
@@ -182,16 +182,16 @@ func testDefault(t *testing.T, context spec.G, it spec.S) {
 			})
 		})
 
-		context("with .NET Core 6", func() {
+		context("with .NET Core 9", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_6.0"))
+				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_9.0"))
 				app.Disk = "2G"
 				app.Memory = "1G"
 			})
 
 			it("builds and runs successfully", func() {
 				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest6RuntimeVersion)))
+				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest9RuntimeVersion)))
 				Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
 			})
 		})
