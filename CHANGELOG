@@ -1,3 +1,11 @@
+v2.4.36 Nov 19, 2024
+=====================
+
+* Remove .NET 6.x that reached End of Support
+
+* Add .NET 9.0.0
+
+
 v2.4.35 Nov 18, 2024
 =====================
 
