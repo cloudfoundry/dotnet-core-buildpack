@@ -1,1 +1,1 @@
-web: openssl list -providers && cd ${DEPS_DIR}/0/dotnet_publish && exec ./source_6.0
+web: openssl list -providers && cd ${DEPS_DIR}/0/dotnet_publish && exec ./source_8.0

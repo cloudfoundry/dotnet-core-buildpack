@@ -4,8 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <!-- This app was originally made for .NET6.0 -->
-    <RootNamespace>source_6._0</RootNamespace>
+    <RootNamespace>source_8._0</RootNamespace>
   </PropertyGroup>
 
 </Project>
