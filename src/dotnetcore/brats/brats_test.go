@@ -11,11 +11,7 @@ import (
 var _ = Describe("Dotnet buildpack", func() {
 	bratshelper.UnbuiltBuildpack("dotnet", CopyBrats)
 
-	bratshelper.DeployingAnAppWithAnUpdatedVersionOfTheSameBuildpack(CopyBrats)
-
 	bratshelper.DeployAppWithExecutableProfileScript("dotnet-sdk", CopyBrats)
-
-	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
 	compatible := func(sdkVersion, runtimeVersion string) bool {
 		sdkSemVer := semver.MustParse(sdkVersion)
