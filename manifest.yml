@@ -59,14 +59,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/6f89757c-3dde-4c3a-96a0-b04b1bde2c92/6a3591b360ed0f9d1118b97560b89625/aspnetcore-runtime-8.0.11-linux-x64.tar.gz
   source_sha256: 3fc75c38783b282140d2e2513c570f76991101b3f895b67a6ae8fba2a2d96399
 - name: dotnet-aspnetcore
-  version: 9.0.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.0_linux_x64_any-stack_8cae1382.tar.xz
-  sha256: 8cae1382eb1a887ab8f231ad2c5e72bf55badf346f2b3c79ea432de99f5229ac
+  version: 9.0.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.1_linux_x64_any-stack_7de55faf.tar.xz
+  sha256: 7de55faf5d9a557a0b55f727b70a6f8124055dcc3061cbe4854c4ad8b45f2454
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/e4791376-b70d-431f-bd98-5397c876b946/64ffc29a4edc8fd70b151c2963b38b09/aspnetcore-runtime-9.0.0-linux-x64.tar.gz
-  source_sha256: e00636ad9ca0fbcd777188036b52e520279dc4ac38fde3d14898869d16557ae0
+  source: https://download.visualstudio.microsoft.com/download/pr/78308995-ac02-4bed-b5c3-eefb06ff907c/795e0c20df95d8c432fda2a189235b67/aspnetcore-runtime-9.0.1-linux-x64.tar.gz
+  source_sha256: 32f6e342b46b7d26c547647b58b1889ef707995a008bd8844fa5fa4acc0a24fb
 - name: dotnet-runtime
   version: 8.0.11
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.11_linux_x64_any-stack_73b1394e.tar.xz
