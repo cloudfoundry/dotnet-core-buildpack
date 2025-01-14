@@ -95,14 +95,14 @@ dependencies:
   source: https://download.visualstudio.microsoft.com/download/pr/a91ddad4-a3c2-4303-9efc-1ca6b7af850c/be1763df9211599df1cf1c6f504b3c41/dotnet-sdk-8.0.405-linux-x64.tar.gz
   source_sha256: ce792eb7d9b3b01e781bf18529c2217b3d337637d70b441fd6587df5d6c15908
 - name: dotnet-sdk
-  version: 9.0.100
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.100_linux_x64_any-stack_71d04bd0.tar.xz
-  sha256: 71d04bd0ddfbbc7dbb3d58bf031290b579a3da807d872a4c0fd189d6bf16442d
+  version: 9.0.102
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.102_linux_x64_any-stack_454393ae.tar.xz
+  sha256: 454393ae0001f258b407270137b4327997171b0deb5e42b262cffd84ff06a42a
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/308f16a9-2ecf-4a42-b8bb-c1233de985fd/be6e87045ab21935bd8bb98ce69026c4/dotnet-sdk-9.0.100-linux-x64.tar.gz
-  source_sha256: 4c971ac80615faa806de82f0ab3073e50aebb402b79ac265ab97765c9a29ed56
+  source: https://download.visualstudio.microsoft.com/download/pr/0e717d01-aad7-475a-8b67-50c59cf043b1/6eaa1c636e15ec8e1b97b3438360c770/dotnet-sdk-9.0.102-linux-x64.tar.gz
+  source_sha256: da999a5f259509829d7dd311785bf4010535c273913a2e56c664b47c8f586e7a
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_bb66aa5a.tgz
