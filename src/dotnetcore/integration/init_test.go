@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/cloudfoundry/libbuildpack"
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/onsi/gomega/format"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
@@ -23,10 +25,9 @@ var settings struct {
 		Version string
 		Path    string
 	}
-	Dynatrace struct {
-		App *cutlass.App
-		URI string
-	}
+
+	Cached       bool
+	Serial       bool
 	FixturesPath string
 	GitHubToken  string
 	Platform     string
@@ -34,145 +35,138 @@ var settings struct {
 }
 
 func init() {
-	flag.BoolVar(&cutlass.Cached, "cached", true, "cached buildpack")
-	flag.StringVar(&cutlass.DefaultMemory, "memory", "256M", "default memory for pushed apps")
-	flag.StringVar(&cutlass.DefaultDisk, "disk", "512M", "default disk for pushed apps")
-	flag.StringVar(&settings.Buildpack.Version, "version", "", "version to use (builds if empty)")
+	flag.BoolVar(&settings.Cached, "cached", false, "run cached buildpack tests")
+	flag.BoolVar(&settings.Serial, "serial", false, "run serial buildpack tests")
+	flag.StringVar(&settings.Platform, "platform", "cf", `switchblade platform to test against ("cf" or "docker")`)
 	flag.StringVar(&settings.GitHubToken, "github-token", "", "use the token to make GitHub API requests")
-	flag.StringVar(&settings.Platform, "platform", "cf", "platform to run against")
-	flag.StringVar(&settings.Stack, "stack", "cflinuxfs3", "stack to use when pushing apps")
+	flag.StringVar(&settings.Stack, "stack", "cflinuxfs4", "stack to use as default when pusing apps")
 }
 
 func TestIntegration(t *testing.T) {
+	var Expect = NewWithT(t).Expect
+
 	format.MaxLength = 0
+	SetDefaultEventuallyTimeout(10 * time.Second)
 
-	var (
-		Expect     = NewWithT(t).Expect
-		Eventually = NewWithT(t).Eventually
+	root, err := filepath.Abs("./../../..")
+	Expect(err).NotTo(HaveOccurred())
 
-		packagedBuildpack cutlass.VersionedBuildpackPackage
+	fixtures := filepath.Join(root, "fixtures")
+
+	platform, err := switchblade.NewPlatform(settings.Platform, settings.GitHubToken, settings.Stack)
+	Expect(err).NotTo(HaveOccurred())
+
+	goBuildpackFile, err := downloadBuildpack("go")
+	Expect(err).NotTo(HaveOccurred())
+
+	staticfileBuildpackFile, err := downloadBuildpack("staticfile")
+	Expect(err).NotTo(HaveOccurred())
+
+	err = platform.Initialize(
+		switchblade.Buildpack{
+			Name: "dotnet_core_buildpack",
+			URI:  os.Getenv("BUILDPACK_FILE"),
+		},
+		switchblade.Buildpack{
+			Name: "override_buildpack",
+			URI:  filepath.Join(fixtures, "util", "override_buildpack"),
+		},
+		// Go buildpack is needed for the supply and the dynatrace apps
+		switchblade.Buildpack{
+			Name: "go_buildpack",
+			URI:  goBuildpackFile,
+		},
+		// Staticfile buildpack is needed for the supply apps
+		switchblade.Buildpack{
+			Name: "staticfile_buildpack",
+			URI:  staticfileBuildpackFile,
+		},
 	)
-
-	root, err := cutlass.FindRoot()
 	Expect(err).NotTo(HaveOccurred())
 
-	settings.FixturesPath = filepath.Join(root, "fixtures")
-
-	if settings.Buildpack.Version == "" {
-		packagedBuildpack, err = cutlass.PackageUniquelyVersionedBuildpack(os.Getenv("CF_STACK"), true)
-		Expect(err).NotTo(HaveOccurred())
-
-		settings.Buildpack.Path = packagedBuildpack.File
-
-		info, err := os.Stat(settings.Buildpack.Path)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(info.Size() < 1024*1024*1024).To(BeTrue(), "Buildpack file size must be less than 1G")
-
-		settings.Buildpack.Version = packagedBuildpack.Version
-	}
-
-	err = cutlass.CreateOrUpdateBuildpack("override", filepath.Join(settings.FixturesPath, "util", "override_buildpack"), "")
+	dynatraceName, err := switchblade.RandomName()
 	Expect(err).NotTo(HaveOccurred())
 
-	Expect(cutlass.CopyCfHome()).To(Succeed())
-	cutlass.SeedRandom()
+	dynatraceDeploymentProcess := platform.Deploy.WithBuildpacks("go_buildpack")
 
-	settings.Dynatrace.App = cutlass.New(filepath.Join(settings.FixturesPath, "util", "dynatrace"))
-
-	// This is done to have the dynatrace broker app running on default
-	// cf-deployment envs. They do not come with cflinuxfs3 buildpacks.
-	if os.Getenv("CF_STACK") == "cflinuxfs3" {
-		settings.Dynatrace.App.Buildpacks = []string{"https://github.com/cloudfoundry/go-buildpack"}
-	}
-	settings.Dynatrace.App.SetEnv("BP_DEBUG", "true")
-
-	Expect(settings.Dynatrace.App.Push()).To(Succeed())
-	Eventually(func() ([]string, error) {
-		return settings.Dynatrace.App.InstanceStates()
-	}, 60*time.Second).Should(Equal([]string{"RUNNING"}))
-
-	settings.Dynatrace.URI, err = settings.Dynatrace.App.GetUrl("")
+	dynatraceDeployment, _, err := dynatraceDeploymentProcess.
+		Execute(dynatraceName, filepath.Join(fixtures, "util", "dynatrace"))
 	Expect(err).NotTo(HaveOccurred())
 
 	suite := spec.New("integration", spec.Report(report.Terminal{}), spec.Parallel())
-	suite("Default", testDefault)
-	suite("Dynatrace", testDynatrace)
-	suite("Fsharp", testFsharp)
-	suite("MultipleProjects", testMultipleProjects)
-	suite("Node", testNode)
-	suite("Override", testOverride)
-	suite("Supply", testSupply)
-	suite("Sealights", testSealights)
+	suite("Default", testDefault(platform, fixtures))
+	suite("Dynatrace", testDynatrace(platform, fixtures, dynatraceDeployment.InternalURL))
+	suite("Fsharp", testFsharp(platform, fixtures))
+	suite("MultipleProjects", testMultipleProjects(platform, fixtures))
+	suite("Node", testNode(platform, fixtures))
+	suite("Override", testOverride(platform, fixtures))
+	suite("Supply", testSupply(platform, fixtures))
+	suite("Sealights", testSealights(platform, fixtures))
 
-	if cutlass.Cached {
-		suite("Offline", testOffline)
+	if settings.Cached {
+		suite("Offline", testOffline(platform, fixtures))
 	} else {
-		suite("Cache", testCache)
+		suite("Cache", testCache(platform, fixtures))
 	}
 
 	suite.Run(t)
 
-	DestroyApp(t, settings.Dynatrace.App)
-	Expect(cutlass.RemovePackagedBuildpack(packagedBuildpack)).To(Succeed())
-	Expect(cutlass.DeleteBuildpack("override")).To(Succeed())
-	Expect(cutlass.DeleteOrphanedRoutes()).To(Succeed())
+	Expect(platform.Delete.Execute(dynatraceName)).To(Succeed())
+	Expect(os.Remove(os.Getenv("BUILDPACK_FILE"))).To(Succeed())
+	Expect(os.Remove(goBuildpackFile)).To(Succeed())
+	Expect(os.Remove(staticfileBuildpackFile)).To(Succeed())
+	Expect(platform.Deinitialize()).To(Succeed())
 }
 
-func PushAppAndConfirm(t *testing.T, app *cutlass.App) {
-	t.Helper()
+func downloadBuildpack(name string) (string, error) {
+	uri := fmt.Sprintf("https://github.com/cloudfoundry/%s-buildpack/archive/master.zip", name)
 
-	var (
-		Expect     = NewWithT(t).Expect
-		Eventually = NewWithT(t).Eventually
-	)
+	file, err := os.CreateTemp("", fmt.Sprintf("%s-buildpack-*.zip", name))
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
 
-	Expect(app.Push()).To(Succeed())
-	Eventually(func() ([]string, error) { return app.InstanceStates() }, 20*time.Second).Should(Equal([]string{"RUNNING"}))
-	Expect(app.ConfirmBuildpack(settings.Buildpack.Version)).To(Succeed())
+	resp, err := http.Get(uri)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	_, err = io.Copy(file, resp.Body)
+	return file.Name(), err
 }
 
-func DestroyApp(t *testing.T, app *cutlass.App) *cutlass.App {
+func GetLatestDepVersion(t *testing.T, dep, constraint string) (string, error) {
 	t.Helper()
 
-	var Expect = NewWithT(t).Expect
-	Expect(app.Destroy()).To(Succeed())
-	return nil
-}
+	root, err := filepath.Abs("./../../..")
+	if err != nil {
+		return "", err
+	}
 
-func GetLatestDepVersion(t *testing.T, dep, constraint, bpDir string) string {
-	t.Helper()
-
-	var Expect = NewWithT(t).Expect
-
-	manifest, err := libbuildpack.NewManifest(bpDir, nil, time.Now())
-	Expect(err).ToNot(HaveOccurred())
+	manifest, err := libbuildpack.NewManifest(root, nil, time.Now())
+	if err != nil {
+		return "", err
+	}
 	deps := manifest.AllDependencyVersions(dep)
 	runtimeVersion, err := libbuildpack.FindMatchingVersion(constraint, deps)
-	Expect(err).ToNot(HaveOccurred())
+	if err != nil {
+		return "", err
+	}
 
-	return runtimeVersion
+	return runtimeVersion, nil
 }
 
-func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replaceVal string) *cutlass.App {
+func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replaceVal string) error {
 	t.Helper()
 
-	var Expect = NewWithT(t).Expect
-
-	dir, err := cutlass.CopyFixture(pathToFixture)
-	Expect(err).ToNot(HaveOccurred())
-
-	data, err := os.ReadFile(filepath.Join(dir, file))
-	Expect(err).ToNot(HaveOccurred())
-	data = bytes.Replace(data, []byte(fmt.Sprintf("<%%= %s %%>", templateVar)), []byte(replaceVal), -1)
-	Expect(os.WriteFile(filepath.Join(dir, file), data, 0644)).To(Succeed())
-
-	return cutlass.New(dir)
-}
-
-func SkipOnCflinuxfs4(t *testing.T) {
-	if os.Getenv("CF_STACK") == "cflinuxfs4" {
-		t.Skip("Skipping test not relevant for stack cflinuxfs4")
+	data, err := os.ReadFile(filepath.Join(pathToFixture, file))
+	if err != nil {
+		return err
 	}
+	data = bytes.Replace(data, []byte(fmt.Sprintf("<%%= %s %%>", templateVar)), []byte(replaceVal), -1)
+	return os.WriteFile(filepath.Join(pathToFixture, file), data, 0644)
 }
 
 func SkipOnCflinuxfs3(t *testing.T) {

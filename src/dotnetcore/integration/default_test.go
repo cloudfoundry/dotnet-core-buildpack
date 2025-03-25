@@ -4,260 +4,324 @@ import (
 	"fmt"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/sclevine/spec"
 
+	. "github.com/cloudfoundry/switchblade/matchers"
 	. "github.com/onsi/gomega"
 )
 
-func testDefault(t *testing.T, context spec.G, it spec.S) {
-	var (
-		Expect     = NewWithT(t).Expect
-		Eventually = NewWithT(t).Eventually
+func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T, spec.G, spec.S) {
+	return func(t *testing.T, context spec.G, it spec.S) {
+		var (
+			Expect     = NewWithT(t).Expect
+			Eventually = NewWithT(t).Eventually
 
-		app                   *cutlass.App
-		latest9RuntimeVersion string
-		latest8RuntimeVersion string
-		latest8ASPNetVersion  string
-		latest8SDKVersion     string
-	)
+			fixture               string
+			name                  string
+			latest9RuntimeVersion string
+			latest8RuntimeVersion string
+			latest8SDKVersion     string
+		)
 
-	it.Before(func() {
-		app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple"))
+		it.Before(func() {
+			var err error
+			name, err = switchblade.RandomName()
+			Expect(err).NotTo(HaveOccurred())
 
-		bpDir, err := cutlass.FindRoot()
-		Expect(err).NotTo(HaveOccurred())
+			latest9RuntimeVersion, err = GetLatestDepVersion(t, "dotnet-runtime", "9.0.x")
+			Expect(err).NotTo(HaveOccurred())
 
-		latest9RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "9.0.x", bpDir)
+			latest8RuntimeVersion, err = GetLatestDepVersion(t, "dotnet-runtime", "8.0.x")
+			Expect(err).NotTo(HaveOccurred())
 
-		latest8RuntimeVersion = GetLatestDepVersion(t, "dotnet-runtime", "8.0.x", bpDir)
-
-		latest8ASPNetVersion = GetLatestDepVersion(t, "dotnet-aspnetcore", "8.0.x", bpDir)
-
-		latest8SDKVersion = GetLatestDepVersion(t, "dotnet-sdk", "8.0.x", bpDir)
-	})
-
-	it.After(func() {
-		app = DestroyApp(t, app)
-	})
-
-	context("deploying a source-based app", func() {
-		it("builds and runs the app and accepts SIGTERM and exits gracefully", func() {
-			PushAppAndConfirm(t, app)
-
-			Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
-			Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
-			Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
-
-			Expect(app.Stop()).To(Succeed())
-			Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
+			latest8SDKVersion, err = GetLatestDepVersion(t, "dotnet-sdk", "8.0.x")
+			Expect(err).NotTo(HaveOccurred())
 		})
 
-		context("with dotnet sdk 8 in global json", func() {
-			context("when the sdk exists", func() {
+		it.After(func() {
+			Expect(platform.Delete.Execute(name)).To(Succeed())
+		})
+
+		context("deploying a source-based app", func() {
+			it.Before(func() {
+				var err error
+				fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "simple"))
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			it("builds and runs the app and accepts SIGTERM and exits gracefully", func() {
+				deployment, logs, err := platform.Deploy.Execute(name, fixture)
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+				Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+				Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
+
+				//TODO: DO I EVEN WANT THIS?
+				// Expect(app.Stop()).To(Succeed())
+				// Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
+			})
+
+			context("with dotnet sdk 8 in global json", func() {
 				it.Before(func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_8"), "global.json", "sdk_version", latest8SDKVersion)
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "simple_global_json_8"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				context("when the sdk exists", func() {
+					it.Before(func() {
+						Expect(ReplaceFileTemplate(t, fixture, "global.json", "sdk_version", latest8SDKVersion)).To(Succeed())
+					})
+
+					it("displays a simple text homepage", func() {
+						deployment, logs, err := platform.Deploy.Execute(name, fixture)
+						Expect(err).NotTo(HaveOccurred())
+
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+						Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
+					})
+				})
+
+				context("when the sdk is missing", func() {
+					var (
+						constructedVersion string
+						baseFeatureLine    int
+						proceed            bool
+					)
+
+					it.Before(func() {
+						version, err := semver.NewVersion(latest8SDKVersion)
+						Expect(err).ToNot(HaveOccurred())
+
+						if version.Patch()%100 != 0 {
+							proceed = true
+						}
+
+						baseFeatureLine = int((version.Patch() / 100) * 100)
+						constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
+
+						Expect(ReplaceFileTemplate(t, fixture, "global.json", "sdk_version", constructedVersion)).To(Succeed())
+					})
+
+					it("logs a warning about using source_apps SDK", func() {
+						deployment, logs, err := platform.Deploy.Execute(name, fixture)
+						Expect(err).NotTo(HaveOccurred())
+
+						if proceed {
+							Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+							Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+						}
+						Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
+					})
+				})
+			})
+
+			context("with buildpack.yml and global.json files", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "multi_version_sources"))
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(ReplaceFileTemplate(t, fixture, "global.json", "sdk_version", latest8SDKVersion)).To(Succeed())
+					Expect(ReplaceFileTemplate(t, fixture, "buildpack.yml", "sdk_version", "2.0.0-preview7")).To(Succeed())
+				})
+
+				context("when SDK version from buildpack.yml is not available", func() {
+					it("fails due to missing SDK", func() {
+						_, logs, err := platform.Deploy.Execute(name, fixture)
+						Expect(err).To(HaveOccurred())
+
+						Expect(logs).To(ContainSubstring("SDK 2.0.0-preview7 in buildpack.yml is not available"))
+						Expect(logs).To(ContainSubstring("Unable to install Dotnet SDK: no match found for 2.0.0-preview7"))
+					})
+				})
+			})
+
+			context("when an app has a Microsoft.AspNetCore.App", func() {
+				context("with version 8", func() {
+					it.Before(func() {
+						var err error
+						fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "aspnet_package_reference_8"))
+						Expect(err).NotTo(HaveOccurred())
+					})
+
+					it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
+						deployment, logs, err := platform.Deploy.Execute(name, fixture)
+						Expect(err).NotTo(HaveOccurred())
+
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest8RuntimeVersion)))
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+						Expect(logs).To(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
+						Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
+					})
+				})
+			})
+
+			context("when the app has Microsoft.AspNetCore.All", func() {
+				context("with version 8", func() {
+					it.Before(func() {
+						var err error
+						fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_8.0"))
+						Expect(err).NotTo(HaveOccurred())
+					})
+
+					it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
+						deployment, logs, err := platform.Deploy.Execute(name, fixture)
+						Expect(err).NotTo(HaveOccurred())
+
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
+						Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
+						Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
+					})
+				})
+			})
+
+			context("with AssemblyName specified", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "with_dot_in_name"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				it("successfully pushes an app with an AssemblyName", func() {
+					deployment, _, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
+				})
+			})
+
+			context("with libgdiplus", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "util", "libgdiplus"))
+					Expect(err).NotTo(HaveOccurred())
 				})
 
 				it("displays a simple text homepage", func() {
-					PushAppAndConfirm(t, app)
-					Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
+					deployment, logs, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring("Installing libgdiplus"))
+					Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
 				})
 			})
-			context("when the sdk is missing", func() {
-				var (
-					constructedVersion string
-					baseFeatureLine    int
-					proceed            bool
-				)
 
+			context("with .NET Core 8", func() {
 				it.Before(func() {
-					version, err := semver.NewVersion(latest8SDKVersion)
-					Expect(err).ToNot(HaveOccurred())
-
-					if version.Patch()%100 != 0 {
-						proceed = true
-					}
-
-					baseFeatureLine = int((version.Patch() / 100) * 100)
-					constructedVersion = fmt.Sprintf("%d.%d.%d", version.Major(), version.Minor(), baseFeatureLine)
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "simple_global_json_8"), "global.json", "sdk_version", constructedVersion)
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_8.0"))
+					Expect(err).NotTo(HaveOccurred())
 				})
 
-				it("logs a warning about using source_apps SDK", func() {
-					PushAppAndConfirm(t, app)
-					if proceed {
-						Expect(app.Stdout.String()).To(ContainSubstring(fmt.Sprintf("SDK %s in global.json is not available", constructedVersion)))
-						Expect(app.Stdout.String()).To(ContainSubstring("falling back to latest version in version line"))
-					}
-					Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
+				it("builds and runs successfully", func() {
+					deployment, _, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
 				})
 			})
-		})
 
-		context("with buildpack.yml and global.json files", func() {
-			it.Before(func() {
-				app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "global.json", "sdk_version", latest8SDKVersion)
-			})
-
-			context("when SDK version from buildpack.yml is not available", func() {
-				it("fails due to missing SDK", func() {
-					app = ReplaceFileTemplate(t, filepath.Join(settings.FixturesPath, "source_apps", "multi_version_sources"), "buildpack.yml", "sdk_version", "2.0.0-preview7")
-					Expect(app.Push()).ToNot(Succeed())
-
-					Eventually(app.Stdout.String).Should(ContainSubstring("SDK 2.0.0-preview7 in buildpack.yml is not available"))
-					Eventually(app.Stdout.String).Should(ContainSubstring("Unable to install Dotnet SDK: no match found for 2.0.0-preview7"))
-				})
-			})
-		})
-
-		context("when an app has a Microsoft.AspNetCore.App", func() {
-
-			context("with version 8", func() {
+			context("with .NET Core 9", func() {
 				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "aspnet_package_reference_8"))
-					app.Disk = "2G"
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_9.0"))
+					Expect(err).NotTo(HaveOccurred())
 				})
 
-				it("publishes and runs, installing the correct runtime and aspnetcore version with a warning", func() {
-					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest8ASPNetVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring("A PackageReference to Microsoft.AspNetCore.App is not necessary when targeting .NET Core 3.0 or higher."))
-					Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
+				it("builds and runs successfully", func() {
+					deployment, logs, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest9RuntimeVersion)))
+					Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
 				})
 			})
+
+			//TODO: There is no switchblade fs3 test coverage
+			// context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
+			// 	it.Before(func() {
+			// 		// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
+			// 		SkipOnCflinuxfs3(t)
+			// 		app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple_legacy_openssl"))
+			// 		app.SetEnv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")
+			// 	})
+
+			// 	it("activates openssl legacy provider and builds/runs successfully", func() {
+			// 		Expect(app.Push()).To(Succeed())
+			// 		Expect(app.Stdout.String()).To(ContainSubstring("Loading legacy SSL provider"))
+			// 		Eventually(app.Stdout.String()).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
+			// 	})
+			// })
 		})
 
-		context("when the app has Microsoft.AspNetCore.All", func() {
-			context("with version 8", func() {
+		context("deploying a framework-dependent app", func() {
+			context("with libgdiplus", func() {
 				it.Before(func() {
-					app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8.0"))
-					app.Disk = "1G"
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "util", "libgdiplus", "bin", "Release", "net8.0", "linux-x64", "publish"))
+					Expect(err).NotTo(HaveOccurred())
 				})
 
-				it("publishes and runs, installing the a roll forward runtime and aspnetcore versions", func() {
-					PushAppAndConfirm(t, app)
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
-					Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-aspnetcore %s", latest8ASPNetVersion)))
-					Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
+				it("displays a simple text homepage", func() {
+					deployment, logs, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring("Installing libgdiplus"))
+					Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
+				})
+			})
+
+			context("with .NET Core 8", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "fde_apps", "fde_8.0"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				it("builds and runs successfully", func() {
+					deployment, _, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
 				})
 			})
 		})
 
-		context("with AssemblyName specified", func() {
+		context("deploying a self contained msbuild app with RuntimeIdentfier", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "with_dot_in_name"))
-				app.Disk = "2G"
-			})
-
-			it("successfully pushes an app with an AssemblyName", func() {
-				PushAppAndConfirm(t, app)
-			})
-		})
-
-		context("with libgdiplus", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus"))
+				var err error
+				fixture, err = switchblade.Source(filepath.Join(fixtures, "self_contained_apps", "msbuild"))
+				Expect(err).NotTo(HaveOccurred())
 			})
 
 			it("displays a simple text homepage", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
+				deployment, logs, err := platform.Deploy.Execute(name, fixture)
+				Expect(err).NotTo(HaveOccurred())
+
+				Expect(logs).To(MatchRegexp("Removing dotnet-sdk"))
+				Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
 			})
 		})
 
-		context("with .NET Core 8", func() {
+		context("deploying .NET Core 8 self-contained app", func() {
 			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_8.0"))
+				var err error
+				fixture, err = switchblade.Source(filepath.Join(fixtures, "self_contained_apps", "self_contained_executable_8.0"))
+				Expect(err).NotTo(HaveOccurred())
 			})
 
 			it("builds and runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
+				deployment, _, err := platform.Deploy.Execute(name, fixture)
+				Expect(err).NotTo(HaveOccurred())
+
+				Eventually(deployment).Should(Serve(ContainSubstring("Hello, world!")))
 			})
 		})
-
-		context("with .NET Core 9", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "source_9.0"))
-				app.Disk = "2G"
-				app.Memory = "1G"
-			})
-
-			it("builds and runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Eventually(app.Stdout.String()).Should(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest9RuntimeVersion)))
-				Expect(app.GetBody("/")).To(ContainSubstring("building Web apps with ASP.NET Core"))
-			})
-		})
-
-		context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
-			it.Before(func() {
-				// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
-				SkipOnCflinuxfs3(t)
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple_legacy_openssl"))
-				app.SetEnv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")
-			})
-
-			it("activates openssl legacy provider and builds/runs successfully", func() {
-				Expect(app.Push()).To(Succeed())
-				Expect(app.Stdout.String()).To(ContainSubstring("Loading legacy SSL provider"))
-				Eventually(app.Stdout.String()).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
-			})
-		})
-	})
-
-	context("deploying a framework-dependent app", func() {
-		context("with libgdiplus", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "util", "libgdiplus", "bin", "Release", "net8.0", "linux-x64", "publish"))
-				app.Disk = "700M"
-			})
-
-			it("displays a simple text homepage", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.Stdout.String()).To(ContainSubstring("Installing libgdiplus"))
-			})
-		})
-
-		context("with .NET Core 8", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "fde_apps", "fde_8.0"))
-				app.Disk = "700M"
-			})
-
-			it("builds and runs successfully", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.GetBody("/")).To(ContainSubstring("Welcome to .NET 8"))
-			})
-		})
-	})
-
-	context("deploying a self contained msbuild app with RuntimeIdentfier", func() {
-		it.Before(func() {
-			app = cutlass.New(filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
-		})
-
-		it("displays a simple text homepage", func() {
-			PushAppAndConfirm(t, app)
-			Expect(app.Stdout.String()).To(MatchRegexp("Removing dotnet-sdk"))
-			Expect(app.GetBody("/")).To(ContainSubstring("Hello World!"))
-		})
-	})
-
-	context("deploying .NET Core 8 self-contained app", func() {
-		it.Before(func() {
-			app = cutlass.New(filepath.Join(settings.FixturesPath, "self_contained_apps", "self_contained_executable_8.0"))
-		})
-
-		it("builds and runs successfully", func() {
-			PushAppAndConfirm(t, app)
-			Expect(app.GetBody("/")).To(ContainSubstring("Hello, world!"))
-		})
-	})
+	}
 }

@@ -4,62 +4,58 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/sclevine/spec"
 
+	. "github.com/cloudfoundry/switchblade/matchers"
 	. "github.com/onsi/gomega"
 )
 
-func testSupply(t *testing.T, context spec.G, it spec.S) {
-	var (
-		Expect = NewWithT(t).Expect
-		app    *cutlass.App
-	)
+func testSupply(platform switchblade.Platform, fixtures string) func(*testing.T, spec.G, spec.S) {
+	return func(t *testing.T, context spec.G, it spec.S) {
+		var (
+			Expect     = NewWithT(t).Expect
+			Eventually = NewWithT(t).Eventually
 
-	it.Before(func() {
-		app = cutlass.New(filepath.Join(settings.FixturesPath, "console_app"))
-	})
+			name string
+		)
 
-	it.After(func() {
-		app = DestroyApp(t, app)
-	})
+		it.Before(func() {
+			var err error
+			name, err = switchblade.RandomName()
+			Expect(err).NotTo(HaveOccurred())
+		})
 
-	context("with csproj file", func() {
-		context("the app is pushed", func() {
-			it.Before(func() {
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "supply", "dotnet_app"))
-				app.Buildpacks = []string{
-					"https://github.com/cloudfoundry/go-buildpack/#master",
-					"dotnet_core_buildpack",
-				}
-			})
+		it.After(func() {
+			Expect(platform.Delete.Execute(name)).To(Succeed())
+		})
 
-			it("finds the supplied dependency in the runtime container", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.Stdout.String()).To(ContainSubstring("Installing go"))
-				Expect(app.GetBody("/")).To(MatchRegexp("go: go version go\\d+.\\d+.\\d+ linux/amd64"))
+		context("with csproj file", func() {
+			context("the app is pushed", func() {
+				it("finds the supplied dependency in the runtime container", func() {
+					deployment, logs, err := platform.Deploy.
+						WithBuildpacks("go_buildpack", "dotnet_core_buildpack").
+						Execute(name, filepath.Join(fixtures, "supply", "dotnet_app"))
+					Expect(err).To(Succeed())
+
+					Expect(logs).To(ContainSubstring("Installing go"), logs.String())
+					Eventually(deployment).Should(Serve(MatchRegexp("go: go version go\\d+.\\d+.\\d+ linux/amd64")))
+				})
 			})
 		})
-	})
 
-	context("with no csproj file", func() {
-		context("the app is pushed once", func() {
-			it.Before(func() {
-				// Staticfile does not support cflinuxfs4 yet
-				SkipOnCflinuxfs4(t)
-				app = cutlass.New(filepath.Join(settings.FixturesPath, "supply", "staticfile_app"))
-				app.Buildpacks = []string{
-					"dotnet_core_buildpack",
-					"https://github.com/cloudfoundry/staticfile-buildpack/#master",
-				}
-				app.Disk = "1G"
-			})
+		context("with no csproj file", func() {
+			context("the app is pushed once", func() {
+				it("finds the supplied dependency in the runtime container", func() {
+					deployment, logs, err := platform.Deploy.
+						WithBuildpacks("dotnet_core_buildpack", "staticfile_buildpack").
+						Execute(name, filepath.Join(fixtures, "supply", "staticfile_app"))
+					Expect(err).To(Succeed())
 
-			it("finds the supplied dependency in the runtime container", func() {
-				PushAppAndConfirm(t, app)
-				Expect(app.Stdout.String()).To(ContainSubstring("Supplying Dotnet Core"))
-				Expect(app.GetBody("/")).To(ContainSubstring("This is an example app for Cloud Foundry that is only static HTML/JS/CSS assets."))
+					Expect(logs).To(ContainSubstring("Supplying Dotnet Core"))
+					Eventually(deployment).Should(Serve(ContainSubstring("This is an example app for Cloud Foundry that is only static HTML/JS/CSS assets.")))
+				})
 			})
 		})
-	})
+	}
 }
