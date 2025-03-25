@@ -1,59 +1,55 @@
 package integration_test
 
 import (
-	"os"
-	"os/exec"
 	"path/filepath"
 	"testing"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
+	"github.com/cloudfoundry/switchblade"
 	"github.com/sclevine/spec"
 
+	. "github.com/cloudfoundry/switchblade/matchers"
 	. "github.com/onsi/gomega"
 )
 
-func testOffline(t *testing.T, context spec.G, it spec.S) {
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "fdd_apps", "fdd_8.0"))
-	AssertNoInternetTraffic(t, context, it, filepath.Join(settings.FixturesPath, "self_contained_apps", "msbuild"))
-}
+func testOffline(platform switchblade.Platform, fixtures string) func(*testing.T, spec.G, spec.S) {
+	return func(t *testing.T, context spec.G, it spec.S) {
+		var (
+			Expect     = NewWithT(t).Expect
+			Eventually = NewWithT(t).Eventually
 
-func AssertNoInternetTraffic(t *testing.T, context spec.G, it spec.S, fixture string) {
-	var Expect = NewWithT(t).Expect
-	var app *cutlass.App
+			name string
+		)
 
-	context("when offline", func() {
 		it.Before(func() {
-			app = cutlass.New(fixture)
-			app.Disk = "700M"
+			var err error
+			name, err = switchblade.RandomName()
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		it.After(func() {
-			app = DestroyApp(t, app)
+			Expect(platform.Delete.Execute(name)).To(Succeed())
 		})
 
-		it("displays a simple text homepage", func() {
-			PushAppAndConfirm(t, app)
-			Expect(app.GetBody("/")).To(
-				Or(
-					ContainSubstring("Hello World!"),
-					ContainSubstring("<body>"),
-				),
-			)
+		context("when deploying a fdd without internet", func() {
+			it("builds and runs the app", func() {
+				deployment, _, err := platform.Deploy.
+					WithoutInternetAccess().
+					Execute(name, filepath.Join(fixtures, "fdd_apps", "fdd_8.0"))
+				Expect(err).NotTo(HaveOccurred())
+
+				Eventually(deployment).Should(Serve(ContainSubstring("Welcome")))
+			})
 		})
 
-		it("builds and runs the app", func() {
-			root, err := cutlass.FindRoot()
-			Expect(err).NotTo(HaveOccurred())
+		context("when deploying a self contained app without internet", func() {
+			it("builds and runs the app", func() {
+				deployment, _, err := platform.Deploy.
+					WithoutInternetAccess().
+					Execute(name, filepath.Join(fixtures, "self_contained_apps", "msbuild"))
+				Expect(err).NotTo(HaveOccurred())
 
-			bpFile := filepath.Join(root, settings.Buildpack.Version+"tmp")
-			cmd := exec.Command("cp", settings.Buildpack.Path, bpFile)
-			Expect(cmd.Run()).To(Succeed())
-			defer os.Remove(bpFile)
-
-			traffic, _, _, err := cutlass.InternetTraffic(fixture, bpFile, nil)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(traffic).To(BeEmpty())
+				Eventually(deployment).Should(Serve(ContainSubstring("Hello World!")))
+			})
 		})
-
-	})
+	}
 }
