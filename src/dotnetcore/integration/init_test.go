@@ -170,7 +170,7 @@ func ReplaceFileTemplate(t *testing.T, pathToFixture, file, templateVar, replace
 }
 
 func SkipOnCflinuxfs3(t *testing.T) {
-	if os.Getenv("CF_STACK") == "cflinuxfs3" {
+	if settings.Stack == "cflinuxfs3" {
 		t.Skip("Skipping test not relevant for stack cflinuxfs3")
 	}
 }
