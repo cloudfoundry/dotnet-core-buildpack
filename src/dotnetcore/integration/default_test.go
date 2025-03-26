@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"fmt"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -52,17 +53,13 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			it("builds and runs the app and accepts SIGTERM and exits gracefully", func() {
+			it("builds and runs the app", func() {
 				deployment, logs, err := platform.Deploy.Execute(name, fixture)
 				Expect(err).NotTo(HaveOccurred())
 
 				Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-sdk %s", latest8SDKVersion)))
 				Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest8RuntimeVersion)))
 				Eventually(deployment).Should(Serve(ContainSubstring("Welcome to .NET 8")))
-
-				//TODO: DO I EVEN WANT THIS?
-				// Expect(app.Stop()).To(Succeed())
-				// Eventually(func() string { return app.Stdout.String() }, 30*time.Second, 1*time.Second).Should(ContainSubstring("Application is shutting down..."))
 			})
 
 			context("with dotnet sdk 8 in global json", func() {
@@ -243,21 +240,34 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 				})
 			})
 
-			//TODO: There is no switchblade fs3 test coverage
-			// context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
-			// 	it.Before(func() {
-			// 		// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
-			// 		SkipOnCflinuxfs3(t)
-			// 		app = cutlass.New(filepath.Join(settings.FixturesPath, "source_apps", "simple_legacy_openssl"))
-			// 		app.SetEnv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")
-			// 	})
+			context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
+				it.Before(func() {
+					// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
+					SkipOnCflinuxfs3(t)
 
-			// 	it("activates openssl legacy provider and builds/runs successfully", func() {
-			// 		Expect(app.Push()).To(Succeed())
-			// 		Expect(app.Stdout.String()).To(ContainSubstring("Loading legacy SSL provider"))
-			// 		Eventually(app.Stdout.String()).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
-			// 	})
-			// })
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "simple_legacy_openssl"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				it("activates openssl legacy provider and builds/runs successfully", func() {
+					deployment, logs, err := platform.Deploy.
+						WithEnv(map[string]string{
+							"BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER": "true",
+						}).
+						Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
+
+					cmd := exec.Command("docker", "container", "logs", deployment.Name)
+
+					output, err := cmd.CombinedOutput()
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(string(output)).To(ContainSubstring("name: OpenSSL Legacy Provider"))
+				})
+			})
 		})
 
 		context("deploying a framework-dependent app", func() {
