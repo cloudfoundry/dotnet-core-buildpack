@@ -17,6 +17,6 @@
 ## Pull Requests
 
 1. Fork the project
-1. Submit a pull request to the `develop` branch
+1. Submit a pull request to the `master` branch
 
 Please include integration tests (in `cf_spec/integration`) and corresponding fixtures (in `cf_spec/fixtures`) where necessary to cover any functionality that is introduced.
