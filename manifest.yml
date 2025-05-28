@@ -50,59 +50,59 @@ dependencies:
   source: https://registry.npmjs.org/bower/-/bower-1.8.14.tgz
   source_sha256: 00df3dcc6e8b3a4dd7668934a20e60e6fc0c4269790192179388c928553a3f7e
 - name: dotnet-aspnetcore
-  version: 8.0.14
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.14_linux_x64_any-stack_c251b9de.tar.xz
-  sha256: c251b9de2aa51440a13b5dcb2be31df7c0d78fe1c08cf2f842a9a3117b7393de
+  version: 8.0.15
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.15_linux_x64_any-stack_7862cd9c.tar.xz
+  sha256: 7862cd9cd791f0b3f639ed4da5a226a256f8c664b5ab051a500fe279261107b4
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/b901af61-a4e5-41db-9402-f6a035bf3ffc/af3e800d44ced22133fd88f8b7bc4ac0/aspnetcore-runtime-8.0.14-linux-x64.tar.gz
-  source_sha256: beb58baaf8aeab23a7a77caa25547f7d5adb9a1d397d5a84e81860a069966039
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.15/aspnetcore-runtime-8.0.15-linux-x64.tar.gz
+  source_sha256: 88bd3e4c7cc6d34bad9d5640d8eef4dd7c6d4293240d328751bdcf8b967b8f6b
 - name: dotnet-aspnetcore
-  version: 9.0.3
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.3_linux_x64_any-stack_ddadf26c.tar.xz
-  sha256: ddadf26ce30489f90f67346b68d56fb5a6cb5490463eab61738a2f11bdb17e1b
+  version: 9.0.4
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.4_linux_x64_any-stack_58866ce6.tar.xz
+  sha256: 58866ce6d2c53d61889390d93fcbae58b752208bdce6b019311a87bcff02e6f5
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/30d54f5c-f3c6-4ee3-bdef-75e7cb0a40c2/cdb0ba537467777ff193f8f3cae6fc76/aspnetcore-runtime-9.0.3-linux-x64.tar.gz
-  source_sha256: 30e012cfc3aeac11a9213a7615e5b547db2f26e2e3b5463b6808aea9e4da51e1
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.4/aspnetcore-runtime-9.0.4-linux-x64.tar.gz
+  source_sha256: 2ef497b573802039932b6c6075e1abcdc85c9b766a6eb0d4cda14e22130982d2
 - name: dotnet-runtime
-  version: 8.0.14
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.14_linux_x64_any-stack_c9edb09d.tar.xz
-  sha256: c9edb09d15854208dcf95c63e457d7d86bb9e1a70d17411a87cae11f01dc9514
+  version: 8.0.15
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.15_linux_x64_any-stack_cb0a94df.tar.xz
+  sha256: cb0a94dffeacff3a601c99b6bb9d374bd6174d4eea2abf6fc9c20b061bce6857
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/a52595b3-f025-4bcd-a3fe-b6091e276d76/4c0d27fd34b79bf7c21ba401b84c76e4/dotnet-runtime-8.0.14-linux-x64.tar.gz
-  source_sha256: 763c525bf6cb3db0f7bc4701682492eb759759fa36117c780abb84e696ca71ff
+  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/8.0.15/dotnet-runtime-8.0.15-linux-x64.tar.gz
+  source_sha256: c705fdedc7e1f01ef9531e63732cdf710710a0e626c6a85ec828e80811068072
 - name: dotnet-runtime
-  version: 9.0.3
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_9.0.3_linux_x64_any-stack_7dd185da.tar.xz
-  sha256: 7dd185da2126fe73634998c0ec857b38ccf3e07c73f8ed01c09098534932e89c
+  version: 9.0.4
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_9.0.4_linux_x64_any-stack_bfb5185a.tar.xz
+  sha256: bfb5185a7ba4149f03d8bf5d6681e27dc2a2058a7d510f76542b03494b720ece
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/a58fcc04-99ee-4dea-aa5d-d6d22c4040dc/4433f4e97ad4658bd76f52acc1cb9c21/dotnet-runtime-9.0.3-linux-x64.tar.gz
-  source_sha256: a1510b88985083e5014165a440823e40e8bf3a72089a468e08385d8ed27f1867
+  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.4/dotnet-runtime-9.0.4-linux-x64.tar.gz
+  source_sha256: 9ad9909313b5214bbd0776a313b82fa482447721c3db56b7086c487fc238f462
 - name: dotnet-sdk
-  version: 8.0.407
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.407_linux_x64_any-stack_52074c30.tar.xz
-  sha256: 52074c304260aeb7194376480d71d05023329ea9480ef8251e64800669da4fc7
+  version: 8.0.408
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.408_linux_x64_any-stack_ac8be275.tar.xz
+  sha256: ac8be27590ab05f5c76046735bb55efb8a518836ef3e2b0f7f805a10edf26764
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/9d07577e-f7bc-4d60-838d-f79c50b5c11a/459ef339396783db369e0432d6dc3d7e/dotnet-sdk-8.0.407-linux-x64.tar.gz
-  source_sha256: 99122db4459e0e6a7d55db2c738cfd1422a5357b9da2c050f0250eb33e939c7f
+  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.408/dotnet-sdk-8.0.408-linux-x64.tar.gz
+  source_sha256: 2f8dcfb5b7e3dcf220c42d39ecc1b0333617aceeceb148862a9232207113e39b
 - name: dotnet-sdk
-  version: 9.0.202
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.202_linux_x64_any-stack_d278ea24.tar.xz
-  sha256: d278ea24ec09a5ae652ff033b584bcb8faa32578f5f2f38ffaf46ca90fe6f430
+  version: 9.0.203
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.203_linux_x64_any-stack_a0904232.tar.xz
+  sha256: a0904232da10bfe29a8efc008721b8b85aa013d865c522e18e2a68b6a0b618e7
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://download.visualstudio.microsoft.com/download/pr/c2220b38-c512-4447-b564-a18048d14327/965cdfe500a937c2d28bc9d2db45cd1f/dotnet-sdk-9.0.202-linux-x64.tar.gz
-  source_sha256: 0c7bc01debcad57a61fe15bf3c7e6baff1bbbd4f10e4f1284b95866dfff5b444
+  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/9.0.203/dotnet-sdk-9.0.203-linux-x64.tar.gz
+  source_sha256: c7e99b0060a274f31a29ec5e159c7133478bb30dca0366e1c5617976e6de23a3
 - name: libgdiplus
   version: '6.1'
   uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_bb66aa5a.tgz
