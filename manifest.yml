@@ -86,14 +86,14 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.4/dotnet-runtime-9.0.4-linux-x64.tar.gz
   source_sha256: 9ad9909313b5214bbd0776a313b82fa482447721c3db56b7086c487fc238f462
 - name: dotnet-sdk
-  version: 8.0.408
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.408_linux_x64_any-stack_ac8be275.tar.xz
-  sha256: ac8be27590ab05f5c76046735bb55efb8a518836ef3e2b0f7f805a10edf26764
+  version: 8.0.411
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.411_linux_x64_any-stack_fdd5afdd.tar.xz
+  sha256: fdd5afddb6c0302314ff23817ea0e251e62ec79c2cc1d9c5cf5ecd5970830818
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs3
-  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.408/dotnet-sdk-8.0.408-linux-x64.tar.gz
-  source_sha256: 2f8dcfb5b7e3dcf220c42d39ecc1b0333617aceeceb148862a9232207113e39b
+  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.411/dotnet-sdk-8.0.411-linux-x64.tar.gz
+  source_sha256: 2212ace90b536bd99910baf485e925024a37fc08e31fc8c1014fe4392b8d4967
 - name: dotnet-sdk
   version: 9.0.203
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.203_linux_x64_any-stack_a0904232.tar.xz
