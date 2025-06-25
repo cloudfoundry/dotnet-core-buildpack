@@ -144,13 +144,13 @@ dependencies:
   source: https://nodejs.org/dist/v20.16.0/node-v20.16.0.tar.gz
   source_sha256: 8f24bf9abe455a09ab30f9ae8edda1e945ed678a4b1c3b07ee0f901fdc0ff4fd
 - name: node
-  version: 22.14.0
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_22.14.0_linux_x64_cflinuxfs4_860d1314.tgz
-  sha256: 860d1314aa67e08da8ad38799891e397cd8d9e25c02245fca9d5575165c03006
+  version: 22.17.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_22.17.0_linux_x64_cflinuxfs4_72fd7abe.tgz
+  sha256: 72fd7abe8158d308754074b0c99af5ee9f12ad4db113cab7c3cdde8deace2fda
   cf_stacks:
   - cflinuxfs4
-  source: https://nodejs.org/dist/v22.14.0/node-v22.14.0.tar.gz
-  source_sha256: 6c4e31ed5702dc45cfd8c435af56a36a474427e1bd7afe74c346136060beba8a
+  source: https://nodejs.org/dist/v22.17.0/node-v22.17.0.tar.gz
+  source_sha256: f8bf095ff559033edf04108fb1f14f72e2be337c609d4f83e8af1e299af7f4b4
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
