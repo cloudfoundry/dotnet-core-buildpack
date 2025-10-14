@@ -105,16 +105,16 @@ dependencies:
   source_sha256: c7e99b0060a274f31a29ec5e159c7133478bb30dca0366e1c5617976e6de23a3
 - name: libgdiplus
   version: '6.1'
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_bb66aa5a.tgz
-  sha256: bb66aa5abe78dddb68142db69841ba83e9a131c86bd7635416d6262f33d18851
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs3_64aa07c0.tgz
+  sha256: 64aa07c0d809e342fdb174657344c49bf9ad48a288391bcfb162266f10cee35b
   cf_stacks:
   - cflinuxfs3
   source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
   source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
 - name: libgdiplus
   version: '6.1'
-  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs4_b18dfcc3.tgz
-  sha256: b18dfcc3fd2926179eea86063edb44e9021354a9af8a020c4a1b54b23f58c85d
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs4_84fa35f8.tgz
+  sha256: 84fa35f8fe1880557010d4365e3916e6617a977f27137557758e36b098aa3c1d
   cf_stacks:
   - cflinuxfs4
   source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
