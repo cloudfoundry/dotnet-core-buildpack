@@ -116,7 +116,7 @@ func Run(s *Supplier) error {
 
 	if filesChanged, err := s.Command.Output(s.Stager.BuildDir(), "find", ".", "-newer", "/tmp/checkpoint", "-not", "-path", "./.cloudfoundry/*", "-not", "-path", "./.cloudfoundry"); err == nil && filesChanged != "" {
 		s.Log.Debug("Below files changed:")
-		s.Log.Debug(filesChanged)
+		s.Log.Debug("%s", filesChanged)
 	}
 
 	return nil
