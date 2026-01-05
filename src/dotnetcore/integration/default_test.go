@@ -260,12 +260,14 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 
 					Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
 
-					cmd := exec.Command("docker", "container", "logs", deployment.Name)
-
-					output, err := cmd.CombinedOutput()
-					Expect(err).NotTo(HaveOccurred())
-
-					Expect(string(output)).To(ContainSubstring("name: OpenSSL Legacy Provider"))
+					Eventually(func() string {
+						cmd := exec.Command("docker", "container", "logs", deployment.Name)
+						output, err := cmd.CombinedOutput()
+						if err != nil {
+							return ""
+						}
+						return string(output)
+					}).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
 				})
 			})
 		})
