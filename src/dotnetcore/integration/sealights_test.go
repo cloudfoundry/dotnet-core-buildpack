@@ -36,9 +36,8 @@ func testSealights(platform switchblade.Platform, fixtures string) func(*testing
 					}).
 					WithServices(map[string]switchblade.Service{
 						"sealights-test-service": {
-							"mode":  "--help",
-							"token": "sometoken",
-							"bsId":  "somesession",
+							"token":          "sometoken",
+							"buildSessionId": "somesession",
 						},
 					}).
 					Execute(name, filepath.Join(fixtures, "source_apps", "simple"))
