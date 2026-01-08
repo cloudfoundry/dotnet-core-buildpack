@@ -2,7 +2,6 @@ package integration_test
 
 import (
 	"fmt"
-	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -250,26 +249,23 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 					Expect(err).NotTo(HaveOccurred())
 				})
 
-				it("activates openssl legacy provider and builds/runs successfully", func() {
-					deployment, logs, err := platform.Deploy.
-						WithEnv(map[string]string{
-							"BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER": "true",
-						}).
-						Execute(name, fixture)
-					Expect(err).NotTo(HaveOccurred())
+		it("activates openssl legacy provider and builds/runs successfully", func() {
+			deployment, logs, err := platform.Deploy.
+				WithEnv(map[string]string{
+					"BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER": "true",
+				}).
+				Execute(name, fixture)
+			Expect(err).NotTo(HaveOccurred())
 
-					Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
-
-					Eventually(func() string {
-						cmd := exec.Command("docker", "container", "logs", deployment.Name)
-						output, err := cmd.CombinedOutput()
-						if err != nil {
-							return ""
-						}
-						return string(output)
-					}).Should(ContainSubstring("name: OpenSSL Legacy Provider"))
-				})
+			// Check that the legacy SSL provider was loaded during build
+			Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
+			Eventually(func() string {
+					logs, _ := deployment.RuntimeLogs()
+					return logs 
+					}, "10s", "1s").Should(Or(ContainSubstring("name: OpenSSL Legacy Provider"),
+				))
 			})
+		})
 		})
 
 		context("deploying a framework-dependent app", func() {

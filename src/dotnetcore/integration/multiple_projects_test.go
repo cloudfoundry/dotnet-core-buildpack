@@ -1,7 +1,6 @@
 package integration_test
 
 import (
-	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -38,12 +37,12 @@ func testMultipleProjects(platform switchblade.Platform, fixtures string) func(*
 
 			Eventually(deployment).Should(Serve(ContainSubstring("Hello, I'm a string!")))
 
-			cmd := exec.Command("docker", "container", "logs", deployment.Name)
+			Eventually(func() string {
+					logs, _ := deployment.RuntimeLogs()
+					return logs 
+					}, "10s", "1s").Should(Or(ContainSubstring("Hello from a secondary project!"),
+			))
 
-			output, err := cmd.CombinedOutput()
-			Expect(err).NotTo(HaveOccurred())
-
-			Expect(string(output)).To(ContainSubstring("Hello from a secondary project!"))
 		})
 
 		context("Deploying a self-contained solution with multiple projects", func() {
