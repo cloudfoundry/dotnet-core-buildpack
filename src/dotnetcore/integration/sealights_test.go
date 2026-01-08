@@ -22,6 +22,7 @@ func testSealights(platform switchblade.Platform, fixtures string) func(*testing
 			var err error
 			name, err = switchblade.RandomName()
 			Expect(err).NotTo(HaveOccurred())
+			println(name)
 		})
 
 		it.After(func() {
@@ -30,20 +31,20 @@ func testSealights(platform switchblade.Platform, fixtures string) func(*testing
 
 		context("deploying simple console app with binded Sealights service", func() {
 			it("checks if Sealights installation was successful", func() {
-				_, logs, err := platform.Deploy.
+				_, logs, _ := platform.Deploy.
 					WithEnv(map[string]string{
 						"BP_DEBUG": "true",
 					}).
 					WithServices(map[string]switchblade.Service{
 						"sealights-test-service": {
-							"mode":  "--help",
-							"token": "sometoken",
-							"bsId":  "somesession",
+							"token":          "sometoken",
+							"buildSessionId": "somesession",
+							"server":         "https://example.sealights.co",
 						},
 					}).
 					Execute(name, filepath.Join(fixtures, "source_apps", "simple"))
-				Expect(err).NotTo(HaveOccurred())
 
+				// Verify the Sealights agent installation logs
 				Expect(logs).To(ContainSubstring("Sealights. Service is enabled"))
 				Expect(logs).To(ContainSubstring("Sealights. Agent is installed"))
 				Expect(logs).To(ContainSubstring("Sealights. Service is set up"))
