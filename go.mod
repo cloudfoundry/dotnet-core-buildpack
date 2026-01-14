@@ -10,7 +10,7 @@ require (
 	github.com/Sealights/libbuildpack-sealights v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cloudfoundry/libbuildpack v0.0.0-20240717165421-f2ae8069fcba
-	github.com/cloudfoundry/switchblade v0.9.3
+	github.com/cloudfoundry/switchblade v0.9.4
 	github.com/go-ini/ini v1.67.0
 	github.com/golang/mock v1.6.0
 	github.com/gravityblast/go-jsmin v0.0.0-20141027113318-a32d741b3595
