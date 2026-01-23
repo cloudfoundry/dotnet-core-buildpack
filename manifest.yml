@@ -67,6 +67,14 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.4/aspnetcore-runtime-9.0.4-linux-x64.tar.gz
   source_sha256: 2ef497b573802039932b6c6075e1abcdc85c9b766a6eb0d4cda14e22130982d2
+- name: dotnet-aspnetcore
+  version: 9.0.10
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.10_linux_x64_any-stack_df2d17b0.tar.xz
+  sha256: df2d17b0310bf68f4c1339e311b16240506cee3fa86766026db178c78a662db6
+  cf_stacks:
+  - cflinuxfs4
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.10/aspnetcore-runtime-9.0.10-linux-x64.tar.gz
+  source_sha256: 7fd7fd9da1259212c9423d561b059fa45b21bcbcc8e94da15dcca9fa73d71984
 - name: dotnet-runtime
   version: 8.0.15
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.15_linux_x64_any-stack_cb0a94df.tar.xz
