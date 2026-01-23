@@ -19,6 +19,10 @@ dependency_deprecation_dates:
   name: dotnet-aspnetcore
   date: 2026-05-12
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 10.0.x
+  name: dotnet-runtime
+  date: 2028-11-14
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 8.0.x
   name: dotnet-runtime
   date: 2026-11-10
@@ -85,6 +89,14 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.4/dotnet-runtime-9.0.4-linux-x64.tar.gz
   source_sha256: 9ad9909313b5214bbd0776a313b82fa482447721c3db56b7086c487fc238f462
+- name: dotnet-runtime
+  version: 10.0.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_10.0.2_linux_x64_any-stack_dcc3e32e.tar.xz
+  sha256: dcc3e32e2c42231e2ca7de6bdd120d0569a5f230a081f9528e5d401f8ad46958
+  cf_stacks:
+  - cflinuxfs4
+  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.2/dotnet-runtime-10.0.2-linux-x64.tar.gz
+  source_sha256: 222f42567d5a8b12b03e5f5744e60eb9fab806e1599a260afae65b145bbc350e
 - name: dotnet-sdk
   version: 8.0.408
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.408_linux_x64_any-stack_ac8be275.tar.xz
