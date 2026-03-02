@@ -39,12 +39,15 @@ var _ = Describe("Supply", func() {
 	BeforeEach(func() {
 		buildDir, err = os.MkdirTemp("", "dotnetcore-buildpack.build.")
 		Expect(err).To(BeNil())
+		DeferCleanup(os.RemoveAll, buildDir)
 
 		cacheDir, err = os.MkdirTemp("", "dotnetcore-buildpack.cache.")
 		Expect(err).To(BeNil())
+		DeferCleanup(os.RemoveAll, cacheDir)
 
 		depsDir, err = os.MkdirTemp("", "dotnetcore-buildpack.deps.")
 		Expect(err).To(BeNil())
+		DeferCleanup(os.RemoveAll, depsDir)
 
 		depsIdx = "9"
 		Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx), 0755)).To(Succeed())
@@ -80,19 +83,6 @@ var _ = Describe("Supply", func() {
 			err := os.MkdirAll(filepath.Join(installDir, "bin"), 0755)
 			Expect(err).To(BeNil())
 		}
-	})
-
-	AfterEach(func() {
-		mockCtrl.Finish()
-
-		err = os.RemoveAll(buildDir)
-		Expect(err).To(BeNil())
-
-		err = os.RemoveAll(cacheDir)
-		Expect(err).To(BeNil())
-
-		err = os.RemoveAll(depsDir)
-		Expect(err).To(BeNil())
 	})
 
 	Describe("InstallBower", func() {
@@ -147,16 +137,13 @@ var _ = Describe("Supply", func() {
 		BeforeEach(func() {
 			nodeTmpDir, err = os.MkdirTemp("", "dotnetcore-buildpack.tmp")
 			Expect(err).To(BeNil())
+			DeferCleanup(os.RemoveAll, nodeTmpDir)
 			csprojXml = `<Project Sdk="Microsoft.NET.Sdk.Web">
-						   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-						     <Exec Command="npm install" />
-							 <Exec Command="bower install" />
-						   </Target>
-						 </Project>`
-		})
-
-		AfterEach(func() {
-			Expect(os.RemoveAll(nodeTmpDir)).To(Succeed())
+					   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+					     <Exec Command="npm install" />
+						 <Exec Command="bower install" />
+					   </Target>
+					 </Project>`
 		})
 
 		Context("Node is not installed", func() {
@@ -167,10 +154,7 @@ var _ = Describe("Supply", func() {
 			Context("Install node environment variable is set", func() {
 				BeforeEach(func() {
 					Expect(os.Setenv("INSTALL_NODE", "true")).To(Succeed())
-				})
-
-				AfterEach(func() {
-					Expect(os.Unsetenv("INSTALL_NODE")).To(Succeed())
+					DeferCleanup(os.Unsetenv, "INSTALL_NODE")
 				})
 
 				It("Installs node", func() {
@@ -221,9 +205,7 @@ var _ = Describe("Supply", func() {
 			Context("set to true", func() {
 				BeforeEach(func() {
 					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")).To(Succeed())
-				})
-				AfterEach(func() {
-					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
+					DeferCleanup(os.Unsetenv, "BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")
 				})
 				It("Loads legacy SSL provider", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
@@ -235,9 +217,7 @@ var _ = Describe("Supply", func() {
 			Context("set to false", func() {
 				BeforeEach(func() {
 					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "false")).To(Succeed())
-				})
-				AfterEach(func() {
-					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
+					DeferCleanup(os.Unsetenv, "BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")
 				})
 				It("does not load legacy SSL provider", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
@@ -250,10 +230,8 @@ var _ = Describe("Supply", func() {
 				BeforeEach(func() {
 					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "true")).To(Succeed())
 					Expect(os.WriteFile(filepath.Join(buildDir, "openssl.cnf"), []byte(""), 0644)).To(Succeed())
-				})
-				AfterEach(func() {
-					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
-					Expect(os.Remove(filepath.Join(buildDir, "openssl.cnf"))).To(Succeed())
+					DeferCleanup(os.Unsetenv, "BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")
+					DeferCleanup(os.Remove, filepath.Join(buildDir, "openssl.cnf"))
 				})
 				It("the openssl.cnf file takes precedence", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(Succeed())
@@ -268,9 +246,7 @@ var _ = Describe("Supply", func() {
 			Context("cannot parse the BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER boolean", func() {
 				BeforeEach(func() {
 					Expect(os.Setenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER", "bad boolean")).To(Succeed())
-				})
-				AfterEach(func() {
-					Expect(os.Unsetenv("BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")).To(Succeed())
+					DeferCleanup(os.Unsetenv, "BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER")
 				})
 				It("returns an error", func() {
 					Expect(supplier.LoadLegacySSLProvider()).To(MatchError(ContainSubstring(`parsing "bad boolean": invalid syntax`)))

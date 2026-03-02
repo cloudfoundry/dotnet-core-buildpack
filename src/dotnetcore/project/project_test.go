@@ -73,9 +73,11 @@ var _ = Describe("Project", func() {
 	BeforeEach(func() {
 		buildDir, err = os.MkdirTemp("", "dotnet-core-buildpack.build.")
 		Expect(err).To(BeNil())
+		DeferCleanup(os.RemoveAll, buildDir)
 
 		depsDir, err = os.MkdirTemp("", "dotnetcore-buildpack.deps.")
 		Expect(err).To(BeNil())
+		DeferCleanup(os.RemoveAll, depsDir)
 
 		depsIdx = "9"
 		Expect(os.MkdirAll(filepath.Join(depsDir, depsIdx), 0755)).To(Succeed())
@@ -90,14 +92,6 @@ var _ = Describe("Project", func() {
 		mockInstaller = NewMockInstaller(mockCtrl)
 
 		subject = project.New(buildDir, filepath.Join(depsDir, depsIdx), depsIdx, mockManifest, mockInstaller, logger)
-	})
-
-	AfterEach(func() {
-		err = os.RemoveAll(buildDir)
-		Expect(err).To(BeNil())
-
-		err = os.RemoveAll(depsDir)
-		Expect(err).To(BeNil())
 	})
 
 	Describe("StartCommand", func() {
