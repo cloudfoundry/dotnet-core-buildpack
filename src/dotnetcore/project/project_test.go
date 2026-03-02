@@ -260,10 +260,6 @@ var _ = Describe("Project", func() {
 			applyPatches := false
 
 			Context("and the manifest has the exact version", func() {
-				BeforeEach(func() {
-					mockManifest.EXPECT().AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "4.5.7"})
-				})
-
 				It("Returns the exact version", func() {
 					version, err := subject.FindMatchingFrameworkVersion("dotnet-runtime", "4.5.6", &applyPatches)
 					Expect(err).To(BeNil())
@@ -550,16 +546,13 @@ var _ = Describe("Project", func() {
 
 			Context("when it finds the Microsoft.AspNetCore.App in deps.json", func() {
 				BeforeEach(func() {
-					createDepsJSON("Microsoft.AspNetCore.App", "2.3.4", true)
+					createDepsJSON("Microsoft.AspNetCore.App", "2.3.4", false)
 				})
 
-				It("installs the dotnet-runtime and dotnet-aspnetcore", func() {
+				It("installs the dotnet-runtime", func() {
 					mockInstaller.
 						EXPECT().
 						InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "7.8.9"}, depsPath)
-					mockInstaller.
-						EXPECT().
-						InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "2.3.4"}, depsPath)
 
 					Expect(subject.FDDInstallFrameworks()).To(Succeed())
 				})
@@ -641,9 +634,6 @@ var _ = Describe("Project", func() {
 			It("installs the latest runtime for that minor", func() {
 				mockManifest.
 					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9", "5.0.1", "5.0.2"})
-				mockManifest.
-					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9", "5.0.1", "5.0.2"})
 				mockInstaller.
 					EXPECT().
@@ -668,9 +658,6 @@ var _ = Describe("Project", func() {
 			})
 
 			It("installs the latest runtime for that minor", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
 				mockManifest.
 					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
@@ -723,9 +710,6 @@ var _ = Describe("Project", func() {
 			})
 
 			It("installs the runtime floating on patch", func() {
-				mockManifest.
-					EXPECT().
-					AllDependencyVersions("dotnet-aspnetcore").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
 				mockManifest.
 					EXPECT().
 					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "6.7.9", "6.8.9"})
