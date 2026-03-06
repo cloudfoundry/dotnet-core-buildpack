@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -140,7 +140,7 @@ func DeleteBuildpack(language string) error {
 }
 
 func UpdateBuildpack(language, file, stack string) error {
-	updateBuildpackArgs := []string{"update-buildpack", fmt.Sprintf("%s_buildpack", language), "-p", file, "--enable"}
+	updateBuildpackArgs := []string{"update-buildpack", fmt.Sprintf("%s_buildpack", language), "-p", file}
 
 	stackAssociationSupported, err := ApiGreaterThan("2.113.0")
 	if err != nil {
@@ -159,7 +159,7 @@ func UpdateBuildpack(language, file, stack string) error {
 }
 
 func createBuildpack(language, file string) error {
-	command := exec.Command("cf", "create-buildpack", fmt.Sprintf("%s_buildpack", language), file, "100", "--enable")
+	command := exec.Command("cf", "create-buildpack", fmt.Sprintf("%s_buildpack", language), file, "100")
 	if data, err := command.CombinedOutput(); err != nil {
 		return fmt.Errorf("Failed to create buildpack by running '%s':\n%s\n%v", strings.Join(command.Args, " "), string(data), err)
 	}
@@ -254,7 +254,7 @@ func (a *App) SpaceGUID() (string, error) {
 	if cfHome == "" {
 		cfHome = os.Getenv("HOME")
 	}
-	bytes, err := ioutil.ReadFile(filepath.Join(cfHome, ".cf", "config.json"))
+	bytes, err := os.ReadFile(filepath.Join(cfHome, ".cf", "config.json"))
 	if err != nil {
 		return "", err
 	}
@@ -466,7 +466,7 @@ func (a *App) Get(path string, headers map[string]string) (string, map[string][]
 		return "", map[string][]string{}, err
 	}
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", map[string][]string{}, err
 	}
