@@ -9,7 +9,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -27,7 +26,7 @@ type sha struct {
 }
 
 func readManifest(bpDir string) (Manifest, error) {
-	data, err := ioutil.ReadFile(filepath.Join(bpDir, "manifest.yml"))
+	data, err := os.ReadFile(filepath.Join(bpDir, "manifest.yml"))
 	if err != nil {
 		return Manifest{}, err
 	}
@@ -53,7 +52,7 @@ func CompileExtensionPackage(bpDir, version string, cached bool, stack string) (
 		return "", fmt.Errorf("Failed to copy %s: %v", bpDir, err)
 	}
 
-	err = ioutil.WriteFile(filepath.Join(dir, "VERSION"), []byte(version), 0644)
+	err = os.WriteFile(filepath.Join(dir, "VERSION"), []byte(version), 0644)
 	if err != nil {
 		return "", fmt.Errorf("Failed to write VERSION file: %v", err)
 	}
@@ -147,7 +146,7 @@ func downloadDependency(dependency Dependency, cacheDir string) (File, error) {
 	}
 
 	if err := checkSha256(filepath.Join(cacheDir, file), dependency.SHA256); err != nil {
-		return File{}, err
+		return File{}, fmt.Errorf("%s (%s %s): %v", dependency.URI, dependency.Name, dependency.Version, err)
 	}
 
 	return File{file, filepath.Join(cacheDir, file)}, nil
@@ -168,7 +167,7 @@ func Package(bpDir, cacheDir, version, stack string, cached bool) (string, error
 	}
 	defer os.RemoveAll(dir)
 
-	err = ioutil.WriteFile(filepath.Join(dir, "VERSION"), []byte(version), 0644)
+	err = os.WriteFile(filepath.Join(dir, "VERSION"), []byte(version), 0644)
 	if err != nil {
 		return "", err
 	}
@@ -275,29 +274,36 @@ func DownloadFromURI(uri, fileName string) error {
 	if u.Scheme == "file" {
 		source, err = os.Open(u.Path)
 		if err != nil {
+			os.Remove(fileName)
 			return err
 		}
 		defer source.Close()
 	} else {
 		response, err := http.Get(uri)
 		if err != nil {
+			os.Remove(fileName)
 			return err
 		}
 		defer response.Body.Close()
-		source = response.Body
 
 		if response.StatusCode < 200 || response.StatusCode > 299 {
-			return fmt.Errorf("could not download: %d", response.StatusCode)
+			os.Remove(fileName)
+			return fmt.Errorf("could not download %s: %d", uri, response.StatusCode)
 		}
+
+		source = response.Body
 	}
 
 	_, err = io.Copy(output, source)
+	if err != nil {
+		os.Remove(fileName)
+	}
 
 	return err
 }
 
 func checkSha256(filePath, expectedSha256 string) error {
-	content, err := ioutil.ReadFile(filePath)
+	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
@@ -366,7 +372,7 @@ func ZipFiles(filename string, files []File) error {
 }
 
 func CopyDirectory(srcDir string) (string, error) {
-	destDir, err := ioutil.TempDir("", "buildpack-packager")
+	destDir, err := os.MkdirTemp("", "buildpack-packager")
 	if err != nil {
 		return "", err
 	}
