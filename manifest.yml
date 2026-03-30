@@ -73,15 +73,6 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.21/aspnetcore-runtime-8.0.21-linux-x64.tar.gz
   source_sha256: '08415698df9a1c0d217a69e47f1578b458d2ae3bb4677e0281fadd0209f3745b'
 - name: dotnet-aspnetcore
-  version: 10.0.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
-  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
-  cf_stacks:
-  - cflinuxfs5
-  - cflinuxfs4
-  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
-  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
-- name: dotnet-aspnetcore
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.10_linux_x64_any-stack_df2d17b0.tar.xz
   sha256: df2d17b0310bf68f4c1339e311b16240506cee3fa86766026db178c78a662db6
@@ -91,6 +82,15 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.10/aspnetcore-runtime-9.0.10-linux-x64.tar.gz
   source_sha256: 7fd7fd9da1259212c9423d561b059fa45b21bcbcc8e94da15dcca9fa73d71984
+- name: dotnet-aspnetcore
+  version: 10.0.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
+  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
+  cf_stacks:
+  - cflinuxfs5
+  - cflinuxfs4
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
+  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
 - name: dotnet-runtime
   version: 8.0.21
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.21_linux_x64_any-stack_4961bbf3.tar.xz
@@ -155,6 +155,22 @@ dependencies:
   sha256: bb66aa5abe78dddb68142db69841ba83e9a131c86bd7635416d6262f33d18851
   cf_stacks:
   - cflinuxfs3
+  source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
+  source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
+- name: libgdiplus
+  version: '6.1'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs4_7a7a8e02.tgz
+  sha256: 7a7a8e0229822788a5635e31c90fa9133e82e87aae753c62568d156e7200b6fc
+  cf_stacks:
+  - cflinuxfs4
+  source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
+  source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
+- name: libgdiplus
+  version: '6.1'
+  uri: https://buildpacks.cloudfoundry.org/dependencies/libgdiplus/libgdiplus_6.1_linux_noarch_cflinuxfs5_e37a4d7b.tgz
+  sha256: e37a4d7bb5ee81cc974b0ec6ecb5404778bc4e9038e0e3673e13a62bd00439e9
+  cf_stacks:
+  - cflinuxfs5
   source: https://github.com/mono/libgdiplus/archive/44b44f92836f035e12b27c718e1f7bd42e369e28.tar.gz
   source_sha256: a1656e30bee9adc6c453e0df2ca3ce74210d1c00fdba99fcf082cac8392e5e43
 - name: libgdiplus
