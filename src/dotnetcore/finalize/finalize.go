@@ -17,6 +17,7 @@ import (
 var stackToRuntimeRID = map[string]string{
 	"cflinuxfs3": "linux-x64",
 	"cflinuxfs4": "linux-x64",
+	"cflinuxfs5": "linux-x64",
 }
 
 type Project interface {
