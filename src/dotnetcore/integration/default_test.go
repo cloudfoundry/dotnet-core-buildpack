@@ -307,7 +307,7 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			it.Focus("displays a simple text homepage", func() {
+			it("displays a simple text homepage", func() {
 				// Fixture built for ubuntu.18.04-x64 with .NET 3.1; bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
 				SkipOnCflinuxfs5(t)
 				deployment, logs, err := platform.Deploy.Execute(name, fixture)

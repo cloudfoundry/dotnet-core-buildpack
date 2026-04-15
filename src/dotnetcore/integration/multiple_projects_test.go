@@ -45,7 +45,7 @@ func testMultipleProjects(platform switchblade.Platform, fixtures string) func(*
 		})
 
 		context("Deploying a self-contained solution with multiple projects", func() {
-			it.Focus("can run the app", func() {
+			it("can run the app", func() {
 				// Fixture built for .NET 2.2 (EOL); bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
 				SkipOnCflinuxfs5(t)
 				deployment, _, err := platform.Deploy.
