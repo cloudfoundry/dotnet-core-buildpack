@@ -38,15 +38,16 @@ func testMultipleProjects(platform switchblade.Platform, fixtures string) func(*
 			Eventually(deployment).Should(Serve(ContainSubstring("Hello, I'm a string!")))
 
 			Eventually(func() string {
-					logs, _ := deployment.RuntimeLogs()
-					return logs 
-					}, "10s", "1s").Should(Or(ContainSubstring("Hello from a secondary project!"),
-			))
+				logs, _ := deployment.RuntimeLogs()
+				return logs
+			}, "10s", "1s").Should(Or(ContainSubstring("Hello from a secondary project!")))
 
 		})
 
 		context("Deploying a self-contained solution with multiple projects", func() {
 			it("can run the app", func() {
+				// Fixture built for .NET 2.2 (EOL); bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
+				SkipOnCflinuxfs5(t)
 				deployment, _, err := platform.Deploy.
 					Execute(name, filepath.Join(fixtures, "self_contained_apps", "self_contained_solution_2.2"))
 				Expect(err).NotTo(HaveOccurred())

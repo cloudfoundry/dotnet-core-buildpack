@@ -249,23 +249,22 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 					Expect(err).NotTo(HaveOccurred())
 				})
 
-		it("activates openssl legacy provider and builds/runs successfully", func() {
-			deployment, logs, err := platform.Deploy.
-				WithEnv(map[string]string{
-					"BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER": "true",
-				}).
-				Execute(name, fixture)
-			Expect(err).NotTo(HaveOccurred())
+				it("activates openssl legacy provider and builds/runs successfully", func() {
+					deployment, logs, err := platform.Deploy.
+						WithEnv(map[string]string{
+							"BP_OPENSSL_ACTIVATE_LEGACY_PROVIDER": "true",
+						}).
+						Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
 
-			// Check that the legacy SSL provider was loaded during build
-			Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
-			Eventually(func() string {
-					logs, _ := deployment.RuntimeLogs()
-					return logs 
-					}, "10s", "1s").Should(Or(ContainSubstring("name: OpenSSL Legacy Provider"),
-				))
+					// Check that the legacy SSL provider was loaded during build
+					Expect(logs).To(ContainSubstring("Loading legacy SSL provider"))
+					Eventually(func() string {
+						logs, _ := deployment.RuntimeLogs()
+						return logs
+					}, "10s", "1s").Should(Or(ContainSubstring("name: OpenSSL Legacy Provider")))
+				})
 			})
-		})
 		})
 
 		context("deploying a framework-dependent app", func() {
@@ -309,6 +308,8 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 			})
 
 			it("displays a simple text homepage", func() {
+				// Fixture built for ubuntu.18.04-x64 with .NET 3.1; bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
+				SkipOnCflinuxfs5(t)
 				deployment, logs, err := platform.Deploy.Execute(name, fixture)
 				Expect(err).NotTo(HaveOccurred())
 
