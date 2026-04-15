@@ -43,6 +43,8 @@ func testOffline(platform switchblade.Platform, fixtures string) func(*testing.T
 
 		context("when deploying a self contained app without internet", func() {
 			it("builds and runs the app", func() {
+				// Fixture built for ubuntu.18.04-x64 with .NET 3.1; bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
+				SkipOnCflinuxfs5(t)
 				deployment, _, err := platform.Deploy.
 					WithoutInternetAccess().
 					Execute(name, filepath.Join(fixtures, "self_contained_apps", "msbuild"))
