@@ -304,9 +304,6 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 			// Skip entire context for cflinuxfs5: Fixture built for ubuntu.18.04-x64 with .NET 3.1;
 			// bundled OpenSSL 1.1 is incompatible with cflinuxfs5 (OpenSSL 3.0)
 			if settings.Stack == "cflinuxfs5" {
-				it("displays a simple text homepage", func() {
-					t.Skip("Skipping test not relevant for stack cflinuxfs5")
-				})
 				return
 			}
 
