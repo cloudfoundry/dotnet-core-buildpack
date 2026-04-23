@@ -73,15 +73,6 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.21/aspnetcore-runtime-8.0.21-linux-x64.tar.gz
   source_sha256: '08415698df9a1c0d217a69e47f1578b458d2ae3bb4677e0281fadd0209f3745b'
 - name: dotnet-aspnetcore
-  version: 10.0.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
-  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
-  cf_stacks:
-  - cflinuxfs5
-  - cflinuxfs4
-  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
-  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
-- name: dotnet-aspnetcore
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.10_linux_x64_any-stack_df2d17b0.tar.xz
   sha256: df2d17b0310bf68f4c1339e311b16240506cee3fa86766026db178c78a662db6
@@ -91,6 +82,15 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.10/aspnetcore-runtime-9.0.10-linux-x64.tar.gz
   source_sha256: 7fd7fd9da1259212c9423d561b059fa45b21bcbcc8e94da15dcca9fa73d71984
+- name: dotnet-aspnetcore
+  version: 10.0.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
+  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
+  cf_stacks:
+  - cflinuxfs5
+  - cflinuxfs4
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
+  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
 - name: dotnet-runtime
   version: 8.0.21
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.21_linux_x64_any-stack_4961bbf3.tar.xz
@@ -200,6 +200,22 @@ dependencies:
   - cflinuxfs4
   source: https://nodejs.org/dist/v22.19.0/node-v22.19.0.tar.gz
   source_sha256: 4cea680423f98abc6a2a5ca127fb34c5f6586c24217f57749be6ea886c9be9a6
+- name: node
+  version: 24.14.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_24.14.0_linux_x64_cflinuxfs4_d8daa33a.tgz
+  sha256: d8daa33a8983513807de8e4105004e562806520f522ecf3d33a9f329fa768a64
+  cf_stacks:
+  - cflinuxfs4
+  source: https://nodejs.org/dist/v24.14.0/node-v24.14.0.tar.gz
+  source_sha256: 852c73dd5b6ba15b231d036da6312dbcdabd6295adc3940586f3187b77731cf3
+- name: node
+  version: 24.14.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_24.14.0_linux_x64_cflinuxfs5_16c6405c.tgz
+  sha256: 16c6405c1acd2b3fb2bdc1a9899ba3ec43cc4ee7c4c185e898c57c1b1ba73c61
+  cf_stacks:
+  - cflinuxfs5
+  source: https://nodejs.org/dist/v24.14.0/node-v24.14.0.tar.gz
+  source_sha256: 852c73dd5b6ba15b231d036da6312dbcdabd6295adc3940586f3187b77731cf3
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
