@@ -73,14 +73,14 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.21/aspnetcore-runtime-8.0.21-linux-x64.tar.gz
   source_sha256: '08415698df9a1c0d217a69e47f1578b458d2ae3bb4677e0281fadd0209f3745b'
 - name: dotnet-aspnetcore
-  version: 10.0.2
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
-  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
+  version: 8.0.26
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.26_linux_x64_cflinuxfs4_b1135f3a.tar.xz
+  sha256: b1135f3aca5d4e1cd622a8559a335a63aa8c605d03a111d6203eccac9011b5dc
   cf_stacks:
-  - cflinuxfs5
   - cflinuxfs4
-  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
-  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
+  - cflinuxfs5
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.26/aspnetcore-runtime-8.0.26-linux-x64.tar.gz
+  source_sha256: ''
 - name: dotnet-aspnetcore
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.10_linux_x64_any-stack_df2d17b0.tar.xz
@@ -91,6 +91,15 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.10/aspnetcore-runtime-9.0.10-linux-x64.tar.gz
   source_sha256: 7fd7fd9da1259212c9423d561b059fa45b21bcbcc8e94da15dcca9fa73d71984
+- name: dotnet-aspnetcore
+  version: 10.0.2
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
+  sha256: 2c49437fd4571f2e14672a11a722e4b9c586f32c7b29f3a5f47f5402bc5203f8
+  cf_stacks:
+  - cflinuxfs5
+  - cflinuxfs4
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.2/aspnetcore-runtime-10.0.2-linux-x64.tar.gz
+  source_sha256: 267452b48aa4c296bd3cc757c41b813d2104f4ff7478bc699b83c59452c9735b
 - name: dotnet-runtime
   version: 8.0.21
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.21_linux_x64_any-stack_4961bbf3.tar.xz
