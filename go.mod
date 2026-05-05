@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
-	github.com/Dynatrace/libbuildpack-dynatrace v1.8.0
+	github.com/Dynatrace/libbuildpack-dynatrace v1.9.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Sealights/libbuildpack-sealights v1.5.0
 	github.com/blang/semver v3.5.1+incompatible
