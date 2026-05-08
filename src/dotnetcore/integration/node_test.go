@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -32,6 +33,10 @@ func testNode(platform switchblade.Platform, fixtures string) func(*testing.T, s
 
 		context("deploying an angular app", func() {
 			it("displays a simple text homepage", func() {
+				prevTimeout := os.Getenv("CF_STAGING_TIMEOUT")
+				os.Setenv("CF_STAGING_TIMEOUT", "30")
+				defer os.Setenv("CF_STAGING_TIMEOUT", prevTimeout)
+
 				deployment, _, err := platform.Deploy.
 					Execute(name, filepath.Join(fixtures, "node_apps", "angular_dotnet"))
 				Expect(err).NotTo(HaveOccurred())
