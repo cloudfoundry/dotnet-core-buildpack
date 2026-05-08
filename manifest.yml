@@ -21,7 +21,7 @@ dependency_deprecation_dates:
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 9.0.x
   name: dotnet-aspnetcore
-  date: 2026-05-12
+  date: 2026-11-10
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 10.0.x
   name: dotnet-runtime
@@ -33,7 +33,7 @@ dependency_deprecation_dates:
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 9.0.x
   name: dotnet-runtime
-  date: 2026-05-12
+  date: 2026-11-10
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 10.0.x
   name: dotnet-sdk
@@ -45,7 +45,7 @@ dependency_deprecation_dates:
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 9.0.x
   name: dotnet-sdk
-  date: 2026-05-12
+  date: 2026-11-10
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 18.x.x
   name: node
