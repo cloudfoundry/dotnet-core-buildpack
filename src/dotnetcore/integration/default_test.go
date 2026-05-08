@@ -225,16 +225,16 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 
 			context("with .NET Core 9", func() {
 				it.Before(func() {
+					// TODO: dotnet-sdk 9.0.306 crashes with "signal: segmentation fault" during
+					// dotnet publish on cflinuxfs4. Remove this skip once a fixed SDK patch is available.
+					t.Skip("dotnet-sdk 9.0.306 segfaults on cflinuxfs4 during dotnet publish")
+
 					var err error
 					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_9.0"))
 					Expect(err).NotTo(HaveOccurred())
 				})
 
 				it("builds and runs successfully", func() {
-					// TODO: dotnet-sdk 9.0.306 crashes with "signal: segmentation fault" during
-					// dotnet publish on cflinuxfs4. Remove this skip once a fixed SDK patch is available.
-					t.Skip("dotnet-sdk 9.0.306 segfaults on cflinuxfs4 during dotnet publish")
-
 					deployment, logs, err := platform.Deploy.Execute(name, fixture)
 					Expect(err).NotTo(HaveOccurred())
 
