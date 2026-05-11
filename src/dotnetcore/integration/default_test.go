@@ -224,9 +224,15 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 			})
 
 			context("with .NET Core 9", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_9.0"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
 				// TODO: dotnet-sdk 9.0.306 crashes with "signal: segmentation fault" during
-				// dotnet publish on cflinuxfs4. Pend back to it once a fixed SDK
-				// patch is available and restore the it.Before fixture setup below.
+				// dotnet publish on cflinuxfs4. Change it.Pend back to it once a fixed SDK
+				// patch is available.
 				it.Pend("builds and runs successfully", func() {
 					deployment, logs, err := platform.Deploy.Execute(name, fixture)
 					Expect(err).NotTo(HaveOccurred())
