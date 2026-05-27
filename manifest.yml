@@ -90,7 +90,7 @@ dependencies:
   - cflinuxfs4
   - cflinuxfs5
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/10.0.8/aspnetcore-runtime-10.0.8-linux-x64.tar.gz
-  source_sha256: ''
+  source_sha256: 1f3345d4012871f8a33a72c3b5a1ce382b2902c7e8589cc589588409a3507f8d
 - name: dotnet-runtime
   version: 8.0.21
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.21_linux_x64_any-stack_4961bbf3.tar.xz
