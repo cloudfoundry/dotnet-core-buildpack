@@ -45,7 +45,7 @@ dependency_deprecation_dates:
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 9.0.x
   name: dotnet-sdk
-  date: 2026-11-10
+  date: 2026-05-12
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 18.x.x
   name: node
@@ -140,6 +140,15 @@ dependencies:
   - cflinuxfs3
   source: https://builds.dotnet.microsoft.com/dotnet/Sdk/9.0.306/dotnet-sdk-9.0.306-linux-x64.tar.gz
   source_sha256: 7d64179e044d0ebe709521f760e3c7c7529a8e71e0889cae35181d744ab0228b
+- name: dotnet-sdk
+  version: 9.0.316
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.316_linux_x64_cflinuxfs4_01a0757b.tar.xz
+  sha256: 01a0757bc9cd31d8673c11fa08e2a52c11ce12fb9943ce01b67bc7477763178d
+  cf_stacks:
+  - cflinuxfs4
+  - cflinuxfs5
+  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/9.0.316/dotnet-sdk-9.0.316-linux-x64.tar.gz
+  source_sha256: ''
 - name: dotnet-sdk
   version: 10.0.300
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_10.0.300_linux_x64_cflinuxfs4_37012356.tar.xz
