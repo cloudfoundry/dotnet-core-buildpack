@@ -200,6 +200,22 @@ dependencies:
   - cflinuxfs4
   source: https://nodejs.org/dist/v22.19.0/node-v22.19.0.tar.gz
   source_sha256: 4cea680423f98abc6a2a5ca127fb34c5f6586c24217f57749be6ea886c9be9a6
+- name: node
+  version: 24.19.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_24.19.0_linux_x64_cflinuxfs4_9ab26efa.tgz
+  sha256: 9ab26efa6abadf21f589b0fffd4888b432066c4c06b8ccd4ac8981879c9a47c2
+  cf_stacks:
+  - cflinuxfs4
+  source: https://nodejs.org/dist/v24.19.0/node-v24.19.0.tar.gz
+  source_sha256: 16fe258006a6e86844fbe05b3b5e1e5623ca8d3da54e32d98d9e83234bf25b01
+- name: node
+  version: 24.19.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_24.19.0_linux_x64_cflinuxfs5_25a15e50.tgz
+  sha256: 25a15e50fa982ebce399167f9e522d4cccbcd5bef250ab14dc590d91f48dba23
+  cf_stacks:
+  - cflinuxfs5
+  source: https://nodejs.org/dist/v24.19.0/node-v24.19.0.tar.gz
+  source_sha256: 16fe258006a6e86844fbe05b3b5e1e5623ca8d3da54e32d98d9e83234bf25b01
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
