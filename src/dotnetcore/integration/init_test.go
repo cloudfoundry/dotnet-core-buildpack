@@ -97,6 +97,7 @@ func TestIntegration(t *testing.T) {
 	suite("Default", testDefault(platform, fixtures))
 	suite("Dynatrace", testDynatrace(platform, fixtures, dynatraceDeployment.InternalURL))
 	suite("Fsharp", testFsharp(platform, fixtures))
+	suite("MemoryLimit", testMemoryLimit(platform, fixtures))
 	suite("MultipleProjects", testMultipleProjects(platform, fixtures))
 	suite("Node", testNode(platform, fixtures))
 	suite("Override", testOverride(platform, fixtures))

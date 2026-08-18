@@ -24,4 +24,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapGet("/env/dotnet-gc-heap-hard-limit", () => Environment.GetEnvironmentVariable("DOTNET_GCHeapHardLimit") ?? "");
+
 app.Run();
