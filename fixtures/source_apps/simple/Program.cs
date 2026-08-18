@@ -24,6 +24,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapGet("/env/dotnet-gc-heap-hard-limit", () => Environment.GetEnvironmentVariable("DOTNET_GCHeapHardLimit") ?? "");
+// Reports the GC's actual resolved GCHeapHardLimit configuration (via GC.GetConfigurationVariables(),
+// available since .NET 7) rather than the raw DOTNET_GCHeapHardLimit environment variable, proving
+// the CLR itself parsed and applied the value rather than merely being present in the shell environment.
+// The "GCHeapHardLimit" key is always present in the dictionary (0 when unconfigured), so no fallback is needed.
+app.MapGet("/env/dotnet-gc-heap-hard-limit", () => $"0x{(long)GC.GetConfigurationVariables()["GCHeapHardLimit"]:x}");
 
 app.Run();
