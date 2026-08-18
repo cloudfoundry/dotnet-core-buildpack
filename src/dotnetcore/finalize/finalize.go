@@ -189,6 +189,9 @@ if [[ "${MEMORY_LIMIT:-}" =~ ^([0-9]+)m$ ]]; then
       __dgchl_hex="${__dgchl_hex#0X}"
     fi
 
+    # DOTNET_GCHeapHardLimit is always parsed as hex here, matching .NET's own
+    # native parsing convention for this env var (a plain decimal-looking value
+    # such as "268435456" is interpreted as hex, not decimal).
     if [[ -n "${__dgchl_hex:-}" ]] && [[ "$__dgchl_hex" =~ ^[0-9a-fA-F]+$ ]]; then
       __dgchl_proposed_bytes=$(( 16#${__dgchl_hex} ))
     else
