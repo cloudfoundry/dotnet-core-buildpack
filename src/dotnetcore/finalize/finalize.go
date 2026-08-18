@@ -177,6 +177,43 @@ func (f *Finalizer) WriteProfileD() error {
 	scriptContents := fmt.Sprintf(`
 export ASPNETCORE_URLS="${ASPNETCORE_URLS:-http://0.0.0.0:${PORT}}"
 export DOTNET_ROOT=%s
+
+if [[ "${MEMORY_LIMIT:-}" =~ ^([0-9]+)m$ ]]; then
+  __dgchl_mb=$((10#${BASH_REMATCH[1]}))
+
+  if [ "$__dgchl_mb" -gt 0 ]; then
+    __dgchl_limit_bytes=$(( __dgchl_mb * 1024 * 1024 ))
+
+    if [[ -n "${DOTNET_GCHeapHardLimit:-}" ]]; then
+      __dgchl_hex="${DOTNET_GCHeapHardLimit#0x}"
+      __dgchl_hex="${__dgchl_hex#0X}"
+    fi
+
+    if [[ -n "${__dgchl_hex:-}" ]] && [[ "$__dgchl_hex" =~ ^[0-9a-fA-F]+$ ]]; then
+      __dgchl_proposed_bytes=$(( 16#${__dgchl_hex} ))
+    else
+      __dgchl_percent_raw="${DOTNET_GCHeapHardLimitPercent:-75}"
+      if [[ "$__dgchl_percent_raw" =~ ^[0-9]{1,3}$ ]]; then
+        __dgchl_percent=$((10#$__dgchl_percent_raw))
+        if [ "$__dgchl_percent" -lt 1 ] || [ "$__dgchl_percent" -gt 100 ]; then
+          __dgchl_percent=75
+        fi
+      else
+        __dgchl_percent=75
+      fi
+      __dgchl_proposed_bytes=$(( __dgchl_limit_bytes * __dgchl_percent / 100 ))
+    fi
+
+    if [ "$__dgchl_proposed_bytes" -gt "$__dgchl_limit_bytes" ]; then
+      echo "WARNING: DOTNET_GCHeapHardLimit (${__dgchl_proposed_bytes} bytes) exceeds MEMORY_LIMIT (${__dgchl_limit_bytes} bytes); capping to the container memory limit" >&2
+      __dgchl_proposed_bytes=$__dgchl_limit_bytes
+    fi
+
+    export DOTNET_GCHeapHardLimit="0x$(printf '%%x' "$__dgchl_proposed_bytes")"
+    unset DOTNET_GCHeapHardLimitPercent
+    unset __dgchl_mb __dgchl_limit_bytes __dgchl_hex __dgchl_proposed_bytes __dgchl_percent_raw __dgchl_percent
+  fi
+fi
 `, filepath.Join("/home", "vcap", "deps", f.Stager.DepsIdx(), "dotnet-sdk"))
 
 	return f.Stager.WriteProfileD("startup.sh", scriptContents)
