@@ -646,6 +646,32 @@ var _ = Describe("Project", func() {
 			})
 		})
 
+		Context("when the runtime version is specified under <TargetFramework> as 'netXY.Z' with a two-digit major", func() {
+			BeforeEach(func() {
+				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
+					[]byte(`
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+</Project>`), 0644)).To(Succeed())
+			})
+
+			It("installs the latest runtime for that minor", func() {
+				mockManifest.
+					EXPECT().
+					AllDependencyVersions("dotnet-runtime").Return([]string{"4.5.6", "6.7.8", "9.0.1", "10.0.1", "10.0.2"})
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-aspnetcore", Version: "10.0.2"}, depsPath)
+				mockInstaller.
+					EXPECT().
+					InstallDependency(libbuildpack.Dependency{Name: "dotnet-runtime", Version: "10.0.2"}, depsPath)
+
+				Expect(subject.SourceInstallDotnetRuntime()).To(Succeed())
+			})
+		})
+
 		Context("when the runtime version is only specified under <TargetFramework> in the csproj", func() {
 			BeforeEach(func() {
 				Expect(os.WriteFile(filepath.Join(buildDir, "foo.csproj"),
