@@ -109,7 +109,7 @@ dependencies:
   - cflinuxfs4
   - cflinuxfs5
   source: https://builds.dotnet.microsoft.com/dotnet/Runtime/8.0.30/dotnet-runtime-8.0.30-linux-x64.tar.gz
-  source_sha256: ''
+  source_sha256: 253a45b29374f6fe45631ad5909f90a26d77ef1732b7518aedcf4f3ff4dfb465
 - name: dotnet-runtime
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_9.0.10_linux_x64_any-stack_8690baad.tar.xz
