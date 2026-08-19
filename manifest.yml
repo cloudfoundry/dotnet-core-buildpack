@@ -156,7 +156,7 @@ dependencies:
   - cflinuxfs4
   - cflinuxfs5
   source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.424/dotnet-sdk-8.0.424-linux-x64.tar.gz
-  source_sha256: ''
+  source_sha256: 1a0f577b530d52e54c5a53ea0b578fd1ebe421b11bfbf9b29a5bdc413bdbad64
 - name: dotnet-sdk
   version: 9.0.306
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.306_linux_x64_any-stack_c1340494.tar.xz
