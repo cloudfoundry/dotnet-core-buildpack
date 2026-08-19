@@ -90,7 +90,7 @@ dependencies:
   - cflinuxfs4
   - cflinuxfs5
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/9.0.19/aspnetcore-runtime-9.0.19-linux-x64.tar.gz
-  source_sha256: ''
+  source_sha256: d949d01244ffd3bc0ab23602a4c186d5e961cae75961f0ed0e25b9e57e164b4f
 - name: dotnet-aspnetcore
   version: 10.0.2
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_10.0.2_linux_x64_any-stack_2c49437f.tar.xz
