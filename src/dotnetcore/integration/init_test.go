@@ -48,6 +48,9 @@ func TestIntegration(t *testing.T) {
 	format.MaxLength = 0
 	SetDefaultEventuallyTimeout(10 * time.Second)
 
+	// Set staging timeout globally for all tests to handle slow Angular builds
+	os.Setenv("CF_STAGING_TIMEOUT", "30")
+
 	root, err := filepath.Abs("./../../..")
 	Expect(err).NotTo(HaveOccurred())
 
