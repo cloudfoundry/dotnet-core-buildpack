@@ -19,16 +19,20 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 			Expect     = NewWithT(t).Expect
 			Eventually = NewWithT(t).Eventually
 
-			fixture               string
-			name                  string
-			latest9RuntimeVersion string
-			latest8RuntimeVersion string
-			latest8SDKVersion     string
+			fixture                string
+			name                   string
+			latest10RuntimeVersion string
+			latest9RuntimeVersion  string
+			latest8RuntimeVersion  string
+			latest8SDKVersion      string
 		)
 
 		it.Before(func() {
 			var err error
 			name, err = switchblade.RandomName()
+			Expect(err).NotTo(HaveOccurred())
+
+			latest10RuntimeVersion, err = GetLatestDepVersion(t, "dotnet-runtime", "10.0.x")
 			Expect(err).NotTo(HaveOccurred())
 
 			latest9RuntimeVersion, err = GetLatestDepVersion(t, "dotnet-runtime", "9.0.x")
@@ -238,6 +242,22 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 					Expect(err).NotTo(HaveOccurred())
 
 					Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest9RuntimeVersion)))
+					Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
+				})
+			})
+
+			context("with .NET Core 10", func() {
+				it.Before(func() {
+					var err error
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_10.0"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				it("builds and runs successfully", func() {
+					deployment, logs, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest10RuntimeVersion)))
 					Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
 				})
 			})

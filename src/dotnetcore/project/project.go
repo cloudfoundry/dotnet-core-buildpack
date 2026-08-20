@@ -352,8 +352,9 @@ func (p *Project) SourceInstallDotnetRuntime() error {
 		}
 	} else {
 		// This regular expression matches on 'net<x>.<y>',
-		// 'net<x>.<y>-<platform>' & 'netcoreapp<x>.<y>'
-		targetFrameworkRE := regexp.MustCompile(`net(?:coreapp)?(\d\.\d)(?:\w+)?`)
+		// 'net<x>.<y>-<platform>' & 'netcoreapp<x>.<y>', where <x> may be
+		// multiple digits (e.g. 'net10.0').
+		targetFrameworkRE := regexp.MustCompile(`net(?:coreapp)?(\d+\.\d)(?:\w+)?`)
 		matches := targetFrameworkRE.FindStringSubmatch(proj.PropertyGroup.TargetFramework)
 		if len(matches) == 2 {
 			runtimeVersionMinor := matches[1]
