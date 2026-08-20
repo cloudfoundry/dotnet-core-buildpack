@@ -123,6 +123,7 @@ function specs::run() {
   buildpack_file="$(buildpack::package "1.2.3" "${cached}" "${stack}")"
 
   CF_STACK="${stack}" \
+  CF_STAGING_TIMEOUT=30 \
   BUILDPACK_FILE="${BUILDPACK_FILE:-"${buildpack_file}"}" \
   GOMAXPROCS="${GOMAXPROCS:-"${nodes}"}" \
     go test \
