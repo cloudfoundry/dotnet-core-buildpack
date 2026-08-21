@@ -34,8 +34,9 @@
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <!-- Note: optimization=false skips heavy minification to stay within CF 15 min staging timeout -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm --dev install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production --optimization=false" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
