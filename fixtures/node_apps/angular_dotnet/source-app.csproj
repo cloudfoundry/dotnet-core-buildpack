@@ -33,9 +33,10 @@
   </Target>
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <!-- As part of publishing, ensure the JS resources are freshly built in development mode -->
+    <!-- Using development mode to speed up builds and stay within 15-minute CF staging timeout -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm --dev install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration development" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
