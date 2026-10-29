@@ -73,14 +73,14 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.21/aspnetcore-runtime-8.0.21-linux-x64.tar.gz
   source_sha256: '08415698df9a1c0d217a69e47f1578b458d2ae3bb4677e0281fadd0209f3745b'
 - name: dotnet-aspnetcore
-  version: 8.0.30
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.30_linux_x64_cflinuxfs4_325dfbb2.tar.xz
-  sha256: 325dfbb2b2f2ef60f4b06b8b06bc7cfc0f7f7ed50d40596bb3e3a66314183c39
+  version: 8.0.33
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_8.0.33_linux_x64_cflinuxfs4_738dfeb8.tar.xz
+  sha256: 738dfeb87169c3ec40329ad8120f969cec0d03612884581830df87cb98ddb241
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs5
-  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.30/aspnetcore-runtime-8.0.30-linux-x64.tar.gz
-  source_sha256: 3591ce9a61e635cee8c93630a5e0f338398cb19c5bd618a2f38f8f00e4a3c45e
+  source: https://builds.dotnet.microsoft.com/dotnet/aspnetcore/Runtime/8.0.33/aspnetcore-runtime-8.0.33-linux-x64.tar.gz
+  source_sha256: 1ce73ddba660cd83103eed9f54e73cecfb61f515109e8f264dff8feb82b43693
 - name: dotnet-aspnetcore
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-aspnetcore/dotnet-aspnetcore_9.0.10_linux_x64_any-stack_df2d17b0.tar.xz
@@ -129,14 +129,14 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/Runtime/8.0.21/dotnet-runtime-8.0.21-linux-x64.tar.gz
   source_sha256: 1d7a338cada885183b54d43247604e05b8719a08861e47dd032e2a3b8171b3ce
 - name: dotnet-runtime
-  version: 8.0.30
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.30_linux_x64_cflinuxfs4_79597a56.tar.xz
-  sha256: 79597a56359c7e2f6773237a4a87896d6585f86517d5f08873b6523e79c5ed33
+  version: 8.0.33
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_8.0.33_linux_x64_cflinuxfs4_24498201.tar.xz
+  sha256: 24498201f26c45b9d664297201b24febde06853cf3a46537a0321aa85aef676c
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs5
-  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/8.0.30/dotnet-runtime-8.0.30-linux-x64.tar.gz
-  source_sha256: 253a45b29374f6fe45631ad5909f90a26d77ef1732b7518aedcf4f3ff4dfb465
+  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/8.0.33/dotnet-runtime-8.0.33-linux-x64.tar.gz
+  source_sha256: 73e6b84de92cc8442229ea991e677cc1376a0a05e3e39f878cf98ebd756861b6
 - name: dotnet-runtime
   version: 9.0.10
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_9.0.10_linux_x64_any-stack_8690baad.tar.xz
@@ -185,14 +185,14 @@ dependencies:
   source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.415/dotnet-sdk-8.0.415-linux-x64.tar.gz
   source_sha256: a18944685e180887e32b9662f31521012a2c11851e63cbb7907f5f12f4a2461e
 - name: dotnet-sdk
-  version: 8.0.424
-  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.424_linux_x64_cflinuxfs4_50270eb2.tar.xz
-  sha256: 50270eb273fd030787bfe180eed27cb0ee7ea447ced63b00c07eb746beb96cb2
+  version: 8.0.427
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.427_linux_x64_cflinuxfs4_8ef3781e.tar.xz
+  sha256: 8ef3781eac0ddc4f3b578b35101050f441ab785d4135434a0c5aff44853dda88
   cf_stacks:
   - cflinuxfs4
   - cflinuxfs5
-  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.424/dotnet-sdk-8.0.424-linux-x64.tar.gz
-  source_sha256: 1a0f577b530d52e54c5a53ea0b578fd1ebe421b11bfbf9b29a5bdc413bdbad64
+  source: https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.427/dotnet-sdk-8.0.427-linux-x64.tar.gz
+  source_sha256: 9f2a52ab827f1530b972b41f7c5d211c21a16ea8b3217b2846191f746f626149
 - name: dotnet-sdk
   version: 9.0.306
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_9.0.306_linux_x64_any-stack_c1340494.tar.xz
