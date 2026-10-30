@@ -7,6 +7,7 @@
     <SpaRoot>ClientApp\</SpaRoot>
     <SpaProxyServerUrl>https://localhost:44427</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+    <NpmInstallCommand>npm ci --include=dev --no-audit --no-fund --prefer-offline</NpmInstallCommand>
     <RootNamespace>source_app</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -29,13 +30,13 @@
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm ci --include=dev --no-audit --no-fund --prefer-offline" EnvironmentVariables="NODE_OPTIONS=--max-old-space-size=384" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="$(NpmInstallCommand)" EnvironmentVariables="NODE_OPTIONS=--max-old-space-size=384" />
   </Target>
   
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <!-- Note: optimization=false skips heavy minification to stay within CF 15 min staging timeout -->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm ci --include=dev --no-audit --no-fund --prefer-offline" EnvironmentVariables="NODE_OPTIONS=--max-old-space-size=384" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="$(NpmInstallCommand)" Condition="!Exists('$(SpaRoot)node_modules')" EnvironmentVariables="NODE_OPTIONS=--max-old-space-size=384" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production --optimization=false" EnvironmentVariables="NODE_OPTIONS=--max-old-space-size=384;NG_BUILD_MAX_WORKERS=2" />
 
     <!-- Include the newly-built files in the publish output -->
