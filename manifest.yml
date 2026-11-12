@@ -302,13 +302,13 @@ dependencies:
   source: https://nodejs.org/dist/v24.22.1/node-v24.22.1.tar.gz
   source_sha256: 001773d9bd53fbd27a25efd42aa6a9693ebfe500998ca9bec635e9b6ee79bc91
 - name: node
-  version: 24.22.1
-  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_24.22.1_linux_x64_cflinuxfs5_9a48e254.tgz
-  sha256: 9a48e2546bbef685256685b2bc83d97172b4e7d6560e2c5f123110309f05ffb0
+  version: 26.13.1
+  uri: https://buildpacks.cloudfoundry.org/dependencies/node/node_26.13.1_linux_x64_cflinuxfs5_c75412a8.tgz
+  sha256: c75412a8fdfaa27b551b7559e0bba20a4e55b9bf337a41fd86dd3a4c03137add
   cf_stacks:
   - cflinuxfs5
-  source: https://nodejs.org/dist/v24.22.1/node-v24.22.1.tar.gz
-  source_sha256: 001773d9bd53fbd27a25efd42aa6a9693ebfe500998ca9bec635e9b6ee79bc91
+  source: https://nodejs.org/dist/v26.13.1/node-v26.13.1.tar.gz
+  source_sha256: 60c6cdf11c3e9d5932fccd0eafae77f1152661584e129047684cb8646f228d3e
 exclude_files: []
 pre_package: scripts/build.sh
 include_files:
