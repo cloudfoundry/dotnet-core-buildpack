@@ -27,6 +27,10 @@ dependency_deprecation_dates:
   name: dotnet-runtime
   date: 2028-11-14
   link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+- version_line: 11.0.x
+  name: dotnet-runtime
+  date: 2028-11-14
+  link: https://dotnet.microsoft.com/platform/support/policy/dotnet-core
 - version_line: 8.0.x
   name: dotnet-runtime
   date: 2026-11-10
@@ -156,6 +160,15 @@ dependencies:
   - cflinuxfs5
   source: https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.14/dotnet-runtime-10.0.14-linux-x64.tar.gz
   source_sha256: bd3a25b2c5b617934de7ca55fc410711afd772c0d95a1af9205db6c3cc2c59f1
+- name: dotnet-runtime
+  version: 11.0.0
+  uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-runtime/dotnet-runtime_11.0.0_linux_x64_cflinuxfs4_841f14be.tar.xz
+  sha256: 841f14be74a60c2aafe2a6abd6e0d09c63ded60beda88c65d4f7d5ed967e6fdc
+  cf_stacks:
+  - cflinuxfs4
+  - cflinuxfs5
+  source: https://builds.dotnet.microsoft.com/dotnet/Runtime/11.0.0/dotnet-runtime-11.0.0-linux-x64.tar.gz
+  source_sha256: 55383d4f52794fd650b7c878bdb3b9f8f0e75b747d9fbc79f6601b43f1c86f84
 - name: dotnet-sdk
   version: 8.0.415
   uri: https://buildpacks.cloudfoundry.org/dependencies/dotnet-sdk/dotnet-sdk_8.0.415_linux_x64_any-stack_d3d85f0c.tar.xz
