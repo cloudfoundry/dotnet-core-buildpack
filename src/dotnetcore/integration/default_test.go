@@ -262,6 +262,30 @@ func testDefault(platform switchblade.Platform, fixtures string) func(*testing.T
 				})
 			})
 
+			context("with .NET Core 11", func() {
+				var latest11RuntimeVersion string
+
+				it.Before(func() {
+					var err error
+					latest11RuntimeVersion, err = GetLatestDepVersion(t, "dotnet-runtime", "11.0.x")
+					if err != nil {
+						// Skip until the 11.0.x dependencies are in the manifest.
+						t.Skipf("no dotnet-runtime 11.0.x in manifest: %v", err)
+					}
+
+					fixture, err = switchblade.Source(filepath.Join(fixtures, "source_apps", "source_11.0"))
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				it("builds and runs successfully", func() {
+					deployment, logs, err := platform.Deploy.Execute(name, fixture)
+					Expect(err).NotTo(HaveOccurred())
+
+					Expect(logs).To(ContainSubstring(fmt.Sprintf("Installing dotnet-runtime %s", latest11RuntimeVersion)))
+					Eventually(deployment).Should(Serve(ContainSubstring("building Web apps with ASP.NET Core")))
+				})
+			})
+
 			context("with BP_USE_LEGACY_OPENSSL set to `true`", func() {
 				it.Before(func() {
 					// this feature is not available on cflinuxfs3, because the stack already supports the legacy ssl provider
